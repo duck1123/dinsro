@@ -10,7 +10,9 @@
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
    [dinsro.mutations.ln.peers :as mu.ln.peers]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
@@ -18,7 +20,7 @@
 (def fetch-button
   {:type   :button
    :label  "Fetch"
-   :action (u.links/report-action ::m.ln.nodes/id mu.ln.nodes/fetch-peers!)})
+   :action (u.buttons/report-action ::m.ln.nodes/id mu.ln.nodes/fetch-peers!)})
 
 (report/defsc-report Report
   [_this _props]
@@ -37,7 +39,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.links/subrow-action-button "Delete" ::m.ln.peers/id ident-key mu.ln.peers/delete!)]
+   ro/row-actions       [(u.buttons/subrow-action-button "Delete" ::m.ln.peers/id ident-key mu.ln.peers/delete!)]
    ro/row-pk            m.ln.peers/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.ln.peers/index
@@ -45,7 +47,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

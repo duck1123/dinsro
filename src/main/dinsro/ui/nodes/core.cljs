@@ -8,6 +8,8 @@
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]))
 
 (def log-item-props false)
@@ -28,7 +30,7 @@
     (dom/div {} (str name))
     (dom/div {} (str host))
     (dom/div {} (u.links/ui-network-link network))
-    (when log-item-props (u.links/log-props props))))
+    (when log-item-props (u.debug/log-props props))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.c.nodes/id}))
 
@@ -44,8 +46,8 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
-                         (u.links/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
+                         (u.buttons/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.nodes/index

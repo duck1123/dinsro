@@ -7,9 +7,11 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.connections :as j.n.connections]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]
    [dinsro.ui.nostr.connections.runs :as u.n.c.runs]))
 
 ;; [[../../ui/nostr/connections/runs.cljs]]
@@ -35,23 +37,33 @@
 
 (defsc Show
   [_this {::m.n.connections/keys [id status relay start-time end-time]
-          :ui/keys               [router]}]
+          :ui/keys               [nav-menu router]}]
   {:ident         ::m.n.connections/id
-   :initial-state {::m.n.connections/id         nil
-                   ::m.n.connections/status     :unknown
-                   ::m.n.connections/relay      {}
-                   ::m.n.connections/start-time nil
-                   ::m.n.connections/end-time   nil
-                   :ui/router                   {}}
-   :pre-merge     (u.links/page-merger ::m.n.connections/id {:ui/router Router})
+   :initial-state
+   (fn [props]
+     (let [id (::m.n.connections/id props)]
+       {::m.n.connections/id         nil
+        ::m.n.connections/status     :unknown
+        ::m.n.connections/relay      {}
+        ::m.n.connections/start-time nil
+        ::m.n.connections/end-time   nil
+        :ui/nav-menu
+        (comp/get-initial-state       u.menus/NavMenu
+                                      {::m.navbars/id :nostr-connections :id id})
+        :ui/router                   (comp/get-initial-state Router)}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.n.connections/id
+                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-connections}]
+                    :ui/router   [Router {}]})
    :query         [::m.n.connections/id
                    ::m.n.connections/status
                    {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}
                    ::m.n.connections/start-time
                    ::m.n.connections/end-time
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["connections" :id]
-   :will-enter    (partial u.links/page-loader ::m.n.connections/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.n.connections/id ::Show)}
   (dom/div {}
     (dom/div :.ui.segment
       (dom/div {} (str id))
@@ -59,7 +71,7 @@
       (dom/div {} (u.links/ui-relay-link relay))
       (dom/div {} (str start-time))
       (dom/div {} (str end-time)))
-    (u.links/ui-nav-menu {:menu-items me/nostr-connections-menu-items :id id})
+    (u.menus/ui-nav-menu nav-menu)
     ((comp/factory Router) router)))
 
 (report/defsc-report Report

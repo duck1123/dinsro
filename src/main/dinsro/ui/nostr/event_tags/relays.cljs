@@ -11,7 +11,9 @@
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.event-tags :as mu.n.event-tags]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [../../../joins/nostr/relays.cljc]
@@ -51,7 +53,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.links/subrow-action-button "Fetch Pubkey" ::m.n.event-tags/id ident-key  mu.n.event-tags/fetch!)]
+   ro/row-actions       [(u.buttons/subrow-action-button "Fetch Pubkey" ::m.n.event-tags/id ident-key  mu.n.event-tags/fetch!)]
    ro/row-pk            m.n.relays/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.relays/index
@@ -59,7 +61,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

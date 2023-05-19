@@ -18,10 +18,9 @@
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pushable :refer [ui-sidebar-pushable]]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar-pusher :refer [ui-sidebar-pusher]]
    [dinsro.machines :as machines]
-   [dinsro.model.navbar :as m.navbar]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.settings :as m.settings]
-   [dinsro.mutations.navbar :as mu.navbar]
-   [dinsro.mutations.settings :as mu.settings]
+   [dinsro.mutations.navbars :as mu.navbars]
    [dinsro.mutations.ui :as mu.ui]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.admin :as u.admin]
@@ -35,7 +34,7 @@
    [dinsro.ui.initialize :as u.initialize]
    [dinsro.ui.ln :as u.ln]
    [dinsro.ui.login :as u.login]
-   [dinsro.ui.navbar :as u.navbar]
+   [dinsro.ui.navbars :as u.navbars]
    [dinsro.ui.nodes :as u.nodes]
    [dinsro.ui.nostr :as u.nostr]
    [dinsro.ui.registration :as u.registration]
@@ -94,65 +93,84 @@
 
 (def ui-root-router (comp/factory RootRouter))
 
+(defsc Menus
+  [_this _props]
+  {:query
+   [{:root/main-nav (comp/get-query u.navbars/Navbar)}
+    {:root/sidebar-nav (comp/get-query u.navbars/NavbarSidebar)}
+    {:root/unauth-nav (comp/get-query u.navbars/Navbar)}]
+   :initial-status
+   {:root/main-nav    {}
+    :root/sidebar-nav {}
+    :root/unauth-nav  {}}})
+
+(defsc Config
+  [_this _props]
+  {:ident         ::m.settings/id
+   :query         [::m.settings/id
+                   ::m.settings/initialized?
+                   ::m.settings/loaded?
+                   {::m.settings/auth (comp/get-query auth/Session)}
+                   {::m.settings/menu (comp/get-query u.navbars/Navbar)}]
+   :initial-state {::m.settings/id           :main
+                   ::m.settings/initialized? false
+                   ::m.settings/loaded?      false
+                   ::m.settings/auth         {}
+                   ::m.settings/menu         {}}})
+
 (defsc Root
   [this {:root/keys        [authenticator global-error init-form]
-         :ui/keys          [navbar router sidebar]
+         :ui/keys          [router]
          ::m.settings/keys [site-config]
          :as               props}]
-  {:componentDidMount (fn [this]
-                        (df/load! this ::m.settings/site-config mu.settings/Config)
-                        (uism/begin! this machines/hideable ::mu.navbar/navbarsm
-                                     {:actor/navbar (uism/with-actor-class [::m.navbar/id :main] u.navbar/Navbar)}))
-   :css               [[:.pusher {}]
-                       [:.pushable {}]
-                       [:.pushed {:margin-top "40px"}]
-                       [:.root-container {}]
-                       [:.router-wrapper {:overflow "hidden" :height "100%"}]]
-   :query             [{:root/authenticator (comp/get-query u.authenticator/Authenticator)}
-                       {:ui/navbar (comp/get-query u.navbar/Navbar)}
-                       {:ui/sidebar (comp/get-query u.navbar/NavbarSidebar)}
-                       {:root/init-form (comp/get-query u.initialize/InitForm)}
-                       {:root/global-error (comp/get-query GlobalErrorDisplay)}
-                       {:ui/router (comp/get-query RootRouter)}
-                       {[::auth/authorization :local] (comp/get-query u.navbar/NavbarAuthQuery)}
-                       {::m.settings/site-config (comp/get-query mu.settings/Config)}]
-   :initial-state     {:ui/navbar               {}
-                       :root/authenticator      {}
-                       :root/init-form          {}
-                       :ui/router               {}
-                       :ui/sidebar              {}
-                       :root/global-error       {}
-                       ::m.settings/site-config {}}}
-  (let [{:keys [pushable pusher pushed
-                root-container router-wrapper]}    (css/get-classnames Root)
-        top-router-state                           (or (uism/get-active-state this ::RootRouter) :initial)
-        {::m.settings/keys [loaded? initialized?]} site-config
-        root                                       (uism/get-active-state this ::auth/auth-machine)
-        gathering-credentials?                     (#{:state/gathering-credentials} root)
-        authenticated?                             (not= (get-in props [[::auth/authorization :local] ::auth/status]) :not-logged-in)]
+  {:componentDidMount
+   (fn [this]
+     (log/trace :Root/mounted {:this this})
+     (df/load! this ::m.settings/site-config Config)
+     (uism/begin! this machines/hideable ::mu.navbars/navbarsm
+                  {:actor/navbar (uism/with-actor-class [::m.navbars/id :main] u.navbars/Navbar)}))
+   :css           [[:.pushed {:height     "100%"
+                              :margin-top "40px"}]
+                   [:.root-container {}]
+                   [:.router-wrapper {:overflow "hidden" :height "100%"}]]
+   :query         [{:root/authenticator (comp/get-query u.authenticator/Authenticator)}
+                   {::m.settings/site-config (comp/get-query Config)}
+                   {:root/init-form (comp/get-query u.initialize/InitForm)}
+                   {:root/global-error (comp/get-query GlobalErrorDisplay)}
+                   {:ui/router (comp/get-query RootRouter)}
+                   {[::auth/authorization :local] (comp/get-query u.navbars/NavbarAuthQuery)}
+                   {::m.settings/site-config (comp/get-query Config)}]
+   :initial-state {:root/authenticator      {}
+                   :root/init-form          {}
+                   :ui/router               {}
+                   :root/global-error       {}
+                   ::m.settings/site-config {}}}
+  (log/trace :Root/starting {:props props})
+  (let [navbar                                         (::m.settings/menu site-config)
+        {:keys [pushed root-container router-wrapper]} (css/get-classnames Root)
+        top-router-state                               (or (uism/get-active-state this ::RootRouter) :initial)
+        {::m.settings/keys [loaded? initialized?]}     site-config
+        root                                           (uism/get-active-state this ::auth/auth-machine)
+        gathering-credentials?                         (#{:state/gathering-credentials} root)
+        authenticated?                                 (not= (get-in props [[::auth/authorization :local] ::auth/status]) :not-logged-in)]
     (dom/div {:classes [:.ui root-container]}
       (if loaded?
         (if initialized?
           (comp/fragment
            (ui-grid {}
-             (ui-grid-row {:only "computer"}
+             (ui-grid-row {:only "computer tablet"}
                (ui-grid-column {:width 16}
                  (ui-container {:fluid true}
-                   (u.navbar/ui-navbar navbar))))
-             (ui-grid-row {:only "tablet"}
-               (ui-grid-column {:width 16}
-                 (ui-container {:fluid true}
-                   (u.navbar/ui-navbar navbar))))
+                   (u.navbars/ui-navbar navbar))))
              (ui-grid-row {:only "mobile"}
                (ui-grid-column {:width 16}
                  (ui-container {:fluid true}
                    (if authenticated?
-                     (u.navbar/ui-minimal-navbar navbar)
-                     (u.navbar/ui-navbar navbar))))))
-           (ui-sidebar-pushable {:className (string/join " " [pushable])}
-             (log/trace :Root/navbar {:navbar navbar})
-             (u.navbar/ui-navbar-sidebar sidebar)
-             (ui-sidebar-pusher {:className (string/join " " [pusher])}
+                     (u.navbars/ui-minimal-navbar navbar)
+                     (u.navbars/ui-navbar navbar))))))
+           (ui-sidebar-pushable {}
+             (u.navbars/ui-navbar-sidebar navbar)
+             (ui-sidebar-pusher {}
                (dom/div {:className (string/join " " [pushed])}
                  (ui-grid {}
                    (ui-grid-row {:centered true}

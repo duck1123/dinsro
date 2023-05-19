@@ -8,7 +8,8 @@
    [dinsro.joins.nostr.badge-definitions :as j.n.badge-definitions]
    [dinsro.model.nostr.badge-acceptances :as m.n.badge-acceptances]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
@@ -29,7 +30,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

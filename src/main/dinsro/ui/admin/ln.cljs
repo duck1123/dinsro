@@ -3,7 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.ui.admin.ln.accounts :as u.a.ln.accounts]
    [dinsro.ui.admin.ln.channels :as u.a.ln.channels]
    [dinsro.ui.admin.ln.invoices :as u.a.ln.invoices]
@@ -12,7 +12,8 @@
    [dinsro.ui.admin.ln.payreqs :as u.a.ln.payreqs]
    [dinsro.ui.admin.ln.peers :as u.a.ln.peers]
    [dinsro.ui.admin.ln.remote-nodes :as u.a.ln.remote-nodes]
-   [dinsro.ui.links :as u.links]))
+   ;; [dinsro.ui.links :as u.links]
+   [dinsro.ui.menus :as u.menus]))
 
 (def router-key :dinsro.ui.admin/Router)
 
@@ -38,14 +39,18 @@
                     u.a.ln.remote-nodes/Report]})
 
 (defsc Page
-  [_this {:ui/keys [router]}]
+  [_this {:ui/keys [router vertical-menu]}]
   {:ident         (fn [] [:component/id ::Page])
-   :initial-state {:ui/router {}}
-   :query         [{:ui/router (comp/get-query Router)}]
+   :initial-state
+   (fn [_]
+     {:ui/router        (comp/get-initial-state Router)
+      :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :admin-ln})})
+   :query         [{:ui/router (comp/get-query Router)}
+                   {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}]
    :route-segment ["ln"]}
   (comp/fragment
    (dom/div :.ui.grid
      (dom/div :.ui.four.wide.column
-       (u.links/ui-vertical-menu {:menu-items me/admin-ln-menu-items :id nil}))
+       (u.menus/ui-vertical-menu vertical-menu))
      (dom/div :.ui.twelve.wide.column
        ((comp/factory Router) router)))))

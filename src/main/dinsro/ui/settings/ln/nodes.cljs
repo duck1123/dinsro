@@ -13,12 +13,13 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
-   [dinsro.menus :as me]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.nodes.accounts :as u.ln.n.accounts]
    [dinsro.ui.ln.nodes.addresses :as u.ln.n.addresses]
@@ -26,7 +27,9 @@
    [dinsro.ui.ln.nodes.peers :as u.ln.n.peers]
    [dinsro.ui.ln.nodes.remote-nodes :as u.ln.n.remote-nodes]
    [dinsro.ui.ln.nodes.transactions :as u.ln.n.transactions]
-   [dinsro.ui.ln.nodes.wallet-addresses :as u.ln.n.wallet-addresses]))
+   [dinsro.ui.ln.nodes.wallet-addresses :as u.ln.n.wallet-addresses]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]))
 
 (declare CreateLightningNodeForm)
 
@@ -152,20 +155,27 @@
 
 (defsc Show
   "Show a ln node"
-  [this {:ui/keys          [router]
+  [this {:ui/keys          [nav-menu router]
          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon? network]
          :as               props}]
   {:ident         ::m.ln.nodes/id
-   :initial-state {::m.ln.nodes/id           nil
-                   ::m.ln.nodes/user         {}
-                   ::m.ln.nodes/network      {}
-                   ::m.ln.nodes/core-node    {}
-                   ::m.ln.nodes/host         ""
-                   ::m.ln.nodes/port         0
-                   ::m.ln.nodes/hasCert?     false
-                   ::m.ln.nodes/hasMacaroon? false
-                   :ui/router                {}}
-   :pre-merge     (u.links/page-merger ::m.ln.nodes/id {:ui/router Router})
+   :initial-state
+   (fn [props]
+     (let [id (::m.ln.nodes/id props)]
+       {::m.ln.nodes/id           nil
+        ::m.ln.nodes/user         {}
+        ::m.ln.nodes/network      {}
+        ::m.ln.nodes/core-node    {}
+        ::m.ln.nodes/host         ""
+        ::m.ln.nodes/port         0
+        ::m.ln.nodes/hasCert?     false
+        ::m.ln.nodes/hasMacaroon? false
+        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings-ln-nodes :id id})
+        :ui/router                (comp/get-initial-state Router)}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.ln.nodes/id
+                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :settings-ln-nodes}]
+                    :ui/router   [Router {}]})
    :query         [::m.ln.nodes/id
                    ::m.ln.nodes/host
                    ::m.ln.nodes/port
@@ -174,9 +184,10 @@
                    {::m.ln.nodes/network (comp/get-query u.links/NetworkLinkForm)}
                    {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
                    {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["nodes" :id]
-   :will-enter    (partial u.links/page-loader ::m.ln.nodes/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.ln.nodes/id ::Show)}
   (dom/div {}
     (dom/div :.ui.segment
       (ui-actions-menu
@@ -211,12 +222,12 @@
             (str hasMacaroon?)
             (dom/a {:onClick #(comp/transact! this [(mu.ln/download-macaroon! {::m.ln.nodes/id id})])}
               (str hasMacaroon?))))))
-    (u.links/ui-nav-menu {:id id :menu-items me/settings-ln-nodes-menu-items})
+    (when nav-menu (u.menus/ui-nav-menu nav-menu))
     (if router
       (ui-router router)
       (dom/div :.ui.segment
         (dom/h3 {} "Network Router not loaded")
-        (u.links/ui-props-logger props)))))
+        (u.debug/ui-props-logger props)))))
 
 (report/defsc-report Report
   [_this _props]

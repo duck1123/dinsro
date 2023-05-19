@@ -21,7 +21,7 @@
 
 (defattr index ::index :ref
   {ao/target    ::m.n.badge-acceptances/id
-   ao/pc-output [{::index [:total {:result [::m.n.badge-acceptances/id]}]}]
+   ao/pc-output [{::index [:total {:results [::m.n.badge-acceptances/id]}]}]
    ao/pc-resolve
    (fn [env props]
      {::index (j/make-indexer join-info env props)})})

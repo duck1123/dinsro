@@ -154,7 +154,7 @@
   "Find the most recent rate for the currency before the transaction date"
   [debit-id]
   [::m.debits/id => (? ::m.rates/id)]
-  (log/info :find-for-debit/starting {:debit-id debit-id})
+  (log/trace :find-for-debit/starting {:debit-id debit-id})
   (let [query {:find     ['?rate-id '?rate-date]
                :in       [['?debit-id]]
                :where    [['?debit-id       ::m.debits/account     '?account-id]
@@ -168,5 +168,5 @@
         params [debit-id]]
     (log/info :find-for-debit/query {:query query :params params})
     (let [id (c.xtdb/query-value query params)]
-      (log/info :find-for-debit/finished {:id id})
+      (log/debug :find-for-debit/finished {:id id})
       id)))

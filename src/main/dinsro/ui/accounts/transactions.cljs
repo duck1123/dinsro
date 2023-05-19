@@ -10,6 +10,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [dinsro.ui.transactions :as u.transactions]))
 
 ;; [[../joins/transactions.cljc][Transaction Joins]]
@@ -45,7 +46,7 @@
 
 (defsc SubPage
   [_this {:ui/keys   [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report      {}}
    :query             [[::dr/id router-key]

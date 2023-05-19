@@ -76,7 +76,7 @@
    ao/pc-output [::current-rate-value]
    ao/pc-resolve
    (fn [_ {{::m.rates/keys [rate]} ::current-rate :as props}]
-     (log/info :current-rate-value/starting {:props props})
+     (log/trace :current-rate-value/starting {:props props})
      {::current-rate-value rate})})
 
 (>def ::event-value number?)
@@ -85,7 +85,7 @@
    ao/pc-output [::event-value]
    ao/pc-resolve
    (fn [_ {::m.debits/keys [value] ::keys [current-rate] :as props}]
-     (log/info :event-value/starting {:props props})
+     (log/trace :event-value/starting {:props props})
      (let [current-rate-value #?(:clj (some->
                                        current-rate ::m.rates/id
                                        q.rates/read-record

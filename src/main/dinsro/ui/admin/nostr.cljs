@@ -5,7 +5,7 @@
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.ui.admin.nostr.badge-acceptances :as u.a.n.badge-acceptances]
    [dinsro.ui.admin.nostr.badge-awards :as u.a.n.badge-awards]
    [dinsro.ui.admin.nostr.badge-definitions :as u.a.n.badge-definitions]
@@ -19,7 +19,8 @@
    [dinsro.ui.admin.nostr.requests :as u.a.n.requests]
    [dinsro.ui.admin.nostr.runs :as u.a.n.runs]
    [dinsro.ui.admin.nostr.witnesses :as u.a.n.witnesses]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.menus :as u.menus]
+   [lambdaisland.glogc :as log]))
 
 (defrouter Router
   [_this _props]
@@ -41,18 +42,25 @@
     u.a.n.witnesses/Report]})
 
 (defsc Page
-  [_this {:ui/keys [router]}]
+  [_this {:ui/keys [nav-menu router vertical-menu]}]
   {:ident         (fn [] [:component/id ::Page])
-   :initial-state {:ui/router {}}
-   :query         [{:ui/router (comp/get-query Router)}]
+   :initial-state
+   (fn [props]
+     (log/trace :Page/initial-state {:props props})
+     {:ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin-nostr})
+      :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :admin-nostr})
+      :ui/router        (comp/get-initial-state Router)})
+   :query         [{:ui/nav-menu (comp/get-query u.menus/VerticalMenu)}
+                   {:ui/router (comp/get-query Router)}
+                   {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}]
    :route-segment ["nostr"]}
   (ui-grid {:centered true}
     (ui-grid-row {:only "tablet mobile"}
       (ui-grid-column {:width 16}
-        (u.links/ui-nav-menu {:menu-items me/admin-nostr-menu-items :id nil})))
+        (u.menus/ui-nav-menu nav-menu)))
     (ui-grid-row {}
       (ui-grid-column {:only "computer" :width 3}
-        (u.links/ui-vertical-menu {:menu-items me/admin-nostr-menu-items :id nil}))
+        (u.menus/ui-vertical-menu vertical-menu))
       (ui-grid-column {:tablet 16 :computer 13 :stretched true}
         (ui-grid {:centered true}
           (ui-grid-row {}

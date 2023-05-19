@@ -6,26 +6,38 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.connections :as j.n.connections]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.mutations.nostr.connections :as mu.n.connections]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]))
 
 (defsc Show
-  [_this {::m.n.connections/keys [id status relay start-time end-time]}]
+  [_this {::m.n.connections/keys [id status relay start-time end-time]
+          :ui/keys               [nav-menu]}]
   {:ident         ::m.n.connections/id
-   :initial-state {::m.n.connections/id         nil
-                   ::m.n.connections/status     :unknown
-                   ::m.n.connections/relay      {}
-                   ::m.n.connections/start-time nil
-                   ::m.n.connections/end-time   nil}
+   :initial-state
+   (fn [props]
+     (let [id (::m.n.connections/id props)]
+       {::m.n.connections/id         nil
+        ::m.n.connections/status     :unknown
+        ::m.n.connections/relay      {}
+        ::m.n.connections/start-time nil
+        ::m.n.connections/end-time   nil
+        :ui/nav-menu                 (comp/get-initial-state
+                                      u.menus/NavMenu
+                                      {::m.navbars/id :admin-nostr-connections
+                                       :id            id})}))
    :query         [::m.n.connections/id
                    ::m.n.connections/status
                    {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}
                    ::m.n.connections/start-time
-                   ::m.n.connections/end-time]
+                   ::m.n.connections/end-time
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}]
    :route-segment ["connections" :id]
-   :will-enter    (partial u.links/page-loader ::m.n.connections/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.n.connections/id ::Show)}
   (dom/div {}
     (dom/div :.ui.segment
       (dom/div {} (str id))
@@ -33,7 +45,7 @@
       (dom/div {} (u.links/ui-relay-link relay))
       (dom/div {} (str start-time))
       (dom/div {} (str end-time)))
-    (u.links/ui-nav-menu {:menu-items me/admin-nostr-connections-menu-items :id id})))
+    (u.menus/ui-nav-menu nav-menu)))
 
 (report/defsc-report Report
   [_this _props]
@@ -50,7 +62,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "connections"
-   ro/row-actions       [(u.links/row-action-button "Disconnect" ::m.n.connections/id mu.n.connections/disconnect!)]
+   ro/row-actions       [(u.buttons/row-action-button "Disconnect" ::m.n.connections/id mu.n.connections/disconnect!)]
    ro/row-pk            m.n.connections/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.connections/index

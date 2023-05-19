@@ -10,10 +10,12 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [dinsro.joins.rate-sources :as j.rate-sources]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]
    [dinsro.ui.settings.rate-sources.accounts :as u.s.rs.accounts]
    [dinsro.ui.settings.rate-sources.rates :as u.s.rs.rates]))
 
@@ -82,30 +84,39 @@
    ro/title             "Rate Sources"})
 
 (defsc Show
-  [_this {::m.rate-sources/keys [name url active currency id]
-          :ui/keys              [rates router]}]
+  [_this {::m.rate-sources/keys [name url active currency]
+          :ui/keys              [nav-menu rates router]}]
   {:ident         ::m.rate-sources/id
-   :initial-state {::m.rate-sources/name     ""
-                   ::m.rate-sources/id       nil
-                   ::m.rate-sources/active   false
-                   ::m.rate-sources/currency {}
-                   ::m.rate-sources/url      ""
-                   :ui/rates                 {}
-                   :ui/router                {}}
-   :pre-merge     (u.links/page-merger ::m.rate-sources/id
-                                       {:ui/router Router
-                                        :ui/rates  u.s.rs.rates/Report})
+   :initial-state
+   (fn [props]
+     (let [id (::m.rate-sources/id props)]
+       {::m.rate-sources/name     ""
+        ::m.rate-sources/id       nil
+        ::m.rate-sources/active   false
+        ::m.rate-sources/currency {}
+        ::m.rate-sources/url      ""
+        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
+                                                          {::m.navbars/id :settings-rate-sources
+                                                           :id            id})
+        :ui/rates                 (comp/get-initial-state u.s.rs.rates/Report)
+        :ui/router                (comp/get-initial-state Router)}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.rate-sources/id
+                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :settings-rate-sources}]
+                    :ui/router   [Router {}]
+                    :ui/rates    [u.s.rs.rates/Report {}]})
    :query         [::m.rate-sources/name
                    ::m.rate-sources/url
                    {::m.rate-sources/currency (comp/get-query u.links/CurrencyLinkForm)}
                    ::m.rate-sources/active
                    ::m.rate-sources/id
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/rates (comp/get-query u.s.rs.rates/Report)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["rate-sources" :id]
    :will-enter    (fn [this props]
                     (report/start-report! this u.s.rs.rates/Report {})
-                    (u.links/page-loader ::m.rate-sources/id ::Show this props))}
+                    (u.loader/page-loader ::m.rate-sources/id ::Show this props))}
   (comp/fragment
    (ui-container {:fluid true}
      (dom/div :.ui.segment
@@ -116,5 +127,5 @@
      (dom/div :.ui.segment
        (u.s.rs.rates/ui-report rates)))
    (ui-container {}
-     (u.links/ui-nav-menu {:menu-items me/settings-rate-sources-menu-items :id id})
+     (u.menus/ui-nav-menu nav-menu)
      ((comp/factory Router) router))))

@@ -3,7 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.ui.admin.accounts :as u.a.accounts]
    [dinsro.ui.admin.categories :as u.a.categories]
    [dinsro.ui.admin.core :as u.a.core]
@@ -15,7 +15,8 @@
    [dinsro.ui.admin.rates :as u.a.rates]
    [dinsro.ui.admin.transactions :as u.a.transactions]
    [dinsro.ui.admin.users :as u.a.users]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.menus :as u.menus]
+   [taoensso.timbre :as log]))
 
 (defrouter Router
   [_this {:keys [current-state]}]
@@ -43,11 +44,16 @@
         (dom/div "No route selected.")))))
 
 (defsc AdminPage
-  [_this {:ui/keys [router]}]
+  [_this {:ui/keys [nav-menu router]}]
   {:ident         (fn [] [:component/id ::AdminPage])
-   :initial-state {:ui/router {}}
-   :query         [{:ui/router (comp/get-query Router)}]
+   :initial-state
+   (fn [props]
+     (log/trace :AdminPage/initial-state {:props props})
+     {:ui/nav-menu (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin})
+      :ui/router   (comp/get-initial-state Router)})
+   :query         [{:ui/nav-menu (comp/get-query u.menus/NavMenu)}
+                   {:ui/router (comp/get-query Router)}]
    :route-segment ["admin"]}
   (dom/div :.admin-page
-    (u.links/ui-nav-menu {:menu-items me/admin-menu-items :id nil})
+    (u.menus/ui-nav-menu nav-menu)
     ((comp/factory Router) router)))

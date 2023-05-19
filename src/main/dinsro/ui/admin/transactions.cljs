@@ -10,6 +10,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.mutations.transactions :as mu.transactions]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
 (form/defsc-form NewForm [_this _props]
@@ -48,7 +49,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "transactions"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.transactions/id mu.transactions/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.transactions/id mu.transactions/delete!)]
    ro/row-pk            m.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.transactions/admin-index

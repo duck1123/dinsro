@@ -9,7 +9,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.users :as j.users]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.users :as mu.users]
    [dinsro.ui.admin.users.accounts :as u.a.u.accounts]
@@ -18,8 +18,12 @@
    [dinsro.ui.admin.users.ln-nodes :as u.a.u.ln-nodes]
    [dinsro.ui.admin.users.pubkeys :as u.a.u.pubkeys]
    [dinsro.ui.admin.users.transactions :as u.a.u.transactions]
+   [dinsro.ui.admin.users.user-pubkeys :as u.a.u.user-pubkeys]
    [dinsro.ui.admin.users.wallets :as u.a.u.wallets]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]))
 
 (defrouter Router
   [_this _props]
@@ -30,30 +34,39 @@
     u.a.u.ln-nodes/SubPage
     u.a.u.pubkeys/SubPage
     u.a.u.transactions/SubPage
-    u.a.u.wallets/SubPage]})
+    u.a.u.wallets/SubPage
+    u.a.u.user-pubkeys/SubPage]})
 
 (def ui-router (comp/factory Router))
 
 (defsc Show
-  [_this {::m.users/keys [id name role]
-          :ui/keys       [router]}]
+  [_this {::m.users/keys [name role]
+          :ui/keys       [nav-menu router]}]
   {:ident         ::m.users/id
-   :initial-state {::m.users/name ""
-                   ::m.users/role nil
-                   ::m.users/id   nil
-                   :ui/router     {}}
-   :pre-merge     (u.links/page-merger ::m.users/id {:ui/router Router})
+   :initial-state
+   (fn [props]
+     (let [id (::m.users/id props)]
+       {::m.users/name ""
+        ::m.users/role nil
+        ::m.users/id   nil
+        :ui/nav-menu   (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin-users :id id})
+        :ui/router     (comp/get-initial-state Router)}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.users/id
+                   {:ui/router   [Router {}]
+                    :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :admin-users}]})
    :query         [::m.users/name
                    ::m.users/role
                    ::m.users/id
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["users" :id]
-   :will-enter    (partial u.links/page-loader ::m.users/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.users/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/p {} "Show User " (str name))
      (dom/div {} (str role)))
-   (u.links/ui-nav-menu {:id id :menu-items me/admin-users-menu-items})
+   (u.menus/ui-nav-menu nav-menu)
    (ui-router router)))
 
 (form/defsc-form UserForm
@@ -92,7 +105,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "users"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.users/id mu.users/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.users/id mu.users/delete!)]
    ro/row-pk            m.users/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.users/admin-index

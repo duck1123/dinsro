@@ -12,6 +12,7 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.mutations.core.peers :as mu.c.peers]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
@@ -86,7 +87,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "peers"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
    ro/row-pk            m.c.peers/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.peers/index

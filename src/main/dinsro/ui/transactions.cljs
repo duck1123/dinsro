@@ -26,7 +26,9 @@
    [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.ui.controls :refer [ui-moment]]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [dinsro.ui.transactions.debits :as u.t.debits]
    [lambdaisland.glogc :as log]))
 
@@ -173,7 +175,7 @@
       (when show-debits-debug
         (ui-grid-row {}
           (dom/div {} "Debug section")
-          (u.links/log-props props)))
+          (u.debug/log-props props)))
       (ui-grid-row {}
         (ui-grid-column {:width 8 :textAlign "right"}
           (str event-value))
@@ -297,14 +299,14 @@
                    ::m.transactions/date        ""
                    ::j.transactions/debit-count 0
                    :ui/debits                   {}}
-   :pre-merge     (u.links/page-merger ::m.transactions/id {:ui/debits u.t.debits/SubPage})
+   :pre-merge     (u.loader/page-merger ::m.transactions/id {:ui/debits [u.t.debits/SubPage {}]})
    :query         [::m.transactions/description
                    ::m.transactions/id
                    ::m.transactions/date
                    ::j.transactions/debit-count
                    {:ui/debits (comp/get-query u.t.debits/SubPage)}]
    :route-segment ["transaction" :id]
-   :will-enter    (partial u.links/page-loader ::m.transactions/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.transactions/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/h1 {} (str description))

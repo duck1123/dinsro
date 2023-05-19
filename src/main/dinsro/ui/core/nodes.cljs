@@ -13,12 +13,15 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
    [dinsro.joins.core.nodes :as j.c.nodes]
-   [dinsro.menus :as me]
    [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.nodes.blocks :as u.c.n.blocks]
    [dinsro.ui.core.nodes.peers :as u.c.n.peers]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]))
 
 (def button-info
   [{:label "fetch" :action mu.c.nodes/fetch!}
@@ -60,19 +63,28 @@
 (defsc Show
   "Show a core node"
   [_this {::m.c.nodes/keys [id name network]
-          :ui/keys         [router]}]
+          :ui/keys         [nav-menu router]}]
   {:ident         ::m.c.nodes/id
-   :initial-state {::m.c.nodes/id      nil
-                   ::m.c.nodes/name    ""
-                   ::m.c.nodes/network {}
-                   :ui/router          {}}
-   :pre-merge (u.links/page-merger ::m.c.nodes/id {:ui/router Router})
+   :initial-state
+   (fn [props]
+     (let [id (::m.c.nodes/id props)]
+       {::m.c.nodes/id      nil
+        ::m.c.nodes/name    ""
+        ::m.c.nodes/network (comp/get-initial-state u.links/NetworkLinkForm)
+        :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-nodes
+                                                                     :id            id})
+        :ui/router          (comp/get-initial-state Router)}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.c.nodes/id
+                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-nodes}]
+                    :ui/router   [Router {}]})
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
                    {::m.c.nodes/network (comp/get-query u.links/NetworkLinkForm)}
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["node" :id]
-   :will-enter    (partial u.links/page-loader ::m.c.nodes/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.c.nodes/id ::Show)}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
@@ -82,7 +94,7 @@
           (dom/dd {} (str name))
           (dom/dt {} "Network")
           (dom/dd {} (u.links/ui-network-link network))))
-      (u.links/ui-nav-menu {:menu-items me/core-nodes-menu-items :id id})
+      (u.menus/ui-nav-menu nav-menu)
       ((comp/factory Router) router))))
 
 (form/defsc-form NewForm [_this _props]
@@ -116,8 +128,8 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "nodes"
-   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
-                         (u.links/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
+                         (u.buttons/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.nodes/index

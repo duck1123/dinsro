@@ -12,6 +12,7 @@
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.mutations.core.peers :as mu.c.peers]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
@@ -22,7 +23,7 @@
 (def fetch-button
   {:type   :button
    :label  "Fetch"
-   :action (u.links/report-action ::m.c.nodes/id mu.c.nodes/fetch!)})
+   :action (u.buttons/report-action ::m.c.nodes/id mu.c.nodes/fetch!)})
 
 (def new-button
   {:type   :button
@@ -65,7 +66,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "node-peers"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
    ro/row-pk            m.c.peers/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.peers/index

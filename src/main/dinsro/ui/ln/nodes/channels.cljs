@@ -11,8 +11,10 @@
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.mutations.ln.channels :as mu.ln.channels]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.channels :as u.ln.channels]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogi :as log]))
 
 (def ident-key ::m.ln.nodes/id)
@@ -54,7 +56,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route            "node-channels"
-   ro/row-actions      [(u.links/row-action-button "Delete" ::m.ln.channels/id mu.ln.channels/delete!)]
+   ro/row-actions      [(u.buttons/row-action-button "Delete" ::m.ln.channels/id mu.ln.channels/delete!)]
    ro/row-pk           m.ln.channels/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.channels/index
@@ -62,7 +64,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

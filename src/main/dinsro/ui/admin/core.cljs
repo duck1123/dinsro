@@ -2,11 +2,12 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.ui.admin.core.blocks :as u.a.c.blocks]
    [dinsro.ui.admin.core.dashboard :as u.a.c.dashboard]
    [dinsro.ui.admin.core.peers :as u.a.c.peers]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.menus :as u.menus]
+   [lambdaisland.glogc :as log]))
 
 (def router-key :dinsro.ui.admin/Router)
 
@@ -18,11 +19,16 @@
     u.a.c.peers/Report]})
 
 (defsc Page
-  [_this {:ui/keys [router]}]
+  [_this {:ui/keys [nav-menu router]}]
   {:ident         (fn [] [:component/id ::Page])
-   :initial-state {:ui/router {}}
-   :query         [{:ui/router (comp/get-query Router)}]
+   :initial-state
+   (fn [props]
+     (log/trace :Page/initial-state {:props props})
+     {:ui/nav-menu (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin-core})
+      :ui/router   (comp/get-initial-state Router)})
+   :query         [{:ui/nav-menu (comp/get-query u.menus/NavMenu)}
+                   {:ui/router (comp/get-query Router)}]
    :route-segment ["core"]}
   (comp/fragment
-   (u.links/ui-nav-menu {:menu-items me/admin-core-menu-items :id nil})
+   (u.menus/ui-nav-menu nav-menu)
    ((comp/factory Router) router)))

@@ -10,7 +10,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.relays :as j.n.relays]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.admin.nostr.relays.connections :as u.a.n.r.connections]
@@ -19,7 +19,10 @@
    [dinsro.ui.admin.nostr.relays.requests :as u.a.n.r.requests]
    [dinsro.ui.admin.nostr.relays.runs :as u.a.n.r.runs]
    [dinsro.ui.admin.nostr.relays.witnesses :as u.a.n.r.witnesses]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
 (def submit-button
@@ -65,7 +68,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "relays"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.n.relays/id mu.n.relays/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.n.relays/id mu.n.relays/delete!)]
    ro/row-pk            m.n.relays/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.relays/index
@@ -82,21 +85,31 @@
     u.a.n.r.witnesses/SubPage]})
 
 (defsc Show
-  [_this {::m.n.relays/keys [id address]
+  [_this {::m.n.relays/keys [address]
           ::j.n.relays/keys [connection-count]
-          :ui/keys          [router]}]
+          :ui/keys          [nav-menu router]}]
   {:ident         ::m.n.relays/id
-   :initial-state {::m.n.relays/id               nil
-                   ::m.n.relays/address          ""
-                   ::j.n.relays/connection-count 0
-                   :ui/router                    {}}
-   :pre-merge     (u.links/page-merger ::m.n.relays/id {:ui/router Router})
+   :initial-state
+   (fn [props]
+     (let [id (::m.n.relays/id props)]
+       {::m.n.relays/id               nil
+        ::m.n.relays/address          ""
+        ::j.n.relays/connection-count 0
+        :ui/nav-menu
+        (comp/get-initial-state u.menus/NavMenu
+                                {::m.navbars/id :admin-nostr-relays :id id})
+        :ui/router                    (comp/get-initial-state Router)}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.n.relays/id
+                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :admin-nostr-relays}]
+                    :ui/router [Router {}]})
    :query         [::m.n.relays/id
                    ::m.n.relays/address
                    ::j.n.relays/connection-count
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["relay" :id]
-   :will-enter    (partial u.links/page-loader ::m.n.relays/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.n.relays/id ::Show)}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
@@ -105,5 +118,5 @@
           (dom/dd {} (str address))
           (dom/dt {} "Connections")
           (dom/dd {} (str connection-count))))
-      (u.links/ui-nav-menu {:menu-items me/admin-nostr-relays-menu-items :id id})
+      (u.menus/ui-nav-menu nav-menu)
       ((comp/factory Router) router))))

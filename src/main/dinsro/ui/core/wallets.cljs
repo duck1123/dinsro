@@ -14,10 +14,12 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.wallets.accounts :as u.c.w.accounts]
    [dinsro.ui.core.wallets.addresses :as u.c.w.addresses]
    [dinsro.ui.core.wallets.words :as u.c.w.words]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../../test/dinsro/ui/core/wallets_test.cljs][Wallets Test]]
@@ -93,11 +95,11 @@
                    :ui/accounts                  {}
                    :ui/addresses                 {}
                    :ui/words                     {}}
-   :pre-merge     (u.links/page-merger
+   :pre-merge     (u.loader/page-merger
                    ::m.c.wallets/id
-                   {:ui/accounts  u.c.w.accounts/SubPage
-                    :ui/addresses u.c.w.addresses/SubPage
-                    :ui/words     u.c.w.words/SubPage})
+                   {:ui/accounts  [u.c.w.accounts/SubPage {}]
+                    :ui/addresses [u.c.w.addresses/SubPage {}]
+                    :ui/words     [u.c.w.words/SubPage {}]})
    :query         [::m.c.wallets/id
                    ::m.c.wallets/name
                    ::m.c.wallets/derivation
@@ -111,7 +113,7 @@
                    {:ui/words (comp/get-query u.c.w.words/SubPage)}
                    [df/marker-table '_]]
    :route-segment ["wallets" :id]
-   :will-enter    (partial u.links/page-loader ::m.c.wallets/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.c.wallets/id ::Show)}
   (log/info :ShowWallet/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment
@@ -162,7 +164,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "wallets"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
    ro/row-pk            m.c.wallets/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.wallets/index

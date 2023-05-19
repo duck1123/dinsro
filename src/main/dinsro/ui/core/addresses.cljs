@@ -8,7 +8,7 @@
    [dinsro.joins.core.addresses :as j.c.addresses]
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.mutations.core.addresses :as mu.c.addresses]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]))
 
 (form/defsc-form NewForm
   [_this _props]
@@ -32,7 +32,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route            "addresses"
-   ro/row-actions      [(u.links/row-action-button "Fetch" ::m.c.addresses/id mu.c.addresses/delete!)]
+   ro/row-actions      [(u.buttons/row-action-button "Fetch" ::m.c.addresses/id mu.c.addresses/delete!)]
    ro/row-pk           m.c.addresses/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.c.addresses/index

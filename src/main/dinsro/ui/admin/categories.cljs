@@ -11,6 +11,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.categories :as mu.categories]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
 (def override-admin-form true)
@@ -56,7 +57,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.categories/id mu.categories/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.categories/id mu.categories/delete!)]
    ro/row-pk            m.categories/id
    ro/route             "categories"
    ro/run-on-mount?     true

@@ -46,6 +46,7 @@
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.joins.rates :as j.rates]
    [dinsro.joins.transactions :as j.transactions]
+   [dinsro.joins.user-pubkeys :as j.user-pubkeys]
    [dinsro.joins.users :as j.users]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
@@ -75,8 +76,8 @@
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
-   [dinsro.model.navbar :as m.navbar]
-   [dinsro.model.navlink :as m.navlink]
+   #?(:clj [dinsro.model.navbars :as m.navbars])
+   #?(:clj [dinsro.model.navlinks :as m.navlinks])
    [dinsro.model.nostr.badge-acceptances :as m.n.badge-acceptances]
    [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
@@ -142,6 +143,7 @@
    #?(:clj [dinsro.mutations.session :as mu.session])
    #?(:clj [dinsro.mutations.settings :as mu.settings])
    #?(:clj [dinsro.mutations.transactions :as mu.transactions])
+   #?(:clj [dinsro.mutations.user-pubkeys :as mu.user-pubkeys])
    #?(:clj [dinsro.mutations.users :as mu.users])))
 
 (def all-attributes
@@ -192,6 +194,7 @@
         j.rates/attributes
         j.rate-sources/attributes
         j.transactions/attributes
+        j.user-pubkeys/attributes
         j.users/attributes
         m.accounts/attributes
         m.categories/attributes
@@ -238,8 +241,6 @@
         m.n.subscription-pubkeys/attributes
         m.n.subscriptions/attributes
         m.n.witnesses/attributes
-        m.navbar/attributes
-        m.navlink/attributes
         m.rates/attributes
         m.rate-sources/attributes
         m.settings/attributes
@@ -251,7 +252,8 @@
 #?(:clj
    (def all-resolvers
      (vec (concat
-           m.navlink/resolvers
+           m.navbars/resolvers
+           m.navlinks/resolvers
            mu.accounts/resolvers
            mu.categories/resolvers
            mu.contacts/resolvers
@@ -293,4 +295,5 @@
            mu.session/resolvers
            mu.settings/resolvers
            mu.transactions/resolvers
+           mu.user-pubkeys/resolvers
            mu.users/resolvers))))

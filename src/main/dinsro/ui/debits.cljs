@@ -4,7 +4,9 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [../model/debits.cljc]
 ;; [../joins/debits.cljc]
@@ -26,7 +28,7 @@
                    ::j.debits/positive?          true
                    ::j.debits/current-rate-value 0
                    ::j.debits/event-value        0}
-   :pre-merge     (u.links/page-merger ::m.debits/id {})
+   :pre-merge     (u.loader/page-merger ::m.debits/id {})
    :query         [::m.debits/value
                    ::m.debits/id
                    ::j.debits/positive?
@@ -37,7 +39,7 @@
                    ::j.debits/current-rate-value
                    ::j.debits/event-value]
    :route-segment ["debits" :id]
-   :will-enter    (partial u.links/page-loader ::m.debits/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.debits/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/p {} "Show Debit " (str value))
@@ -53,5 +55,5 @@
        (if current-rate
          (u.links/ui-rate-value-link current-rate)
          "Missing"))
-     (when show-props (dom/div {} (u.links/log-props props)))
+     (when show-props (dom/div {} (u.debug/log-props props)))
      (dom/div {} (str positive?)))))

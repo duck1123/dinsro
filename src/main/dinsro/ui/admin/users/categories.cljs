@@ -10,6 +10,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [../../../model/categories.cljc]
@@ -70,7 +71,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

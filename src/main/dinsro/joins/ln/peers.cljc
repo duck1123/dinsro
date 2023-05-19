@@ -22,7 +22,7 @@
 
 (defattr index ::index :ref
   {ao/target    ::m.ln.peers/id
-   ao/pc-output [{::index [:total {:result [::m.ln.peers/id]}]}]
+   ao/pc-output [{::index [:total {:results [::m.ln.peers/id]}]}]
    ao/pc-resolve
    (fn [env props]
      {::index (j/make-indexer join-info env props)})})

@@ -9,6 +9,7 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.mutations.core.transactions :as mu.c.transactions]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
 (def ident-key ::m.c.nodes/id)
@@ -29,8 +30,8 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
-                         (u.links/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
+                         (u.buttons/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
    ro/row-pk            m.c.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.transactions/index

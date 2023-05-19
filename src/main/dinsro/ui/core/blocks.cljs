@@ -10,8 +10,10 @@
    [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.blocks.transactions :as u.c.b.transactions]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 (def force-fetch-button false)
@@ -58,7 +60,7 @@
                    ::m.c.blocks/fetched?       false
                    ::m.c.blocks/network        {}
                    :ui/transactions            {}}
-   :pre-merge     (u.links/page-merger ::m.c.blocks/id {:ui/transactions u.c.b.transactions/SubPage})
+   :pre-merge     (u.loader/page-merger ::m.c.blocks/id {:ui/transactions [u.c.b.transactions/SubPage {}]})
    :query         [::m.c.blocks/id
                    ::m.c.blocks/height
                    ::m.c.blocks/hash
@@ -71,7 +73,7 @@
                    {:ui/transactions (comp/get-query u.c.b.transactions/SubPage)}
                    [df/marker-table '_]]
    :route-segment ["blocks" :id]
-   :will-enter    (partial u.links/page-loader ::m.c.blocks/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.c.blocks/id ::Show)}
   (log/trace :Show/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment
@@ -126,7 +128,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "blocks"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
    ro/row-pk            m.c.blocks/id
    ro/run-on-mount?     true
    ro/title             "Core Blocks"})

@@ -5,9 +5,12 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]
    [dinsro.ui.nostr.event-tags.relays :as u.n.et.relays]
    [lambdaisland.glogc :as log]))
 
@@ -34,13 +37,13 @@
                    ::m.n.event-tags/extra     nil
                    ::m.n.event-tags/type      nil}}
   (if log-tag-props
-    (u.links/log-props props)
+    (u.debug/log-props props)
     (let [show-labels false
           tag?        (= type "t")
           event?      (= type "e")]
       (ui-list-item {}
         (when log-tag-props
-          (u.links/log-props props))
+          (u.debug/log-props props))
         (dom/div {:style {:marginRight "5px"}}
           "[" (u.links/ui-event-tag-link props) "] ")
         (when tag?
@@ -75,23 +78,31 @@
 
 (defsc Show
   [_this {::m.n.event-tags/keys [id index type raw-value pubkey]
-          :ui/keys              [router]}]
+          :ui/keys              [nav-menu router]}]
   {:ident         ::m.n.event-tags/id
-   :initial-state {::m.n.event-tags/id        nil
-                   ::m.n.event-tags/index     0
-                   ::m.n.event-tags/type      ""
-                   ::m.n.event-tags/raw-value ""
-                   ::m.n.event-tags/pubkey    {}
-                   :ui/router                 {}}
-   :pre-merge     (u.links/page-merger ::m.n.event-tags/id {:ui/router Router})
+   :initial-state
+   (fn [props]
+     (let [id (::m.n.event-tags/id props)]
+       {::m.n.event-tags/id        nil
+        ::m.n.event-tags/index     0
+        ::m.n.event-tags/type      ""
+        ::m.n.event-tags/raw-value ""
+        ::m.n.event-tags/pubkey    {}
+        :ui/nav-menu               (comp/get-query u.menus/NavMenu {::m.navbars/id :nostr-event-tags :id id})
+        :ui/router                 (comp/get-query Router)}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.n.event-tags/id
+                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-event-tags}]
+                    :ui/router   [Router {}]})
    :query         [::m.n.event-tags/id
                    ::m.n.event-tags/index
                    ::m.n.event-tags/type
                    ::m.n.event-tags/raw-value
                    {::m.n.event-tags/pubkey (comp/get-query u.links/EventTagLinkForm)}
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["event-tag" :id]
-   :will-enter    (partial u.links/page-loader ::m.n.event-tags/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.n.event-tags/id ::Show)}
   (dom/div :.ui.segment
     (dom/div :.ui.segment
       (dom/div :.ui.items.unstackable
@@ -102,7 +113,7 @@
             (dom/p {} (str type))
             (dom/p {} (str raw-value))
             (dom/p {} (u.links/ui-event-tag-link pubkey))))))
-    (u.links/ui-nav-menu {:menu-items me/nostr-event-tags-menu-items :id id})
+    (u.menus/ui-nav-menu nav-menu)
     ((comp/factory Router) router)))
 
 (def ui-show (comp/factory Show))

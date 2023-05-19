@@ -207,7 +207,7 @@
 (>defn order-query
   [query query-info query-params]
   [map? ::query-info map? => map?]
-  (log/info :order-query/starting {:query query :query-info query-info :query-params query-params})
+  (log/trace :order-query/starting {:query query :query-info query-info :query-params query-params})
   (if-let [sort-column (get-in query-params [:indexed-access/options :sort-column])]
     (let [reverse?                  (get-in query-params [:indexed-access/options :reverse?])
           {:keys [find where]}      query
@@ -219,7 +219,7 @@
                              :where    (vec (concat where sort-rule))
                              :order-by [[sort-sym (if reverse? :desc :asc)]]}
               ordered-query (merge query new-params)]
-          (log/info :order-query/finished {:ordered-query ordered-query})
+          (log/trace :order-query/finished {:ordered-query ordered-query})
           ordered-query)
         (throw (ex-info "no sym" {:sort-column sort-column}))))
     query))

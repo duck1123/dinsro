@@ -9,10 +9,13 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.chains :as j.c.chains]
-   [dinsro.menus :as me]
    [dinsro.model.core.chains :as m.c.chains]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.ui.core.chains.networks :as u.c.c.networks]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]))
 
 (def override-form false)
 
@@ -36,31 +39,41 @@
 (def ui-router (comp/factory Router))
 
 (defsc Show
-  [_this {::m.c.chains/keys [id name]
-          :ui/keys          [router]
+  [_this {::m.c.chains/keys [name]
+          :ui/keys          [nav-menu router]
           :as               props}]
   {:ident         ::m.c.chains/id
-   :initial-state {::m.c.chains/id   nil
-                   ::m.c.chains/name ""
-                   :ui/router        {}}
-   :pre-merge     (u.links/page-merger ::m.c.chains/id {:ui/router Router})
+   :initial-state
+   (fn [props]
+     (let [id (::m.c.chains/id props)]
+       {::m.c.chains/id   nil
+        ::m.c.chains/name ""
+        :ui/nav-menu
+        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-chains
+                                                 :id            id})
+        :ui/router        (comp/get-initial-state Router)}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.c.chains/id
+                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-chains}]
+                    :ui/router   [Router {}]})
    :query         [::m.c.chains/id
                    ::m.c.chains/name
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["chain" :id]
-   :will-enter    (partial u.links/page-loader ::m.c.chains/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.c.chains/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/h1 {} "Show Chain")
      (dom/dl {}
        (dom/dt {} "Name")
        (dom/dd {} (str name))))
-   (u.links/ui-nav-menu {:id id :menu-items me/core-chains-menu-items})
+   (u.menus/ui-nav-menu nav-menu)
    (if router
      (ui-router router)
      (dom/div :.ui.segment
        (dom/h3 {} "Chain Router not loaded")
-       (u.links/ui-props-logger props)))))
+       (u.debug/ui-props-logger props)))))
 
 (report/defsc-report Report
   [_this _props]

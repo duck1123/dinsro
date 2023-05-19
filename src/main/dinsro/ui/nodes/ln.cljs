@@ -8,6 +8,7 @@
    [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]))
 
 (def log-item-props false)
@@ -24,7 +25,7 @@
   (dom/div :.ui.item
     (dom/div {} (str name))
     (dom/div {} (u.links/ui-network-link network))
-    (when log-item-props (u.links/log-props props))))
+    (when log-item-props (u.debug/log-props props))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.ln.nodes/id}))
 

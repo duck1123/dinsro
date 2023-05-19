@@ -12,6 +12,7 @@
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
 (def override-form true)
@@ -82,7 +83,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "accounts"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
    ro/row-pk            m.accounts/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.accounts/admin-index

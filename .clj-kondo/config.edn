@@ -3,7 +3,8 @@
   mount.core/defstate                           cljs.core/def
   nextjournal.devcards/defcard                  cljs.core/def
   nubank.workspaces.core/defcard                cljs.core/def
-  taoensso.encore/if-let                        cljs.core/let}
+  taoensso.encore/if-let                        cljs.core/let
+  com.fulcrologic.guardrails.core/>defn         cljs.core/defn}
 
  :linters
  {:unresolved-var

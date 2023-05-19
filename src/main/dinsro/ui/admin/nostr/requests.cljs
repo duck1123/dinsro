@@ -8,13 +8,15 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.requests :as j.n.requests]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.ui.admin.nostr.requests.connections :as u.a.n.rq.connections]
    [dinsro.ui.admin.nostr.requests.filter-items :as u.a.n.rq.filter-items]
    [dinsro.ui.admin.nostr.requests.filters :as u.a.n.rq.filters]
    [dinsro.ui.admin.nostr.requests.runs :as u.a.n.rq.runs]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]))
 
 (defrouter Router
   [_this _props]
@@ -25,23 +27,35 @@
     u.a.n.rq.runs/SubPage]})
 
 (defsc Show
-  [_this {::m.n.requests/keys [code id relay]
+  [_this {::m.n.requests/keys [code relay]
           ::j.n.requests/keys [query-string]
-          :ui/keys            [router]}]
+          :ui/keys            [nav-menu router]}]
   {:ident         ::m.n.requests/id
-   :initial-state {::m.n.requests/id         nil
-                   :ui/router                {}
-                   ::m.n.requests/code       ""
-                   ::m.n.requests/relay      {}
-                   ::j.n.requests/query-string ""}
-   :pre-merge     (u.links/page-merger ::m.n.requests/id {:ui/router Router})
+   :initial-state
+   (fn [props]
+     (let [id (::m.n.requests/id props)]
+       {::m.n.requests/id           nil
+        :ui/nav-menu
+        (comp/get-initial-state
+         u.menus/NavMenu
+         {::m.navbars/id :admin-nostr-requests
+          :id            id})
+        :ui/router                  (comp/get-initial-state Router)
+        ::m.n.requests/code         ""
+        ::m.n.requests/relay        (comp/get-initial-state u.links/RelayLinkForm)
+        ::j.n.requests/query-string ""}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.n.requests/id
+                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :admin-nostr-requests}]
+                    :ui/router   [Router {}]})
    :query         [::m.n.requests/id
                    ::m.n.requests/code
                    ::j.n.requests/query-string
                    {::m.n.requests/relay (comp/get-query u.links/RelayLinkForm)}
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["request" :id]
-   :will-enter    (partial u.links/page-loader ::m.n.requests/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.n.requests/id ::Show)}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
@@ -49,7 +63,7 @@
         (dom/div {} (str code))
         (dom/div {} (str "Query String: " query-string))
         (dom/div {} (u.links/ui-relay-link relay)))
-      (u.links/ui-nav-menu {:menu-items me/admin-nostr-requests-menu-items :id id})
+      (u.menus/ui-nav-menu nav-menu)
       ((comp/factory Router) router))))
 
 (report/defsc-report Report

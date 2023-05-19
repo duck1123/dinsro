@@ -15,12 +15,15 @@
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.events :as j.n.events]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.ui.controls :refer [ui-moment]]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]
    [dinsro.ui.nostr.event-tags :as u.n.event-tags]
    [dinsro.ui.nostr.events.event-tags :as u.n.e.event-tags]
    [dinsro.ui.nostr.events.relays :as u.n.e.relays]
@@ -164,7 +167,7 @@
             (let [ast (replace-images (md/parse content))]
               (comp/fragment
                (if show-ast
-                 (u.links/log-props ast)
+                 (u.debug/log-props ast)
                  (if transform-markup
                    (let [hiccup (md.transform/->hiccup transformer ast)]
                      (if convert-html
@@ -233,18 +236,25 @@
 (def ui-router (comp/factory Router))
 
 (defsc Show
-  [_this {::m.n.events/keys [id content pubkey kind sig created-at note-id]
-          :ui/keys          [router]}]
+  [_this {::m.n.events/keys [content pubkey kind sig created-at note-id]
+          :ui/keys          [nav-menu router]}]
   {:ident         ::m.n.events/id
-   :initial-state {::m.n.events/id         nil
-                   ::m.n.events/note-id    ""
-                   ::m.n.events/content    ""
-                   ::m.n.events/pubkey     {}
-                   ::m.n.events/kind       nil
-                   ::m.n.events/created-at 0
-                   ::m.n.events/sig        ""
-                   :ui/router              {}}
-   :pre-merge     (u.links/page-merger ::m.n.events/id {:ui/router Router})
+   :initial-state
+   (fn [props]
+     (let [id (::m.n.events/id props)]
+       {::m.n.events/id         nil
+        ::m.n.events/note-id    ""
+        ::m.n.events/content    ""
+        ::m.n.events/pubkey     {}
+        ::m.n.events/kind       nil
+        ::m.n.events/created-at 0
+        ::m.n.events/sig        ""
+        :ui/nav-menu
+        (comp/get-initial-state
+         u.menus/NavMenu
+         {::m.navbars/id :nostr-events :id id})
+        :ui/router              (comp/get-initial-state Router)}))
+   :pre-merge     (u.loader/page-merger ::m.n.events/id {:ui/router [Router {}]})
    :query         [::m.n.events/id
                    ::m.n.events/content
                    {::m.n.events/pubkey (comp/get-query EventAuthorImage)}
@@ -252,9 +262,10 @@
                    ::m.n.events/note-id
                    ::m.n.events/created-at
                    ::m.n.events/sig
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["event" :id]
-   :will-enter    (partial u.links/page-loader ::m.n.events/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.n.events/id ::Show)}
   (dom/div :.ui.segment
     (dom/div :.ui.segment
       (dom/div :.ui.items.unstackable
@@ -271,5 +282,5 @@
               (str content))
             (dom/div {} "Sig: " (str sig))
             (dom/div {} "Note Id: " (str note-id))))))
-    (u.links/ui-nav-menu {:menu-items me/nostr-events-menu-items :id id})
+    (u.menus/ui-nav-menu nav-menu)
     ((comp/factory Router) router)))

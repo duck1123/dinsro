@@ -11,7 +11,9 @@
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.mutations.nostr.subscription-pubkeys :as mu.n.subscription-pubkeys]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../actions/nostr/subscriptions.clj][Subscription Actions]]
 ;; [[../../ui/nostr/subscriptions.cljs][Subscriptions UI]]
@@ -33,7 +35,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "subscription-pubkeys"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.n.subscription-pubkeys/id mu.n.subscription-pubkeys/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.n.subscription-pubkeys/id mu.n.subscription-pubkeys/delete!)]
    ro/row-pk            m.n.subscription-pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.subscription-pubkeys/index
@@ -41,7 +43,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]
@@ -59,7 +61,7 @@
                    ::m.n.subscription-pubkeys/subscription
                    ::m.n.subscription-pubkeys/pubkey]
    :route-segment ["subscription-pubkey" :id]
-   :will-enter    (partial u.links/page-loader ::m.n.subscription-pubkeys/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.n.subscription-pubkeys/id ::Show)}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment

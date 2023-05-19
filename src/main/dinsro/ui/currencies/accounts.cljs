@@ -7,7 +7,8 @@
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.currencies/id)
 (def router-key :dinsro.ui.currencies/Router)
@@ -32,7 +33,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [::m.currencies/id

@@ -10,8 +10,10 @@
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.remote-nodes.peers :as u.ln.rn.peers]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 (defrouter Router
@@ -27,17 +29,17 @@
                    ::m.ln.remote-nodes/pubkey ""
                    :ui/peers                  {}
                    :ui/router                 {}}
-   :pre-merge     (u.links/page-merger
+   :pre-merge     (u.loader/page-merger
                    ::m.ln.remote-nodes/id
-                   {:ui/peers  u.ln.rn.peers/SubPage
-                    :ui/router Router})
+                   {:ui/peers  [u.ln.rn.peers/SubPage {}]
+                    :ui/router [Router {}]})
    :query         [::m.ln.remote-nodes/id
                    ::m.ln.remote-nodes/pubkey
                    {:ui/peers (comp/get-query u.ln.rn.peers/SubPage)}
                    {:ui/router (comp/get-query Router)}
                    [df/marker-table '_]]
    :route-segment ["remote-nodes" :id]
-   :will-enter    (partial u.links/page-loader ::m.ln.remote-nodes/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.ln.remote-nodes/id ::Show)}
   (dom/div {}
     (dom/div {:classes [:.ui.segment]}
       (dom/h1 {} "Remote Node")
@@ -66,7 +68,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "remote-nodes"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.ln.remote-nodes/id mu.ln.remote-nodes/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.ln.remote-nodes/id mu.ln.remote-nodes/delete!)]
    ro/row-pk            m.ln.remote-nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.ln.remote-nodes/index

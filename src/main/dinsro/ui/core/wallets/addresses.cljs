@@ -12,6 +12,7 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
@@ -74,7 +75,7 @@
   {:type   :button
    :local? true
    :label  "Calculate"
-   :action (u.links/report-action ::m.c.wallets/id mu.c.wallets/calculate-addresses!)})
+   :action (u.buttons/report-action ::m.c.wallets/id mu.c.wallets/calculate-addresses!)})
 
 (report/defsc-report Report
   [_this _props]
@@ -91,7 +92,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "wallets-addresses"
-   ro/row-actions       [(u.links/row-action-button "Generate" ::m.c.wallet-addresses/id mu.c.wallet-addresses/generate!)]
+   ro/row-actions       [(u.buttons/row-action-button "Generate" ::m.c.wallet-addresses/id mu.c.wallet-addresses/generate!)]
    ro/row-pk            m.c.wallet-addresses/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.wallet-addresses/index-by-wallet

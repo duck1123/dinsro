@@ -9,6 +9,7 @@
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.mutations.core.transactions :as mu.c.transactions]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
 (report/defsc-report Report
@@ -17,14 +18,14 @@
    ro/columns           [m.c.transactions/tx-id
                          m.c.transactions/fetched?]
    ro/control-layout    {:action-buttons [::fetch ::refresh]}
-   ro/controls          {::fetch         (u.links/fetch-button ::m.c.blocks/id mu.c.blocks/fetch-transactions!)
+   ro/controls          {::fetch         (u.buttons/fetch-button ::m.c.blocks/id mu.c.blocks/fetch-transactions!)
                          ::refresh       u.links/refresh-control
                          ::m.c.blocks/id {:type :uuid :label "Block"}}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
-                         (u.links/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
+                         (u.buttons/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
    ro/row-pk            m.c.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.transactions/index

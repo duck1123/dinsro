@@ -7,7 +7,8 @@
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.ln.remote-nodes/id)
 (def router-key :dinsro.ui.ln.remote-nodes/Router)
@@ -35,7 +36,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [{:ui/report (comp/get-query Report)}]}

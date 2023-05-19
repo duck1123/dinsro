@@ -9,9 +9,11 @@
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.mutations.core.transactions :as mu.c.transactions]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.transactions.inputs :as u.c.t.inputs]
    [dinsro.ui.core.transactions.outputs :as u.c.t.outputs]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (defsc Show
   "Show a core tx"
@@ -26,10 +28,10 @@
                    :ui/inputs                  {}
                    :ui/outputs                 {}
                    ::m.c.transactions/fetched? false}
-   :pre-merge     (u.links/page-merger
+   :pre-merge     (u.loader/page-merger
                    ::m.c.transactions/id
-                   {:ui/inputs  u.c.t.inputs/SubPage
-                    :ui/outputs u.c.t.outputs/SubPage})
+                   {:ui/inputs  [u.c.t.inputs/SubPage {}]
+                    :ui/outputs [u.c.t.outputs/SubPage {}]})
    :query         [::m.c.transactions/id
                    ::m.c.transactions/tx-id
                    ::m.c.transactions/hash
@@ -40,7 +42,7 @@
                    {::m.c.transactions/block (comp/get-query u.links/BlockHeightLinkForm)}
                    [df/marker-table '_]]
    :route-segment ["tx" :id]
-   :will-enter    (partial u.links/page-loader ::m.c.transactions/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.c.transactions/id ::Show)}
   (dom/div {}
     (dom/div :.ui.segment
       (dom/h1 {} "Transaction")
@@ -78,8 +80,8 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "transactions"
-   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
-                         (u.links/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
+                         (u.buttons/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
    ro/row-pk            m.c.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.transactions/index

@@ -37,6 +37,7 @@
  ui-grid-column       [[:inner 0]]
  ui-grid-row          [[:inner 0]]
  ui-list-item         [[:inner 0]]
+ ui-menu              [[:inner 0]]
  ui-menu-menu         [[:inner 0]]
  ui-modal             [[:inner 0]]
  ui-modal-content     [[:inner 0]]

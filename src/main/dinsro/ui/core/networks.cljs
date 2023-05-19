@@ -7,14 +7,17 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.networks :as j.c.networks]
-   [dinsro.menus :as me]
    [dinsro.model.core.networks :as m.c.networks]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.ui.core.networks.addresses :as u.c.n.addresses]
    [dinsro.ui.core.networks.blocks :as u.c.n.blocks]
    [dinsro.ui.core.networks.ln-nodes :as u.c.n.ln-nodes]
    [dinsro.ui.core.networks.nodes :as u.c.n.nodes]
    [dinsro.ui.core.networks.wallets :as u.c.n.wallets]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]))
 
 (defrouter Router
   [_this _props]
@@ -27,20 +30,29 @@
 
 (defsc Show
   [_this {::m.c.networks/keys [id chain name]
-          :ui/keys            [router]
+          :ui/keys            [nav-menu router]
           :as                 props}]
-  {:ident         ::m.c.networks/id
-   :initial-state {::m.c.networks/id    nil
-                   ::m.c.networks/name  ""
-                   ::m.c.networks/chain {}
-                   :ui/router           {}}
-   :pre-merge     (u.links/page-merger ::m.c.networks/id {:ui/router Router})
-   :query         [::m.c.networks/id
-                   ::m.c.networks/name
-                   {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
-                   {:ui/router (comp/get-query Router)}]
+  {:ident     ::m.c.networks/id
+   :initial-state
+   (fn [props]
+     (let [id (::m.c.networks/id props)]
+       {::m.c.networks/id    nil
+        ::m.c.networks/name  ""
+        ::m.c.networks/chain {}
+        :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-networks :id id})
+        :ui/router           (comp/get-initial-state Router)}))
+   :pre-merge (u.loader/page-merger
+               ::m.c.networks/id
+               {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-networks}]
+                :ui/router   [Router {}]})
+   :query     [::m.c.networks/id
+               ::m.c.networks/name
+               {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
+               {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
+               {:ui/router (comp/get-query Router)}]
+
    :route-segment ["network" :id]
-   :will-enter    (partial u.links/page-loader ::m.c.networks/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.c.networks/id ::Show)}
   (if id
     (comp/fragment
      (dom/div :.ui.segment
@@ -49,11 +61,11 @@
          (dom/dd {} (str name))
          (dom/dt {} "Chain")
          (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
-     (u.links/ui-nav-menu {:id id :menu-items me/core-networks-menu-items})
+     (u.menus/ui-nav-menu nav-menu)
      ((comp/factory Router) router))
     (dom/div :.ui.segment
       (dom/h3 {} "Network Not loaded")
-      (u.links/ui-props-logger props))))
+      (u.debug/ui-props-logger props))))
 
 (report/defsc-report Report
   [_this _props]

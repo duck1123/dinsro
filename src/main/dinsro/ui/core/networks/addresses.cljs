@@ -9,7 +9,9 @@
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.mutations.core.addresses :as mu.c.addresses]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.c.networks/id)
 (def router-key :dinsro.ui.core.networks/Router)
@@ -25,8 +27,8 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.addresses/id mu.c.addresses/fetch!)
-                         (u.links/row-action-button "Delete" ::m.c.addresses/id mu.c.addresses/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.addresses/id mu.c.addresses/fetch!)
+                         (u.buttons/row-action-button "Delete" ::m.c.addresses/id mu.c.addresses/delete!)]
    ro/row-pk            m.c.addresses/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.addresses/index
@@ -34,7 +36,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident         (fn [] [:component/id ::SubPage])
    :initial-state {:ui/report {}}
    :query         [[::dr/id router-key]

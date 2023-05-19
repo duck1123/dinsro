@@ -8,9 +8,11 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.subscriptions :as j.n.subscriptions]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]
    [dinsro.ui.nostr.subscription-pubkeys :as u.n.subscription-pubkeys]
    [lambdaisland.glogc :as log]))
 
@@ -39,20 +41,28 @@
    [u.n.subscription-pubkeys/SubPage]})
 
 (defsc Show
-  [_this {::m.n.subscriptions/keys [id code relay]
-          :ui/keys                 [router]}]
+  [_this {::m.n.subscriptions/keys [code relay]
+          :ui/keys                 [nav-menu router]}]
   {:ident         ::m.n.subscriptions/id
-   :initial-state {::m.n.subscriptions/id    nil
-                   ::m.n.subscriptions/code  ""
-                   ::m.n.subscriptions/relay {}
-                   :ui/router                {}}
-   :pre-merge     (u.links/page-merger ::m.n.subscriptions/id {:ui/router Router})
+   :initial-state
+   (fn [props]
+     (let [id (::m.n.subscriptions/id props)]
+       {::m.n.subscriptions/id    nil
+        ::m.n.subscriptions/code  ""
+        ::m.n.subscriptions/relay {}
+        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :nostr-subscriptions :id id})
+        :ui/router                {}}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.n.subscriptions/id
+                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-subscriptions}]
+                    :ui/router   [Router {}]})
    :query         [::m.n.subscriptions/id
                    ::m.n.subscriptions/code
                    {::m.n.subscriptions/relay (comp/get-query u.links/RelayLinkForm)}
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["subscription" :id]
-   :will-enter    (partial u.links/page-loader ::m.n.subscriptions/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.n.subscriptions/id ::Show)}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
@@ -64,5 +74,5 @@
         (dom/button {:classes [:.ui :.button]
                      :onClick (fn [this]
                                 (log/info :a/b {:e (comp/props this)}))} "click"))
-      (u.links/ui-nav-menu {:menu-items me/nostr-subscriptions-menu-items :id id})
+      (u.menus/ui-nav-menu nav-menu)
       ((comp/factory Router) router))))

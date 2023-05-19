@@ -8,7 +8,8 @@
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.relays :as m.n.relays]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [../../../joins/nostr/relays.cljc]
 ;; [../../../model/nostr/relays.cljc]
@@ -33,7 +34,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

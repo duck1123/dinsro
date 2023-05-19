@@ -13,7 +13,9 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.events :as mu.n.events]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../joins/nostr/pubkeys.cljc][Pubkeys Join]]
 ;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
@@ -55,9 +57,9 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.links/subrow-action-button "Fetch" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/fetch!)
-                         (u.links/subrow-action-button "Fetch Events" ::m.n.pubkeys/id ident-key  mu.n.events/fetch-events!)
-                         (u.links/subrow-action-button "Fetch Contacts" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/fetch-contacts!)]
+   ro/row-actions       [(u.buttons/subrow-action-button "Fetch" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/fetch!)
+                         (u.buttons/subrow-action-button "Fetch Events" ::m.n.pubkeys/id ident-key  mu.n.events/fetch-events!)
+                         (u.buttons/subrow-action-button "Fetch Contacts" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/fetch-contacts!)]
    ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.pubkeys/index
@@ -65,7 +67,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

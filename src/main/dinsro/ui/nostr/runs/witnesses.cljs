@@ -8,7 +8,8 @@
    [dinsro.joins.nostr.witnesses :as j.n.witnesses]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.n.runs/id)
 (def router-key :dinsro.ui.nostr.runs/Router)
@@ -33,7 +34,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

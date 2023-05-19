@@ -1,7 +1,7 @@
 (ns dinsro.queries.transactions
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
+   [com.fulcrologic.guardrails.core :refer [=> >defn ?]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]

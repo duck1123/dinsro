@@ -9,7 +9,8 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../joins/categories.cljc][Category Joins]]
 ;; [[../model/categories.cljc][Categories Model]]
@@ -49,11 +50,11 @@
   {:ident         ::m.categories/id
    :initial-state {::m.categories/id   nil
                    ::m.categories/name ""}
-   :pre-merge     (u.links/page-merger ::m.categories/id {})
+   :pre-merge     (u.loader/page-merger ::m.categories/id {})
    :query         [::m.categories/id
                    ::m.categories/name]
    :route-segment ["category" :id]
-   :will-enter    (partial u.links/page-loader ::m.categories/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.categories/id ::Show)}
   (dom/div :.ui.container
     (dom/div :.ui.segment
       (str name))))

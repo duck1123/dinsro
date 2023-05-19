@@ -9,7 +9,9 @@
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
@@ -19,7 +21,7 @@
    :local? true
    :label  "Fetch"
    :action (fn [report-instance _]
-             (let [id (u.links/get-control-value report-instance ::m.n.pubkeys/id)]
+             (let [id (u.buttons/get-control-value report-instance ::m.n.pubkeys/id)]
                (comp/transact! report-instance
                                [(mu.n.pubkeys/fetch-definitions! {::m.n.pubkeys/id id})])))})
 
@@ -40,7 +42,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

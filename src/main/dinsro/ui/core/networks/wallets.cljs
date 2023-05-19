@@ -8,7 +8,8 @@
    [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.wallets :as m.c.wallets]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.c.networks/id)
 (def router-key :dinsro.ui.core.networks/Router)
@@ -33,7 +34,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

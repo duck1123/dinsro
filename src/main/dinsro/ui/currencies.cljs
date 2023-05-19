@@ -9,13 +9,16 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.currencies :as j.currencies]
-   [dinsro.menus :as me]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.mutations.currencies :as mu.currencies]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.currencies.accounts :as u.c.accounts]
    [dinsro.ui.currencies.rate-sources :as u.c.rate-sources]
    [dinsro.ui.currencies.rates :as u.c.rates]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]))
 
 ;; [../actions/currencies.clj]
 
@@ -51,29 +54,38 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "currencies"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.currencies/id mu.currencies/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.currencies/id mu.currencies/delete!)]
    ro/row-pk            m.currencies/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.currencies/index
    ro/title             "Currencies Report"})
 
 (defsc Show
-  [_this {::m.currencies/keys [id name]
-          :ui/keys            [router]}]
+  [_this {::m.currencies/keys [name]
+          :ui/keys            [nav-menu router]}]
   {:ident         ::m.currencies/id
-   :initial-state {::m.currencies/name ""
-                   ::m.currencies/code ""
-                   ::m.currencies/id   nil
-                   :ui/router          {}}
-   :pre-merge     (u.links/page-merger ::m.currencies/id {:ui/router Router})
+   :initial-state
+   (fn [props]
+     (let [id (::m.currencies/id props)]
+       {::m.currencies/name ""
+        ::m.currencies/code ""
+        ::m.currencies/id   nil
+        :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :currencies
+                                                                     :id            id})
+        :ui/router          (comp/get-initial-state Router)}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.currencies/id
+                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :currencies}]
+                    :ui/router   [Router {}]})
    :query         [::m.currencies/name
                    ::m.currencies/code
                    ::m.currencies/id
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["currency" :id]
-   :will-enter    (partial u.links/page-loader ::m.currencies/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.currencies/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/h1 {} (str name)))
-   (u.links/ui-nav-menu {:menu-items me/currencies-menu-items :id id})
+   (u.menus/ui-nav-menu nav-menu)
    ((comp/factory Router) router)))

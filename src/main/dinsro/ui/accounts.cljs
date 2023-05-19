@@ -25,7 +25,9 @@
    [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
    [dinsro.ui.accounts.transactions :as u.a.transactions]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../joins/accounts.cljc][Account Joins]]
 ;; [[../model/accounts.cljc][Account Models]]
@@ -141,7 +143,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "accounts"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
    ro/row-pk            m.accounts/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.accounts/index
@@ -174,7 +176,7 @@
                        ::m.accounts/source   {}
                        ::m.accounts/wallet   {}
                        :ui/transactions      {}}
-   :pre-merge         (u.links/page-merger ::m.accounts/id {:ui/transactions u.a.transactions/Report})
+   :pre-merge         (u.loader/page-merger ::m.accounts/id {:ui/transactions [u.a.transactions/Report {}]})
    :query             [::m.accounts/name
                        ::m.accounts/id
                        {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
@@ -182,7 +184,7 @@
                        {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
                        {:ui/transactions (comp/get-query u.a.transactions/Report)}]
    :route-segment     ["accounts" :id]
-   :will-enter        (partial u.links/page-loader ::m.accounts/id ::Show)}
+   :will-enter        (partial u.loader/page-loader ::m.accounts/id ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/h1 {} (str name))

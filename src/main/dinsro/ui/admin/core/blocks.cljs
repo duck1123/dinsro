@@ -6,6 +6,7 @@
    [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
 (report/defsc-report Report
@@ -20,7 +21,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "blocks"
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
    ro/row-pk            m.c.blocks/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.blocks/admin-index

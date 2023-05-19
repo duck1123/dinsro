@@ -17,11 +17,15 @@
 
 (def query-info
   {:ident   ::m.ln.nodes/id
-   :pk      '?node-id
-   :clauses [[::m.c.networks/id '?network-id]]
+   :pk      '?ln-node-id
+   :clauses [[:actor/id         '?actor-id]
+             [:actor/admin?     '?admin?]
+             [::m.c.networks/id '?network-id]]
    :rules
-   (fn [[network-id] rules]
+   (fn [[_actor-id admin? network-id] rules]
      (->> rules
+          (concat-when (not admin?)
+            [['?ln-node-id ::m.ln.nodes/user '?actor-id]])
           (concat-when network-id
             [['?ln-node-id ::m.ln.nodes/network '?network-id]])))})
 

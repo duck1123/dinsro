@@ -6,6 +6,7 @@
    [dinsro.joins.nostr.runs :as j.n.runs]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.mutations.nostr.runs :as mu.n.runs]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
 ;; [../../../joins/nostr/runs.cljc]
@@ -28,7 +29,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "runs"
-   ro/row-actions       [(u.links/row-action-button "Stop" ::m.n.runs/id mu.n.runs/stop!)]
+   ro/row-actions       [(u.buttons/row-action-button "Stop" ::m.n.runs/id mu.n.runs/stop!)]
    ro/row-pk            m.n.runs/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.runs/index

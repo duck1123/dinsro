@@ -9,7 +9,9 @@
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations.nostr.filters :as mu.n.filters]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.n.requests/id)
 (def router-key :dinsro.ui.nostr.requests/Router)
@@ -24,7 +26,7 @@
                          j.n.filters/item-count]
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
    ro/controls          {::m.n.requests/id {:type :uuid :label "id"}
-                         ::add-filter      (u.links/sub-page-action-button
+                         ::add-filter      (u.buttons/sub-page-action-button
                                             {:label      "Add Filter"
                                              :mutation   mu.n.filters/add-filter!
                                              :parent-key ident-key})
@@ -32,7 +34,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.links/row-action-button "Delete" ::m.n.filters/id mu.n.filters/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.n.filters/id mu.n.filters/delete!)]
    ro/row-pk            m.n.filters/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.filters/index
@@ -40,7 +42,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

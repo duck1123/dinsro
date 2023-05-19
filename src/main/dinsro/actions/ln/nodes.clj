@@ -26,6 +26,7 @@
    scala.Option))
 
 ;; [../../model/ln/nodes.cljc]
+;; [../../joins/ln/nodes.cljc]
 ;; [../../queries/ln/nodes.clj]
 
 (def default-passphrase "password12345678")
@@ -247,3 +248,12 @@
           (doseq [utxo-result results]
             (let [record (cs/->record utxo-result)]
               (log/info :update-info!/converted {:record record}))))))))
+
+(comment
+
+  (map q.ln.nodes/read-record
+       (q.ln.nodes/index-ids
+        {:actor/id   #uuid "018808d6-5c21-8d01-9a50-0b6cec0d6291"
+         :actor/admin? false}))
+
+  nil)

@@ -11,7 +11,9 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations.nostr.requests :as mu.n.requests]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
@@ -48,9 +50,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.links/row-action-button "Run" ::m.n.requests/id mu.n.requests/run!)
-                         ;; (u.links/row-action-button "Stop" ::m.n.requests/id mu.n.requests/stop!)
-                         ]
+   ro/row-actions       [(u.buttons/row-action-button "Run" ::m.n.requests/id mu.n.requests/run!)]
    ro/row-pk            m.n.requests/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.requests/index
@@ -58,7 +58,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

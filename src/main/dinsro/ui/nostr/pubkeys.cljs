@@ -10,10 +10,13 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
-   [dinsro.menus :as me]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]
    [dinsro.ui.nostr.pubkeys.badge-acceptances :as u.n.p.badge-acceptances]
    [dinsro.ui.nostr.pubkeys.badge-awards :as u.n.p.badge-awards]
    [dinsro.ui.nostr.pubkeys.badge-definitions :as u.n.p.badge-definitions]
@@ -91,22 +94,25 @@
 
 (defsc Show
   "Show a core node"
-  [_this {::m.n.pubkeys/keys [id]
-          :ui/keys           [router]
+  [_this {:ui/keys           [nav-menu router]
           :as props}]
   {:ident         ::m.n.pubkeys/id
-   :initial-state {::m.n.pubkeys/about        ""
-                   ::m.n.pubkeys/display-name ""
-                   ::m.n.pubkeys/hex          ""
-                   ::m.n.pubkeys/id           nil
-                   ::m.n.pubkeys/lud06        ""
-                   ::m.n.pubkeys/name         ""
-                   ::m.n.pubkeys/nip05        ""
-                   ::j.n.pubkeys/npub        ""
-                   ::m.n.pubkeys/picture      ""
-                   ::m.n.pubkeys/website      ""
-                   :ui/router                 {}}
-   :pre-merge     (u.links/page-merger ::m.n.pubkeys/id {:ui/router Router})
+   :initial-state (fn [props]
+                    (let [id (::m.n.pubkeys/id props)]
+                      {::m.n.pubkeys/about        ""
+                       ::m.n.pubkeys/display-name ""
+                       ::m.n.pubkeys/hex          ""
+                       ::m.n.pubkeys/id           nil
+                       ::m.n.pubkeys/lud06        ""
+                       ::m.n.pubkeys/name         ""
+                       ::m.n.pubkeys/nip05        ""
+                       ::j.n.pubkeys/npub         ""
+                       ::m.n.pubkeys/picture      ""
+                       ::m.n.pubkeys/website      ""
+                       :ui/nav-menu (comp/get-initial-state u.menus/NavMenu
+                                                            {::m.navbars/id :nostr-pubkeys :id id})
+                       :ui/router                 (comp/get-initial-state Router)}))
+   :pre-merge     (u.loader/page-merger ::m.n.pubkeys/id {:ui/router [Router {}]})
    :query         [::m.n.pubkeys/about
                    ::m.n.pubkeys/display-name
                    ::m.n.pubkeys/hex
@@ -117,13 +123,14 @@
                    ::j.n.pubkeys/npub
                    ::m.n.pubkeys/picture
                    ::m.n.pubkeys/website
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["pubkey" :id]
-   :will-enter    (partial u.links/page-loader ::m.n.pubkeys/id ::Show)}
+   :will-enter    (partial u.loader/page-loader ::m.n.pubkeys/id ::Show)}
   (let [{:keys [main]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (ui-pubkey-info props)
-      (u.links/ui-nav-menu {:menu-items me/nostr-pubkeys-menu-items :id id})
+      (u.menus/ui-nav-menu nav-menu)
       ((comp/factory Router) router))))
 
 (form/defsc-form CreateForm
@@ -156,7 +163,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "pubkeys"
-   ro/row-actions       [(u.links/row-action-button "Add to contacts" ::m.n.pubkeys/id mu.n.pubkeys/add-contact!)]
+   ro/row-actions       [(u.buttons/row-action-button "Add to contacts" ::m.n.pubkeys/id mu.n.pubkeys/add-contact!)]
    ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.pubkeys/index

@@ -10,6 +10,7 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
@@ -44,8 +45,8 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "blocks"
-   ro/row-actions       [(u.links/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)
-                         (u.links/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)
+                         (u.buttons/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
    ro/row-pk            m.c.blocks/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.blocks/index

@@ -25,11 +25,13 @@
         ::loaded?      true})))
 
 (defattr site-config ::site-config :ref
-  {ao/pc-output [{::site-config [::id ::initialized? ::loaded?]}]
+  {ao/pc-output [{::site-config
+                  [::id ::initialized? ::loaded?
+                   {::menu [:menu/id]}]}]
    ao/target ::id
    ao/pc-resolve
    (fn [_env _props]
      {::site-config #?(:cljs {}
-                       :clj (get-site-config))})})
+                       :clj (assoc (get-site-config) ::menu {:menu/id :main}))})})
 
 (def attributes [site-config])

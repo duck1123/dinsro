@@ -238,11 +238,6 @@
    (or (register-connection!* relay-id register)
        (throw (ex-info "Not Registered" {})))))
 
-(defn stop!
-  [relay-id]
-  (log/info :stop!/starting {:relay-id relay-id})
-  (throw (ex-info "" {})))
-
 (>defn send!
   [connection-id message]
   [::m.n.connections/id string? => nil?]

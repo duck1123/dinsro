@@ -9,7 +9,9 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
@@ -30,7 +32,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.links/subrow-action-button "Make Peer" ::m.ln.remote-nodes/id ::m.ln.nodes/id mu.ln.nodes/make-peer!)]
+   ro/row-actions       [(u.buttons/subrow-action-button "Make Peer" ::m.ln.remote-nodes/id ::m.ln.nodes/id mu.ln.nodes/make-peer!)]
    ro/row-pk            m.ln.remote-nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.ln.remote-nodes/index
@@ -38,7 +40,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.links/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]

@@ -1,17 +1,10 @@
 (ns dinsro.ui.links
   (:require
-   [com.fulcrologic.fulcro.application :as app]
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.data-fetch :as df]
+   [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [com.fulcrologic.rad.report :as report]
-   [com.fulcrologic.rad.routing :as rroute]
-   [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [dinsro.joins.nostr.connections :as j.n.connections]
    [dinsro.joins.nostr.filters :as j.n.filters]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
@@ -68,238 +61,17 @@
               (log/error :form-link/no-component {:form-kw form-kw})))}
     name))
 
-(defn get-control-value
-  [report-instance id-key]
-  (some->> report-instance comp/props
-           :ui/controls
-           (some (fn [c]
-                   (let [{::control/keys [id]} c]
-                     (when (= id id-key) c))))
-           ::control/value))
-
 (def refresh-control
   "config to add a refresh button to a report"
   {:type   :button
    :label  "Refresh"
    :action (fn [this] (control/run! this))})
 
-(defn report-action
-  [id-key mutation]
-  (fn [this]
-    (let [id     (get-control-value this id-key)]
-      (comp/transact! this [(mutation {id-key id})]))))
-
-(defn fetch-button
-  [id-key mutation]
-  {:type   :button
-   :label  "Fetch"
-   :action (report-action id-key mutation)})
-
-(defn merge-state
-  "Used by a show page's pre-merge to merge the parent id into the state"
-  [state-map sub-page data]
-  (merge
-   (comp/get-initial-state sub-page)
-   (get-in state-map (comp/get-ident sub-page {}))
-   data))
-
-(defn merge-pages
-  [{:keys [data-tree state-map]} id-key page-map]
-  (let [id (get data-tree id-key)]
-    (log/trace :merge-pages/starting {:id-key id-key :id id :page-map page-map})
-    (let [states (->> page-map
-                      (map
-                       (fn [[key page]]
-                         (log/debug :merge-pages/process-page {:key key :page page})
-                         (let [state (merge-state state-map page {id-key id})]
-                           {key state})))
-                      (into {}))]
-      (merge data-tree states {:ui/page-merged true}))))
-
-(defn row-action-button
-  [label id-key mutation]
-  {:label  label
-   :action (fn [report-instance p]
-             (let [id    (get p id-key)
-                   props {id-key id}]
-               (comp/transact! report-instance [(mutation props)])))})
-
-(defn subrow-action-button
-  [label id-key parent-key mutation]
-  {:label  label
-   :action (fn [report-instance p]
-             (let [id    (get p id-key)
-                   parent-id (get-control-value report-instance parent-key)
-                   props {id-key id parent-key parent-id}]
-               (comp/transact! report-instance [(mutation props)])))})
-
-(defn sub-page-action-button
-  [options]
-  (let [{:keys [label mutation parent-key]} options]
-    {:type  :button
-     :label label
-     :action
-     (fn [report-instance]
-       (let [parent-id (get-control-value report-instance parent-key)
-             props     {parent-key parent-id}]
-         (comp/transact! report-instance [(mutation props)])))}))
-
-(def skip-loaded true)
-
-(defn page-loader
-  "Returns a will-enter handler for a page"
-  [key control-key app {id :id}]
-  (let [id             (new-uuid id)
-        ident          [key id]
-        parent-control (comp/registry-key->class control-key)
-        state          (-> (app/current-state app) (get-in ident))]
-    (log/trace :page-loader/starting {:key key :control-key control-key :id id :state state})
-    (if (and skip-loaded (:ui/page-merged state))
-      (do
-        (log/trace :page-loader/routing-immediate {:ident ident})
-        (dr/route-immediate ident))
-      (do
-        (log/trace :page-loader/deferring {:ident ident})
-        (dr/route-deferred
-         ident
-         (fn []
-           (log/trace :page-loader/routing {:key key :id id :parent-control parent-control})
-           (df/load!
-            app ident parent-control
-            {:marker               :ui/selected-node
-             :target               [:ui/selected-node]
-             :post-mutation        `dr/target-ready
-             :post-mutation-params {:target ident}})))))))
-
-(defn subpage-loader
-  "componentDidMount handler for SubPage components that load a report"
-  [ident-key router-key Report this]
-  (let [props    (comp/props this)
-        parent-id (get-in props [[::dr/id router-key] ident-key])]
-    (report/start-report! this Report {:route-params {ident-key parent-id}})))
-
 (defn img-formatter
   [pubkey]
   (if-let [picture (::m.n.pubkeys/picture pubkey)]
     (dom/img {:src picture})
     ""))
-
-(defn page-merger
-  [k mappings]
-  (log/trace :page-merger/starting {:k k :mappings mappings})
-  (fn [ctx]
-    (log/trace :page-merger/merging {:k k :mappings mappings :ctx ctx})
-    (merge-pages ctx k mappings)))
-
-(def blacklisted-keys
-  "Keys that will not be logged by log-props"
-  #{:com.fulcrologic.fulcro.ui-state-machines/asm-id
-    :com.fulcrologic.fulcro.application/active-remotes
-    :com.fulcrologic.fulcro.ui-state-machines/ident->actor
-    :com.fulcrologic.fulcro.ui-state-machines/state-machine-id
-    :com.fulcrologic.fulcro.ui-state-machines/active-timers
-    :com.fulcrologic.fulcro.ui-state-machines/actor->component-name
-    :com.fulcrologic.fulcro.ui-state-machines/actor->ident})
-
-(defn log-props
-  "Display a map for debugging purposes"
-  [props]
-  (dom/dl :.ui.segment
-    (->> (keys props)
-         (filter (fn [k] (not (blacklisted-keys k))))
-         (map
-          (fn [k]
-            ^{:key k}
-            (comp/fragment
-             (dom/dt {} (str k))
-             (dom/dd {}
-               (let [v (get props k)]
-                 (if (map? v)
-                   (log-props v)
-                   (do
-                     (str v)
-                     (if (vector? v)
-                       (dom/ul {}
-                         (map
-                          (fn [vi]
-                            ^{:key (str k vi)}
-                            (dom/li {} (log-props vi)))
-                          v))
-                       (dom/div :.ui.segment (str v)))))))))))))
-
-(declare ui-inner-prop-logger)
-
-(defsc PropLineLogger
-  [_this {:keys [key value]}]
-  (comp/fragment
-   (dom/dt {} (str key))
-   (dom/dd {}
-     (if (map? value)
-       (ui-inner-prop-logger value)
-       (if (vector? value)
-         (str value)
-         (str value))))))
-
-(def ui-prop-line-logger (comp/factory PropLineLogger {:keyfn (comp str :key)}))
-
-(defsc InnerPropLogger
-  [_this props]
-  (let [filtered-keys (filter (complement blacklisted-keys) (keys props))]
-    (dom/dl {:style {:margin 0
-                     :border "1px black solid"}}
-      (map (fn [k] (ui-prop-line-logger {:key k :value (get props k)}))
-           filtered-keys))))
-
-(def ui-inner-prop-logger (comp/factory InnerPropLogger))
-
-(defsc PropsLogger
-  [_this props]
-  (dom/div :.ui.segment
-    (ui-inner-prop-logger props)))
-
-(def ui-props-logger (comp/factory PropsLogger))
-
-(defsc NavMenu
-  [this {:keys [menu-items id]}]
-  (ui-menu
-   {:items menu-items
-    :onItemClick
-    (fn [_e d]
-      (if-let [route-name (get (js->clj d) "route")]
-        (let [route-kw   (keyword route-name)
-              route      (comp/registry-key->class route-kw)]
-          (log/info :onItemClick/kw {:route-kw route-kw :route route :id id})
-          (if id
-            (rroute/route-to! this route {:id (str id)})
-            (do
-              (log/info :onItemClick/no-id {})
-              (rroute/route-to! this route {}))))
-        (throw (js/Error. "no route"))))}))
-
-(def ui-nav-menu
-  "Display a nav menu for controlling subpages"
-  (comp/factory NavMenu))
-
-(defsc VerticalMenu
-  [this {:keys [menu-items id]}]
-  (ui-menu
-   {:items menu-items
-    :vertical true
-    :onItemClick
-    (fn [_e d]
-      (if-let [route-name (get (js->clj d) "route")]
-        (let [route-kw (keyword route-name)
-              route    (comp/registry-key->class route-kw)]
-          (log/info :onItemClick/kw {:route-kw route-kw :route route :id id})
-          (if id
-            (rroute/route-to! this route {:id (str id)})
-            (do
-              (log/info :onItemClick/no-id {})
-              (rroute/route-to! this route {}))))
-        (throw (js/Error. "no route"))))}))
-
-(def ui-vertical-menu
-  (comp/factory VerticalMenu))
 
 (form/defsc-form AccountLinkForm
   [this {::m.accounts/keys [id name]}]
@@ -381,7 +153,7 @@
   {fo/id         m.c.nodes/id
    fo/route-prefix "core-node-link"
    fo/attributes [m.c.nodes/id m.c.nodes/name]}
-  (log/info :CoreNodeLinkForm/starting {:id id :name name :props props})
+  (log/trace :CoreNodeLinkForm/starting {:id id :name name :props props})
   (form-link this id (or name (str id)) :dinsro.ui.core.nodes/Show))
 
 (def ui-core-node-link (comp/factory CoreNodeLinkForm {:keyfn ::m.c.nodes/id}))
