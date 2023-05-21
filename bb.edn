@@ -6,6 +6,7 @@
    [clojure.string :as string]
    [clj-yaml.core :as yaml]
    [cheshire.core :as json]
+   [cognitect.transit :as transit]
    [dinsro.commands :as c]
    [dinsro.site :as site]
    [dinsro.helm.bitcoind :as h.bitcoind]
@@ -13,7 +14,9 @@
    [dinsro.helm.lnd :as h.lnd]
    [dinsro.helm.nbxplorer :as h.nbxplorer]
    [dinsro.helm.rtl :as h.rtl]
-   [dinsro.helm.specter :as h.specter])
+   [dinsro.helm.specter :as h.specter]
+   [org.httpkit.client :As client])
+  :import ([java.io ByteArrayInputStream ByteArrayOutputStream])
 
   _8
   {:doc  "Summons bot"
@@ -365,6 +368,18 @@
   watch-cljs
   {:do   "watch and compile css"
    :task (c/watch-cljs ["main" "workspaces" "notebooks" "test"])}
+
+
+  write-transit
+  {:task
+   (do
+     (println "writing transit")
+     (def out (java.io.ByteArrayOutputStream. 4096))
+     (def writer (transit/writer out :json))
+     (transit/write writer "[\"foo\"]")
+     (println (.toString out))
+     )}
+
 
   workspaces
   {:doc  "Starts and watches for workspaces"
