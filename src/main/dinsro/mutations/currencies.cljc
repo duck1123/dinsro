@@ -1,5 +1,6 @@
 (ns dinsro.mutations.currencies
   (:require
+   #?(:cljs [com.fulcrologic.fulcro.algorithms.normalized-state :as fns])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.currencies :as m.currencies]
@@ -10,7 +11,9 @@
 ;; [../processors/currencies.clj]
 ;; [../responses/currencies.cljc]
 
-#?(:cljs (comment ::pc/_ ::m.currencies/_ ::mu/_))
+(def id-key ::m.currencies/id)
+
+#?(:cljs (comment ::pc/_ ::mu/_))
 
 #?(:clj
    (pc/defmutation delete!
@@ -22,11 +25,9 @@
    :cljs
    (defmutation delete! [_props]
      (action [_env] true)
-     (ok-action [env]
-       (let [body     (get-in env [:result :body])
-             response (get body `delete!)]
-         response))
-
+     (ok-action [{:keys [state] :as env}]
+       (doseq [record (get-in env [:result :body `delete! ::r.currencies/deleted-records])]
+         (swap! state fns/remove-entity [id-key (id-key record)])))
      (remote [env]
        (fm/returning env r.currencies/DeleteResponse))))
 

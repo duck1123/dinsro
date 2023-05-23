@@ -55,3 +55,7 @@
      :in    [[?user-id]]
      :where [[?id ::m.contacts/user ?user-id]]}
    [user-id]))
+
+(defn delete!
+  [id]
+  (c.xtdb/delete! id))

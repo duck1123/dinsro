@@ -7,17 +7,11 @@
 ;; [../mutations/rate_sources.cljc]
 ;; [../processors/rate_sources.clj]
 
-(defsc DeletedRateSource
-  [_ _]
-  {:initial-state {::m.rate-sources/id nil}
-   :ident         ::m.rate-sources/id
-   :query         [::m.rate-sources/id]})
-
 (defsc DeleteResponse
-  [_ _]
-  {:initial-state {::mu/status       :initial
-                   ::mu/errors       {}
-                   ::deleted-records []}
-   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
-                   ::mu/status
-                   {::deleted-records (comp/get-query DeletedRateSource)}]})
+  [_this _props]
+  {:initial-state {::deleted-records []
+                   ::mu/status       :initial
+                   ::mu/errors       {}}
+   :query         [{::deleted-records [::m.rate-sources/id]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status]})

@@ -36,6 +36,13 @@
    (fn [env props]
      {::admin-index (j/make-admin-indexer join-info env props)})})
 
+(defattr admin-index-flat ::admin-index-flat :ref
+  {ao/target    ::m.users/id
+   ao/pc-output [{::admin-index-flat [::m.users/id]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-index-flat (:results (j/make-admin-indexer join-info env props))})})
+
 (defattr index ::index :ref
   {ao/target    ::m.users/id
    ao/pc-output [{::index [:total {:results [::m.users/id]}]}]
@@ -147,6 +154,7 @@
 (def attributes [account-count
                  accounts
                  admin-index
+                 admin-index-flat
                  category-count
                  categories
                  record-count

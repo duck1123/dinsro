@@ -18,7 +18,7 @@
 (def override-admin-form true)
 
 (def user-picker
-  {::picker-options/query-key       ::j.users/index
+  {::picker-options/query-key       ::j.users/admin-index-flat
    ::picker-options/query-component u.links/UserLinkForm
    ::picker-options/options-xform
    (fn [_ options]

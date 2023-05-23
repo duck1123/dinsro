@@ -7,14 +7,15 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.processors.rate-sources :as p.rate-sources])
-   [dinsro.responses.rate-sources :as r.rate-sources]
-   #?(:cljs [lambdaisland.glogc :as log])))
+   [dinsro.responses.rate-sources :as r.rate-sources]))
 
 ;; [../actions/rate_sources.clj]
 ;; [../processors/rate_sources.clj]
 ;; [../responses/rate_sources.cljc]
 
-#?(:cljs (comment ::m.rate-sources/_ ::mu/_ ::pc/_))
+(def id-key ::m.rate-sources/_)
+
+#?(:cljs (comment ::mu/_ ::pc/_))
 
 #?(:clj
    (defn do-run!
@@ -44,17 +45,9 @@
    :cljs
    (fm/defmutation delete! [_props]
      (action [_env] true)
-     (ok-action [env]
-       (let [{:keys [state]}                           env
-             body                                      (get-in env [:result :body])
-             response                                  (get body `delete!)
-             {::r.rate-sources/keys [deleted-records]} response]
-         (doseq [rate-source deleted-records]
-           (log/info :delete!/deleted {:rate-source rate-source})
-           (let [rate-source-id (::m.rate-sources/id rate-source)
-                 target-ident   [::m.rate-sources/id rate-source-id]]
-             (swap! state fns/remove-entity target-ident)))
-         response))
+     (ok-action [{:keys [state] :as env}]
+       (doseq [record (get-in env [:result :body `delete! ::r.rate-sources/deleted-records])]
+         (swap! state fns/remove-entity [id-key (id-key record)])))
      (remote [env]  (fm/returning env r.rate-sources/DeleteResponse))))
 
 #?(:clj

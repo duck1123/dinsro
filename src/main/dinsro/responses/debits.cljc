@@ -1,7 +1,7 @@
-(ns dinsro.responses.transactions
+(ns dinsro.responses.debits
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [dinsro.model.transactions :as m.transactions]
+   [dinsro.model.debits :as m.debits]
    [dinsro.mutations :as mu]))
 
 (defsc DeleteResponse
@@ -9,6 +9,6 @@
   {:initial-state {::deleted-records []
                    ::mu/status       :initial
                    ::mu/errors       {}}
-   :query         [{::deleted-records [::m.transactions/id]}
+   :query         [{::deleted-records [::m.debits/id]}
                    {::mu/errors (comp/get-query mu/ErrorData)}
                    ::mu/status]})

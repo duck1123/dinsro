@@ -11,6 +11,9 @@
    #?(:clj [dinsro.queries.transactions :as q.transactions])
    [dinsro.specs]))
 
+;; [../actions/categories.clj]
+;; [../model/categories.cljc]
+;; [../mutations/categories.cljc]
 ;; [../queries/categories.clj]
 
 (def join-info

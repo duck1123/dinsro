@@ -1,5 +1,6 @@
 (ns dinsro.mutations.users
   (:require
+   #?(:cljs [com.fulcrologic.fulcro.algorithms.normalized-state :as fns])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.users :as m.users]
@@ -7,7 +8,9 @@
    #?(:clj [dinsro.processors.users :as p.users])
    [dinsro.responses.users :as r.users]))
 
-#?(:cljs (comment ::pc/_ ::m.users/_ ::mu/_ ::r.users/_))
+(def id-key ::m.users/id)
+
+#?(:cljs (comment ::pc/_ ::mu/_ ::r.users/_))
 
 #?(:clj
    (pc/defmutation delete!
@@ -19,11 +22,9 @@
    :cljs
    (defmutation delete! [_props]
      (action [_env] true)
-     (ok-action [env]
-       (let [body     (get-in env [:result :body])
-             response (get body `delete!)]
-         response))
-
+     (ok-action [{:keys [state] :as env}]
+       (doseq [record (get-in env [:result :body `delete! ::r.users/deleted-records])]
+         (swap! state fns/remove-entity [id-key (id-key record)])))
      (remote [env]
        (fm/returning env r.users/DeleteResponse))))
 

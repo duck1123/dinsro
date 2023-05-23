@@ -10,6 +10,7 @@
    [xtdb.api :as xt]))
 
 ;; [../actions/categories.clj]
+;; [../joins/categories.cljc]
 ;; [../model/categories.cljc]
 
 (def query-info

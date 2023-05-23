@@ -1,5 +1,6 @@
 (ns dinsro.mutations.categories
   (:require
+   #?(:cljs [com.fulcrologic.fulcro.algorithms.normalized-state :as fns])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.categories :as m.categories]
@@ -7,9 +8,15 @@
    #?(:clj [dinsro.processors.categories :as p.categories])
    [dinsro.responses.categories :as r.categories]))
 
+;; [../joins/categories.cljc]
+;; [../model/categories.cljc]
+;; [../processors/categories.clj]
 ;; [../responses/categories.cljc]
+;; [../ui/categories.cljs]
 
-#?(:cljs (comment ::mu/_ ::pc/_ ::m.categories/id))
+(def id-key ::m.categories/id)
+
+#?(:cljs (comment ::mu/_ ::pc/_))
 
 #?(:clj
    (pc/defmutation create!
@@ -25,7 +32,6 @@
        (let [body     (get-in env [:result :body])
              response (get body `create!)]
          response))
-
      (remote [env]
        (fm/returning env r.categories/CreateResponse))))
 
@@ -39,11 +45,9 @@
    :cljs
    (fm/defmutation delete! [_props]
      (action [_env] true)
-     (ok-action [env]
-       (let [body     (get-in env [:result :body])
-             response (get body `delete!)]
-         response))
-
+     (ok-action [{:keys [state] :as env}]
+       (doseq [record (get-in env [:result :body `delete! ::r.categories/deleted-records])]
+         (swap! state fns/remove-entity [id-key (id-key record)])))
      (remote [env]
        (fm/returning env r.categories/DeleteResponse))))
 

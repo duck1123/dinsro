@@ -1,58 +1,34 @@
 (ns dinsro.mutations.accounts
   (:require
-   [clojure.spec.alpha :as s]
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   #?(:clj [com.fulcrologic.guardrails.core :refer [>defn =>]])
+   #?(:cljs [com.fulcrologic.fulcro.algorithms.normalized-state :as fns])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.mutations :as mu]
-   #?(:clj [dinsro.queries.accounts :as q.accounts])
-   #?(:clj [lambdaisland.glogc :as log])))
+   #?(:clj [dinsro.processors.accounts :as p.accounts])
+   [dinsro.responses.accounts :as r.accounts]))
 
-(comment ::pc/_)
+;; [../processors/accounts.clj]
+;; [../responses/accounts.cljc]
 
-(defsc DeleteResponse
-  [_ _]
-  {:initial-state {::m.accounts/item nil
-                   ::status            :initial
-                   ::errors            {}}
-   :query         [{::errors (comp/get-query mu/ErrorData)}
-                   ::status
-                   ::deleted-records
-                   ::m.accounts/item]})
+(def id-key ::m.accounts/id)
 
-(s/def ::deleted-records (s/coll-of ::m.accounts/id))
-(s/def ::delete!-request (s/keys :req [::m.accounts/id]))
-(s/def ::delete!-response (s/keys :opt [::mu/errors ::mu/status ::deleted-records]))
-
-#?(:clj
-   (>defn do-delete!
-     [props]
-     [::delete!-request => ::delete!-response]
-     (let [{::m.accounts/keys [id]} props]
-       (log/info :do-delete!/starting {})
-       (let [response (q.accounts/delete! id)]
-         (log/info :do-delete!/finished {:response response})
-         {::mu/status       :ok
-          ::deleted-records [id]}))))
+#?(:cljs (comment ::mu/_ ::pc/_))
 
 #?(:clj
    (pc/defmutation delete!
      [_env props]
      {::pc/params #{::m.accounts/id}
-      ::pc/output [::mu/status ::mu/errors ::deleted-records]}
-     (do-delete! props))
+      ::pc/output [::mu/status ::mu/errors ::r.accounts/deleted-records]}
+     (p.accounts/delete! props))
 
    :cljs
    (defmutation delete! [_props]
      (action [_env] true)
-     (ok-action [env]
-       (let [body (get-in env [:result :body])
-             response (get body `delete!)]
-         response))
-
+     (ok-action [{:keys [state] :as env}]
+       (doseq [record (get-in env [:result :body `delete! ::r.accounts/deleted-records])]
+         (swap! state fns/remove-entity [id-key (id-key record)])))
      (remote [env]
-       (fm/returning env DeleteResponse))))
+       (fm/returning env r.accounts/DeleteResponse))))
 
 #?(:clj (def resolvers [delete!]))

@@ -12,16 +12,18 @@
 
 (defsc CreateResponse
   [_ _]
-  {:initial-state {::mu/status :initial
-                   ::mu/errors {}}
-   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
-                   ::mu/status
-                   {::created-record [::m.categories/id]}]})
+  {:initial-state {::created-record []
+                   ::mu/status      :initial
+                   ::mu/errors      {}}
+   :query         [{::created-record [::m.categories/id]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status]})
 
 (defsc DeleteResponse
   [_ _]
-  {:initial-state {::mu/status :initial
-                   ::mu/errors {}}
-   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
-                   ::mu/status
-                   ::deleted-records]})
+  {:initial-state {::deleted-records []
+                   ::mu/status       :initial
+                   ::mu/errors       {}}
+   :query         [{::deleted-records [::m.categories/id]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status]})
