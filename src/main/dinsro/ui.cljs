@@ -129,30 +129,31 @@
      (df/load! this ::m.settings/site-config Config)
      (uism/begin! this machines/hideable ::mu.navbars/navbarsm
                   {:actor/navbar (uism/with-actor-class [::m.navbars/id :main] u.navbars/Navbar)}))
-   :css           [[:.pushed {:height     "100%"
-                              :margin-top "40px"}]
-                   [:.root-container {}]
+   :css           [[:.primary-grid {:height "100%"}]
+                   [:.pushed {:height "100%" :margin-top "40px"}]
+                   [:.pusher {:height "100%"}]
+                   [:.root-container {:height "100%"}]
                    [:.router-wrapper {:overflow "hidden" :height "100%"}]]
-   :query         [{:root/authenticator (comp/get-query u.authenticator/Authenticator)}
+   :query         [{[::auth/authorization :local] (comp/get-query u.navbars/NavbarAuthQuery)}
                    {::m.settings/site-config (comp/get-query Config)}
-                   {:root/init-form (comp/get-query u.initialize/InitForm)}
+                   {:root/authenticator (comp/get-query u.authenticator/Authenticator)}
                    {:root/global-error (comp/get-query GlobalErrorDisplay)}
-                   {:ui/router (comp/get-query RootRouter)}
-                   {[::auth/authorization :local] (comp/get-query u.navbars/NavbarAuthQuery)}
-                   {::m.settings/site-config (comp/get-query Config)}]
-   :initial-state {:root/authenticator      {}
-                   :root/init-form          {}
-                   :ui/router               {}
+                   {:root/init-form (comp/get-query u.initialize/InitForm)}
+                   {:ui/router (comp/get-query RootRouter)}]
+   :initial-state {::m.settings/site-config {}
+                   :root/authenticator      {}
                    :root/global-error       {}
-                   ::m.settings/site-config {}}}
+                   :root/init-form          {}
+                   :ui/router               {}}}
   (log/trace :Root/starting {:props props})
-  (let [navbar                                         (::m.settings/menu site-config)
-        {:keys [pushed root-container router-wrapper]} (css/get-classnames Root)
-        top-router-state                               (or (uism/get-active-state this ::RootRouter) :initial)
-        {::m.settings/keys [loaded? initialized?]}     site-config
-        root                                           (uism/get-active-state this ::auth/auth-machine)
-        gathering-credentials?                         (#{:state/gathering-credentials} root)
-        authenticated?                                 (not= (get-in props [[::auth/authorization :local] ::auth/status]) :not-logged-in)]
+  (let [navbar                                     (::m.settings/menu site-config)
+        {:keys [primary-grid pushed pusher
+                root-container router-wrapper]}    (css/get-classnames Root)
+        top-router-state                           (or (uism/get-active-state this ::RootRouter) :initial)
+        {::m.settings/keys [loaded? initialized?]} site-config
+        root                                       (uism/get-active-state this ::auth/auth-machine)
+        gathering-credentials?                     (#{:state/gathering-credentials} root)
+        authenticated?                             (not= (get-in props [[::auth/authorization :local] ::auth/status]) :not-logged-in)]
     (dom/div {:classes [:.ui root-container]}
       (if loaded?
         (if initialized?
@@ -170,9 +171,9 @@
                      (u.navbars/ui-navbar navbar))))))
            (ui-sidebar-pushable {}
              (u.navbars/ui-navbar-sidebar navbar)
-             (ui-sidebar-pusher {}
+             (ui-sidebar-pusher {:className (string/join " " [pusher])}
                (dom/div {:className (string/join " " [pushed])}
-                 (ui-grid {}
+                 (ui-grid {:className (string/join "" [primary-grid])}
                    (ui-grid-row {:centered true}
                      (ui-grid-column {}
                        (if (= :initial top-router-state)
