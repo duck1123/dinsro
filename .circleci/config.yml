@@ -6,7 +6,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/clojure:openjdk11-node
+      - image: cimg/clojure:1.10-node
     steps:
       - checkout
       - run:
