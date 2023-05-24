@@ -1,6 +1,8 @@
 # .circleci/config.yml
 
 version: 2.1
+orbs:
+  clojure: lambdaisland/clojure@0.0.8
 jobs:
   build:
     machine:
@@ -10,7 +12,6 @@ jobs:
       - run: docker login --username "$DOCKER_USER" --password "$DOCKER_PASS"
       - run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
       - run: earthly --version
-      - run: apt install clojure
       - run:
           command: |
             echo 'export BUILD_VERSION=$(clj -T:build print-version)' >> "$BASH_ENV"
