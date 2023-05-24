@@ -19,6 +19,9 @@ jobs:
           name: Show Earthly version
           command: earthly --version
       - run:
+          name: Display Build Version
+          command: clj -T:build print-version
+      - run:
           name: Set version env
           command: |
             echo 'export BUILD_VERSION=$(clojure -T:build print-version)' >> "$BASH_ENV"
