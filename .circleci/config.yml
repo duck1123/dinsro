@@ -15,7 +15,7 @@ jobs:
       - run: earthly --version
       - run:
           command: |
-            echo 'export BUILD_VERSION=$(clj -T:build print-version)' >> "$BASH_ENV"
+            echo 'export BUILD_VERSION=$(clojure -T:build print-version)' >> "$BASH_ENV"
             source "$BASH_ENV"
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +cert-downloader
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +fileserver
