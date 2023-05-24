@@ -9,6 +9,7 @@ jobs:
       image: ubuntu-2004:202111-02
     steps:
       - checkout
+      - run: sudo apt update && sudo apt install clojure
       - run: docker login --username "$DOCKER_USER" --password "$DOCKER_PASS"
       - run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
       - run: earthly --version
