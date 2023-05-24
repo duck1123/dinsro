@@ -10,6 +10,10 @@ jobs:
       - run: docker login --username "$DOCKER_USER" --password "$DOCKER_PASS"
       - run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
       - run: earthly --version
+      - run:
+          command: |
+            echo 'export BUILD_VERSION=$(clj -T:build print-version)' >> "$BASH_ENV"
+            source "$BASH_ENV"
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +cert-downloader
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +fileserver
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +check
@@ -18,4 +22,6 @@ jobs:
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +devspace-base
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +devcards-image
       - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +docs-image
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +image
+      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +image --tag $BUILD_VERSION
+      - run: docker tag duck1123/dinsro:$BUILD_VERSION duck1123/dinsro:latest
+      - run: docker push duck1123/dinsro:latest

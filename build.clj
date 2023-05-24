@@ -11,6 +11,10 @@
 
 (def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
 
+(defn print-version
+  [_opts]
+  (print version))
+
 (defn run
   [_opts]
   (println "run")
