@@ -1,44 +1,100 @@
 # .circleci/config.yml
 
 version: 2.1
-orbs:
-  clojure: lambdaisland/clojure@0.0.8
 jobs:
   build:
-    docker:
-      - image: cimg/clojure:1.10-node
+    machine:
+      image: ubuntu-2004:current
     steps:
       - checkout
       - run:
           name: Log in to Docker
-          command: docker login --username "$DOCKER_USER" --password "$DOCKER_PASS"
+          command: |
+            docker login --username "$DOCKER_USER" --password "$DOCKER_PASS"
+      - run:
+          name: Install Clojure
+          command: |
+            sudo apt update
+            sudo apt install bash curl rlwrap openjdk-17-jdk
+            curl -O https://download.clojure.org/install/linux-install-1.11.1.1273.sh
+            chmod +x linux-install-1.11.1.1273.sh
+            sudo ./linux-install-1.11.1.1273.sh
       - run:
           name: Install Earthly
-          command: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
+          command: |
+            sudo wget https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly
+            sudo chmod +x /usr/local/bin/earthly
       - run:
           name: Show Earthly version
-          command: earthly --version
+          command: |
+            earthly --version
+      - run:
+          name: Display Clojure version
+          command: |
+            which clojure
+            clojure --version
       - run:
           name: Display Build Version
-          command: clj -T:build print-version
-      - run:
-          name: Set version env
           command: |
-            echo 'export BUILD_VERSION=$(clojure -T:build print-version)' >> "$BASH_ENV"
-            source "$BASH_ENV"
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +cert-downloader
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +fileserver
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +check
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +lint
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +test
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +devspace-base
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +devcards-image
-      - run: earthly -P --remote-cache=duck1123/dinsro:cache --push +docs-image
+            clojure -T:build print-version
       - run:
+          name: Prepare Base Task
           command: |
+            earthly -P --remote-cache=duck1123/dinsro:cache +builder
+      - run:
+          name: Check Source
+          command: |
+            earthly -P +check
+      - run:
+          name: Lint Source
+          command: |
+            earthly -P +lint
+      - run:
+          name: Run Tests
+          command: |
+            earthly -P +test
+      - run:
+          name: Build Cert Downloader
+          command: |
+            earthly -P +cert-downloader
+      - run:
+          name: Build Fileserver
+          command: |
+            earthly -P +fileserver
+      - run:
+          name: Build Devspace Image
+          command: |
+            earthly -P +devspace-base
+      - run:
+          name: Build Devcards Image
+          command: |
+            earthly -P +devcards-image
+      - run:
+          name: Build Docs Image
+          command: |
+            earthly -P +docs-image
+      - run:
+          name: Build Jar
+          command: |
+            earthly -P +jar
+      - run:
+          name: Build Main Image
+          command: |
+            export BUILD_VERSION=$(clojure -T:build print-version)
+            earthly -P +image --tag ${BUILD_VERSION?}
+      - run:
+          name: Push Images
+          command: |
+            export BUILD_VERSION=$(clojure -T:build print-version)
+            earthly -P --push +cert-downloader
+            earthly -P --push +fileserver
+            earthly -P --push +devspace-base
+            earthly -P --push +devcards-image
+            earthly -P --push +docs-image
             earthly -P --remote-cache=duck1123/dinsro:cache --push +image --tag ${BUILD_VERSION?}
       - run:
           name: Push latest
           command: |
-            docker tag duck1123/dinsro:$BUILD_VERSION duck1123/dinsro:latest
+            export BUILD_VERSION=$(clojure -T:build print-version)
+            docker tag duck1123/dinsro:${BUILD_VERSION?} duck1123/dinsro:latest
             docker push duck1123/dinsro:latest
