@@ -1,7 +1,6 @@
 (ns dinsro.actions.core.transactions
   (:require
-   [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>def >defn => ?]]
+   [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [dinsro.actions.core.node-base :as a.c.node-base]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.model.core.blocks :as m.c.blocks]
@@ -9,12 +8,15 @@
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.core.tx-out :as m.c.tx-out]
-   [dinsro.queries.core.blocks :as q.c.blocks]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.transactions :as q.c.tx]
    [dinsro.queries.core.tx-in :as q.c.tx-in]
    [dinsro.queries.core.tx-out :as q.c.tx-out]
    [lambdaisland.glogc :as log]))
+
+;; [../../model/core/transactions.cljc]
+;; [../../mutations/core/transactions.cljc]
+;; [../../responses/core/transactions.cljc]
 
 (>defn fetch-tx
   [node tx-id]
@@ -118,39 +120,6 @@
       (throw (ex-info "failed to find tx" {})))
     (throw (ex-info "failed to find node" {}))))
 
-(>def ::fetch-result (s/keys))
-
-(>defn do-fetch!
-  "Fetch tx info from node. Mutation handler"
-  [{::m.c.transactions/keys [id]}]
-  [::m.c.transactions/id-obj => ::fetch-result]
-  (if-let [tx (q.c.tx/read-record id)]
-    (if-let [block-id (::m.c.transactions/block tx)]
-      (if-let [block (q.c.blocks/read-record block-id)]
-        (if-let [network-id (::m.c.blocks/network block)]
-          (if-let [node-id (first (q.c.nodes/find-by-network network-id))]
-            (let [{::m.c.transactions/keys [tx-id]} tx
-
-                  returned-id (update-tx node-id block-id tx-id)]
-              {:status       :passed
-               ::m.c.transactions/item (q.c.tx/read-record returned-id)
-               :id           returned-id})
-            (do
-              (log/warn :fetch!/no-node-id {:network-id network-id})
-              {:status :failed}))
-          (do
-            (log/warn :fetch!/no-network-id {:block block})
-            {:status :failed}))
-        (do
-          (log/info :fetch!/block-not-found {:block-id block-id})
-          {:status :failed}))
-      (do
-        (log/warn :fetch!/no-block-id {:id id :tx tx})
-        {:status :failed}))
-    (do
-      (log/warn :fetch!/tx-not-read {:id id})
-      {:status :failed})))
-
 (defn search!
   [props]
   (log/info :search!/searching {:props props})
@@ -165,7 +134,3 @@
       (do
         (log/info :search!/not-cached {:tx-id tx-id})
         nil))))
-
-(defn do-delete!
-  [props]
-  (log/info :do-delete!/starting {:props props}))

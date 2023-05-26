@@ -1,6 +1,5 @@
 (ns dinsro.mutations.core.blocks
   (:require
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.core.blocks :as a.c.blocks])
@@ -9,39 +8,11 @@
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.core.blocks :as q.c.blocks])
    #?(:clj [dinsro.queries.core.nodes :as q.c.nodes])
+   [dinsro.responses.core.blocks :as r.c.blocks]
    [lambdaisland.glogc :as log]))
 
+#?(:clj (comment ::r.c.blocks/_))
 #?(:cljs (comment ::pc/_ ::m.c.blocks/_ ::m.users/_ ::mu/_))
-
-(defsc FetchResponseResponse
-  [_this _props]
-  {:query [::m.c.blocks/id
-           ::m.c.blocks/bits
-           ::m.c.blocks/chainwork
-           ::m.c.blocks/difficulty
-           ::m.c.blocks/hash
-           ::m.c.blocks/height
-           ::m.c.blocks/merkle-root
-           ::m.c.blocks/nonce
-           ::m.c.blocks/size
-           ::m.c.blocks/time
-           ::m.c.blocks/version
-           ::m.c.blocks/transaction-count
-           ::m.c.blocks/median-time
-           ::m.c.blocks/next-block
-           ::m.c.blocks/previous-block
-           ::m.c.blocks/weight
-           ::m.c.blocks/version-hex
-           ::m.c.blocks/stripped-size
-           ::m.c.blocks/fetched?
-           ::m.c.blocks/network]
-   :ident ::m.c.blocks/id})
-
-(defsc FetchResponse
-  [_this _props]
-  {:query [::mu/status
-           {:item (comp/get-query FetchResponseResponse)}
-           :message]})
 
 #?(:clj
    (pc/defmutation delete!
@@ -67,7 +38,7 @@
    :cljs
    (defmutation fetch! [_props]
      (action [_env] true)
-     (remote [env] (fm/returning env FetchResponse))))
+     (remote [env] (fm/returning env r.c.blocks/FetchResponse))))
 
 #?(:clj
    (pc/defmutation fetch-transactions!
@@ -86,19 +57,6 @@
    (defmutation fetch-transactions! [_props]
      (action [_env] true)
      (remote [_env] true)))
-
-(defsc SearchResponse
-  [_ _]
-  {:initial-state {::mu/status       :initial
-                   :tx-id            nil
-                   :node             nil
-                   :tx               nil
-                   ::m.c.blocks/item {}}
-   :query         [::mu/status
-                   :tx-id
-                   :node
-                   :tx
-                   ::m.c.blocks/item]})
 
 #?(:clj
    (pc/defmutation search!
@@ -123,6 +81,6 @@
                                       (when false {:env env})))))
 
      (remote [env]
-       (fm/returning env SearchResponse))))
+       (fm/returning env r.c.blocks/SearchResponse))))
 
 #?(:clj (def resolvers [delete! fetch! fetch-transactions! search!]))

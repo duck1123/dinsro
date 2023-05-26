@@ -1,6 +1,5 @@
 (ns dinsro.mutations.ln.nodes
   (:require
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.ln.accounts :as a.ln.accounts])
@@ -12,8 +11,10 @@
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.ln.nodes :as q.ln.nodes])
+   [dinsro.responses.ln.nodes :as r.ln.nodes]
    #?(:clj [lambdaisland.glogc :as log])))
 
+#?(:clj (comment ::r.ln.nodes/_))
 #?(:cljs (comment ::m.ln.nodes/_ ::m.ln.remote-nodes/_ ::pc/_ ::mu/_))
 
 #?(:clj
@@ -31,20 +32,6 @@
    (defmutation create-peer! [_props]
      (action [_env] true)
      (remote [_env] true)))
-
-(defsc NodeCert
-  [_this _props]
-  {:query [::m.ln.nodes/hasCert?
-           ::m.ln.nodes/id
-           :com.fulcrologic.fulcro.algorithms.form-state/config]
-   :ident ::m.ln.nodes/id})
-
-(defsc NodeMacaroonResponse
-  [_this _props]
-  {:query [::m.ln.nodes/hasMacaroon?
-           ::m.ln.nodes/id
-           ::mu/status]
-   :ident ::m.ln.nodes/id})
 
 #?(:clj
    (pc/defmutation download-cert!
@@ -74,7 +61,7 @@
    :cljs
    (defmutation download-cert! [_props]
      (action [_env] true)
-     (remote [env] (fm/returning env NodeCert))))
+     (remote [env] (fm/returning env r.ln.nodes/NodeCert))))
 
 #?(:clj
    (pc/defmutation download-macaroon!
@@ -92,12 +79,7 @@
    :cljs
    (defmutation download-macaroon! [_props]
      (action [_env] true)
-     (remote [env] (fm/returning env NodeMacaroonResponse))))
-
-(defsc PeerResponse
-  [_this _props]
-  {:query         [::mu/status]
-   :initial-state {::mu/status :initial}})
+     (remote [env] (fm/returning env r.ln.nodes/NodeMacaroonResponse))))
 
 #?(:clj
    (pc/defmutation generate!
@@ -179,7 +161,7 @@
      (action [_env] true)
      (remote [env]
        (-> env
-           (fm/returning PeerResponse)))))
+           (fm/returning r.ln.nodes/PeerResponse)))))
 
 #?(:clj
    (pc/defmutation fetch-transactions!

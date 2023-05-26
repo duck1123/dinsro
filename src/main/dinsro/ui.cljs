@@ -129,7 +129,7 @@
      (df/load! this ::m.settings/site-config Config)
      (uism/begin! this machines/hideable ::mu.navbars/navbarsm
                   {:actor/navbar (uism/with-actor-class [::m.navbars/id :main] u.navbars/Navbar)}))
-   :css           [[:.primary-grid {:height "100%"}]
+   :css           [[:.primary-grid {:height "100%" :overflow "auto"}]
                    [:.pushed {:height "100%" :margin-top "40px"}]
                    [:.pusher {:height "100%"}]
                    [:.root-container {:height "100%"}]

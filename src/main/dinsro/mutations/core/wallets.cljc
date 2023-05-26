@@ -1,6 +1,6 @@
 (ns dinsro.mutations.core.wallets
   (:require
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   #?(:cljs [com.fulcrologic.fulcro.components :as comp])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    #?(:cljs [com.fulcrologic.rad.form :as form])
    [com.wsscode.pathom.connect :as pc]
@@ -8,15 +8,15 @@
    #?(:clj [dinsro.actions.core.wallets :as a.c.wallets])
    #?(:clj [dinsro.actions.core.wallet-addresses :as a.c.wallet-addresses])
    [dinsro.model.core.wallets :as m.c.wallets]
-   [dinsro.model.core.words :as m.c.words]
    [dinsro.mutations :as mu]
+   #?(:clj [dinsro.processors.core.wallets :as p.c.wallets])
+   [dinsro.responses.core.wallets :as r.c.wallets]
    #?(:clj [lambdaisland.glogc :as log])))
 
-#?(:cljs (comment ::pc/_ ::m.c.wallets/_ ::mu/_))
+;; [../../processors/core/wallets.clj]
 
-(defsc CreationResponse
-  [_this _props]
-  {:query [:mu/status ::m.c.wallets/id]})
+#?(:clj (comment ::r.c.wallets/_))
+#?(:cljs (comment ::pc/_ ::m.c.wallets/_ ::mu/_))
 
 #?(:clj
    (pc/defmutation create!
@@ -32,7 +32,7 @@
    :cljs
    (fm/defmutation create! [_props]
      (action [_env] true)
-     (remote [env] (fm/returning env CreationResponse))
+     (remote [env] (fm/returning env r.c.wallets/CreationResponse))
      (ok-action [{:keys [app component] :as env}]
        (let [body             (get-in env [:result :body])
              response         (get body `create!)
@@ -42,31 +42,6 @@
          (form/view! app target-component id)
          {}))))
 
-(defsc RollWord
-  [_this _props]
-  {:query [::m.c.words/word ::m.c.words/position ::m.c.words/id]
-   :ident ::m.c.words/id})
-
-(defsc RollWallet
-  [_this _props]
-  {:query [::m.c.wallets/id
-           ::m.c.wallets/key
-           {::m.c.wallets/words (comp/get-query RollWord)}]
-   :ident ::m.c.wallets/id})
-
-(defsc RollResponse
-  [_this _props]
-  {:query [::mu/status {::m.c.wallets/item (comp/get-query RollWallet)}]})
-
-#?(:clj
-   (defn do-roll!
-     [props]
-     (let [{::m.c.wallets/keys [id]} props
-           response                (a.c.wallets/roll! props)]
-       (comment id)
-       {::mu/status :ok
-        ::m.c.wallets/item response})))
-
 #?(:clj
    (pc/defmutation roll!
      [env props]
@@ -74,18 +49,14 @@
       ::pc/output [::mu/status ::m.c.wallets/item]}
      (let [user-id (a.authentication/get-user-id env)
            props   (assoc props ::m.c.wallets/user user-id)]
-       (do-roll! props)))
+       (p.c.wallets/roll! props)))
 
    :cljs
    (fm/defmutation roll! [_props]
      (action [_env] true)
-     (remote [env] (fm/returning env RollResponse))))
+     (remote [env] (fm/returning env r.c.wallets/RollResponse))))
 
 ;; derive!
-
-(defsc DeriveResponse
-  [_this _props]
-  {:query [::mu/status]})
 
 #?(:clj
    (pc/defmutation derive!
@@ -97,11 +68,7 @@
    :cljs
    (fm/defmutation derive! [_props]
      (action [_env] true)
-     (remote [env] (fm/returning env DeriveResponse))))
-
-(defsc CalculateAddressesResponse
-  [_this _props]
-  {:query [::mu/status]})
+     (remote [env] (fm/returning env r.c.wallets/DeriveResponse))))
 
 #?(:clj
    (pc/defmutation calculate-addresses!
@@ -115,7 +82,7 @@
    :cljs
    (fm/defmutation calculate-addresses! [_props]
      (action [_env] true)
-     (remote [env] (fm/returning env CalculateAddressesResponse))))
+     (remote [env] (fm/returning env r.c.wallets/CalculateAddressesResponse))))
 
 #?(:clj
    (pc/defmutation delete!
