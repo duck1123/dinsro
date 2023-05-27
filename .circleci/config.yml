@@ -86,15 +86,5 @@ jobs:
           name: Push Images
           command: |
             export BUILD_VERSION=$(clojure -T:build print-version)
-            earthly -P --push +cert-downloader
-            earthly -P --push +fileserver
-            earthly -P --push +devspace-base
-            earthly -P --push +devcards-image
-            earthly -P --push +docs-image
-            earthly -P --remote-cache=duck1123/dinsro:cache --push +image --tag ${BUILD_VERSION?}
-      - run:
-          name: Push latest
-          command: |
-            export BUILD_VERSION=$(clojure -T:build print-version)
-            docker tag duck1123/dinsro:${BUILD_VERSION?} duck1123/dinsro:latest
-            docker push duck1123/dinsro:latest
+            earthly -P --remote-cache=duck1123/dinsro:cache --push +all-images --tag ${BUILD_VERSION?}
+            earthly -P --remote-cache=duck1123/dinsro:cache --push +all-images --tag latest

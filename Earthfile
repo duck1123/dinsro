@@ -110,6 +110,14 @@ INSTALL_TILT_LATEST:
   COMMAND
   RUN curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
 
+all-images:
+  BUILD +cert-downloader
+  BUILD +fileserver
+  BUILD +devspace-base
+  BUILD +devcards-image
+  BUILD +docs-image
+  BUILD +image
+
 base-builder:
   FROM ${base_image}
   WORKDIR ${src_home}
@@ -230,7 +238,7 @@ devcards-image:
   COPY --dir resources/tilt resources
   COPY --dir public .
   CMD ["bb", "devcards-server"]
-  SAVE IMAGE ${EXPECTED_REF}
+  SAVE IMAGE --push ${EXPECTED_REF}
 
 devspace-base:
   ARG repo=duck1123
