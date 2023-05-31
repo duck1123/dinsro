@@ -331,7 +331,7 @@
 
   test-clj
   {:doc  "Run clojure tests"
-   :task (shell "bin/kaocha clj")}
+   :task (shell "bin/kaocha clj --profile verbose")}
 
   test-cljs
   {:doc  "Run clojurescript tests"

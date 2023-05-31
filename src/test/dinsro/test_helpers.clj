@@ -1,6 +1,6 @@
 (ns dinsro.test-helpers
   (:require
-   [dinsro.components.config :as config  :refer [secret]]
+   [dinsro.components.config :as config :refer [secret]]
    [dinsro.components.xtdb :as c.xtdb]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]
@@ -10,10 +10,11 @@
   [f schemata]
   (log/info :start-db/starting {:f f :schemata schemata})
   (mount/in-cljc-mode)
+  (mount/start-with-args {:config "config/test.edn"}  #'config/config-map)
+  (mount/start #'secret)
+  (log/info :start-db/stopping {:config (config/get-config)})
   (mount/stop #'c.xtdb/xtdb-nodes)
   (mount/start
-   #'config/config-map
-   #'secret
    #'c.xtdb/xtdb-nodes)
   (f))
 

@@ -27,12 +27,14 @@
 
 (defn start-config!
   []
+  (log/info :start-config!/starting {})
   (let [{:keys [config overrides]} (args)
-        config-path                (or config (get-config-path) "config/prod.edn")
+        resolved-path              (get-config-path)
+        config-path                (or config resolved-path "config/prod.edn")
         loaded-config              (fserver/load-config! {:config-path config-path})
         merged-config              (merge loaded-config overrides)]
     (logging/configure-logging! merged-config)
-    (log/info :config/starting {:config-path config-path})
+    (log/info :start-config!/finished {:config-path config-path})
     merged-config))
 
 (defstate config-map

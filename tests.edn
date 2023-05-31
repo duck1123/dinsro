@@ -38,6 +38,6 @@
 
   {:id           :clj
    :focus-meta   [:focus]
-   :source-paths ["src/main" "src/shared"]
+   :source-paths ["src/test" "src/main" "src/shared"]
    :test-paths   ["src/test"]
    :ns-patterns  [".*"]}]}
