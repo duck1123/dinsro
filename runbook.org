@@ -78,6 +78,7 @@ This will create a single node kubernetes cluster in a docker container
       --api-port 6550 \
       -p "80:80@loadbalancer" \
       -p "443:443@loadbalancer" \
+      --k3s-server-arg "--no-deploy=traefik"
       --servers 1 \
       --registry-use k3d-myregistry.localtest.me:12345 \
       --kubeconfig-update-default
