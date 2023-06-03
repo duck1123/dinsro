@@ -29,7 +29,6 @@
   (if override-form
     (form/render-layout this props)
     (dom/div {}
-      (dom/p {} "foo")
       (form/render-layout this props))))
 
 (defrouter Router
