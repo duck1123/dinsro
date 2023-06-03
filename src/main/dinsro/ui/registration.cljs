@@ -4,9 +4,9 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [dinsro.ui.forms.registration :as u.f.registration]))
 
-(defsc RegistrationPage
+(defsc Page
   [_this {::keys [allow-registration form]}]
-  {:ident         (fn [_] [:component/id ::RegistrationPage])
+  {:ident         (fn [_] [:page/id ::Page])
    :initial-state {::allow-registration true
                    ::form               {}}
    :query         [::allow-registration

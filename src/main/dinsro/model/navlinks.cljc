@@ -314,7 +314,7 @@
    :login
    {::auth-link? true
     ::label      "Login"
-    ::route      :dinsro.ui.login/LoginPage}
+    ::route      :dinsro.ui.login/Page}
 
    :nodes
    {::label "Nodes"
@@ -362,7 +362,7 @@
 
    :registration
    {::label "Registration"
-    ::route :dinsro.ui.registration/RegistrationPage}
+    ::route :dinsro.ui.registration/Page}
 
    :nostr-relays-connections
    {::label "Connections"

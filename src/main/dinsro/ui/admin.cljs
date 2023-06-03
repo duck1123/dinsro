@@ -43,12 +43,12 @@
       (dom/div {}
         (dom/div "No route selected.")))))
 
-(defsc AdminPage
+(defsc Page
   [_this {:ui/keys [nav-menu router]}]
-  {:ident         (fn [] [:component/id ::AdminPage])
+  {:ident         (fn [] [:page/id ::Page])
    :initial-state
    (fn [props]
-     (log/trace :AdminPage/initial-state {:props props})
+     (log/trace :Page/initial-state {:props props})
      {:ui/nav-menu (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin})
       :ui/router   (comp/get-initial-state Router)})
    :query         [{:ui/nav-menu (comp/get-query u.menus/NavMenu)}

@@ -50,9 +50,9 @@
         (dom/p {} "Core router failed to match any target")
         (dom/code {} (pr-str props))))))
 
-(defsc CorePage
+(defsc Page
   [_this {:ui/keys [router]}]
-  {:ident         (fn [] [:component/id ::CorePage])
+  {:ident         (fn [] [:page/id ::Page])
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["core"]}

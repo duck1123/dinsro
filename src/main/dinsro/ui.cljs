@@ -60,23 +60,23 @@
    :router-targets [u.accounts/Report
                     u.accounts/NewForm
                     u.accounts/Show
-                    u.admin/AdminPage
+                    u.admin/Page
                     u.categories/Report
                     u.categories/NewForm
                     u.contacts/NewContactForm
                     u.contacts/Report
-                    u.core/CorePage
+                    u.core/Page
                     u.currencies/Report
                     u.currencies/NewForm
                     u.currencies/Show
                     u.debits/Show
                     u.home/Page
-                    u.login/LoginPage
+                    u.login/Page
                     u.ln/Page
                     u.nodes/Page
                     u.nostr/Page
-                    u.registration/RegistrationPage
-                    u.settings/SettingsPage
+                    u.registration/Page
+                    u.settings/Page
                     u.transactions/NewTransaction
                     u.transactions/Show
                     u.transactions/Report]}

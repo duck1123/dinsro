@@ -26,7 +26,7 @@
         target0                (dr/resolve-target app route)
         target                 (condp = target0
                                  nil               u.home/Page
-                                 u.admin/AdminPage u.a.users/Report
+                                 u.admin/Page      u.a.users/Report
                                  u.a.nostr/Page    u.a.n.dashboard/Dashboard
                                  u.c.networks/Show u.c.n.addresses/SubPage
                                  target0)]

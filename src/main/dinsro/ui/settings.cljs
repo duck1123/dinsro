@@ -45,9 +45,9 @@
     u.s.categories/Show
     u.s.categories/NewForm]})
 
-(defsc SettingsPage
+(defsc Page
   [_this {:ui/keys [nav-menu router vertical-menu]}]
-  {:ident         (fn [_] [:component/id ::Page])
+  {:ident         (fn [_] [:page/id ::Page])
    :initial-state
    (fn [_]
      {:ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings})

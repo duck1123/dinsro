@@ -4,16 +4,16 @@
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.authorization :as auth]
    [dinsro.mutations.session :as mu.session]
-   [dinsro.ui.login :refer [LoginPage]]))
+   [dinsro.ui.login :refer [Page]]))
 
-(auth/defauthenticator Authenticator {:local LoginPage})
+(auth/defauthenticator Authenticator {:local Page})
 
 (def ui-authenticator (comp/factory Authenticator))
 
 (defsc LocalData
   [_ _]
   {:initial-state {}
-   :query         [{[:com.fulcrologic.rad.authorization/authorization :local] (comp/get-query mu.session/Session)}]})
+   :query         [{[::auth/authorization :local] (comp/get-query mu.session/Session)}]})
 
 (defsc UserAuthenticator
   [_ _]

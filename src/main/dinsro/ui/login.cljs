@@ -13,9 +13,9 @@
    [dinsro.mutations]
    [dinsro.mutations.session :as mu.session]))
 
-(defsc LoginPage
+(defsc Page
   [this {:user/keys [message password username]} {:keys [visible?]}]
-  {:ident               (fn [_] [:component/id ::LoginPage])
+  {:ident               (fn [_] [:page/id ::Page])
    :initial-state       {:user/username m.users/default-username
                          :user/message  nil
                          :user/password m.users/default-password}

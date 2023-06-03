@@ -30,7 +30,7 @@
 
 (defsc Page
   [_this {:ui/keys [router]}]
-  {:ident         (fn [] [:component/id ::Page])
+  {:ident         (fn [] [:page/id ::Page])
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["ln"]}
