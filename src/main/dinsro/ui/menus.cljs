@@ -83,7 +83,7 @@
                        ::m.navbars/id
                        {::m.navbars/items (comp/get-query (comp/registry-key->class :dinsro.ui.navbars/NavLink))}]
    :initial-state     (fn [props]
-                        (log/info :VerticalMenu/initial-state {:props props})
+                        (log/trace :VerticalMenu/initial-state {:props props})
                         {::m.navbars/id    (::m.navbars/id props)
                          ::m.navbars/items []
                          :id               nil})}

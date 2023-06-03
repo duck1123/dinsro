@@ -31,7 +31,7 @@
   {:ident         ::m.n.requests/id
    :initial-state
    (fn [props]
-     (log/info :Show/initial-state {:props props})
+     (log/trace :Show/initial-state {:props props})
      (let [id (::m.n.requests/id props)]
        {::m.n.requests/id           nil
         :ui/nav-menu
