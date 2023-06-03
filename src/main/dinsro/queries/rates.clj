@@ -14,7 +14,7 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [manifold.stream :as ms]
-   [tick.alpha.api :as t]
+   [tick.core :as t]
    [xtdb.api :as xt]))
 
 ;; [[../actions/rates.clj]]

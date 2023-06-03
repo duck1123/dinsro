@@ -67,7 +67,7 @@
    [expound.alpha :as expound]
    [lambdaisland.glogc :as log]
    [reitit.coercion.spec]
-   [tick.alpha.api :as t])
+   [tick.core :as t])
   (:import
    io.grpc.StatusRuntimeException))
 

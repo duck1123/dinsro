@@ -9,7 +9,7 @@
    [dinsro.client.converters.get-block-result :as c.c.get-block-result]
    [dinsro.model.core.networks :as m.c.networks]
    [lambdaisland.glogc :as log]
-   [tick.alpha.api :as t]))
+   [tick.core :as t]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

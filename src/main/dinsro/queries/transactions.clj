@@ -12,7 +12,7 @@
    [dinsro.options.users :as o.users]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
-   [tick.alpha.api :as t]
+   [tick.core :as t]
    [xtdb.api :as xt]))
 
 ;; [[../actions/transactions.clj]]

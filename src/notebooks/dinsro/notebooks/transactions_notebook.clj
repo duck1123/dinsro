@@ -7,7 +7,7 @@
    [dinsro.specs :as ds]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]
-   [tick.alpha.api :as t]))
+   [tick.core :as t]))
 
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
