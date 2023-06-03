@@ -3,6 +3,7 @@
    [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.model.navbars :as m.navbars]
    #?(:clj [dinsro.queries.users :as q.users])))
 
 ;; [../ui/settings.cljs]
@@ -27,11 +28,11 @@
 (defattr site-config ::site-config :ref
   {ao/pc-output [{::site-config
                   [::id ::initialized? ::loaded?
-                   {::menu [:menu/id]}]}]
+                   {::menu [::m.navbars/id]}]}]
    ao/target ::id
    ao/pc-resolve
    (fn [_env _props]
      {::site-config #?(:cljs {}
-                       :clj (assoc (get-site-config) ::menu {:menu/id :main}))})})
+                       :clj (assoc (get-site-config) ::menu {::m.navbars/id :main}))})})
 
 (def attributes [site-config])

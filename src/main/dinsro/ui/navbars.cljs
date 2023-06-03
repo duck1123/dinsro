@@ -132,12 +132,12 @@
                    {::m.navbars/items (comp/get-query NavLink)}]})
 
 (defsc NavbarSidebar
-  [this {:ui/keys   [inverted?]
-         :menu/keys [sidebar]
-         :as        props}]
-  {:ident         :menu/id
-   :query         [:menu/id
-                   {:menu/sidebar (comp/get-query MenuItem)}
+  [this {:ui/keys         [inverted?]
+         ::m.navbars/keys [sidebar]
+         :as              props}]
+  {:ident         ::m.navbars/id
+   :query         [::m.navbars/id
+                   {::m.navbars/sidebar (comp/get-query MenuItem)}
                    :ui/inverted?
                    [::auth/authorization :local]
                    [::uism/asm-id ::mu.navbars/navbarsm]]
@@ -146,9 +146,9 @@
                           merged-data (merge current-normalized data-tree defaults)]
                       (log/info :sidebar/merged {:defaults defaults :merged-data merged-data})
                       merged-data))
-   :initial-state {:menu/id      nil
-                   :menu/sidebar {}
-                   :ui/inverted? true}}
+   :initial-state {::m.navbars/id      nil
+                   ::m.navbars/sidebar {}
+                   :ui/inverted?       true}}
   (let [visible?   (= (uism/get-active-state this ::mu.navbars/navbarsm) :state/shown)
         logged-in? (get-logged-in props)]
     (log/debug :sidebar/rendering {:props props :visible? visible?})
@@ -210,17 +210,17 @@
   [this {:ui/keys [site-button] :as props}]
   {:css           [[:.navbar {:background-color "red"}]]
    :ident         ::m.navbars/id
-   :initial-state {:ui/expanded?    false
-                   ::m.navbars/id   :main
+   :initial-state {::m.navbars/id   :main
+                   :ui/expanded?    false
                    :ui/menu-links   []
                    :ui/site-button  {}
                    :ui/unauth-links []}
-   :query         [::m.navbars/id
+   :query         [{[::auth/authorization :local] (comp/get-query NavbarAuthQuery)}
+                   ::m.navbars/id
+                   :ui/expanded?
                    {:ui/menu-links (comp/get-query TopNavLink)}
                    {:ui/site-button (comp/get-query SiteButton)}
                    {:ui/unauth-links (comp/get-query NavLink)}
-                   {[::auth/authorization :local] (comp/get-query NavbarAuthQuery)}
-                   :ui/expanded?
                    [::uism/asm-id ::mu.navbars/navbarsm]]}
   (let [inverted   true
         logged-in? (get-logged-in props)]
@@ -235,27 +235,27 @@
 (def ui-minimal-navbar (comp/factory MinimalNavbar))
 
 (defsc Navbar
-  [_this {:ui/keys   [inverted? site-button]
-          :as        props
-          :menu/keys [authenticated unauthenticated]}]
+  [_this {::m.navbars/keys [authenticated unauthenticated]
+          :ui/keys         [inverted? site-button]
+          :as              props}]
   {:css           [[:.navbar {:background-color "red"}]]
-   :ident         :menu/id
-   :initial-state {:ui/inverted?         true
-                   :menu/authenticated   {}
-                   :menu/unauthenticated {}
-                   :menu/sidebar         {}
-                   :ui/expanded?         false
-                   :ui/site-button       {}
-                   :menu/id              nil}
+   :ident         ::m.navbars/id
+   :initial-state {::m.navbars/authenticated   {}
+                   ::m.navbars/id              nil
+                   ::m.navbars/sidebar         {}
+                   ::m.navbars/unauthenticated {}
+                   :ui/expanded?               false
+                   :ui/inverted?               true
+                   :ui/site-button             {}}
    :pre-merge     (fn [{:keys [current-normalized data-tree]}]
                     (let [defaults {:ui/inverted?   true
                                     :ui/site-button (comp/get-initial-state SiteButton)}]
                       (merge current-normalized data-tree defaults)))
    :query         [:ui/inverted?
-                   {:menu/authenticated (comp/get-query MenuItem)}
-                   {:menu/unauthenticated (comp/get-query MenuItem)}
-                   {:menu/sidebar (comp/get-query MenuItem)}
-                   :menu/id
+                   {::m.navbars/authenticated (comp/get-query MenuItem)}
+                   {::m.navbars/unauthenticated (comp/get-query MenuItem)}
+                   {::m.navbars/sidebar (comp/get-query MenuItem)}
+                   ::m.navbars/id
                    {:ui/site-button (comp/get-query SiteButton)}
                    {[::auth/authorization :local] (comp/get-query NavbarAuthQuery)}
                    :ui/expanded?

@@ -152,22 +152,22 @@
 #?(:clj
    (pc/defresolver authenticated
      [_env _props]
-     {::pc/input #{:menu/id}
-      ::pc/output [{:menu/authenticated [::id]}]}
-     {:menu/authenticated {::id :main}}))
+     {::pc/input #{::id}
+      ::pc/output [{::authenticated [::id]}]}
+     {::authenticated {::id :main}}))
 
 #?(:clj
    (pc/defresolver sidebar
      [_env _props]
      {::pc/input #{}
-      ::pc/output [{:menu/sidebar [::id]}]}
-     {:menu/sidebar {::id :sidebar}}))
+      ::pc/output [{::sidebar [::id]}]}
+     {::sidebar {::id :sidebar}}))
 
 #?(:clj
    (pc/defresolver unauthenticated
      [_env _props]
      {::pc/input #{}
-      ::pc/output [{:menu/unauthenticated [::id]}]}
-     {:menu/unauthenticated {::id :unauth}}))
+      ::pc/output [{::unauthenticated [::id]}]}
+     {::unauthenticated {::id :unauth}}))
 
 #?(:clj (def resolvers [items authenticated sidebar unauthenticated]))
