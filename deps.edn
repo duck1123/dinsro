@@ -109,7 +109,7 @@
 
   ;; https://github.com/thheller/shadow-cljs
   thheller/shadow-cljs                      {:mvn/version "2.15.12"}
-  tick/tick                                 {:mvn/version "0.4.32"
+  tick/tick                                 {:mvn/version "0.6.2"
                                              :exclusions  [cljsjs/js-joda-timezone
                                                            cljsjs/js-joda-timezone-en-us]}}
 

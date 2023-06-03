@@ -1,5 +1,6 @@
 (ns dinsro.ui.transactions
   (:require
+   ;; [clojure.instant :as cinst]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
@@ -40,7 +41,8 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.transactions.debits :as u.t.debits]
-   [lambdaisland.glogc :as log]))
+   [lambdaisland.glogc :as log]
+   [tick.core :as t]))
 
 ;; [[../joins/transactions.cljc]]
 ;; [[../model/transactions.cljc]]
@@ -141,20 +143,21 @@
                      o.transactions/date              nil
                      o.transactions/description       ""
                      ::j.transactions/positive-debits []
-                     ::j.transactions/negative-debits []})
-   :query         (fn []
-                    [o.transactions/id
-                     o.transactions/date
-                     o.transactions/description
-                     {::j.transactions/positive-debits (comp/get-query DebitLine-List)}
-                     {::j.transactions/negative-debits (comp/get-query DebitLine-List)}])}
+                     ::j.transactions/negative-debits []})}
+  :query         (fn []
+                   [o.transactions/id
+                    o.transactions/date
+                    o.transactions/description
+                    {::j.transactions/positive-debits (comp/get-query DebitLine-List)}
+                    {::j.transactions/negative-debits (comp/get-query DebitLine-List)}])
+  (log/info :BodyItem/starting {:props props})
   (dom/div :.ui.item
     (ui-segment {}
       (ui-grid {:padded false}
         (ui-grid-row {}
           (ui-grid-column {:width 8}
             (u.links/ui-transaction-link props))
-          (ui-grid-column {:textAlign "right"  :width 8}
+          (ui-grid-column {:textAlign "right" :width 8}
             (if use-moment
               (when date
                 (let [iso (f.date-time/->iso (ds/->inst date))]
