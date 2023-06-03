@@ -67,7 +67,7 @@
    [expound.alpha :as expound]
    [lambdaisland.glogc :as log]
    [reitit.coercion.spec]
-   [tick.alpha.api :as tick])
+   [tick.alpha.api :as t])
   (:import
    io.grpc.StatusRuntimeException))
 
@@ -336,13 +336,13 @@
   (merge
    {:node          "main"
     :blockHash     "block hash"
-    :blockTime     (tick/instant)
+    :blockTime     (t/instant)
     :confirmations 1
     :hash          "hash"
     :hex           "hex"
     :lockTime      0
     :size          0
-    :time          (tick/instant)
+    :time          (t/instant)
     :version       1
     :vsize         1
     :in            [{:scriptSig {}

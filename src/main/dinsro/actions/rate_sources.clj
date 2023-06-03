@@ -16,7 +16,7 @@
    [lambdaisland.glogc :as log]
    [manifold.time :as mt]
    [mount.core :as mount]
-   [tick.alpha.api :as tick]))
+   [tick.alpha.api :as t]))
 
 ;; [../queries/rate_sources.clj]
 ;; [../processors/rate_sources.clj]
@@ -32,7 +32,7 @@
         rate (processor-fn data)
         params {::m.rates/rate   (Double/parseDouble rate)
                 ::m.rates/source id
-                ::m.rates/date   (tick/instant)}]
+                ::m.rates/date   (t/instant)}]
     (q.rates/create-record params)))
 
 ;; TODO: handle request failures and backoff
@@ -56,7 +56,7 @@
       (if-let [rate (fetch-rate source)]
         (let [rate-item {::m.rates/source id
                          ::m.rates/rate     rate
-                         ::m.rates/date     (tick/instant)}]
+                         ::m.rates/date     (t/instant)}]
           (log/info :rate/updating {:currency currency :rate rate})
           (q.rates/create-record rate-item))
         (log/error :rate/not-found {:source source}))

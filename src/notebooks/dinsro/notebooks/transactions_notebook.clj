@@ -7,7 +7,7 @@
    [dinsro.specs :as ds]
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]
-   [tick.alpha.api :as tick]))
+   [tick.alpha.api :as t]))
 
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
@@ -17,7 +17,7 @@
 
 (ds/->inst "2021-11-07T13:05:16")
 
-(tick/now)
+(t/now)
 
 ;; ## create record
 
@@ -25,6 +25,6 @@
 
   (q.transactions/create-record
    {::m.transactions/description "test"
-    ::m.transactions/date        (tick/now)})
+    ::m.transactions/date        (t/now)})
 
   nil)

@@ -9,7 +9,7 @@
    [dinsro.client.converters.get-block-result :as c.c.get-block-result]
    [dinsro.model.core.networks :as m.c.networks]
    [lambdaisland.glogc :as log]
-   [tick.alpha.api :as tick]))
+   [tick.alpha.api :as t]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid
@@ -146,9 +146,9 @@
           nonce size time tx median-time weight version-hex
           stripped-size version]
          ::keys [fetched? network]} params
-        time-inst                   (some-> time (* 1000) tick/instant)
+        time-inst                   (some-> time (* 1000) t/instant)
         transaction-count           (count tx)
-        median-time-inst            (some-> median-time (* 1000) tick/instant)
+        median-time-inst            (some-> median-time (* 1000) t/instant)
         record                      {::hash              hash
                                      ::height            height
                                           ;; ::node              node

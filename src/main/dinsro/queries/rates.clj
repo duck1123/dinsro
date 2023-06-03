@@ -14,7 +14,7 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [manifold.stream :as ms]
-   [tick.alpha.api :as tick]
+   [tick.alpha.api :as t]
    [xtdb.api :as xt]))
 
 ;; [../joins/rates.cljc]
@@ -106,7 +106,7 @@
         prepared-params (-> (prepare-record params)
                             (assoc ::m.rates/id id)
                             (assoc :xt/id id)
-                            (update ::m.rates/date tick/inst))]
+                            (update ::m.rates/date t/inst))]
     (log/trace :create-record/prepared {:prepared-params prepared-params})
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     (log/trace :create-record/finished {:id id})
@@ -120,7 +120,7 @@
         record (xt/pull db '[*] id)]
     (when (get record ::m.rates/rate)
       (-> record
-          (update ::m.rates/date tick/instant)
+          (update ::m.rates/date t/instant)
           (dissoc :xt/id)))))
 
 (>defn index-records

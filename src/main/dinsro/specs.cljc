@@ -5,7 +5,7 @@
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as gen]
    [clojure.test.check.generators]
-   [tick.alpha.api :as tick])
+   [tick.alpha.api :as t])
   (:import
    #?(:clj clojure.core.async.impl.channels.ManyToManyChannel)
    #?(:clj clojure.lang.Atom)
@@ -30,14 +30,14 @@
 
 (defn ->inst
   ([]
-   (tick/instant))
+   (t/instant))
   ([s]
-   (tick/instant (tick/in (tick/date-time s) default-timezone))))
+   (t/instant (t/in (t/date-time s) default-timezone))))
 
 #?(:clj
    (defn ms->inst
      [ms]
-     ;; [number? => tick/instant?]
+     ;; [number? => t/instant?]
      (Date. ms)))
 
 (s/def ::id uuid?)
@@ -46,8 +46,8 @@
 (s/def ::valid-double (s/and double? #(== % %)))
 (def valid-double ::valid-double)
 
-(s/def ::date-string (s/with-gen string? #(s/gen #{(str (tick/instant))})))
-(s/def ::date (s/with-gen any? #(gen/fmap tick/instant (s/gen ::date-string))))
+(s/def ::date-string (s/with-gen string? #(s/gen #{(str (t/instant))})))
+(s/def ::date (s/with-gen any? #(gen/fmap t/instant (s/gen ::date-string))))
 (def date ::date)
 
 (s/def ::id-string (s/with-gen (s/and string? #(re-matches #"\d+" %))

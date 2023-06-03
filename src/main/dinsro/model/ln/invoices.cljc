@@ -7,7 +7,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [tick.alpha.api :as tick]))
+   [tick.alpha.api :as t]))
 
 (def rename-map
   {:amtPaid         ::ammount-paid
@@ -40,7 +40,7 @@
         (dissoc :valueMsat)
         (dissoc :routeHints)
         (dissoc :htlcs)
-        (assoc ::creation-date (tick/instant (* creation-date 1000))))))
+        (assoc ::creation-date (t/instant (* creation-date 1000))))))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

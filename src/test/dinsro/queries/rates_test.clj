@@ -8,7 +8,7 @@
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
    [fulcro-spec.core :refer [assertions]]
-   [tick.alpha.api :as tick]))
+   [tick.alpha.api :as t]))
 
 (def schemata [])
 
@@ -52,7 +52,7 @@
         rate-id      (q.rates/create-record params)
         rate         (q.rates/read-record rate-id)
         response     (q.rates/index-records-by-currency currency-id)
-        date         (.getTime (tick/inst (::m.rates/date rate)))]
+        date         (.getTime (t/inst (::m.rates/date rate)))]
     (assertions
      (nth (first response) 0) => date
      (nth (first response) 1) => (::m.rates/rate rate))))

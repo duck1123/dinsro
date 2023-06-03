@@ -12,7 +12,7 @@
    [dinsro.model.users :as m.users]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
-   [tick.alpha.api :as tick]
+   [tick.alpha.api :as t]
    [xtdb.api :as xt]))
 
 ;; [../ui/transactions.cljs]
@@ -98,7 +98,7 @@
         prepared-params (-> params
                             (assoc ::m.transactions/id id)
                             (assoc :xt/id id)
-                            (update ::m.transactions/date tick/inst))]
+                            (update ::m.transactions/date t/inst))]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
 
@@ -109,7 +109,7 @@
         record (xt/pull db '[*] id)]
     (when (get record ::m.transactions/id)
       (-> record
-          (update ::m.transactions/date tick/instant)
+          (update ::m.transactions/date t/instant)
           (dissoc :xt/id)))))
 
 (>defn index-records
