@@ -14,7 +14,7 @@
    [http.async.client :as http-client]
    [jq.api :as jq]
    [lambdaisland.glogc :as log]
-   [manifold.time :as t]
+   [manifold.time :as mt]
    [mount.core :as mount]
    [tick.alpha.api :as tick]))
 
@@ -78,7 +78,7 @@
 (defn start-scheduler!
   []
   (log/info :start-scheduler!/starting {:enabled scheduler-enabled})
-  (let [scheduler (when scheduler-enabled (t/every (t/minutes 5) #'check-rates))]
+  (let [scheduler (when scheduler-enabled (mt/every (mt/minutes 5) #'check-rates))]
     (log/info :start-scheduler!/finished {:scheduler scheduler})
     scheduler))
 
