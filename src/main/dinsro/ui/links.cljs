@@ -321,6 +321,17 @@
 
 (def ui-pubkey-name-link (comp/factory PubkeyNameLinkForm {:keyfn ::m.n.pubkeys/id}))
 
+(form/defsc-form AdminPubkeyNameLinkForm [this {::j.n.pubkeys/keys [npub]
+                                                ::m.n.pubkeys/keys [id name]}]
+  {fo/id           m.n.pubkeys/id
+   fo/route-prefix "admin-pubkey-name-link"
+   fo/attributes   [m.n.pubkeys/hex
+                    m.n.pubkeys/name
+                    j.n.pubkeys/npub]}
+  (form-link this id (or name npub "(unknown)") :dinsro.ui.admin.nostr.pubkeys.events/SubPage))
+
+(def ui-admin-pubkey-name-link (comp/factory AdminPubkeyNameLinkForm {:keyfn ::m.n.pubkeys/id}))
+
 (form/defsc-form RateLinkForm [this {::m.rates/keys [id date]}]
   {fo/id         m.rates/id
    fo/route-prefix "rate-link"

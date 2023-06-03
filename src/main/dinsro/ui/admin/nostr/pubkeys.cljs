@@ -10,7 +10,7 @@
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.pubkeys/hex     #(u.links/ui-pubkey-link %3)
-                         ::m.n.pubkeys/name    #(u.links/ui-pubkey-name-link %3)
+                         ::m.n.pubkeys/name    #(u.links/ui-admin-pubkey-name-link %3)
                          ::m.n.pubkeys/picture #(u.links/img-formatter %3)}
    ro/columns           [m.n.pubkeys/picture
                          m.n.pubkeys/name
