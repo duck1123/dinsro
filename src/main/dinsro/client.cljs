@@ -54,7 +54,7 @@
   See shadow-cljs.edn `:init-fn` in the modules of the main build."
   []
   (c.logging/install-logging!)
-  (log/info :app/starting {})
+  (log/debug :start/starting {})
   (app/set-root! app ui/Root {:initialize-state? true})
   (dr/change-route! app [""])
   (history/install-route-history! app (html5-history))
@@ -67,15 +67,15 @@
 
   (auth/start! app [u.login/Page] {:after-session-check `c.routing/fix-route})
   (app/mount! app ui/Root "app" {:initialize-state? false})
-  (log/info :client/loaded {}))
+  (log/debug :start/finished {}))
 
 (defn ^:export refresh
   "During development, shadow-cljs will call this on every hot reload of source. See shadow-cljs.edn"
   []
-  (log/info :client/refreshing {})
+  (log/trace :refresh/starting {})
   ;; re-mounting will cause forced UI refresh, update internals, etc.
   (app/mount! app ui/Root "app")
   ;; As of Fulcro 3.3.0, this addition will help with stale queries when using dynamic routing:
   (comp/refresh-dynamic-queries! app)
   (setup-RAD app)
-  (log/debug :client/refreshed {}))
+  (log/debug :refresh/finished {}))
