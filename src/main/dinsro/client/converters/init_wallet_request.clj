@@ -110,16 +110,16 @@
     ;; ^UnknownFieldSet
     unknown-fields]
    (log/info :->request/starting
-             {:wallet-password                        wallet-password
-              :cipher-seed-mnemonic                   cipher-seed-mnemonic
-              :aezeed-passphrase                      aezeed-passphrase
-              :recovery-window                        recovery-window
-              :channel-backups                        channel-backups
-              :stateless-init                         stateless-init
-              :extended-master-key                    extended-master-key
-              :extended-master-key-birthday-timestamp extended-master-key-birthday-timestamp
-              :watch-only                             watch-only
-              :unknown-fields                         unknown-fields})
+     {:wallet-password                        wallet-password
+      :cipher-seed-mnemonic                   cipher-seed-mnemonic
+      :aezeed-passphrase                      aezeed-passphrase
+      :recovery-window                        recovery-window
+      :channel-backups                        channel-backups
+      :stateless-init                         stateless-init
+      :extended-master-key                    extended-master-key
+      :extended-master-key-birthday-timestamp extended-master-key-birthday-timestamp
+      :watch-only                             watch-only
+      :unknown-fields                         unknown-fields})
 
    (InitWalletRequest.
     wallet-password

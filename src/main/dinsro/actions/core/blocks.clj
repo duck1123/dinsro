@@ -96,15 +96,15 @@
         (if-let [block (c.bitcoin-s/fetch-block-by-height client height)]
           (do
             (log/info :update-block-by-height/found-block
-                      {:block block :core-node-id core-node-id})
+              {:block block :core-node-id core-node-id})
             (if-let [block-record-id (q.c.blocks/fetch-by-network-and-height network-id height)]
               (if-let [block-record (q.c.blocks/read-record block-record-id)]
                 (let [updated-id (::m.c.blocks/id block-record)]
                   (log/info :update-block-by-height/found-block-record
-                            {:block        block
-                             :block-record block-record
-                             :core-node-id core-node-id
-                             :updated-id   updated-id})
+                    {:block        block
+                     :block-record block-record
+                     :core-node-id core-node-id
+                     :updated-id   updated-id})
                   (let [params block
                         params (assoc params ::m.c.blocks/fetched? true)
                         params (assoc params ::m.c.blocks/network network-id)
@@ -119,9 +119,9 @@
               (if-let [update-response (update-block! core-node-id height block)]
                 (let [[updated-id] update-response]
                   (log/info :update-block-by-height/updated-block-record
-                            {:block        block
-                             :core-node-id core-node-id
-                             :updated-id   updated-id})
+                    {:block        block
+                     :core-node-id core-node-id
+                     :updated-id   updated-id})
                   (doseq [tx-id (::c.c.get-block-result/tx block)]
                     (a.c.tx/register-tx core-node-id updated-id tx-id))
                   updated-id)

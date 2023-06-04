@@ -27,6 +27,7 @@
            (GET 2)
            (h1 1)
            (h2 1)
+           (info 1)
            (input 1)
            (it 1)
            (li 1)

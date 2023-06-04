@@ -112,12 +112,11 @@
           dir-path        (m.ln.nodes/data-path node-id)
           dir-file        (io/file dir-path)
           url             (format "http://%s/tls.cert" fileserver-host)]
-      (log/info
-       :download-cert!/downloading
-       {:node-id  node-id
-        :dir-path dir-path
-        :dir-file dir-file
-        :url      url})
+      (log/info :download-cert!/downloading
+        {:node-id  node-id
+         :dir-path dir-path
+         :dir-file dir-file
+         :url      url})
       (.mkdirs dir-file)
       (let [cert-file (m.ln.nodes/cert-file node-id)]
         (if-let [response (download-file url cert-file)]
@@ -133,9 +132,8 @@
   (let [url      (format "http://%s/admin.macaroon" fileserver-host)
         dir-path (m.ln.nodes/data-path id)
         file     (io/file (m.ln.nodes/macaroon-path id))]
-    (log/info
-     :download-macaroon!/starting
-     {:id id :file file :url url :dir-path dir-path})
+    (log/info :download-macaroon!/starting
+      {:id id :file file :url url :dir-path dir-path})
     (.mkdirs (io/file dir-path))
     (try
       (if (download-file url file)

@@ -29,14 +29,14 @@
                      kind sig content]
          pubkey-hex :pubkey} m]
     (log/info :update-pubkey!/parsed
-              {:req-id     req-id
-               :tags       tags
-               :id         id
-               :created-at created-at
-               :pubkey     pubkey-hex
-               :kind       kind
-               :sig        sig
-               :content    content})
+      {:req-id     req-id
+       :tags       tags
+       :id         id
+       :created-at created-at
+       :pubkey     pubkey-hex
+       :kind       kind
+       :sig        sig
+       :content    content})
     (let [event-id (if-let [existing-event (q.n.events/find-by-note-id id)]
                      (do
                        (log/info :update-pubkey!/existing {:existing-event existing-event})
