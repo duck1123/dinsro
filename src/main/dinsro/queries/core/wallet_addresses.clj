@@ -14,13 +14,14 @@
    [xtdb.api :as xt]))
 
 (def query-info
-  {:ident   ::m.c.wallet-addresses/id
-   :pk      '?wallet-address-id
-   :clauses [[:actor/id          '?actor-id]
-             [:actor/admin?      '?admin?]
-             [::m.c.addresses/id '?address-id]
-             [::m.c.networks/id  '?network-id]
-             [::m.c.wallets/id   '?wallet-id]]
+  {:ident        ::m.c.wallet-addresses/id
+   :pk           '?wallet-address-id
+   :clauses      [[:actor/id          '?actor-id]
+                  [:actor/admin?      '?admin?]
+                  [::m.c.addresses/id '?address-id]
+                  [::m.c.networks/id  '?network-id]
+                  [::m.c.wallets/id   '?wallet-id]]
+   :sort-columns {::m.c.wallet-addresses/path-index '?path-index}
    :rules
    (fn [[_actor-id admin? address-id
          network-id wallet-id] rules]
