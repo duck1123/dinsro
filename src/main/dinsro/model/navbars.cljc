@@ -20,8 +20,15 @@
                              :admin-rate-sources
                              :admin-rates]
    :admin-core              [:admin-core-dashboard
+                             :admin-core-addresses
                              :admin-core-blocks
-                             :admin-core-peers]
+                             :admin-core-chains
+                             :admin-core-mnemonics
+                             :admin-core-networks
+                             :admin-core-nodes
+                             :admin-core-peers
+                             :admin-core-transactions
+                             :admin-core-wallets]
    :admin-ln                [:admin-ln-dashboard
                              :admin-ln-accounts
                              :admin-ln-channels

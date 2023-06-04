@@ -27,17 +27,49 @@
    {::label "Core"
     ::route :dinsro.ui.admin.core.dashboard/Dashboard}
 
+   :admin-core-addresses
+   {::label "Addresses"
+    ::route :dinsro.ui.admin.core.addresses/Report}
+
    :admin-core-blocks
    {::label "Blocks"
     ::route :dinsro.ui.admin.core.blocks/Report}
+
+   :admin-core-chains
+   {::label "Chains"
+    ::route :dinsro.ui.admin.core.chains/Report}
 
    :admin-core-dashboard
    {::label "Dashboard"
     ::route :dinsro.ui.admin.core.dashboard/Dashboard}
 
+   :admin-core-mnemonics
+   {::label "Mnemonics"
+    ::route :dinsro.ui.admin.core.mnemonics/Report}
+
+   :admin-core-networks
+   {::label "Networks"
+    ::route :dinsro.ui.admin.core.networks/Report}
+
+   :admin-core-nodes
+   {::label "Nodes"
+    ::route :dinsro.ui.admin.core.nodes/Report}
+
    :admin-core-peers
    {::label "Peers"
     ::route :dinsro.ui.admin.core.peers/Report}
+
+   :admin-core-transactions
+   {::label "Transactions"
+    ::route :dinsro.ui.admin.core.transactions/Report}
+
+   :admin-core-wallets
+   {::label "Wallets"
+    ::route :dinsro.ui.admin.core.wallets/Report}
+
+   :admin-core-words
+   {::label "Words"
+    ::route :dinsro.ui.admin.core.words/Report}
 
    :admin-currencies
    {::label "Currencies"

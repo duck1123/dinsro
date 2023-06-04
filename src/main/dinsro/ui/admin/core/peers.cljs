@@ -1,6 +1,7 @@
 (ns dinsro.ui.admin.core.peers
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
@@ -92,3 +93,11 @@
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.peers/index
    ro/title             "Core Peers"})
+
+(defsc Show
+  [_this _props]
+  {:ident         ::m.c.peers/id
+   :initial-state {::m.c.peers/id nil}
+   :query         [::m.c.peers/id]
+   :route-segment ["peer" :id]}
+  (dom/div {}))
