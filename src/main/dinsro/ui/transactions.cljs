@@ -145,7 +145,7 @@
 (def use-table true)
 
 (defsc DebitLine-List
-  [_this {::j.debits/keys                              [event-value positive?]
+  [_this {::j.debits/keys                              [event-value]
           {currency ::m.accounts/currency :as account} ::m.debits/account
           :as                                          props}]
   {:ident         ::m.debits/id
@@ -153,14 +153,12 @@
                    ::m.debits/value
                    {::m.debits/account (comp/get-query AccountInfo)}
                    ::j.debits/event-value
-                   ::j.debits/positive?
                    {::j.debits/current-rate (comp/get-query u.links/RateValueLinkForm)}
                    ::j.debits/current-rate-value]
    :initial-state {::m.debits/id                 nil
                    ::m.debits/value              0
                    ::m.debits/account            {}
                    ::j.debits/event-value        0
-                   ::j.debits/positive?          true
                    ::j.debits/current-rate       {}
                    ::j.debits/current-rate-value 0}}
   (ui-list-item {}
@@ -168,8 +166,7 @@
       (ui-grid-row {}
         (ui-grid-column {} (u.links/ui-account-link account)))
       (ui-grid-row {}
-        (ui-grid-column {:color (if positive? "green" "red")
-                         :width 8 :textAlign "right"}
+        (ui-grid-column {:width 8 :textAlign "right"}
           (u.links/ui-debit-link props))
         (ui-grid-column {:width 8} (u.links/ui-currency-link currency)))
       (when show-debits-debug
