@@ -185,7 +185,7 @@
 (def ui-currency-link (comp/factory CurrencyLinkForm {:keyfn ::m.currencies/name}))
 
 (form/defsc-form DebitLinkForm [this {::m.debits/keys [id value]}]
-  {fo/id         m.currencies/id
+  {fo/id         m.debits/id
    fo/route-prefix "debit-link"
    fo/attributes [m.debits/value]}
   (form-link this id value :dinsro.ui.debits/Show))

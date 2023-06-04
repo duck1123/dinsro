@@ -13,7 +13,6 @@
    [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.ui.links :as u.links]))
 
 (def override-report false)
@@ -47,8 +46,8 @@
 
 (def BodyItem BodyItem-Table)
 
-(def ui-body-table-item (comp/factory BodyItem-Table {:keyfn ::m.ln.nodes/id}))
-(def ui-body-item (comp/factory BodyItem {:keyfn ::m.ln.nodes/id}))
+(def ui-body-table-item (comp/factory BodyItem-Table {:keyfn ::m.c.nodes/id}))
+(def ui-body-item (comp/factory BodyItem {:keyfn ::m.c.nodes/id}))
 
 (defsc ReportBody-List
   [_this props]
