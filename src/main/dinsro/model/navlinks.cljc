@@ -446,7 +446,7 @@
 
    :settings
    {::label "Settings"
-    ::route :dinsro.ui.settings/Dashboard}
+    ::route :dinsro.ui.settings.dashboard/Page}
 
    :settings-categories
    {::label "Categories"
@@ -458,7 +458,7 @@
 
    :settings-dashboard
    {::label "Dashboard"
-    ::route :dinsro.ui.settings/Dashboard}
+    ::route :dinsro.ui.settings.dashboard/Page}
 
    :settings-ln
    {::label "Lightning"
