@@ -55,8 +55,8 @@
 
    :cljs
    (fm/defmutation fetch! [_props]
-     (action    [_env] true)
-     (remote    [env]
+     (action [_env] true)
+     (remote [env]
        (-> env
            (fm/returning FetchResponse)
            (fm/with-target (targeting/append-to [:responses/id ::FetchReponse]))))))
@@ -70,7 +70,7 @@
 
    :cljs
    (fm/defmutation fetch-events! [_props]
-     (action    [_env] true)
-     (remote    [_env] true)))
+     (action [_env] true)
+     (remote [_env] true)))
 
 #?(:clj (def resolvers [fetch! fetch-events!]))

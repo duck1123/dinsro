@@ -29,8 +29,8 @@
 
    :cljs
    (fm/defmutation fetch! [_props]
-     (action    [_env] true)
-     (remote    [env]
+     (action [_env] true)
+     (remote [env]
        (-> env
            (fm/returning r.n.relays/FetchResponse)
            (fm/with-target (targeting/append-to [:responses/id ::FetchReponse]))))))
@@ -44,8 +44,8 @@
 
    :cljs
    (fm/defmutation fetch-events! [_props]
-     (action    [_env] true)
-     (remote    [_env] true)))
+     (action [_env] true)
+     (remote [_env] true)))
 
 ;; Connect
 
@@ -71,8 +71,8 @@
 
    :cljs
    (fm/defmutation delete! [_props]
-     (action    [_env] true)
-     (remote    [_env]  true)))
+     (action [_env] true)
+     (remote [_env]  true)))
 
 ;; Toggle
 
@@ -85,8 +85,8 @@
 
    :cljs
    (fm/defmutation toggle! [_props]
-     (action    [_env] true)
-     (remote    [env]
+     (action [_env] true)
+     (remote [env]
        (-> env
            (fm/returning r.n.relays/ConnectResponse)
            (fm/with-target (targeting/append-to [:responses/id ::ConnectReponse]))))))
@@ -102,8 +102,8 @@
 
    :cljs
    (fm/defmutation submit! [_props]
-     (action    [_env] true)
-     (remote    [env]
+     (action [_env] true)
+     (remote [env]
        (-> env
            (fm/returning r.n.relays/ConnectResponse)
            (fm/with-target (targeting/append-to [:responses/id ::SubmitReponse]))))))

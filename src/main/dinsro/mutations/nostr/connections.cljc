@@ -17,8 +17,8 @@
 
    :cljs
    (fm/defmutation connect! [_props]
-     (action    [_env] true)
-     (remote    [_env] true)))
+     (action [_env] true)
+     (remote [_env] true)))
 
 #?(:clj
    (pc/defmutation disconnect!
@@ -29,7 +29,7 @@
 
    :cljs
    (fm/defmutation disconnect! [_props]
-     (action    [_env] true)
-     (remote    [_env] true)))
+     (action [_env] true)
+     (remote [_env] true)))
 
 (def resolvers [connect! disconnect!])

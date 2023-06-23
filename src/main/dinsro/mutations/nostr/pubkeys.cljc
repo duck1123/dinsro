@@ -100,8 +100,8 @@
 
    :cljs
    (fm/defmutation fetch-definitions! [_props]
-     (action    [_env] true)
-     (remote    [env]  (fm/returning env r.n.pubkeys/FetchDefinitionsResponse))))
+     (action [_env] true)
+     (remote [env]  (fm/returning env r.n.pubkeys/FetchDefinitionsResponse))))
 
 ;; Fetch Events
 

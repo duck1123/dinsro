@@ -2,7 +2,6 @@
   (:require
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
-   ;; #?(:clj [dinsro.actions.nostr.witnesses :as a.n.witnesses])
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.processors.nostr.witnesses :as p.n.witnesses])))
@@ -17,8 +16,8 @@
 
    :cljs
    (fm/defmutation delete! [_props]
-     (action    [_env] true)
-     (remote    [_env] true)))
+     (action [_env] true)
+     (remote [_env] true)))
 
 #?(:clj
    (def resolvers [delete!]))

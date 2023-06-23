@@ -16,8 +16,8 @@
 
    :cljs
    (fm/defmutation delete! [_props]
-     (action    [_env] true)
-     (remote    [_env] true)))
+     (action [_env] true)
+     (remote [_env] true)))
 
 #?(:clj
    (pc/defmutation stop! [_env props]
@@ -27,8 +27,8 @@
 
    :cljs
    (fm/defmutation stop! [_props]
-     (action    [_env] true)
-     (remote    [_env] true)))
+     (action [_env] true)
+     (remote [_env] true)))
 
 #?(:clj
    (def resolvers [delete! stop!]))

@@ -25,8 +25,8 @@
 
    :cljs
    (fm/defmutation fetch! [_props]
-     (action    [_env] true)
-     (remote    [env]
+     (action [_env] true)
+     (remote [env]
        (-> env
            (fm/returning r.n.event-tags/FetchResponse)
            (fm/with-target (targeting/append-to [:responses/id ::FetchReponse]))))))
