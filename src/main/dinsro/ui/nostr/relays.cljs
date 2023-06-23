@@ -38,10 +38,9 @@
              (let [props (comp/props this)
                    address (::m.n.relays/address props)]
                (log/info :submit-button/clicked {:address address})
-               (comp/transact!
-                this
-                [(mu.n.relays/submit!
-                  {::m.n.relays/address address})])))})
+               (comp/transact! this
+                 [(mu.n.relays/submit!
+                   {::m.n.relays/address address})])))})
 
 (form/defsc-form NewRelayForm [_this _props]
   {fo/action-buttons [::submit]

@@ -30,7 +30,7 @@
      (get-remote-instance url macaroon cert-file cert-opt)))
   ([url macaroon cert-file cert-opt]
    (log/trace :get-remote-instance/creating
-              {:url url :macaroon macaroon :cert-file cert-file :cert-opt cert-opt})
+     {:url url :macaroon macaroon :cert-file cert-file :cert-opt cert-opt})
    (LndInstanceRemote. url macaroon cert-file cert-opt)))
 
 (>def ::client (ds/instance? LndRpcClient))

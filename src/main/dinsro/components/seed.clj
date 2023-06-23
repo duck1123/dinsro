@@ -321,15 +321,15 @@
         ln-nodes     (count (q.ln.nodes/index-ids))
         ln-peers     (count (q.ln.peers/index-ids))]
     (log/trace :report
-               {:users        users
-                :categories   categories
-                :currencies   currencies
-                :rate-sources rate-sources
-                :rates        rates
-                :accounts     accounts
-                :transactions transactions
-                :ln-nodes     ln-nodes
-                :ln-peers     ln-peers})))
+      {:users        users
+       :categories   categories
+       :currencies   currencies
+       :rate-sources rate-sources
+       :rates        rates
+       :accounts     accounts
+       :transactions transactions
+       :ln-nodes     ln-nodes
+       :ln-peers     ln-peers})))
 
 (defn mock-tx
   [o]
@@ -521,11 +521,10 @@
 
 (defn seed-remote-nodes-remote-node!
   [user-id node-id remote-node-data]
-  (log/trace
-   :seed-remote-nodes-remote-node!/starting
-   {:user-id          user-id
-    :node-id          node-id
-    :remote-node-data remote-node-data})
+  (log/trace :seed-remote-nodes-remote-node!/starting
+    {:user-id          user-id
+     :node-id          node-id
+     :remote-node-data remote-node-data})
   (let [{:keys [pubkey host]} remote-node-data]
     (a.ln.remote-nodes/register-node! node-id pubkey host)))
 

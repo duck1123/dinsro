@@ -17,7 +17,7 @@
    :label  "Fetch"
    :action (fn [report-instance {::m.n.pubkeys/keys [id]}]
              (comp/transact! report-instance
-                             [(mu.n.pubkeys/fetch-awards! {::m.n.pubkeys/id id})]))})
+               [(mu.n.pubkeys/fetch-awards! {::m.n.pubkeys/id id})]))})
 
 (report/defsc-report Report
   [_this _props]

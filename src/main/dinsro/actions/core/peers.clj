@@ -38,9 +38,9 @@
       (if-let [existing-peer (q.c.peers/find-by-node-and-peer-id node-id peer-index)]
         (let [peer-id (::m.c.peers/id existing-peer)]
           (log/trace :update-peer!/record-exists
-                     {:node-id    node-id
-                      :peer-index peer-index
-                      :peer-id    peer-id})
+            {:node-id    node-id
+             :peer-index peer-index
+             :peer-id    peer-id})
           peer-id)
         (do
           (log/trace :update-peer!/record-not-exists {:node-id node-id :peer-index peer-index})

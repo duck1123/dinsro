@@ -57,11 +57,10 @@
   (let [block-response (a.c.blocks/fetch-blocks node)
         peer-response  (a.c.peers/fetch-peers! node)
         updated-node   (q.c.nodes/read-record id)]
-    (log/trace
-     :fetch!/finished
-     {:block-response block-response
-      :peer-response  peer-response
-      :updated-node   updated-node})
+    (log/trace :fetch!/finished
+      {:block-response block-response
+       :peer-response  peer-response
+       :updated-node   updated-node})
     updated-node))
 
 (>defn list-transactions

@@ -94,11 +94,11 @@
     ^TimeUnit unit
     ^BlockingQueue work-queue]
    (log/trace :get-executor/starting
-              {:pool-size       pool-size
-               :max-pool-size   max-pool-size
-               :keep-alive-time keep-alive-time
-               :unit            unit
-               :work-queue      work-queue})
+     {:pool-size       pool-size
+      :max-pool-size   max-pool-size
+      :keep-alive-time keep-alive-time
+      :unit            unit
+      :work-queue      work-queue})
    (ThreadPoolExecutor. pool-size max-pool-size keep-alive-time unit work-queue)))
 
 (defn get-execution-context

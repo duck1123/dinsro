@@ -23,7 +23,7 @@
    :action (fn [report-instance _]
              (let [id (u.buttons/get-control-value report-instance ::m.n.pubkeys/id)]
                (comp/transact! report-instance
-                               [(mu.n.pubkeys/fetch-definitions! {::m.n.pubkeys/id id})])))})
+                 [(mu.n.pubkeys/fetch-definitions! {::m.n.pubkeys/id id})])))})
 
 (report/defsc-report Report
   [_this _props]
