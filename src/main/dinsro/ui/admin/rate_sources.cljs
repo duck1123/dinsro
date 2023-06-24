@@ -17,9 +17,9 @@
                         j.rate-sources/rate-count]
    ro/control-layout   {:action-buttons [::refresh]}
    ro/controls         {::refresh u.links/refresh-control}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/route            "rate-sources"
    ro/row-actions      [(u.buttons/row-action-button "Delete" ::m.rate-sources/id mu.rate-sources/delete!)]
    ro/row-pk           m.rate-sources/id

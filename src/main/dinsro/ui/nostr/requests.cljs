@@ -31,19 +31,18 @@
           ::j.n.requests/keys [query-string]
           :ui/keys            [nav-menu router]}]
   {:ident         ::m.n.requests/id
-   :initial-state
-   (fn [props]
-     (log/trace :Show/initial-state {:props props})
-     (let [id (::m.n.requests/id props)]
-       {::m.n.requests/id           nil
-        :ui/nav-menu
-        (comp/get-initial-state
-         u.menus/NavMenu
-         {::m.navbars/id :nostr-requests :id id})
-        :ui/router                  (comp/get-initial-state Router)
-        ::m.n.requests/code         ""
-        ::m.n.requests/relay        (comp/get-initial-state u.links/RelayLinkForm)
-        ::j.n.requests/query-string ""}))
+   :initial-state (fn [props]
+                    (log/trace :Show/initial-state {:props props})
+                    (let [id (::m.n.requests/id props)]
+                      {::m.n.requests/id           nil
+                       :ui/nav-menu
+                       (comp/get-initial-state
+                        u.menus/NavMenu
+                        {::m.navbars/id :nostr-requests :id id})
+                       :ui/router                  (comp/get-initial-state Router)
+                       ::m.n.requests/code         ""
+                       ::m.n.requests/relay        (comp/get-initial-state u.links/RelayLinkForm)
+                       ::j.n.requests/query-string ""}))
    :pre-merge     (u.loader/page-merger
                    ::m.n.requests/id
                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-requests}]

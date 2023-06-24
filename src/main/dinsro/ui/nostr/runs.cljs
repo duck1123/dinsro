@@ -37,15 +37,14 @@
   [_this {::m.n.runs/keys [id]
           :ui/keys        [nav-menu router]}]
   {:ident         ::m.n.runs/id
-   :initial-state
-   (fn [props]
-     (let [{::m.n.runs/keys [id]} props]
-       {::m.n.runs/id nil
-        :ui/router    (comp/get-initial-state Router)
-        :ui/nav-menu  (comp/get-initial-state
-                       u.menus/NavMenu
-                       {::m.navbars/id :nostr-runs
-                        :id            id})}))
+   :initial-state (fn [props]
+                    (let [{::m.n.runs/keys [id]} props]
+                      {::m.n.runs/id nil
+                       :ui/router    (comp/get-initial-state Router)
+                       :ui/nav-menu  (comp/get-initial-state
+                                      u.menus/NavMenu
+                                      {::m.navbars/id :nostr-runs
+                                       :id            id})}))
    :pre-merge     (u.loader/page-merger ::m.n.runs/id {:ui/router [Router {}]})
    :query         [::m.n.runs/id
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}

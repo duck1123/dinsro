@@ -18,18 +18,17 @@
   [_this {::m.n.connections/keys [id status relay start-time end-time]
           :ui/keys               [nav-menu]}]
   {:ident         ::m.n.connections/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.n.connections/id props)]
-       {::m.n.connections/id         nil
-        ::m.n.connections/status     :unknown
-        ::m.n.connections/relay      {}
-        ::m.n.connections/start-time nil
-        ::m.n.connections/end-time   nil
-        :ui/nav-menu                 (comp/get-initial-state
-                                      u.menus/NavMenu
-                                      {::m.navbars/id :admin-nostr-connections
-                                       :id            id})}))
+   :initial-state (fn [props]
+                    (let [id (::m.n.connections/id props)]
+                      {::m.n.connections/id         nil
+                       ::m.n.connections/status     :unknown
+                       ::m.n.connections/relay      {}
+                       ::m.n.connections/start-time nil
+                       ::m.n.connections/end-time   nil
+                       :ui/nav-menu                 (comp/get-initial-state
+                                                     u.menus/NavMenu
+                                                     {::m.navbars/id :admin-nostr-connections
+                                                      :id            id})}))
    :query         [::m.n.connections/id
                    ::m.n.connections/status
                    {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}

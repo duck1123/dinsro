@@ -16,16 +16,16 @@
 
 (defsc BodyItem
   [_this {::m.c.nodes/keys [name host network]
-          :as props}]
-  {:ident ::m.c.nodes/id
-   :initial-state {::m.c.nodes/id nil
-                   ::m.c.nodes/name ""
-                   ::m.c.nodes/host ""
+          :as              props}]
+  {:ident         ::m.c.nodes/id
+   :initial-state {::m.c.nodes/id      nil
+                   ::m.c.nodes/name    ""
+                   ::m.c.nodes/host    ""
                    ::m.c.nodes/network {}}
-   :query [::m.c.nodes/id
-           ::m.c.nodes/name
-           ::m.c.nodes/host
-           {::m.c.nodes/network (comp/get-query u.links/CoreNodeLinkForm)}]}
+   :query         [::m.c.nodes/id
+                   ::m.c.nodes/name
+                   ::m.c.nodes/host
+                   {::m.c.nodes/network (comp/get-query u.links/CoreNodeLinkForm)}]}
   (dom/div :.ui.item
     (dom/div {} (str name))
     (dom/div {} (str host))

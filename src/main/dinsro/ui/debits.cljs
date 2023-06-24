@@ -48,7 +48,6 @@
      (dom/div {} (u.links/ui-transaction-link transaction))
      (dom/div {}
        (str "\"" event-value "\" - "))
-
      (dom/div {}
        (str "\"" current-rate-value "\" - ")
        "Current Rate: "

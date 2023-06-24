@@ -46,14 +46,13 @@
   [_this {::m.n.subscriptions/keys [code relay]
           :ui/keys                 [nav-menu router]}]
   {:ident         ::m.n.subscriptions/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.n.subscriptions/id props)]
-       {::m.n.subscriptions/id    nil
-        ::m.n.subscriptions/code  ""
-        ::m.n.subscriptions/relay {}
-        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :nostr-subscriptions :id id})
-        :ui/router                {}}))
+   :initial-state (fn [props]
+                    (let [id (::m.n.subscriptions/id props)]
+                      {::m.n.subscriptions/id    nil
+                       ::m.n.subscriptions/code  ""
+                       ::m.n.subscriptions/relay {}
+                       :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :nostr-subscriptions :id id})
+                       :ui/router                {}}))
    :pre-merge     (u.loader/page-merger
                    ::m.n.subscriptions/id
                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-subscriptions}]

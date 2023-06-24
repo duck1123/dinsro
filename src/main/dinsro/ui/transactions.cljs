@@ -264,24 +264,24 @@
 
 (report/defsc-report RecentReport
   [_this props]
-  {ro/BodyItem         BodyItem
-   ro/columns          [m.transactions/description
-                        m.transactions/date
-                        j.transactions/debit-count]
-   ro/control-layout   {:action-buttons [::new-transaction ::refresh]}
-   ro/controls         {::new-transaction new-button
-                        ::refresh         u.links/refresh-control}
-   ro/field-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
+  {ro/BodyItem            BodyItem
+   ro/columns             [m.transactions/description
+                           m.transactions/date
+                           j.transactions/debit-count]
+   ro/control-layout      {:action-buttons [::new-transaction ::refresh]}
+   ro/controls            {::new-transaction new-button
+                           ::refresh         u.links/refresh-control}
+   ro/field-formatters    {::m.transactions/description #(u.links/ui-transaction-link %3)}
    ro/initial-sort-params {:sort-by          ::m.transactions/date
                            :sortable-columns #{::m.transactions/date}
                            :ascending?       false}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
-   ro/row-pk           m.transactions/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.transactions/index
-   ro/title            "Recent Transactions"}
+   ro/machine             spr/machine
+   ro/page-size           10
+   ro/paginate?           true
+   ro/row-pk              m.transactions/id
+   ro/run-on-mount?       true
+   ro/source-attribute    ::j.transactions/index
+   ro/title               "Recent Transactions"}
   (let [{:ui/keys [current-rows]} props]
     (ui-container {}
       (map ui-body-item  current-rows))))

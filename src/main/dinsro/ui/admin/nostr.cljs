@@ -46,12 +46,11 @@
 (defsc Page
   [_this {:ui/keys [nav-menu router vertical-menu]}]
   {:ident         (fn [] [:component/id ::Page])
-   :initial-state
-   (fn [props]
-     (log/trace :Page/initial-state {:props props})
-     {:ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin-nostr})
-      :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :admin-nostr})
-      :ui/router        (comp/get-initial-state Router)})
+   :initial-state (fn [props]
+                    (log/trace :Page/initial-state {:props props})
+                    {:ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin-nostr})
+                     :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :admin-nostr})
+                     :ui/router        (comp/get-initial-state Router)})
    :query         [{:ui/nav-menu (comp/get-query u.menus/VerticalMenu)}
                    {:ui/router (comp/get-query Router)}
                    {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}]

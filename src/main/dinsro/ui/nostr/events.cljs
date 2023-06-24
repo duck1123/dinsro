@@ -239,21 +239,19 @@
   [_this {::m.n.events/keys [content pubkey kind sig created-at note-id]
           :ui/keys          [nav-menu router]}]
   {:ident         ::m.n.events/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.n.events/id props)]
-       {::m.n.events/id         nil
-        ::m.n.events/note-id    ""
-        ::m.n.events/content    ""
-        ::m.n.events/pubkey     {}
-        ::m.n.events/kind       nil
-        ::m.n.events/created-at 0
-        ::m.n.events/sig        ""
-        :ui/nav-menu
-        (comp/get-initial-state
-         u.menus/NavMenu
-         {::m.navbars/id :nostr-events :id id})
-        :ui/router              (comp/get-initial-state Router)}))
+   :initial-state (fn [props]
+                    (let [id (::m.n.events/id props)]
+                      {::m.n.events/id         nil
+                       ::m.n.events/note-id    ""
+                       ::m.n.events/content    ""
+                       ::m.n.events/pubkey     {}
+                       ::m.n.events/kind       nil
+                       ::m.n.events/created-at 0
+                       ::m.n.events/sig        ""
+                       :ui/nav-menu            (comp/get-initial-state
+                                                u.menus/NavMenu
+                                                {::m.navbars/id :nostr-events :id id})
+                       :ui/router              (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger ::m.n.events/id {:ui/router [Router {}]})
    :query         [::m.n.events/id
                    ::m.n.events/content

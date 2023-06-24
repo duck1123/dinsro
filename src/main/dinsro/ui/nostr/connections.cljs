@@ -41,18 +41,17 @@
   [_this {::m.n.connections/keys [id status relay start-time end-time]
           :ui/keys               [nav-menu router]}]
   {:ident         ::m.n.connections/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.n.connections/id props)]
-       {::m.n.connections/id         nil
-        ::m.n.connections/status     :unknown
-        ::m.n.connections/relay      {}
-        ::m.n.connections/start-time nil
-        ::m.n.connections/end-time   nil
-        :ui/nav-menu
-        (comp/get-initial-state       u.menus/NavMenu
-                                      {::m.navbars/id :nostr-connections :id id})
-        :ui/router                   (comp/get-initial-state Router)}))
+   :initial-state (fn [props]
+                    (let [id (::m.n.connections/id props)]
+                      {::m.n.connections/id         nil
+                       ::m.n.connections/status     :unknown
+                       ::m.n.connections/relay      {}
+                       ::m.n.connections/start-time nil
+                       ::m.n.connections/end-time   nil
+                       :ui/nav-menu
+                       (comp/get-initial-state       u.menus/NavMenu
+                                                     {::m.navbars/id :nostr-connections :id id})
+                       :ui/router                   (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger
                    ::m.n.connections/id
                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-connections}]

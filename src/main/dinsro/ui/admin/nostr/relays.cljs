@@ -90,20 +90,19 @@
           ::j.n.relays/keys [connection-count]
           :ui/keys          [nav-menu router]}]
   {:ident         ::m.n.relays/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.n.relays/id props)]
-       {::m.n.relays/id               nil
-        ::m.n.relays/address          ""
-        ::j.n.relays/connection-count 0
-        :ui/nav-menu
-        (comp/get-initial-state u.menus/NavMenu
-                                {::m.navbars/id :admin-nostr-relays :id id})
-        :ui/router                    (comp/get-initial-state Router)}))
+   :initial-state (fn [props]
+                    (let [id (::m.n.relays/id props)]
+                      {::m.n.relays/id               nil
+                       ::m.n.relays/address          ""
+                       ::j.n.relays/connection-count 0
+                       :ui/nav-menu
+                       (comp/get-initial-state u.menus/NavMenu
+                                               {::m.navbars/id :admin-nostr-relays :id id})
+                       :ui/router                    (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger
                    ::m.n.relays/id
                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :admin-nostr-relays}]
-                    :ui/router [Router {}]})
+                    :ui/router   [Router {}]})
    :query         [::m.n.relays/id
                    ::m.n.relays/address
                    ::j.n.relays/connection-count

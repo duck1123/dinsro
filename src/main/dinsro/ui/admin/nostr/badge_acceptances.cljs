@@ -12,9 +12,9 @@
   {ro/columns          [m.n.badge-acceptances/id]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::refresh u.links/refresh-control}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/route            "badge-acceptances"
    ro/row-pk           m.n.badge-acceptances/id
    ro/run-on-mount?    true

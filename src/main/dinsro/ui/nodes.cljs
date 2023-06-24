@@ -31,8 +31,7 @@
 
 (defrouter Router
   [_this {:keys [route-factory route-props]}]
-  {:router-targets
-   [Dashboard]}
+  {:router-targets [Dashboard]}
   (dom/div :.router
     (route-factory route-props)))
 

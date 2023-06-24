@@ -16,9 +16,9 @@
                         m.n.badge-definitions/thumbnail-url]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::refresh u.links/refresh-control}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/route            "badge-definitions"
    ro/row-pk           m.n.badge-definitions/id
    ro/run-on-mount?    true

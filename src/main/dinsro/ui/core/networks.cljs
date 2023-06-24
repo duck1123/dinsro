@@ -34,24 +34,23 @@
   [_this {::m.c.networks/keys [id chain name]
           :ui/keys            [nav-menu router]
           :as                 props}]
-  {:ident     ::m.c.networks/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.c.networks/id props)]
-       {::m.c.networks/id    nil
-        ::m.c.networks/name  ""
-        ::m.c.networks/chain {}
-        :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-networks :id id})
-        :ui/router           (comp/get-initial-state Router)}))
-   :pre-merge (u.loader/page-merger
-               ::m.c.networks/id
-               {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-networks}]
-                :ui/router   [Router {}]})
-   :query     [::m.c.networks/id
-               ::m.c.networks/name
-               {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
-               {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-               {:ui/router (comp/get-query Router)}]
+  {:ident         ::m.c.networks/id
+   :initial-state (fn [props]
+                    (let [id (::m.c.networks/id props)]
+                      {::m.c.networks/id    nil
+                       ::m.c.networks/name  ""
+                       ::m.c.networks/chain {}
+                       :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-networks :id id})
+                       :ui/router           (comp/get-initial-state Router)}))
+   :pre-merge     (u.loader/page-merger
+                   ::m.c.networks/id
+                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-networks}]
+                    :ui/router   [Router {}]})
+   :query         [::m.c.networks/id
+                   ::m.c.networks/name
+                   {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
+                   {:ui/router (comp/get-query Router)}]
 
    :route-segment ["network" :id]
    :will-enter    (partial u.loader/page-loader ::m.c.networks/id ::Show)}

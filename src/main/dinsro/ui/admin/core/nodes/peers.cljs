@@ -57,11 +57,10 @@
                          m.c.peers/node]
    ro/control-layout    {:action-buttons [::new ::fetch ::refresh]
                          :inputs         [[::m.c.nodes/id]]}
-   ro/controls
-   {::m.c.nodes/id {:type :uuid :label "Nodes"}
-    ::refresh      u.links/refresh-control
-    ::fetch        fetch-button
-    ::new          new-button}
+   ro/controls          {::m.c.nodes/id {:type :uuid :label "Nodes"}
+                         ::refresh      u.links/refresh-control
+                         ::fetch        fetch-button
+                         ::new          new-button}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -74,10 +73,10 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [{:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :route-segment     ["peers"]
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :query             [{:ui/report (comp/get-query Report)}
+                       [::dr/id router-key]]
+   :route-segment     ["peers"]}
   ((comp/factory Report) report))

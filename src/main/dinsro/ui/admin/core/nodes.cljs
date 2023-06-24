@@ -65,15 +65,14 @@
   [_this {::m.c.nodes/keys [id name network]
           :ui/keys         [nav-menu router]}]
   {:ident         ::m.c.nodes/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.c.nodes/id props)]
-       {::m.c.nodes/id      nil
-        ::m.c.nodes/name    ""
-        ::m.c.nodes/network (comp/get-initial-state u.links/NetworkLinkForm)
-        :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-nodes
-                                                                     :id            id})
-        :ui/router          (comp/get-initial-state Router)}))
+   :initial-state (fn [props]
+                    (let [id (::m.c.nodes/id props)]
+                      {::m.c.nodes/id      nil
+                       ::m.c.nodes/name    ""
+                       ::m.c.nodes/network (comp/get-initial-state u.links/NetworkLinkForm)
+                       :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-nodes
+                                                                                    :id            id})
+                       :ui/router          (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger
                    ::m.c.nodes/id
                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-nodes}]

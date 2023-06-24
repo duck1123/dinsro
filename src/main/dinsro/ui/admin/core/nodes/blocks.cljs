@@ -18,14 +18,13 @@
 (def router-key :dinsro.ui.core.nodes/Router)
 
 (def generate-button
-  {:label "Generate"
+  {:label  "Generate"
    :local? true
-   :type :button
+   :type   :button
    :action (fn [this _]
-             (let [props (comp/props this)
+             (let [props      (comp/props this)
                    parameters (:ui/parameters props)
-                   node-id (::m.c.nodes/id parameters)]
-
+                   node-id    (::m.c.nodes/id parameters)]
                (log/info :generate-button/clicked {:props props :node-id node-id})
                (comp/transact! this [(mu.c.nodes/generate! {::m.c.nodes/id node-id})])))})
 

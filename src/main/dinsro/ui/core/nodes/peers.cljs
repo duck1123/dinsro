@@ -57,11 +57,10 @@
                          m.c.peers/node]
    ro/control-layout    {:action-buttons [::new ::fetch ::refresh]
                          :inputs         [[::m.c.nodes/id]]}
-   ro/controls
-   {::m.c.nodes/id {:type :uuid :label "Nodes"}
-    ::refresh      u.links/refresh-control
-    ::fetch        fetch-button
-    ::new          new-button}
+   ro/controls          {::m.c.nodes/id {:type :uuid :label "Nodes"}
+                         ::refresh      u.links/refresh-control
+                         ::fetch        fetch-button
+                         ::new          new-button}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true

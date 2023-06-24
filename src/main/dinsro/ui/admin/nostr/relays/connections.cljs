@@ -33,11 +33,10 @@
    ro/page-size         10
    ro/paginate?         true
    ro/row-actions       [(u.buttons/row-action-button "Disconnect" ::m.n.connections/id mu.n.connections/disconnect!)]
-
-   ro/row-pk           m.n.connections/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.connections/index
-   ro/title            "Connections"})
+   ro/row-pk            m.n.connections/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.connections/index
+   ro/title             "Connections"})
 
 (defsc SubPage
   [_this {:ui/keys [report]}]

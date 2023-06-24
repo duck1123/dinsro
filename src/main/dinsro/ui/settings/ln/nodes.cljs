@@ -159,19 +159,18 @@
          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon? network]
          :as               props}]
   {:ident         ::m.ln.nodes/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.ln.nodes/id props)]
-       {::m.ln.nodes/id           nil
-        ::m.ln.nodes/user         {}
-        ::m.ln.nodes/network      {}
-        ::m.ln.nodes/core-node    {}
-        ::m.ln.nodes/host         ""
-        ::m.ln.nodes/port         0
-        ::m.ln.nodes/hasCert?     false
-        ::m.ln.nodes/hasMacaroon? false
-        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings-ln-nodes :id id})
-        :ui/router                (comp/get-initial-state Router)}))
+   :initial-state (fn [props]
+                    (let [id (::m.ln.nodes/id props)]
+                      {::m.ln.nodes/id           nil
+                       ::m.ln.nodes/user         {}
+                       ::m.ln.nodes/network      {}
+                       ::m.ln.nodes/core-node    {}
+                       ::m.ln.nodes/host         ""
+                       ::m.ln.nodes/port         0
+                       ::m.ln.nodes/hasCert?     false
+                       ::m.ln.nodes/hasMacaroon? false
+                       :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings-ln-nodes :id id})
+                       :ui/router                (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger
                    ::m.ln.nodes/id
                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :settings-ln-nodes}]

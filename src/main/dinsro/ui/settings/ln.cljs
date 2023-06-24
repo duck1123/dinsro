@@ -28,10 +28,9 @@
 (defsc Page
   [_this {:ui/keys [nav-menu router]}]
   {:ident         (fn [] [:component/id ::Page])
-   :initial-state
-   (fn [_]
-     {:ui/nav-menu (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings-ln})
-      :ui/router   (comp/get-initial-state Router)})
+   :initial-state (fn [_]
+                    {:ui/nav-menu (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings-ln})
+                     :ui/router   (comp/get-initial-state Router)})
    :query         [{:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["ln"]}

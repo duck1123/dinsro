@@ -22,16 +22,15 @@
   [_this {::m.n.filters/keys [id index request]
           :ui/keys           [nav-menu router]}]
   {:ident         ::m.n.filters/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.n.filters/id props)]
-       {::m.n.filters/id      nil
-        ::m.n.filters/index   nil
-        ::m.n.filters/request {}
-        :ui/nav-menu          (comp/get-initial-state
-                               u.menus/NavMenu
-                               {::m.navbars/id :nostr-filters :id id})
-        :ui/router            (comp/get-initial-state Router)}))
+   :initial-state (fn [props]
+                    (let [id (::m.n.filters/id props)]
+                      {::m.n.filters/id      nil
+                       ::m.n.filters/index   nil
+                       ::m.n.filters/request {}
+                       :ui/nav-menu          (comp/get-initial-state
+                                              u.menus/NavMenu
+                                              {::m.navbars/id :nostr-filters :id id})
+                       :ui/router            (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger ::m.n.filters/id {:ui/router [Router {}]})
    :query         [::m.n.filters/id
                    ::m.n.filters/index

@@ -80,16 +80,15 @@
   [_this {::m.n.event-tags/keys [id index type raw-value pubkey]
           :ui/keys              [nav-menu router]}]
   {:ident         ::m.n.event-tags/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.n.event-tags/id props)]
-       {::m.n.event-tags/id        nil
-        ::m.n.event-tags/index     0
-        ::m.n.event-tags/type      ""
-        ::m.n.event-tags/raw-value ""
-        ::m.n.event-tags/pubkey    {}
-        :ui/nav-menu               (comp/get-query u.menus/NavMenu {::m.navbars/id :nostr-event-tags :id id})
-        :ui/router                 (comp/get-query Router)}))
+   :initial-state (fn [props]
+                    (let [id (::m.n.event-tags/id props)]
+                      {::m.n.event-tags/id        nil
+                       ::m.n.event-tags/index     0
+                       ::m.n.event-tags/type      ""
+                       ::m.n.event-tags/raw-value ""
+                       ::m.n.event-tags/pubkey    {}
+                       :ui/nav-menu               (comp/get-query u.menus/NavMenu {::m.navbars/id :nostr-event-tags :id id})
+                       :ui/router                 (comp/get-query Router)}))
    :pre-merge     (u.loader/page-merger
                    ::m.n.event-tags/id
                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-event-tags}]

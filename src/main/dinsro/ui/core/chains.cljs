@@ -21,11 +21,11 @@
 
 (form/defsc-form NewForm
   [this props]
-  {fo/attributes     [m.c.chains/name]
-   fo/cancel-route   ["chains"]
-   fo/id             m.c.chains/id
-   fo/route-prefix   "chain"
-   fo/title          "Chain"}
+  {fo/attributes   [m.c.chains/name]
+   fo/cancel-route ["chains"]
+   fo/id           m.c.chains/id
+   fo/route-prefix "chain"
+   fo/title        "Chain"}
   (if override-form
     (form/render-layout this props)
     (dom/div {}
@@ -42,15 +42,14 @@
           :ui/keys          [nav-menu router]
           :as               props}]
   {:ident         ::m.c.chains/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.c.chains/id props)]
-       {::m.c.chains/id   nil
-        ::m.c.chains/name ""
-        :ui/nav-menu
-        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-chains
-                                                 :id            id})
-        :ui/router        (comp/get-initial-state Router)}))
+   :initial-state (fn [props]
+                    (let [id (::m.c.chains/id props)]
+                      {::m.c.chains/id   nil
+                       ::m.c.chains/name ""
+                       :ui/nav-menu
+                       (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-chains
+                                                                :id            id})
+                       :ui/router        (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger
                    ::m.c.chains/id
                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-chains}]

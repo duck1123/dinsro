@@ -87,19 +87,18 @@
   [_this {::m.rate-sources/keys [name url active currency]
           :ui/keys              [nav-menu rates router]}]
   {:ident         ::m.rate-sources/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.rate-sources/id props)]
-       {::m.rate-sources/name     ""
-        ::m.rate-sources/id       nil
-        ::m.rate-sources/active   false
-        ::m.rate-sources/currency {}
-        ::m.rate-sources/url      ""
-        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
-                                                          {::m.navbars/id :settings-rate-sources
-                                                           :id            id})
-        :ui/rates                 (comp/get-initial-state u.s.rs.rates/Report)
-        :ui/router                (comp/get-initial-state Router)}))
+   :initial-state (fn [props]
+                    (let [id (::m.rate-sources/id props)]
+                      {::m.rate-sources/name     ""
+                       ::m.rate-sources/id       nil
+                       ::m.rate-sources/active   false
+                       ::m.rate-sources/currency {}
+                       ::m.rate-sources/url      ""
+                       :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
+                                                                         {::m.navbars/id :settings-rate-sources
+                                                                          :id            id})
+                       :ui/rates                 (comp/get-initial-state u.s.rs.rates/Report)
+                       :ui/router                (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger
                    ::m.rate-sources/id
                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :settings-rate-sources}]

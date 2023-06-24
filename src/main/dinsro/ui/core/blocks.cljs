@@ -107,7 +107,6 @@
         (dom/button {:onClick (fn [_e]
                                 (log/info :ShowBlock/fetch-button-clicked {})
                                 (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
-
           "Fetch")))
     (if id
       (dom/div {}

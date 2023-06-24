@@ -66,15 +66,14 @@
   [_this {::m.currencies/keys [name]
           :ui/keys            [nav-menu router]}]
   {:ident         ::m.currencies/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.currencies/id props)]
-       {::m.currencies/name ""
-        ::m.currencies/code ""
-        ::m.currencies/id   nil
-        :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :currencies
-                                                                     :id            id})
-        :ui/router          (comp/get-initial-state Router)}))
+   :initial-state (fn [props]
+                    (let [id (::m.currencies/id props)]
+                      {::m.currencies/name ""
+                       ::m.currencies/code ""
+                       ::m.currencies/id   nil
+                       :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :currencies
+                                                                                    :id            id})
+                       :ui/router          (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger
                    ::m.currencies/id
                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :currencies}]

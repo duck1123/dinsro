@@ -12,9 +12,9 @@
   {ro/columns          [m.ln.accounts/id
                         m.ln.accounts/node]
    ro/field-formatters {::m.ln.accounts/node #(u.links/ui-node-link %2)}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/route            "accounts"
    ro/row-pk           m.ln.accounts/id
    ro/run-on-mount?    true

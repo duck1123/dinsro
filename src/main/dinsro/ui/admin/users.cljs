@@ -43,14 +43,13 @@
   [_this {::m.users/keys [name role]
           :ui/keys       [nav-menu router]}]
   {:ident         ::m.users/id
-   :initial-state
-   (fn [props]
-     (let [id (::m.users/id props)]
-       {::m.users/name ""
-        ::m.users/role nil
-        ::m.users/id   nil
-        :ui/nav-menu   (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin-users :id id})
-        :ui/router     (comp/get-initial-state Router)}))
+   :initial-state (fn [props]
+                    (let [id (::m.users/id props)]
+                      {::m.users/name ""
+                       ::m.users/role nil
+                       ::m.users/id   nil
+                       :ui/nav-menu   (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin-users :id id})
+                       :ui/router     (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger
                    ::m.users/id
                    {:ui/router   [Router {}]

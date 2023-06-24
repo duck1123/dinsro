@@ -43,10 +43,9 @@
 (defsc Page
   [_this {:ui/keys [router vertical-menu]}]
   {:ident         (fn [] [:component/id ::Page])
-   :initial-state
-   (fn [_]
-     {:ui/router        (comp/get-initial-state Router)
-      :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :admin-ln})})
+   :initial-state (fn [_]
+                    {:ui/router        (comp/get-initial-state Router)
+                     :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :admin-ln})})
    :query         [{:ui/router (comp/get-query Router)}
                    {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}]
    :route-segment ["ln"]}

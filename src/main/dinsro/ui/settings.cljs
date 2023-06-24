@@ -32,11 +32,10 @@
 (defsc Page
   [_this {:ui/keys [nav-menu router vertical-menu]}]
   {:ident         (fn [_] [:page/id ::Page])
-   :initial-state
-   (fn [_]
-     {:ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings})
-      :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :settings})
-      :ui/router        (comp/get-initial-state Router)})
+   :initial-state (fn [_]
+                    {:ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings})
+                     :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :settings})
+                     :ui/router        (comp/get-initial-state Router)})
    :query         [{:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}
                    {:ui/router (comp/get-query Router)}]

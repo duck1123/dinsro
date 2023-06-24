@@ -23,11 +23,11 @@
   [_this _props]
   {ro/columns          [m.n.badge-awards/id]
    ro/control-layout   {:action-buttons [::new ::fetch ::refresh]}
-   ro/controls         {::fetch fetch-button
+   ro/controls         {::fetch   fetch-button
                         ::refresh u.links/refresh-control}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/route            "badge-awards"
    ro/row-pk           m.n.badge-definitions/id
    ro/run-on-mount?    true
