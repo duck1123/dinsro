@@ -12,15 +12,19 @@
    [dinsro.joins.core.peers :as j.c.peers]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.peers :as mu.c.peers]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/peers.cljc]]
 ;; [[../../../model/core/peers.cljc]]
 
+(def index-page-key :admin-core-peers)
 (def model-key ::m.c.peers/id)
+(def show-page-key :admin-core-peers-show)
 
 (def submit-button
   {:type   :button
@@ -99,6 +103,8 @@
    ro/source-attribute  ::j.c.peers/index
    ro/title             "Core Peers"})
 
+(def ui-report (comp/factory Report))
+
 (defsc Show
   [_this _props]
   {:ident         ::m.c.peers/id
@@ -106,3 +112,29 @@
    :query         [::m.c.peers/id]
    :route-segment ["peer" :id]}
   (dom/div {}))
+
+(def ui-show (comp/factory Show))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["peers"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["peer" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (ui-show target))

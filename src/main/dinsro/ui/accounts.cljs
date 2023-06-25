@@ -22,18 +22,25 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
    [dinsro.ui.accounts.transactions :as u.a.transactions]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../joins/accounts.cljc]]
 ;; [[../model/accounts.cljc]]
 
+(def index-page-key :accounts)
 (def model-key ::m.accounts/id)
 (def override-form true)
+(def override-report false)
+(def show-controls false)
+(def show-page-key :accounts-show)
 
 (form/defsc-form NewForm
   [this {::m.accounts/keys [currency name initial-value user]
@@ -80,9 +87,6 @@
    :local? true
    :label  "New"
    :action (fn [this _] (form/create! this NewForm))})
-
-(def override-report false)
-(def show-controls true)
 
 (defsc DebitLine
   [_this {::m.debits/keys [value]}]
@@ -143,7 +147,6 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "accounts"
    ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
    ro/row-pk            m.accounts/id
    ro/run-on-mount?     true
@@ -153,7 +156,8 @@
     (if override-report
       (report/render-layout this)
       (dom/div {}
-        (dom/h1 {} "Accounts")
+        (ui-segment {}
+          (dom/h1 {} "Accounts"))
         (when show-controls ((report/control-renderer this) this))
         (ui-table {}
           (ui-table-header {}
@@ -166,9 +170,14 @@
           (ui-table-body {}
             (map ui-body-item current-rows)))))))
 
+(def ui-report (comp/factory Report))
+
+(def show-transactions false)
+
 (defsc Show
   [_this {::m.accounts/keys [name currency source wallet]
-          :ui/keys          [transactions]}]
+          :ui/keys          [transactions]
+          :as               props}]
   {:componentDidMount #(report/start-report! % u.a.transactions/Report {:route-params (comp/props %)})
    :ident             ::m.accounts/id
    :initial-state     {::m.accounts/name     ""
@@ -183,21 +192,65 @@
                        {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
                        {::m.accounts/source (comp/get-query u.links/RateSourceLinkForm)}
                        {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
-                       {:ui/transactions (comp/get-query u.a.transactions/Report)}]
-   :route-segment     ["accounts" :id]
-   :will-enter        (partial u.loader/page-loader ::m.accounts/id ::Show)}
-  (comp/fragment
-   (dom/div :.ui.segment
-     (dom/h1 {} (str name))
-     (dom/dl {}
-       (dom/dt {} "Currency")
-       (dom/dd {} (u.links/ui-currency-link currency))
-       (dom/dt {} "Source")
-       (dom/dd {} (u.links/ui-rate-source-link source))
-       (dom/dt {} "Wallet")
-       (dom/dd {} (u.links/ui-wallet-link wallet))))
-   (ui-segment {}
-     (if (seq transactions)
-       (u.a.transactions/ui-report transactions)
-       (dom/div {}
-         (dom/p {} "No Transactions"))))))
+                       {:ui/transactions (comp/get-query u.a.transactions/Report)}]}
+  (log/info :Show/starting {:props props})
+  (dom/div {}
+    (ui-segment {}
+      (dom/h1 {} (str name))
+      (dom/dl {}
+        (dom/dt {} "Currency")
+        (dom/dd {}
+          (when currency
+            (u.links/ui-currency-link currency)))
+        (dom/dt {} "Source")
+        (dom/dd {}
+          (when source
+            (u.links/ui-rate-source-link source)))
+        (dom/dt {} "Wallet")
+        (dom/dd {}
+          (when wallet
+            (u.links/ui-wallet-link wallet)))))
+    (when show-transactions
+      (ui-segment {}
+        (if transactions
+          (u.a.transactions/ui-report transactions)
+          (dom/div {}
+            (dom/p {} "No Transactions")))))))
+
+(def ui-show (comp/factory Show))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [id target]
+          :as               props}]
+  {:componentDidMount (fn [this]
+                        (let [props (comp/props this)]
+                          (log/info :ShowPage/mounted {:this this :props props})))
+   :ident             (fn [] [::m.navlinks/id show-page-key])
+   :initial-state     {::m.accounts/id nil
+                       ::m.navlinks/id show-page-key
+                       ::m.navlinks/target      {}}
+   :query             [::m.accounts/id
+                       ::m.navlinks/id
+                       {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment     ["account" :id]
+   :will-enter        (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+  (log/debug :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (dom/div {}
+      (dom/div :.ui.segment "Failed to load record")
+      (u.debug/log-props props))))
+
+(defsc IndexPage
+  [_this {:ui/keys [report] :as props}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["accounts"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (log/trace :Page/starting {:props props})
+  (dom/div {}
+    (ui-report report)))

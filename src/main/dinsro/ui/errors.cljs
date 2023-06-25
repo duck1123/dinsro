@@ -30,38 +30,44 @@
 
   The argument is the same one as supplied to Fulcro's `remote-error?`"
   [result]
+  (log/debug :unhandled-errors/starting {:result result})
   ;; TODO Handle RAD reports - their query is `{:some/global-resolver ..}` and it lacks any metadata
-  (let [load-errs     (:com.wsscode.pathom.core/errors (:body result))
-        query         (extract-query-from-transaction (:original-transaction result))]
-    (log/trace :unhandled-errors/query {:query query})
-    (let [mutation-sym  (as-> (-> query keys first) x
-                          (when (sequential? x) (first x))
-                          (when (symbol? x)
-                            (log/trace :unhandled-errors/symbol {:x x :result result :load-errs load-errs :query query})
-                            x)) ; join query => keyword
-          mutation-errs (when mutation-sym
-                          (log/trace :unhandled-errors/mutation-errors {:mutation-sym mutation-sym})
-                          (get-in result [:body mutation-sym :com.fulcrologic.rad.pathom/errors]))]
-      (cond
-        (seq load-errs)
-        (reduce
-         (fn [unhandled-errs [path :as entry]]
-           (if (target-component-requests-errors query path)
-             (do
-               (log/trace :unhandled-errors/ignored {:last-path (last path)})
-               unhandled-errs)
-             (conj unhandled-errs entry)))
-         {}
+  (when-let [load-errs (:com.wsscode.pathom.core/errors (:body result))]
+    (log/debug :unhandled-errors/load-errs {:load-errs load-errs})
+    (let [query     (extract-query-from-transaction (:original-transaction result))]
+      (log/debug :unhandled-errors/query {:query query})
+      (let [query-key (-> query keys first)]
+        (log/debug :unhandled-errors/query-key {:query-key query-key})
+        (let [mutation-sym
+              (as-> query-key x
+                (when (sequential? x) (first x))
+                (when (symbol? x)
+                  (log/trace :unhandled-errors/symbol {:x x :result result :load-errs load-errs :query query})
+                  x)) ; join query => keyword
+              mutation-errs
+              (when mutation-sym
+                (log/trace :unhandled-errors/mutation-errors {:mutation-sym mutation-sym})
+                (get-in result [:body mutation-sym :com.fulcrologic.rad.pathom/errors]))]
+          (cond
+            (seq load-errs)
+            (reduce
+             (fn [unhandled-errs [path :as entry]]
+               (if (target-component-requests-errors query path)
+                 (do
+                   (log/trace :unhandled-errors/ignored {:last-path (last path)})
+                   unhandled-errs)
+                 (conj unhandled-errs entry)))
+             {}
          ;; errors is a map of `path` to error details
-         load-errs)
+             load-errs)
 
-        mutation-errs
-        (do
-          (log/trace :unhandled-errors/mutation-errors {:mutation-errs mutation-errs})
-          mutation-errs)
+            mutation-errs
+            (do
+              (log/trace :unhandled-errors/mutation-errors {:mutation-errs mutation-errs})
+              mutation-errs)
 
-        :else
-        nil))))
+            :else
+            nil))))))
 
 (defn contains-error? [result]
   (seq (unhandled-errors result)))

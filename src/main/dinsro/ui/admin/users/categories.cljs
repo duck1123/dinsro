@@ -13,8 +13,10 @@
    [com.fulcrologic.semantic-ui.collections.form.ui-form-field :refer [ui-form-field]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.categories :as mu.categories]
    [dinsro.ui.links :as u.links]
@@ -26,8 +28,9 @@
 ;; [[../../../ui/categories.cljs]]
 ;; [[../../../../../test/dinsro/ui/admin/users/categories_test.cljs]]
 
-(def ident-key ::m.users/id)
+(def index-page-key :admin-users-categories)
 (def model-key ::m.categories/id)
+(def parent-model-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)
 
 (def override-report false)
@@ -109,7 +112,7 @@
         (dom/div {}
           (ui-delete-button {}))))))
 
-(def ui-body-item (comp/factory BodyItem {:keyfn ::m.categories/id}))
+(def ui-body-item (comp/factory BodyItem {:keyfn model-key}))
 
 (def new-button
   {:type   :button
@@ -135,7 +138,7 @@
   (let [{:ui/keys [current-rows]} props]
     (if override-report
       (report/render-layout this)
-      (dom/div :.ui.items.segment
+      (ui-segment {}
         (when show-controls ((report/control-renderer this) this))
         (dom/div {}
           (log/info :Report/info {:props props})
@@ -145,24 +148,29 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [form report] :as props}]
-  {:componentDidMount (fn [this]
-                        (let [app (comp/any->app this)]
-                          (log/info :SubPage/mounted {:this this :app app})
-                          ;; (form/start-form! app (tempid) NewForm)
-                          (u.loader/subpage-loader ident-key router-key Report this)))
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/form   {}
-                       :ui/report {}}
+  [_this {::m.users/keys [id]
+          :ui/keys       [form report]
+          :as            props}]
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.users/id    nil
+                       ::m.navlinks/id index-page-key
+                       :ui/form        {}
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
+                       ::m.users/id
                        :ui/form
                        {:ui/form (comp/get-query NewForm)}
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["categories"]}
-  (log/info :SubPage/starting {:props props})
-  (comp/fragment
-   (let [state (comp/get-initial-state NewForm)
-         query (comp/get-query NewForm)]
-     (log/info :SubPage/stateing {:state state :query query})
-     (ui-new-form form))
-   (ui-report report)))
+   :route-segment     ["categories"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+  (log/debug :SubPage/starting {:props props})
+  (if id
+    (dom/div {}
+      (let [state (comp/get-initial-state NewForm)
+            query (comp/get-query NewForm)]
+        (log/info :SubPage/stateing {:state state :query query})
+        (ui-new-form form))
+      (ui-report report))
+    (ui-segment {} "Failed to load page")))

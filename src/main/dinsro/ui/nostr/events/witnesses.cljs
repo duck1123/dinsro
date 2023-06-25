@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.witnesses :as j.n.witnesses]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.ui.debug :as u.debug]
@@ -16,6 +17,7 @@
 ;; [../../../actions/nostr/witnesses.clj]
 
 (def ident-key ::m.n.events/id)
+(def index-page-key :nostr-events-witnesses)
 (def router-key :dinsro.ui.nostr.events/Router)
 
 (def log-item-props false)
@@ -33,7 +35,8 @@
                    {::j.n.witnesses/relay (comp/get-query u.links/RelayLinkForm)}]}
   (dom/div {}
     (u.links/ui-relay-link relay)
-    (when log-item-props (u.debug/log-props props))))
+    (when log-item-props
+      (u.debug/log-props props))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.n.witnesses/id}))
 
@@ -64,9 +67,11 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["witnesses"]}
   (ui-report report))

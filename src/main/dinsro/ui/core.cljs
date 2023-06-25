@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.core.addresses :as u.c.addresses]
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.core.chains :as u.c.chains]
@@ -15,33 +16,35 @@
    [dinsro.ui.core.wallets.addresses :as u.c.w.addresses]
    [dinsro.ui.core.words :as u.c.words]))
 
+(def index-page-key :core)
+
 (defrouter Router
   [_this {:keys [current-state pending-path-segment]
           :as props}]
   {:router-targets [u.c.addresses/NewForm
-                    u.c.addresses/Report
-                    u.c.blocks/Show
-                    u.c.blocks/Report
+                    u.c.addresses/IndexPage
+                    u.c.blocks/ShowPage
+                    u.c.blocks/IndexPage
                     u.c.chains/NewForm
-                    u.c.chains/Report
-                    u.c.chains/Show
-                    u.c.mnemonics/Report
-                    u.c.networks/Report
-                    u.c.networks/Show
+                    u.c.chains/IndexPage
+                    u.c.chains/ShowPage
+                    u.c.mnemonics/IndexPage
+                    u.c.networks/IndexPage
+                    u.c.networks/ShowPage
                     u.c.nodes/NewForm
-                    u.c.nodes/Report
-                    u.c.nodes/Show
-                    u.c.peers/Report
-                    u.c.peers/Show
+                    u.c.nodes/IndexPage
+                    u.c.nodes/ShowPage
+                    u.c.peers/IndexPage
+                    u.c.peers/ShowPage
                     u.c.peers/NewForm
-                    u.c.transactions/Report
-                    u.c.transactions/Show
+                    u.c.transactions/IndexPage
+                    u.c.transactions/ShowPage
                     u.c.wallets/NewForm
-                    u.c.wallets/Show
-                    u.c.wallets/Report
+                    u.c.wallets/ShowPage
+                    u.c.wallets/IndexPage
                     u.c.w.addresses/NewForm
                     u.c.w.addresses/WalletAddressForm
-                    u.c.words/Report]}
+                    u.c.words/IndexPage]}
   (case current-state
     :pending (dom/div :.ui.segment "Loading... " (pr-str pending-path-segment))
     :failed (dom/div :.ui.segment "Route Failed "  (pr-str pending-path-segment))
@@ -54,8 +57,10 @@
 
 (defsc Page
   [_this {:ui/keys [router]}]
-  {:ident         (fn [] [:page/id ::Page])
-   :initial-state {:ui/router {}}
-   :query         [{:ui/router (comp/get-query Router)}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/router      {}}
+   :query         [::m.navlinks/id
+                   {:ui/router (comp/get-query Router)}]
    :route-segment ["core"]}
   (ui-router router))

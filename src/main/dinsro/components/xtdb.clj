@@ -98,7 +98,7 @@
 (>defn submit-tx!
   "Submit a transaction to the main db"
   [k params]
-  [keyword? map? => any?]
+  [keyword? vector? => any?]
   (let [ops [(concat [::xt/fn k] params)]]
     (log/trace :submit-tx/starting {:ops ops})
     (let [node     (get-node)

@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.connections :as j.n.connections]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations.nostr.connections :as mu.n.connections]
@@ -17,6 +18,7 @@
 ;; [[../../../../model/nostr/connections.cljc]]
 
 (def ident-key ::m.n.requests/id)
+(def index-page-key :admin-nostr-requests-connections)
 (def model-key ::m.n.connections/id)
 (def router-key :dinsro.ui.nostr.requests/Router)
 
@@ -40,7 +42,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Disconnect" ::m.n.connections/id mu.n.connections/disconnect!)]
+   ro/row-actions       [(u.buttons/row-action-button "Disconnect" model-key mu.n.connections/disconnect!)]
    ro/row-pk            m.n.connections/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.connections/index
@@ -51,9 +53,11 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["connections"]}
   (ui-report report))

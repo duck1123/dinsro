@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
@@ -19,7 +20,9 @@
 ;; [[../../../joins/ln/remote_nodes.cljc]]
 ;; [[../../../model/ln/remote_nodes.cljc]]
 
+(def index-page-key :admin-ln-remote-nodes)
 (def model-key ::m.ln.remote-nodes/id)
+(def show-page-key :admin-ln-remote-nodes-show)
 
 (defrouter Router
   [_this _props]
@@ -36,17 +39,14 @@
                    ::m.ln.remote-nodes/pubkey ""
                    :ui/peers                  {}
                    :ui/router                 {}}
-   :pre-merge     (u.loader/page-merger
-                   ::m.ln.remote-nodes/id
-                   {:ui/peers  [u.ln.rn.peers/SubPage {}]
-                    :ui/router [Router {}]})
+   :pre-merge     (u.loader/page-merger ::m.ln.remote-nodes/id
+                    {:ui/peers  [u.ln.rn.peers/SubPage {}]
+                     :ui/router [Router {}]})
    :query         [::m.ln.remote-nodes/id
                    ::m.ln.remote-nodes/pubkey
                    {:ui/peers (comp/get-query u.ln.rn.peers/SubPage)}
                    {:ui/router (comp/get-query Router)}
-                   [df/marker-table '_]]
-   :route-segment ["remote-nodes" :id]
-   :will-enter    (partial u.loader/page-loader ::m.ln.remote-nodes/id ::Show)}
+                   [df/marker-table '_]]}
   (dom/div {}
     (dom/div {:classes [:.ui.segment]}
       (dom/h1 {} "Remote Node")
@@ -54,6 +54,8 @@
       (dom/p {} "pubkey: " (str pubkey)))
     (u.ln.rn.peers/ui-sub-page peers)
     (ui-router router)))
+
+(def ui-show (comp/factory Show))
 
 (report/defsc-report Report
   [_this _props]
@@ -74,9 +76,34 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route            "remote-nodes"
-   ro/row-actions      [(u.buttons/row-action-button "Delete" ::m.ln.remote-nodes/id mu.ln.remote-nodes/delete!)]
+   ro/row-actions      [(u.buttons/row-action-button "Delete" model-key mu.ln.remote-nodes/delete!)]
    ro/row-pk           m.ln.remote-nodes/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.remote-nodes/index
    ro/title            "Remote Nodes"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["remote-nodes"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["remote-node" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (ui-show target))

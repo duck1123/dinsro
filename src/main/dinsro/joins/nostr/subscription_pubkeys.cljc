@@ -21,8 +21,8 @@
      {::admin-index (j/make-admin-indexer join-info env props)})})
 
 (defattr index ::index :ref
-  {ao/target    :m.n.subscription-pubkeys/id
-   ao/pc-output [{::index [:total {:results [:m.n.subscription-pubkeys/id]}]}]
+  {ao/target    ::m.n.subscription-pubkeys/id
+   ao/pc-output [{::index [:total {:results [::m.n.subscription-pubkeys/id]}]}]
    ao/pc-resolve
    (fn [env props]
      {::index (j/make-indexer join-info env props)})})

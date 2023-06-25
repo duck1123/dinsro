@@ -12,6 +12,7 @@
    [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.buttons :as u.buttons]
@@ -25,6 +26,10 @@
 ;; [[../../../joins/core/wallets.cljc]]
 ;; [[../../../model/core/wallets.cljc]]
 ;; [[../../../../test/dinsro/ui/core/wallets_test.cljs]]
+
+(def index-page-key :admin-core-wallets)
+(def model-key ::m.c.wallets/id)
+(def show-page-key :admin-core-wallets-show)
 
 (def create-button
   {:type   :button
@@ -97,11 +102,10 @@
                    :ui/accounts                  {}
                    :ui/addresses                 {}
                    :ui/words                     {}}
-   :pre-merge     (u.loader/page-merger
-                   ::m.c.wallets/id
-                   {:ui/accounts  [u.c.w.accounts/SubPage {}]
-                    :ui/addresses [u.c.w.addresses/SubPage {}]
-                    :ui/words     [u.c.w.words/SubPage {}]})
+   ;; :pre-merge     (u.loader/page-merger model-key
+   ;;                  {:ui/accounts  [u.c.w.accounts/SubPage {}]
+   ;;                   :ui/addresses [u.c.w.addresses/SubPage {}]
+   ;;                   :ui/words     [u.c.w.words/SubPage {}]})
    :query         [::m.c.wallets/id
                    ::m.c.wallets/name
                    ::m.c.wallets/derivation
@@ -113,9 +117,7 @@
                    {:ui/accounts (comp/get-query u.c.w.accounts/SubPage)}
                    {:ui/addresses (comp/get-query u.c.w.addresses/SubPage)}
                    {:ui/words (comp/get-query u.c.w.words/SubPage)}
-                   [df/marker-table '_]]
-   :route-segment ["wallets" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.wallets/id ::Show)}
+                   [df/marker-table '_]]}
   (log/info :ShowWallet/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment
@@ -150,6 +152,8 @@
          (u.c.w.addresses/ui-sub-page addresses)))
       (dom/p {} "id not set"))))
 
+(def ui-show (comp/factory Show))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
@@ -165,9 +169,34 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "wallets"
    ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
    ro/row-pk            m.c.wallets/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.wallets/admin-index
    ro/title             "Wallet Report"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["wallets"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["wallet" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (ui-show target))

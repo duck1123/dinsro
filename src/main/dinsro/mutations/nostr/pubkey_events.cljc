@@ -53,7 +53,7 @@
 #?(:clj
    (pc/defmutation fetch! [_env props]
      {::pc/params #{::m.n.pubkeys/id}
-      ::pc/output [::status ::errors ::m.n.pubkeys/item]}
+      ::pc/output [::mu/status ::mu/errors ::m.n.pubkeys/item]}
      (log/info :fetch-contacts/starting {:props props})
      (let [response (a.n.pubkey-events/do-fetch! props)]
        (log/info :fetch-contacts/finished {:response response})

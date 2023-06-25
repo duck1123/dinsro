@@ -9,8 +9,10 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.buttons :as u.buttons]
@@ -24,15 +26,18 @@
    [dinsro.ui.nostr.pubkeys.events :as u.n.p.events]
    [dinsro.ui.nostr.pubkeys.items :as u.n.p.items]
    [dinsro.ui.nostr.pubkeys.relays :as u.n.p.relays]
-   [dinsro.ui.nostr.pubkeys.users :as u.n.p.users]))
+   [dinsro.ui.nostr.pubkeys.users :as u.n.p.users]
+   [lambdaisland.glogc :as log]))
 
-;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
-;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
-;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
-;; [[../../mutations/nostr/pubkey_contacts.cljc][Pubkey Contact Mutations]]
-;; [[../../mutations/nostr/pubkeys.cljc][Pubkey Mutations]]
+;; [[../../actions/nostr/pubkeys.clj]]
+;; [[../../joins/nostr/pubkeys.cljc]]
+;; [[../../model/nostr/pubkeys.cljc]]
+;; [[../../mutations/nostr/pubkey_contacts.cljc]]
+;; [[../../mutations/nostr/pubkeys.cljc]]
 
+(def index-page-key :nostr-pubkeys)
 (def model-key ::m.n.pubkeys/id)
+(def navbar-id :nostr-pubkeys)
 (def show-page-key :nostr-pubkeys-show)
 
 (defrouter Router
@@ -48,8 +53,6 @@
     u.n.p.users/SubPage]})
 
 (def ui-router (comp/factory Router))
-
-(def show-border false)
 
 (defsc PubkeyInfo
   [_this {::j.n.pubkeys/keys [npub]
@@ -80,7 +83,7 @@
                    ::m.n.pubkeys/website]}
   (let [avatar-size                                  200
         {:keys [content-box info picture-container]} (css/get-classnames PubkeyInfo)]
-    (dom/div :.ui.segment
+    (ui-segment {}
       (dom/div :.ui.items.unstackable
         (dom/div {:classes [:.item info]}
           (dom/div {:classes [:.ui :.tiny :.image picture-container]}
@@ -99,8 +102,9 @@
 
 (defsc Show
   "Show a core node"
-  [_this {:ui/keys           [nav-menu router]
-          :as props}]
+  [_this {::m.n.pubkeys/keys [id]
+          :ui/keys           [nav-menu router]
+          :as                props}]
   {:ident         ::m.n.pubkeys/id
    :initial-state (fn [props]
                     (let [id (::m.n.pubkeys/id props)]
@@ -114,10 +118,11 @@
                        ::j.n.pubkeys/npub         ""
                        ::m.n.pubkeys/picture      ""
                        ::m.n.pubkeys/website      ""
-                       :ui/nav-menu (comp/get-initial-state u.menus/NavMenu
-                                                            {::m.navbars/id :nostr-pubkeys :id id})
+                       :ui/nav-menu               (comp/get-initial-state u.menus/NavMenu
+                                                                          {::m.navbars/id navbar-id :id id})
                        :ui/router                 (comp/get-initial-state Router)}))
-   :pre-merge     (u.loader/page-merger ::m.n.pubkeys/id {:ui/router [Router {}]})
+   :pre-merge     (u.loader/page-merger ::m.n.pubkeys/id {:ui/router [Router {}]
+                                                          :ui/nav-menu [u.menus/NavMenu {::m.navbars/id navbar-id}]})
    :query         [::m.n.pubkeys/about
                    ::m.n.pubkeys/display-name
                    ::m.n.pubkeys/hex
@@ -129,14 +134,18 @@
                    ::m.n.pubkeys/picture
                    ::m.n.pubkeys/website
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
-   :route-segment ["pubkey" :id]
-   :will-enter    (partial u.loader/page-loader ::m.n.pubkeys/id ::Show)}
+                   {:ui/router (comp/get-query Router)}]}
+  (log/info :Show/starting {:props props})
   (let [{:keys [main]} (css/get-classnames Show)]
-    (dom/div {:classes [main]}
-      (ui-pubkey-info props)
-      (u.menus/ui-nav-menu nav-menu)
-      (ui-router router))))
+    (if id
+      (dom/div {:classes [main]}
+        (ui-pubkey-info props)
+        (u.menus/ui-nav-menu nav-menu)
+        (ui-router router))
+      (ui-segment {:color "red" :inverted true}
+        "Failed to load record"))))
+
+(def ui-show (comp/factory Show))
 
 (form/defsc-form CreateForm
   [_this _props]
@@ -167,9 +176,45 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "pubkeys"
-   ro/row-actions       [(u.buttons/row-action-button "Add to contacts" ::m.n.pubkeys/id mu.n.pubkeys/add-contact!)]
+   ro/row-actions       [(u.buttons/row-action-button "Add to contacts" model-key mu.n.pubkeys/add-contact!)]
    ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.pubkeys/index
    ro/title             "Pubkeys"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["pubkeys"]
+   :will-enter    (u.loader/page-loader index-page-key)}
+  (log/debug :IndexPage/starting {:props props})
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {id                model-key
+          ::m.navlinks/keys [target]
+          :as               props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state (fn [_props]
+                    {model-key           nil
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target {}})
+   :query         (fn [_props]
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
+   :route-segment ["pubkey" :id]
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+  (log/debug :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load Page")))

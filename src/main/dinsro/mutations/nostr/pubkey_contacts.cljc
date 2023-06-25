@@ -14,7 +14,7 @@
 ;; [[../../actions/nostr/pubkey_contacts.clj][Pubkey Contact Actions]]
 ;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
 
-(comment ::pc/_ ::m.n.pubkey-contacts/_)
+(comment ::m.n.pubkey-contacts/_ ::mu/_ ::pc/_)
 
 (defsc Item
   [_ _]

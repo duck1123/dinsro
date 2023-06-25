@@ -7,7 +7,6 @@
    [com.fulcrologic.fulcro.networking.http-remote :as net]
    [com.fulcrologic.fulcro.networking.websocket-remote :as fws]
    [com.fulcrologic.fulcro.react.error-boundaries :as eb]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.application :as rad-app]
    [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.rad.report :as report]
@@ -36,38 +35,55 @@
   (rad-app/fulcro-rad-app
    {:client-did-mount    (fn [app] (c.routing/restore-route-ensuring-leaf! app))
     :global-error-action u.errors/global-error-action
-    :props-middleware    (comp/wrap-update-extra-props (fn [cls extra-props] (merge extra-props (css/get-classnames cls))))
+    :props-middleware    (comp/wrap-update-extra-props
+                          (fn [cls extra-props] (merge extra-props (css/get-classnames cls))))
     :remotes             (do
                            (comment :ws-remote (fws/fulcro-websocket-remote {:uri "/api2"}))
                            {:remote (net/fulcro-http-remote {:url "/api" :request-middleware secured-request-middleware})})
-    :remote-error?       (fn [result] (or (app/default-remote-error? result) (u.errors/contains-error? result)))}))
+    :remote-error?       (fn [result]
+                           (or (app/default-remote-error? result)
+                               (u.errors/contains-error? result)))}))
 
-(defn setup-RAD [app]
+(defn setup-RAD
+  [app]
+  (log/debug :setup-RAD/starting {:app app})
   (let [all-controls (u.controls/all-controls)]
     (log/fine :controls/installing {:all-controls all-controls})
     (rad-app/install-ui-controls! app all-controls))
   (report/install-formatter! app :inst :default fmt.date-time/date-formatter)
   (report/install-formatter! app :boolean :affirmation (fn [_ value] (if value "yes" "no"))))
 
+(defn setup-history
+  [app]
+  (log/debug :setup-history/starting {:app app})
+  (history/install-route-history! app (html5-history)))
+
 (defn ^:export start
   "Shadow-cljs sets this up to be our entry-point function.
   See shadow-cljs.edn `:init-fn` in the modules of the main build."
   []
-  (c.logging/install-logging!)
-  (log/debug :start/starting {})
-  (app/set-root! app ui/Root {:initialize-state? true})
-  (dr/change-route! app [""])
-  (history/install-route-history! app (html5-history))
-  (setup-RAD app)
+  (try
+    (c.logging/install-logging!)
+    (log/debug :start/starting {})
+    (app/set-root! app ui/Root {:initialize-state? true})
 
-  (set! eb/*render-error* (fn [this error]
-                            (println this)
-                            (println error)
-                            (dom/div "Error")))
+    ;; (dr/change-route! app [""])
+    (setup-history app)
+    (setup-RAD app)
 
-  (auth/start! app [u.login/Page] {:after-session-check `c.routing/fix-route})
-  (app/mount! app ui/Root "app" {:initialize-state? false})
-  (log/debug :start/finished {}))
+    (set! eb/*render-error* (fn [this error]
+                              (println this)
+                              (println error)
+                              (dom/div "Error")))
+
+    (auth/start! app [u.login/Page] {:after-session-check `c.routing/fix-route})
+    (log/debug :start/auth-started {:initial (comp/get-query ui/Root)
+                                    :state   (comp/get-initial-state ui/Root)})
+    (app/mount! app ui/Root "app" {:initialize-state? false})
+    (log/debug :start/mounted {})
+    (log/debug :start/finished {})
+    (catch js/Error ex
+      (log/error :start/failed {:ex ex}))))
 
 (defn ^:export refresh
   "During development, shadow-cljs will call this on every hot reload of source. See shadow-cljs.edn"

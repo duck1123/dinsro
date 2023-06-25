@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
@@ -17,6 +18,7 @@
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
    [dinsro.ui.debug :as u.debug]
@@ -35,7 +37,9 @@
 ;; [[../../joins/ln/nodes.cljc]]
 ;; [[../../model/ln/nodes.cljc]]
 
+(def index-page-key :ln-nodes)
 (def model-key ::m.ln.nodes/id)
+(def show-page-key :ln-nodes-show)
 
 (declare CreateLightningNodeForm)
 
@@ -179,10 +183,9 @@
                        :ui/router                (comp/get-initial-state Router)
                        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :ln-nodes
                                                                                           :id            id})}))
-   :pre-merge     (u.loader/page-merger
-                   ::m.ln.nodes/id
-                   {:ui/router   [Router {}]
-                    :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :ln-nodes}]})
+   :pre-merge     (u.loader/page-merger ::m.ln.nodes/id
+                    {:ui/router   [Router {}]
+                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :ln-nodes}]})
    :query         [::m.ln.nodes/id
                    ::m.ln.nodes/host
                    ::m.ln.nodes/port
@@ -192,50 +195,54 @@
                    {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
                    {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
-   :route-segment ["nodes" :id]
-   :will-enter    (partial u.loader/page-loader ::m.ln.nodes/id ::Show)}
+                   {:ui/router (comp/get-query Router)}]}
   (log/info :Show/starting {:props props})
-  (dom/div {}
-    (dom/div :.ui.segment
-      (ui-actions-menu
-       {::m.ln.nodes/id           id
-        ::m.ln.nodes/hasCert?     hasCert?
-        ::m.ln.nodes/hasMacaroon? hasMacaroon?})
-      (dom/div :.ui.list
-        (dom/div :.item
-          (dom/div :.header "User")
-          (u.links/ui-user-link user))
-        (dom/div :.item
-          (dom/div :.header "Core Node")
-          (u.links/ui-core-node-link core-node))
-        (dom/div :.item
-          (dom/div :.header "Address")
-          host ":" (str port))
-        (dom/div :.item
-          (dom/div :.header "Network")
-          (u.links/ui-network-link network))
-        (dom/div :.item
-          (dom/div :.header "Has Cert?")
-          (str hasCert?)
-          (when-not hasCert?
-            (dom/div {}
-              (dom/p {} "Cert not found")
-              (dom/button {:classes [:.ui.button]
-                           :onClick #(comp/transact! this [(mu.ln/download-cert! {::m.ln.nodes/id id})])}
-                "Fetch"))))
-        (dom/div :.item
-          (dom/div :.header "Has Macaroon?")
-          (if hasMacaroon?
-            (str hasMacaroon?)
-            (dom/a {:onClick #(comp/transact! this [(mu.ln/download-macaroon! {::m.ln.nodes/id id})])}
-              (str hasMacaroon?))))))
-    (when nav-menu (u.menus/ui-nav-menu nav-menu))
-    (if router
-      (ui-router router)
-      (dom/div :.ui.segment
-        (dom/h3 {} "Network Router not loaded")
-        (u.debug/ui-props-logger props)))))
+  (if id
+    (dom/div {}
+      (ui-segment {}
+        (ui-actions-menu
+         {::m.ln.nodes/id           id
+          ::m.ln.nodes/hasCert?     hasCert?
+          ::m.ln.nodes/hasMacaroon? hasMacaroon?})
+        (dom/div :.ui.list
+          (dom/div :.item
+            (dom/div :.header "User")
+            (u.links/ui-user-link user))
+          (dom/div :.item
+            (dom/div :.header "Core Node")
+            (u.links/ui-core-node-link core-node))
+          (dom/div :.item
+            (dom/div :.header "Address")
+            host ":" (str port))
+          (dom/div :.item
+            (dom/div :.header "Network")
+            (u.links/ui-network-link network))
+          (dom/div :.item
+            (dom/div :.header "Has Cert?")
+            (str hasCert?)
+            (when-not hasCert?
+              (dom/div {}
+                (dom/p {} "Cert not found")
+                (dom/button {:classes [:.ui.button]
+                             :onClick #(comp/transact! this [(mu.ln/download-cert! {::m.ln.nodes/id id})])}
+                  "Fetch"))))
+          (dom/div :.item
+            (dom/div :.header "Has Macaroon?")
+            (if hasMacaroon?
+              (str hasMacaroon?)
+              (dom/a {:onClick #(comp/transact! this [(mu.ln/download-macaroon! {::m.ln.nodes/id id})])}
+                (str hasMacaroon?))))))
+      (when nav-menu
+        (u.menus/ui-nav-menu nav-menu))
+      (if router
+        (ui-router router)
+        (ui-segment {:color "red" :inverted true}
+          (dom/h3 {} "Network Router not loaded")
+          (u.debug/ui-props-logger props))))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))
+
+(def ui-show (comp/factory Show))
 
 (report/defsc-report Report
   [_this _props]
@@ -255,10 +262,42 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "nodes"
    ro/row-pk            m.ln.nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.ln.nodes/index
    ro/title             "Lightning Node Report"})
 
 (def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["nodes"]
+   :will-enter    (u.loader/page-loader index-page-key)}
+  (log/info :IndexPage/starting {:props props})
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]
+          ::m.ln.nodes/keys [id]
+          :as               props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.ln.nodes/id     nil
+                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.ln.nodes/id
+                   ::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["node" :id]
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

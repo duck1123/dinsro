@@ -8,19 +8,24 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.chains :as j.c.chains]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.core.chains.networks :as u.c.c.networks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]))
+   [dinsro.ui.menus :as u.menus]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/core/chains.cljc]]
 ;; [[../../model/core/chains.cljc]]
 
+(def index-page-key :core-chains)
 (def model-key ::m.c.chains/id)
+(def show-page-key :core-chains-show)
 
 (def override-form false)
 
@@ -55,16 +60,13 @@
                        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-chains
                                                                 :id            id})
                        :ui/router        (comp/get-initial-state Router)}))
-   :pre-merge     (u.loader/page-merger
-                   ::m.c.chains/id
-                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-chains}]
-                    :ui/router   [Router {}]})
+   ;; :pre-merge     (u.loader/page-merger ::m.c.chains/id
+   ;;                  {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-chains}]
+   ;;                   :ui/router   [Router {}]})
    :query         [::m.c.chains/id
                    ::m.c.chains/name
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
-   :route-segment ["chain" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.chains/id ::Show)}
+                   {:ui/router (comp/get-query Router)}]}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/h1 {} "Show Chain")
@@ -78,6 +80,8 @@
        (dom/h3 {} "Chain Router not loaded")
        (u.debug/ui-props-logger props)))))
 
+(def ui-show (comp/factory Show))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.chains/name #(u.links/ui-chain-link %3)}
@@ -87,8 +91,39 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "chains"
    ro/row-pk            m.c.chains/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.chains/index
    ro/title             "Chains"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["chains"]
+   :will-enter    (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.c.chains/keys [id]
+          ::m.navlinks/keys [target]
+          :as               props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.c.chains/id     nil
+                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.c.chains/id
+                   ::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["chain" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (ui-segment {} "Failed to load record")))

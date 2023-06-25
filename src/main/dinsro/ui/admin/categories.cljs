@@ -1,5 +1,6 @@
 (ns dinsro.ui.admin.categories
   (:require
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
@@ -7,19 +8,26 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.categories :as j.categories]
    [dinsro.joins.users :as j.users]
    [dinsro.model.categories :as m.categories]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.categories :as mu.categories]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/categories.cljc]]
 ;; [[../../model/categories.cljc]]
 
+(def index-page-key :admin-categories)
 (def model-key ::m.categories/id)
 (def override-admin-form true)
+(def show-page-key :admin-categories-show)
 
 (def user-picker
   {::picker-options/query-key       ::j.users/admin-index-flat
@@ -52,19 +60,70 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.categories/user #(u.links/ui-user-link %2)}
+  {ro/column-formatters {::m.categories/name #(u.links/ui-category-link %3)
+                         ::m.categories/user #(u.links/ui-user-link %2)}
    ro/columns           [m.categories/name
                          m.categories/user
                          j.categories/transaction-count]
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
-   ro/form-links        {::m.categories/name NewForm}
+   ;; ro/form-links        {::m.categories/name NewForm}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.categories/id mu.categories/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.categories/delete!)]
    ro/row-pk            m.categories/id
-   ro/route             "categories"
    ro/run-on-mount?     true
    ro/source-attribute  ::j.categories/admin-index
    ro/title             "Categories"})
+
+(def ui-report (comp/factory Report))
+
+(def debug-props false)
+
+(defsc Show
+  [_this {::m.categories/keys [name]}]
+  {:ident          ::m.categories/id
+   :initial-state  {::m.categories/id   nil
+                    ::m.categories/name ""}
+   ::m.navlinks/id :show-category
+   :pre-merge      (u.loader/page-merger ::m.categories/id {})
+   :query          [::m.categories/id
+                    ::m.categories/name]}
+  (dom/div :.ui.container
+    (ui-segment {}
+      (str name))))
+
+(def ui-show (comp/factory Show))
+
+(defsc IndexPage
+  [_this {:ui/keys [report] :as props}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["categories"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (log/info :Page/starting {:props props})
+  (dom/div {}
+    (if report
+      (ui-report report)
+      (dom/div :.ui.segment
+        (dom/div :.ui.segment "Failed to load admin categories report")
+        (when debug-props
+          (u.debug/log-props props))))))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["node" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (if target
+    (ui-show target)
+    (ui-segment {} "Failed to load page")))

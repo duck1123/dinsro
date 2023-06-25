@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.filter-items :as j.n.filter-items]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.ui.links :as u.links]
@@ -20,6 +21,7 @@
 ;; [../../../ui/nostr/requests/filter_items.cljs]
 
 (def ident-key ::m.n.filters/id)
+(def index-page-key :nostr-filters-filter-items)
 (def router-key :dinsro.ui.nostr.filters/Router)
 
 (form/defsc-form NewForm
@@ -68,9 +70,11 @@
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["items"]}
   (log/info :SubPage/starting {:props props})

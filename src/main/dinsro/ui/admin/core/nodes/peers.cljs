@@ -10,6 +10,7 @@
    [dinsro.joins.core.peers :as j.c.peers]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.mutations.core.peers :as mu.c.peers]
    [dinsro.ui.buttons :as u.buttons]
@@ -21,6 +22,7 @@
 ;; [[../../../../model/core/peers.cljc]]
 
 (def ident-key ::m.c.nodes/id)
+(def index-page-key :admin-core-nodes-peers)
 (def model-key ::m.c.peers/id)
 (def router-key :dinsro.ui.core.nodes/Router)
 
@@ -68,7 +70,6 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "node-peers"
    ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!)]
    ro/row-pk            m.c.peers/id
    ro/run-on-mount?     true
@@ -80,9 +81,12 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [{:ui/report (comp/get-query Report)}
+                       ::m.navlinks/id
                        [::dr/id router-key]]
    :route-segment     ["peers"]}
+
   (ui-report report))

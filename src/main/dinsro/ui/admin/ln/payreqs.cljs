@@ -9,13 +9,16 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.payreqs :as j.ln.payreqs]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.payreqs :as mu.ln.payreqs]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/ln/payreqs.cljc]]
 ;; [[../../../model/ln/payreqs.cljc]]
 
+(def index-page-key :admin-ln-payreqs)
 (def model-key ::m.ln.payreqs/id)
 
 (def decode-button
@@ -27,7 +30,8 @@
                (log/info :decode-button/clicked {:props props})
                (comp/transact! this [(mu.ln.payreqs/decode props)])))})
 
-(form/defsc-form NewForm [_this _props]
+(form/defsc-form NewForm
+  [_this _props]
   {fo/action-buttons [::decode]
    fo/attributes     [m.ln.payreqs/payment-request]
    fo/controls       {::decode decode-button}
@@ -52,6 +56,21 @@
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.payreqs/index
    ro/title            "Payment Request"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["requests"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
 
 (defsc Show
   [_this _props]

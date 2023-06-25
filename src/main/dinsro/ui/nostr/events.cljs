@@ -16,6 +16,7 @@
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -29,15 +30,20 @@
    [dinsro.ui.nostr.events.relays :as u.n.e.relays]
    [dinsro.ui.nostr.events.witnesses :as u.n.e.witnesses]
    [dinsro.ui.nostr.witnesses :as u.n.witnesses]
+   [lambdaisland.glogc :as log]
    [nextjournal.markdown :as md]
    [nextjournal.markdown.transform :as md.transform]
    [sablono.core :as html :refer-macros [html]]))
 
-;; [[../../queries/nostr/events.clj][Event Queries]]
-;; [[../../joins/nostr/events.cljc][Event Joins]]
-;; [[../../mutations/nostr/events.cljc][Event Mutations]]
+;; [[../../queries/nostr/events.clj]]
+;; [[../../joins/nostr/events.cljc]]
+;; [[../../mutations/nostr/events.cljc]]
 ;; [[../../ui/nostr.cljs]]
 ;; [[../../ui/nostr/pubkeys/events.cljs]]
+
+(def index-page-key :nostr-events)
+(def model-key ::m.n.events/id)
+(def show-page-key :nostr-events-show)
 
 (def log-event-props false)
 
@@ -198,9 +204,8 @@
    ro/column-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
                          ::m.n.events/note-id #(u.links/ui-event-link %3)}
    ro/columns           [m.n.events/content]
-   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
-   ro/route             "events"
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -214,17 +219,19 @@
       (dom/div :.ui.grid.center.event-report
         (dom/div :.ui.row.center.text.align
           (dom/div :.ui.column
-            (dom/div :.ui.segment
+            (ui-segment {}
               (dom/h1 :.ui.header "Events"))))
         (dom/div :.ui.row
           (dom/div :.ui.column
             (dom/div {:classes [:.ui :.container]}
-              (dom/div :.ui.segment
+              (ui-segment {}
                 (ui-button {:icon    "refresh"
                             :onClick (fn [_] (control/run! this))})
                 (when show-controls ((report/control-renderer this) this))
                 (dom/div {:classes [:.ui :.unstackable :.divided :.items :.center :.aligned]}
                   (map ui-event-box current-rows))))))))))
+
+(def ui-report (comp/factory Report))
 
 (defrouter Router
   [_this _props]
@@ -261,11 +268,9 @@
                    ::m.n.events/created-at
                    ::m.n.events/sig
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
-   :route-segment ["event" :id]
-   :will-enter    (partial u.loader/page-loader ::m.n.events/id ::Show)}
-  (dom/div :.ui.segment
-    (dom/div :.ui.segment
+                   {:ui/router (comp/get-query Router)}]}
+  (ui-segment {}
+    (ui-segment {}
       (dom/div :.ui.items.unstackable
         (dom/div :.item
           (dom/div :.ui.tiny.image
@@ -282,3 +287,42 @@
             (dom/div {} "Note Id: " (str note-id))))))
     (u.menus/ui-nav-menu nav-menu)
     (ui-router router)))
+
+(def ui-show (comp/factory Show))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:componentDidMount #(report/start-report! % Report)
+   :ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["events"]
+   :will-enter    (u.loader/page-loader index-page-key)}
+  (log/info :Page/starting {:props props})
+  (dom/div {}
+    (if report
+      (ui-report report)
+      (ui-segment {:color "red" :inverted true}
+        "Failed to load report"))))
+
+(defsc ShowPage
+  [_this {::m.n.events/keys [id]
+          ::m.navlinks/keys [target]
+          :as               props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.n.events/id     nil
+                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.n.events/id
+                   ::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["event" :id]
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))

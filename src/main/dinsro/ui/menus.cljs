@@ -4,6 +4,7 @@
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [lambdaisland.glogc :as log]))
@@ -19,8 +20,8 @@
 
 (defsc NavMenu
   [this {:keys            [id]
-         ::m.navbars/keys [items]
-         :or              {items []}
+         ::m.navbars/keys [children]
+         :or              {children []}
          :as              props}]
   {:componentDidMount (fn [this]
                         (let [props (comp/props this)]
@@ -36,27 +37,37 @@
    :query             [[df/marker-table '_]
                        :id
                        ::m.navbars/id
-                       {::m.navbars/items (comp/get-query (comp/registry-key->class :dinsro.ui.navbars/NavLink))}]
+                       {::m.navbars/children (comp/get-query (comp/registry-key->class :dinsro.ui.navbars/NavLink))}]
    :initial-state     (fn [props]
                         (log/debug :NavMenu/initial-state {:props props})
-                        {::m.navbars/id    (::m.navbars/id props)
-                         ::m.navbars/items []
-                         :id               nil})}
-  (let [converted-items (map convert-item items)]
-    (log/trace :NavMenu/starting {:id id :props props :items items :converted-items converted-items})
-    (ui-menu {:items converted-items
-              :onItemClick
-              (fn [_e d]
-                (if-let [route-name (get (js->clj d) "route")]
-                  (let [route-kw (keyword route-name)
-                        route    (comp/registry-key->class route-kw)]
-                    (log/info :onItemClick/kw {:route-kw route-kw :route route :id id})
-                    (if id
-                      (rroute/route-to! this route {:id (str id)})
-                      (do
-                        (log/info :onItemClick/no-id {})
-                        (rroute/route-to! this route {}))))
-                  (throw (js/Error. "no route"))))})))
+                        {::m.navbars/id       (::m.navbars/id props)
+                         ::m.navbars/children []
+                         :id                  nil})}
+  (let [converted-items (map convert-item children)]
+    (log/debug :NavMenu/starting
+      {:id              id
+       :props           props
+       :children        children
+       :converted-items converted-items})
+    (if (seq converted-items)
+      (ui-menu
+        {:items       converted-items
+         :onItemClick (fn [_e d]
+                        (if-let [route-name (get (js->clj d) "route")]
+                          (let [route-kw (keyword route-name)
+                                route    (comp/registry-key->class route-kw)]
+                            (log/info :NavMenu/clicked {:route-kw route-kw :route route :id id})
+                            (if id
+                              (do
+                                (log/debug :NavMenu/click-with-id {:id id})
+                                (rroute/route-to! this route {:id (str id)}))
+                              (do
+                                (log/debug :NavMenu/click-no-id {})
+                                (rroute/route-to! this route {}))))
+                          (throw (js/Error. "no route"))))})
+
+      (ui-segment {:color "red" :inverted true}
+        "No items"))))
 
 (def ui-nav-menu
   "Display a nav menu for controlling subpages"
@@ -64,8 +75,8 @@
 
 (defsc VerticalMenu
   [this {:keys            [id]
-         ::m.navbars/keys [items]
-         :or              {items []}
+         ::m.navbars/keys [children]
+         :or              {children []}
          :as              props}]
   {:componentDidMount (fn [this]
                         (let [props (comp/props this)]
@@ -75,20 +86,20 @@
                               (log/info :VerticalMenu/component-starting {:this this :props props :c c})
                               (df/load! this ident c))
                             (do
-                              (log/info :componentDidMount/no-key {})
+                              (log/info :VerticalMenu/did-mount-no-key {:props props})
                               nil))))
    :ident             ::m.navbars/id
    :query             [[df/marker-table '_]
                        :id
                        ::m.navbars/id
-                       {::m.navbars/items (comp/get-query (comp/registry-key->class :dinsro.ui.navbars/NavLink))}]
+                       {::m.navbars/children (comp/get-query (comp/registry-key->class :dinsro.ui.navbars/NavLink))}]
    :initial-state     (fn [props]
                         (log/trace :VerticalMenu/initial-state {:props props})
-                        {::m.navbars/id    (::m.navbars/id props)
-                         ::m.navbars/items []
-                         :id               nil})}
+                        {::m.navbars/id       (::m.navbars/id props)
+                         ::m.navbars/children []
+                         :id                  nil})}
   (log/trace :VerticalMenu/starting {:props props})
-  (let [converted-items (map convert-item items)]
+  (let [converted-items (map convert-item children)]
     (ui-menu
       {:items    converted-items
        :vertical true

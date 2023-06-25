@@ -8,6 +8,7 @@
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
@@ -17,7 +18,9 @@
 ;; [[../../../model/ln/remote_nodes.cljc]]
 
 (def ident-key ::m.ln.nodes/id)
+(def index-page-key :ln-nodes-remote-nodes)
 (def model-key ::m.ln.remote-nodes/id)
+(def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (report/defsc-report Report
@@ -47,9 +50,12 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["remote-nodes"]}
+   :route-segment     ["remote-nodes"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))

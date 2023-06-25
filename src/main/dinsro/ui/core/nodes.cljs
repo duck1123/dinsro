@@ -9,24 +9,29 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.nodes.blocks :as u.c.n.blocks]
    [dinsro.ui.core.nodes.peers :as u.c.n.peers]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]))
+   [dinsro.ui.menus :as u.menus]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/core/nodes.cljc]]
 ;; [[../../model/core/nodes.cljc]]
 
+(def index-page-key :core-nodes)
 (def model-key ::m.c.nodes/id)
+(def show-page-key :core-nodes-show)
 
 (def button-info
   [{:label "fetch" :action mu.c.nodes/fetch!}
@@ -78,17 +83,11 @@
                        :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-nodes
                                                                                     :id            id})
                        :ui/router          (comp/get-initial-state Router)}))
-   :pre-merge     (u.loader/page-merger
-                   ::m.c.nodes/id
-                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-nodes}]
-                    :ui/router   [Router {}]})
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
                    {::m.c.nodes/network (comp/get-query u.links/NetworkLinkForm)}
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
-   :route-segment ["node" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.nodes/id ::Show)}
+                   {:ui/router (comp/get-query Router)}]}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
@@ -100,6 +99,8 @@
           (dom/dd {} (u.links/ui-network-link network))))
       (u.menus/ui-nav-menu nav-menu)
       (ui-router router))))
+
+(def ui-show (comp/factory Show))
 
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.c.nodes/name
@@ -131,10 +132,41 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "nodes"
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.nodes/fetch!)
+                         (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!)]
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.nodes/index
    ro/title             "Core Node Report"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report)
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["nodes"]}
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.c.nodes/keys  [id]
+          ::m.navlinks/keys [target]
+          :as               props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.c.nodes/id      nil
+                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.c.nodes/id
+                   ::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["node" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (ui-segment {} "Failed to load record")))

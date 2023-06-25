@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.filter-items :as j.n.filter-items]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations.nostr.filter-items :as mu.n.filter-items]
@@ -18,6 +19,7 @@
 ;; [[../../../../model/nostr/filter_items.cljc]]
 
 (def ident-key ::m.n.requests/id)
+(def index-page-key :admin-nostr-requests-filter-items)
 (def model-key ::m.n.filter-items/id)
 (def router-key :dinsro.ui.nostr.requests/Router)
 
@@ -34,7 +36,7 @@
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
    ro/controls          {::m.n.requests/id {:type :uuid :label "id"}
                          ::refresh         u.links/refresh-control}
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.n.filter-items/id mu.n.filter-items/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.n.filter-items/delete!)]
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -48,9 +50,11 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["filter-items"]}
   (ui-report report))

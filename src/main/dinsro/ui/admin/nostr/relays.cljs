@@ -9,8 +9,10 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.ui.admin.nostr.relays.connections :as u.a.n.r.connections]
@@ -28,7 +30,10 @@
 ;; [[../../../joins/nostr/relays.cljc]]
 ;; [[../../../model/nostr/relays.cljc]]
 
+(def index-page-key :admin-nostr-relays)
 (def model-key ::m.n.relays/id)
+(def show-navbar-id :admin-nostr-relays)
+(def show-page-key :admin-nostr-relays-show)
 
 (def submit-button
   {:type   :button
@@ -39,8 +44,7 @@
                    address (::m.n.relays/address props)]
                (log/info :submit-button/clicked {:address address})
                (comp/transact! this
-                 [(mu.n.relays/submit!
-                   {::m.n.relays/address address})])))})
+                 [(mu.n.relays/submit! {::m.n.relays/address address})])))})
 
 (form/defsc-form NewRelayForm [_this _props]
   {fo/action-buttons [::submit]
@@ -66,17 +70,19 @@
                          m.n.relays/connected
                          j.n.relays/request-count
                          j.n.relays/connection-count]
-   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
    ro/route             "relays"
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.n.relays/id mu.n.relays/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.n.relays/delete!)]
    ro/row-pk            m.n.relays/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.relays/index
    ro/title             "Relays Report"})
+
+(def ui-report (comp/factory Report))
 
 (defrouter Router
   [_this _props]
@@ -91,37 +97,76 @@
 (def ui-router (comp/factory Router))
 
 (defsc Show
-  [_this {::m.n.relays/keys [address]
+  [_this {::m.n.relays/keys [address id]
           ::j.n.relays/keys [connection-count]
-          :ui/keys          [nav-menu router]}]
+          :ui/keys          [nav-menu router]
+          :as               props}]
   {:ident         ::m.n.relays/id
    :initial-state (fn [props]
                     (let [id (::m.n.relays/id props)]
                       {::m.n.relays/id               nil
                        ::m.n.relays/address          ""
                        ::j.n.relays/connection-count 0
-                       :ui/nav-menu
-                       (comp/get-initial-state u.menus/NavMenu
-                                               {::m.navbars/id :admin-nostr-relays :id id})
+                       :ui/nav-menu                  (comp/get-initial-state u.menus/NavMenu {::m.navbars/id show-navbar-id :id id})
                        :ui/router                    (comp/get-initial-state Router)}))
-   :pre-merge     (u.loader/page-merger
-                   ::m.n.relays/id
-                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :admin-nostr-relays}]
-                    :ui/router   [Router {}]})
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-navbar-id}]
+                     :ui/router   [Router {}]})
    :query         [::m.n.relays/id
                    ::m.n.relays/address
                    ::j.n.relays/connection-count
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
-   :route-segment ["relay" :id]
-   :will-enter    (partial u.loader/page-loader ::m.n.relays/id ::Show)}
+                   {:ui/router (comp/get-query Router)}]}
+  (log/debug :Show/starting {:props props})
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
-      (dom/div :.ui.segment
-        (dom/dl {}
-          (dom/dt {} "Address")
-          (dom/dd {} (str address))
-          (dom/dt {} "Connections")
-          (dom/dd {} (str connection-count))))
-      (u.menus/ui-nav-menu nav-menu)
-      (ui-router router))))
+      (if id
+        (ui-segment {}
+          (dom/dl {}
+            (dom/dt {} "Address")
+            (dom/dd {} (str address))
+            (dom/dt {} "Connections")
+            (dom/dd {} (str connection-count))))
+        (ui-segment {:color "red" :inverted true}
+          "Failed to load record"))
+      (if nav-menu
+        (u.menus/ui-nav-menu nav-menu)
+        (ui-segment {:color "red" :inverted true}
+          "Failed to load nav menu"))
+      (if router
+        (ui-router router)
+        (ui-segment {:color "red" :inverted true}
+          "Failed to load router")))))
+
+(def ui-show (comp/factory Show))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]
+          :as props}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["relays"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (log/debug :IndexPage/starting {:props props})
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]
+          :as props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id show-page-key
+                   ::m.navlinks/target      {}}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["relay" :id]
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+  (log/debug :ShowPage/starting {:props props})
+  (if target
+    (ui-show target)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

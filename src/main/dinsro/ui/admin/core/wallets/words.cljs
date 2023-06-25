@@ -8,11 +8,13 @@
    [dinsro.joins.core.words :as j.c.words]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.links :as u.links]))
 
 ;; [[../../../../joins/core/words.cljc]]
 ;; [[../../../../model/core/words.cljc]]
 
+(def index-page-key :admin-core-wallets-words)
 (def model-key ::m.c.words/id)
 
 (report/defsc-report Report
@@ -34,10 +36,12 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [:component/id ::SubPage])
+   :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.c.wallets/id nil
+                       ::m.navlinks/id  index-page-key
                        :ui/report       {}}
    :query             [::m.c.wallets/id
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]}
   (let [{:ui/keys [current-rows]} report
         sorted-rows               (sort-by ::m.c.words/position current-rows)

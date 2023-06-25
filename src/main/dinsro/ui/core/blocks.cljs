@@ -7,8 +7,10 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.model.core.blocks :as m.c.blocks]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.blocks.transactions :as u.c.b.transactions]
@@ -19,7 +21,9 @@
 ;; [[../../joins/core/blocks.cljc]]
 ;; [[../../model/core/blocks.cljc]]
 
+(def index-page-key :core-blocks)
 (def model-key ::m.c.blocks/id)
+(def show-page-key :core-blocks-show)
 
 (def force-fetch-button false)
 (def debug-page false)
@@ -65,7 +69,6 @@
                    ::m.c.blocks/fetched?       false
                    ::m.c.blocks/network        {}
                    :ui/transactions            {}}
-   :pre-merge     (u.loader/page-merger ::m.c.blocks/id {:ui/transactions [u.c.b.transactions/SubPage {}]})
    :query         [::m.c.blocks/id
                    ::m.c.blocks/height
                    ::m.c.blocks/hash
@@ -76,48 +79,52 @@
                    {::m.c.blocks/previous-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {:ui/transactions (comp/get-query u.c.b.transactions/SubPage)}
-                   [df/marker-table '_]]
-   :route-segment ["blocks" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.blocks/id ::Show)}
+                   [df/marker-table '_]]}
   (log/trace :Show/creating {:id id :props props :this this})
   (dom/div {}
-    (dom/div :.ui.segment
-      (dom/h1 {}
-        "Block " height
-        (when-not (and (not force-fetch-button) fetched?)
-          (comp/fragment
-           " ("
-           (dom/a {:href    "#"
-                   :onClick #(comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})])}
-             "unfetched")
-           ")")))
-      (dom/dl {}
-        (dom/dt {} "Hash")
-        (dom/dd {} hash)
-        (dom/dt {} "Weight")
-        (dom/dd {} weight)
-        (dom/dt {} "Nonce")
-        (dom/dd {} nonce)
-        (dom/dt {} "Network")
-        (dom/dd {} (u.links/ui-network-link network))
-        (when previous-block
-          (comp/fragment
-           (dom/dt {} "Previous")
-           (dom/dd {} (u.links/ui-block-height-link previous-block))))
-        (when next-block
-          (comp/fragment
-           (dom/dt {} "Next")
-           (dom/dd {} (u.links/ui-block-height-link next-block)))))
-      (when debug-page
-        (dom/button {:onClick (fn [_e]
-                                (log/info :ShowBlock/fetch-button-clicked {})
-                                (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
-          "Fetch")))
+    (if id
+      (ui-segment {}
+        (dom/h1 {}
+          "Block " height
+          (when-not (and (not force-fetch-button) fetched?)
+            (dom/span {}
+              " ("
+              (dom/a {:href    "#"
+                      :onClick #(comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})])}
+                "unfetched")
+              ")")))
+        (dom/dl {}
+          (dom/dt {} "Hash")
+          (dom/dd {} hash)
+          (dom/dt {} "Weight")
+          (dom/dd {} weight)
+          (dom/dt {} "Nonce")
+          (dom/dd {} nonce)
+          (dom/dt {} "Network")
+          (dom/dd {} (u.links/ui-network-link network))
+          (when previous-block
+            (comp/fragment
+             (dom/dt {} "Previous")
+             (dom/dd {} (u.links/ui-block-height-link previous-block))))
+          (when next-block
+            (comp/fragment
+             (dom/dt {} "Next")
+             (dom/dd {} (u.links/ui-block-height-link next-block)))))
+        (when debug-page
+          (dom/button {:onClick (fn [_e]
+                                  (log/info :ShowBlock/fetch-button-clicked {})
+                                  (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
+            "Fetch")))
+      (ui-segment {:color "red" :inverted true}
+        "Failed to load record"))
     (if id
       (dom/div {}
         ((comp/factory u.c.b.transactions/SubPage) transactions))
       (dom/div {}
-        (dom/p {} "No id")))))
+        (ui-segment {:color "red" :inverted true}
+          "No id")))))
+
+(def ui-show (comp/factory Show))
 
 (report/defsc-report Report
   [_this _props]
@@ -131,8 +138,37 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "blocks"
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.blocks/delete!)]
    ro/row-pk            m.c.blocks/id
    ro/run-on-mount?     true
    ro/title             "Core Blocks"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["blocks"]
+   :will-enter    (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]
+          :as               props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["block" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (if target
+    (ui-show target)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))

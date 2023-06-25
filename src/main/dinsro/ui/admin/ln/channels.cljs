@@ -9,11 +9,14 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.channels :as j.ln.channels]
    [dinsro.model.ln.channels :as m.ln.channels]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../joins/ln/channels.cljc]]
 ;; [[../../../model/ln/channels.cljc]]
 
+(def index-page-key :admin-ln-channels)
 (def model-key ::m.ln.channels/id)
 
 (form/defsc-form NewForm [_this _props]
@@ -39,13 +42,14 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route            "channels"
    ro/row-pk           m.ln.channels/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.channels/index
    ro/title            "Channels"}
   (dom/div {}
     (report/render-layout this)))
+
+(def ui-report (comp/factory Report))
 
 (defsc Show
   [_this _props]
@@ -54,3 +58,16 @@
    :query         [::m.ln.channels/id]
    :route-segment ["channels" :id]}
   (dom/div {}))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["channels"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))

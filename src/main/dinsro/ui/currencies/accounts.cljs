@@ -4,17 +4,22 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/accounts.cljc]]
 ;; [[../../model/accounts.cljc]]
 
 (def ident-key ::m.currencies/id)
+(def index-page-key :currencies-accounts)
 (def model-key ::m.accounts/id)
+(def parent-model-key ::m.currencies/id)
 (def router-key :dinsro.ui.currencies/Router)
 
 (report/defsc-report Report
@@ -38,11 +43,18 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [::m.currencies/id
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["accounts"]}
-  (ui-report report))
+   :route-segment     ["accounts"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+  (log/debug :SubPage/starting {:props props})
+  (if report
+    (ui-report report)
+    (ui-segment {} "Failed to load page")))

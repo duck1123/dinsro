@@ -64,23 +64,27 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
-(defn set-connecting!
+(>defn set-connecting!
   [connection-id]
+  [::m.n.connections/id => any?]
   (log/debug :set-connecting!/starting {:connection-id connection-id})
   (c.xtdb/submit-tx! ::set-connecting! [connection-id]))
 
-(defn set-connected!
+(>defn set-connected!
   [connection-id]
+  [::m.n.connections/id => any?]
   (log/debug :set-connecting!/starting {:connection-id connection-id})
   (c.xtdb/submit-tx! ::set-status! [connection-id :connected]))
 
-(defn set-errored!
+(>defn set-errored!
   [connection-id]
+  [::m.n.connections/id => any?]
   (log/debug :set-errored!/starting {:connection-id connection-id})
   (c.xtdb/submit-tx! ::set-errored! [connection-id]))
 
-(defn set-disconnected!
+(>defn set-disconnected!
   [connection-id]
+  [::m.n.connections/id => any?]
   (log/debug :set-closed!/starting {:connection-id connection-id})
   (c.xtdb/submit-tx! ::set-disconnected! [connection-id]))
 

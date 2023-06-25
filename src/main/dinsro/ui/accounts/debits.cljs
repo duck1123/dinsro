@@ -5,17 +5,22 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.debits :as j.debits]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.debits :as m.debits]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/debits.cljc]]
 ;; [[../../model/debits.cljc]]
 
 (def ident-key ::m.accounts/id)
+(def index-page-key :accounts-debits)
 (def model-key ::m.debits/id)
+(def parent-model-key ::m.accounts/id)
 (def router-key :dinsro.ui.accounts/Router)
 
 (report/defsc-report Report
@@ -28,7 +33,7 @@
    ro/machine          spr/machine
    ro/page-size        10
    ro/paginate?        true
-   ro/row-pk           model-key
+   ro/row-pk           m.debits/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.debits/index
    ro/title            "Debits"})
@@ -36,11 +41,19 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["debits"]}
-  (ui-report report))
+   :route-segment     ["debits"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+  (log/debug :SubPage/starting {:props props})
+  (if report
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

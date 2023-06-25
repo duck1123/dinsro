@@ -30,7 +30,8 @@
     (dom/div {} (str name))
     (dom/div {} (str host))
     (dom/div {} (u.links/ui-network-link network))
-    (when log-item-props (u.debug/log-props props))))
+    (when log-item-props
+      (u.debug/log-props props))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.c.nodes/id}))
 

@@ -7,12 +7,16 @@
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../joins/accounts.cljc]]
 ;; [[../../../model/accounts.cljc]]
 
+(def index-page-key :core-wallets-accounts)
 (def model-key ::m.accounts/id)
+(def parent-model-key ::m.c.wallets/id)
 
 (report/defsc-report Report
   [_this _props]
@@ -37,11 +41,14 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [:component/id ::SubPage])
+   :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.c.wallets/id nil
+                       ::m.navlinks/id  index-page-key
                        :ui/report       {}}
    :query             [::m.c.wallets/id
-                       {:ui/report (comp/get-query Report)}]}
+                       ::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
 
 (def ui-sub-page (comp/factory SubPage))

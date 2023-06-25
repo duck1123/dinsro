@@ -6,15 +6,23 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.connections :as j.n.connections]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
-   [dinsro.ui.nostr.connections.runs :as u.n.c.runs]))
+   [dinsro.ui.nostr.connections.runs :as u.n.c.runs]
+   [lambdaisland.glogc :as log]))
 
+;; [[../../ui/admin/nostr/connections.cljs]]
 ;; [[../../ui/nostr/connections/runs.cljs]]
+
+(def index-page-key :nostr-connections)
+(def model-key ::m.n.connections/id)
+(def show-page-key :nostr-connections-show)
 
 (defsc ConnectionDisplay
   [_this {::m.n.connections/keys [relay] :as props}]
@@ -48,32 +56,32 @@
                        ::m.n.connections/relay      {}
                        ::m.n.connections/start-time nil
                        ::m.n.connections/end-time   nil
-                       :ui/nav-menu
-                       (comp/get-initial-state       u.menus/NavMenu
-                                                     {::m.navbars/id :nostr-connections :id id})
-                       :ui/router                   (comp/get-initial-state Router)}))
-   :pre-merge     (u.loader/page-merger
-                   ::m.n.connections/id
-                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-connections}]
-                    :ui/router   [Router {}]})
+                       :ui/nav-menu                 (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :nostr-connections :id id})
+                       :ui/router                   (comp/get-initial-state Router {})}))
+   :pre-merge     (u.loader/page-merger ::m.n.connections/id
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-connections}]
+                     :ui/router   [Router          {}]})
    :query         [::m.n.connections/id
                    ::m.n.connections/status
                    {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}
                    ::m.n.connections/start-time
                    ::m.n.connections/end-time
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
-   :route-segment ["connections" :id]
-   :will-enter    (partial u.loader/page-loader ::m.n.connections/id ::Show)}
-  (dom/div {}
-    (dom/div :.ui.segment
-      (dom/div {} (str id))
-      (dom/div {} (name status))
-      (dom/div {} (u.links/ui-relay-link relay))
-      (dom/div {} (str start-time))
-      (dom/div {} (str end-time)))
-    (u.menus/ui-nav-menu nav-menu)
-    (ui-router router)))
+                   {:ui/router (comp/get-query Router)}]}
+  (if id
+    (dom/div {}
+      (ui-segment {}
+        (dom/div {} (str id))
+        (dom/div {} (name status))
+        (dom/div {} (u.links/ui-relay-link relay))
+        (dom/div {} (str start-time))
+        (dom/div {} (str end-time)))
+      (u.menus/ui-nav-menu nav-menu)
+      (ui-router router))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))
+
+(def ui-show (comp/factory Show))
 
 (report/defsc-report Report
   [_this _props]
@@ -90,8 +98,39 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "connections"
    ro/row-pk            m.n.connections/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.connections/index
    ro/title             "Connections"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["connections"]
+   :will-enter    (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.n.connections/keys [id]
+          ::m.navlinks/keys      [target]
+          :as                    props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.n.connections/id nil
+                   ::m.navlinks/id      show-page-key
+                   ::m.navlinks/target  {}}
+   :query         [::m.n.connections/id
+                   ::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["connection" :id]
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (ui-segment {} "Failed to load record")))

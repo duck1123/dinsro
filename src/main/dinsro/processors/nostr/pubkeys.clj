@@ -42,7 +42,7 @@
   [props]
   [::s.n.pubkeys/fetch!-request => ::s.n.pubkeys/fetch!-response]
   (let [{pubkey-id ::m.n.pubkeys/id relay-id ::m.n.relays/id} props]
-    (log/info :do-fetch!/starting {:pubkey-id pubkey-id :relay-id relay-id})
+    (log/info :fetch!/starting {:pubkey-id pubkey-id :relay-id relay-id})
     (try
       (if relay-id
         (if pubkey-id
@@ -69,10 +69,10 @@
 
           (throw (ex-info "No pubkey" {})))
         (do
-          (log/warn :do-fetch!/no-relay {:pubkey-id pubkey-id})
+          (log/warn :fetch!/no-relay {:pubkey-id pubkey-id})
           (throw (ex-info "No relay" {}))))
       (catch Exception ex
-        (log/error :do-fetch!/failed {:exception ex})
+        (log/error :fetch!/failed {:exception ex})
         (mu/exception-response ex)))))
 
 (defn fetch-events!

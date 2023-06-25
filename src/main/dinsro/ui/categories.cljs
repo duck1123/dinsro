@@ -1,19 +1,24 @@
 (ns dinsro.ui.categories
   (:require
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../joins/categories.cljc]]
 ;; [[../model/categories.cljc]]
 ;; [[../ui/admin/users/categories.cljs]]
 
+(def index-page-key :categories)
 (def model-key ::m.categories/id)
 (def show-page-key :categories-show)
 
@@ -59,8 +64,51 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "categories"
    ro/row-pk            m.categories/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.categories/index
    ro/title             "Categories"})
+
+(def ui-report (comp/factory Report))
+
+(defsc Show
+  [_this {::m.categories/keys [name]}]
+  {:ident          ::m.categories/id
+   :initial-state  {::m.categories/id   nil
+                    ::m.categories/name ""}
+   ::m.navlinks/id :show-category
+   :pre-merge      (u.loader/page-merger ::m.categories/id {})
+   :query          [::m.categories/id
+                    ::m.categories/name]}
+  (dom/div :.ui.container
+    (dom/div :.ui.segment
+      (str name))))
+
+(def ui-show (comp/factory Show))
+
+(defsc ShowPage
+  [_this {::m.categories/keys [id]
+          :ui/keys            [record]}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state (fn [_props]
+                    {::m.categories/id nil
+                     ::m.navlinks/id   show-page-key
+                     :ui/record        (comp/get-initial-state Show)})
+   :query         (fn [_props] [model-key ::m.navlinks/id {:ui/record (comp/get-query Show)}])
+   :route-segment ["category" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::Show)}
+  (if (and record id)
+    (ui-show record)
+    (ui-segment {} "Failed to load record")))
+
+(defsc IndexPage
+  [_this _props]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["categories"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (dom/div {} "Index Categories"))

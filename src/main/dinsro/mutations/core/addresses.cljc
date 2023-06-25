@@ -30,10 +30,6 @@
    :cljs
    (defmutation fetch! [_props]
      (action [_env] true)
-     (remote [_env] true)
-     (ok-action [env]
-       (let [body (get-in env [:result :body])]
-         (get body `fetch!)
-         {}))))
+     (remote [_env] true)))
 
 #?(:clj (def resolvers [delete! fetch!]))

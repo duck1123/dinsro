@@ -8,18 +8,21 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.requests :as j.n.requests]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations.nostr.requests :as mu.n.requests]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../../../joins/nostr/requests.cljc]]
 ;; [[../../../../model/nostr/requests.cljc]]
 
-(def ident-key ::m.n.relays/id)
+(def index-page-key :admin-nostr-relays-requests)
 (def model-key ::m.n.requests/id)
+(def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
 (form/defsc-form NewForm
@@ -54,7 +57,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Run" ::m.n.requests/id mu.n.requests/run!)]
+   ro/row-actions       [(u.buttons/row-action-button "Run" model-key mu.n.requests/run!)]
    ro/row-pk            m.n.requests/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.requests/index
@@ -63,11 +66,15 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
-   :query             [[::dr/id router-key]
-                       {:ui/report (comp/get-query Report)}]
-   :route-segment     ["requests"]}
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [[::dr/id router-key]
+                   ::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["requests"]
+   :will-enter    (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+  (log/debug :SubPage/starting {:props props})
   (ui-report report))

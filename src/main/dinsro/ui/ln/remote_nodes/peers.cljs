@@ -7,14 +7,16 @@
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../joins/ln/peers.cljc]]
 ;; [[../../../model/ln/peers.cljc]]
 
-(def ident-key ::m.ln.remote-nodes/id)
-(def model-ley ::m.ln.peers/id)
+(def index-page-key :ln-remote-nodes-peers)
+(def model-key ::m.ln.peers/id)
+(def parent-model-key ::m.ln.remote-nodes/id)
 (def router-key :dinsro.ui.ln.remote-nodes/Router)
 
 (report/defsc-report Report
@@ -42,10 +44,13 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
-   :query             [{:ui/report (comp/get-query Report)}]}
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
 
 (def ui-sub-page (comp/factory SubPage))

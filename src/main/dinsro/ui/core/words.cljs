@@ -1,15 +1,21 @@
 (ns dinsro.ui.core.words
   (:require
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.words :as j.c.words]
    [dinsro.model.core.words :as m.c.words]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/core/words.cljc]]
 ;; [[../../model/core/words.cljc]]
 
+(def index-page-key :core-words)
 (def model-key ::m.c.words/id)
 
 (report/defsc-report Report
@@ -21,8 +27,23 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "words"
    ro/row-pk            m.c.words/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.words/index
    ro/title             "Word Report"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]
+          :as props}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["words"]
+   :will-enter    (u.loader/page-loader index-page-key)}
+  (log/info :IndexPage/starting {:props props})
+  (dom/div {}
+    (ui-report report)))

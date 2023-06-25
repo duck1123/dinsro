@@ -10,18 +10,21 @@
    [dinsro.joins.core.peers :as j.c.peers]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.mutations.core.peers :as mu.c.peers]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogi :as log]))
 
 ;; [[../../../joins/core/peers.cljc]]
 ;; [[../../../model/core/peers.cljc]]
 
-(def ident-key ::m.c.nodes/id)
+(def index-page-key :core-nodes-peers)
 (def model-key ::m.c.peers/id)
+(def parent-model-key ::m.c.nodes/id)
 (def router-key :dinsro.ui.core.nodes/Router)
 
 (def fetch-button
@@ -69,7 +72,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "node-peers"
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!)]
    ro/row-pk            m.c.peers/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.peers/index
@@ -79,10 +82,13 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:query             [{:ui/report (comp/get-query Report)}
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}
                        [::dr/id router-key]]
-   :componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :route-segment     ["peers"]
-   :initial-state     {:ui/report {}}
-   :ident             (fn [] [:component/id ::SubPage])}
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))

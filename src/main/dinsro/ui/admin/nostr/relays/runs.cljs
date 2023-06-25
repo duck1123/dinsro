@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.runs :as j.n.runs]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.runs :as m.n.runs]
@@ -18,6 +19,7 @@
 ;; [[../../../../model/nostr/runs.cljc]]
 
 (def ident-key ::m.n.relays/id)
+(def index-page-key :admin-nostr-relays-runs)
 (def model-key ::m.n.runs/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
@@ -37,8 +39,8 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Stop" ::m.n.runs/id mu.n.runs/stop!)
-                         (u.buttons/row-action-button "Delete" ::m.n.runs/id mu.n.runs/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Stop" model-key mu.n.runs/stop!)
+                         (u.buttons/row-action-button "Delete" model-key mu.n.runs/delete!)]
    ro/row-pk            m.n.runs/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.runs/index
@@ -49,9 +51,11 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["runs"]}
   (ui-report report))

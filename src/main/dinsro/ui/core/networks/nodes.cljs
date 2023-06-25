@@ -8,6 +8,7 @@
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
@@ -16,8 +17,9 @@
 ;; [[../../../joins/core/nodes.cljc]]
 ;; [[../../../model/core/nodes.cljc]]
 
-(def ident-key ::m.c.networks/id)
+(def index-page-key :core-networks-nodes)
 (def model-key ::m.c.nodes/id)
+(def parent-model-key ::m.c.networks/id)
 (def router-key :dinsro.ui.core.networks/Router)
 
 (report/defsc-report Report
@@ -34,8 +36,8 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "nodes"
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.nodes/fetch!)
+                         (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!)]
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.nodes/index
@@ -45,10 +47,13 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["nodes"]}
+   :route-segment     ["nodes"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))

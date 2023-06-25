@@ -8,6 +8,7 @@
    [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
 
@@ -16,6 +17,7 @@
 ;; [[../../../model/ln/nodes.cljc]]
 
 (def ident-key ::m.users/id)
+(def index-page-key :admin-users-ln-nodes)
 (def model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.admin.users/Router)
 
@@ -40,7 +42,7 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [:component/id ::SubPage])
+   :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]

@@ -3,14 +3,15 @@
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
+   [dinsro.mutations :as mu]
    #?(:clj [dinsro.processors.nostr.filter-items :as p.n.filter-items])))
 
-#?(:cljs (comment ::pc/_ ::m.n.filter-items/_))
+#?(:cljs (comment ::mu/_ ::pc/_ ::m.n.filter-items/_))
 
 #?(:clj
    (pc/defmutation delete! [_env props]
      {::pc/params #{::m.n.filter-items/id}
-      ::pc/output [::status ::errors ::m.n.filter-items/item]}
+      ::pc/output [::mu/status ::mu/errors ::m.n.filter-items/item]}
      (p.n.filter-items/delete! props))
 
    :cljs

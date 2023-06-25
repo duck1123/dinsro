@@ -8,6 +8,7 @@
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
    [dinsro.mutations.ln.peers :as mu.ln.peers]
    [dinsro.ui.buttons :as u.buttons]
@@ -18,7 +19,9 @@
 ;; [[../../../model/ln/peers.cljc]]
 
 (def ident-key ::m.ln.nodes/id)
+(def index-page-key :ln-nodes-peers)
 (def model-key ::m.ln.peers/id)
+(def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (def fetch-button
@@ -54,9 +57,12 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["peers"]}
+   :route-segment     ["peers"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))

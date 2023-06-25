@@ -8,12 +8,16 @@
    [dinsro.joins.core.words :as j.c.words]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../joins/core/words.cljc]]
 ;; [[../../../model/core/words.cljc]]
 
+(def index-page-key :core-wallets-words)
 (def model-key ::m.c.words/id)
+(def parent-model-key ::m.c.wallets/id)
 
 (report/defsc-report Report
   [_this _props]
@@ -34,11 +38,14 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [:component/id ::SubPage])
+   :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.c.wallets/id nil
+                       ::m.navlinks/id  index-page-key
                        :ui/report       {}}
    :query             [::m.c.wallets/id
-                       {:ui/report (comp/get-query Report)}]}
+                       ::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (let [{:ui/keys [current-rows]} report
         sorted-rows               (sort-by ::m.c.words/position current-rows)
         groups                    (partition 12 sorted-rows)]

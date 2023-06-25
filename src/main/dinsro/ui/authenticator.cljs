@@ -22,8 +22,14 @@
 
 (def my-auth-machine
   (-> auth/auth-machine
+
+      ;; Add cancel event to gathering-credentials
+      ;; transitions to idle
       (assoc-in [::uism/states :state/gathering-credentials ::uism/events :event/cancel]
                 {::uism/target-state :state/idle})
+
+      ;; Add cancel event to idle.
+      ;; this just returns to idle
       (assoc-in [::uism/states :state/idle ::uism/events :event/cancel]
                 {::uism/target-state :state/idle})))
 

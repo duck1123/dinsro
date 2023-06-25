@@ -23,20 +23,24 @@
    the middle of your UI tree with some unrouted, descendant routers - otherwise weird stuff may happen."
   [app]
   (let [{:keys [route params]} (hist5/url->route)
-        target0                (dr/resolve-target app route)
-        target                 (condp = target0
-                                 nil               u.home/Page
-                                 u.admin/Page      u.a.users/Report
-                                 u.a.nostr/Page    u.a.n.dashboard/Dashboard
-                                 u.c.networks/Show u.c.n.addresses/SubPage
-                                 target0)]
-    (log/info :restore-route-ensuring-leaf!/routing {:target0 target0 :params params})
-    (routing/route-to! app target (or params {}))))
+        requested-target       (dr/resolve-target app route)
+        resolved-target        (condp = requested-target
+                                 nil                   u.home/Page
+                                 u.admin/Page          u.a.users/IndexPage
+                                 u.a.nostr/Page        u.a.n.dashboard/Page
+                                 u.c.networks/ShowPage u.c.n.addresses/SubPage
+                                 requested-target)]
+    (log/info :restore-route-ensuring-leaf!/routing
+      {:resolved-target  resolved-target
+       :requested-target requested-target
+       :params           params})
+    (routing/route-to! app resolved-target (or params {}))))
 
 (m/defmutation fix-route
   "Mutation. Called after auth startup. Looks at the session. If the user is not logged in, it triggers authentication"
   [_]
-  (action [{:keys [app]}]
+  (action [{:keys [app] :as env}]
+    (log/info :fix-route/starting {:env env})
     (let [logged-in (auth/verified-authorities app)]
       (if (empty? logged-in)
         (hist5/restore-route! app u.home/Page {})

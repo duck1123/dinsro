@@ -7,11 +7,13 @@
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.links :as u.links]))
 
 ;; [[../../../../joins/accounts.cljc]]
 ;; [[../../../../model/accounts.cljc]]
 
+(def index-page-key :admin-core-wallets-accounts)
 (def model-key ::m.accounts/id)
 
 (report/defsc-report Report
@@ -37,10 +39,12 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [:component/id ::SubPage])
+   :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.c.wallets/id nil
+                       ::m.navlinks/id  index-page-key
                        :ui/report       {}}
    :query             [::m.c.wallets/id
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]}
   (ui-report report))
 

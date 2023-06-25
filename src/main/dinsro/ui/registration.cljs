@@ -2,17 +2,23 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.forms.registration :as u.f.registration]))
 
+(def index-page-key :registration)
+
 (defsc Page
-  [_this {::keys [allow-registration form]}]
-  {:ident         (fn [_] [:page/id ::Page])
-   :initial-state {::allow-registration true
-                   ::form               {}}
-   :query         [::allow-registration
-                   {::form (comp/get-query u.f.registration/RegistrationForm)}]
-   :route-segment ["register"]}
-  (if allow-registration
+  [_this {:ui/keys [allow-registration? form]}]
+  {:ident          (fn [_] [::m.navlinks/id index-page-key])
+   :initial-state  {:ui/allow-registration? true
+                    :ui/form                {}
+                    ::m.navlinks/id         index-page-key}
+   ::m.navlinks/id :registration
+   :query          [:ui/allow-registration?
+                    {:ui/form (comp/get-query u.f.registration/RegistrationForm)}
+                    ::m.navlinks/id]
+   :route-segment  ["register"]}
+  (if allow-registration?
     (dom/div :.ui.container.center.aligned
       (dom/h4 :.ui.center.aligned.top.attached.header "Register")
       (dom/div :.ui.center.aligned.attached.segment

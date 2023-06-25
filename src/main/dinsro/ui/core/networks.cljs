@@ -9,6 +9,7 @@
    [dinsro.joins.core.networks :as j.c.networks]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.core.networks.addresses :as u.c.n.addresses]
    [dinsro.ui.core.networks.blocks :as u.c.n.blocks]
    [dinsro.ui.core.networks.ln-nodes :as u.c.n.ln-nodes]
@@ -22,7 +23,9 @@
 ;; [[../../joins/core/networks.cljc]]
 ;; [[../../model/core/networks.cljc]]
 
+(def index-page-key :core-networks)
 (def model-key ::m.c.networks/id)
+(def show-page-key :core-networks-show)
 
 (defrouter Router
   [_this _props]
@@ -47,18 +50,11 @@
                        ::m.c.networks/chain {}
                        :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-networks :id id})
                        :ui/router           (comp/get-initial-state Router)}))
-   :pre-merge     (u.loader/page-merger
-                   ::m.c.networks/id
-                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-networks}]
-                    :ui/router   [Router {}]})
    :query         [::m.c.networks/id
                    ::m.c.networks/name
                    {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
-
-   :route-segment ["network" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.networks/id ::Show)}
+                   {:ui/router (comp/get-query Router)}]}
   (if id
     (comp/fragment
      (dom/div :.ui.segment
@@ -73,6 +69,8 @@
       (dom/h3 {} "Network Not loaded")
       (u.debug/ui-props-logger props))))
 
+(def ui-show (comp/factory Show))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.networks/chain #(u.links/ui-chain-link %2)
@@ -84,8 +82,32 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "networks"
    ro/row-pk            m.c.networks/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.networks/index
    ro/title             "Networks"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["networks"]
+   :will-enter    (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id show-page-key
+                   ::m.navlinks/target      {}}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["network" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (ui-show target))

@@ -18,12 +18,14 @@
    [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.joins.debits :as j.debits]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.ui.controls :refer [ui-moment]]
    [dinsro.ui.debug :as u.debug]
@@ -31,6 +33,17 @@
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.transactions.debits :as u.t.debits]
    [lambdaisland.glogc :as log]))
+
+;; [[../joins/transactions.cljc]]
+;; [[../model/transactions.cljc]]
+
+(def index-page-key :transactions)
+(def model-key ::m.transactions/id)
+(def show-page-key :transactions-show)
+
+(def show-debits-debug false)
+(def use-table true)
+(def use-moment true)
 
 (defsc AccountQuery
   [_this _props]
@@ -141,12 +154,10 @@
     (ui-table-cell {} (u.links/ui-account-link account))
     (ui-table-cell {} (u.links/ui-rate-value-link current-rate))))
 
-(def show-debits-debug false)
-(def use-table true)
-
 (defsc DebitLine-List
   [_this {::j.debits/keys                              [event-value]
           {currency ::m.accounts/currency :as account} ::m.debits/account
+          :ui/keys                                     [debug-debits]
           :as                                          props}]
   {:ident         ::m.debits/id
    :query         [::m.debits/id
@@ -154,13 +165,15 @@
                    {::m.debits/account (comp/get-query AccountInfo)}
                    ::j.debits/event-value
                    {::j.debits/current-rate (comp/get-query u.links/RateValueLinkForm)}
-                   ::j.debits/current-rate-value]
+                   ::j.debits/current-rate-value
+                   :ui/debug-debits]
    :initial-state {::m.debits/id                 nil
                    ::m.debits/value              0
                    ::m.debits/account            {}
                    ::j.debits/event-value        0
                    ::j.debits/current-rate       {}
-                   ::j.debits/current-rate-value 0}}
+                   ::j.debits/current-rate-value 0
+                   :ui/debug-debits              show-debits-debug}}
   (ui-list-item {}
     (ui-grid {:celled true :doubling true :padded false}
       (ui-grid-row {}
@@ -168,8 +181,10 @@
       (ui-grid-row {}
         (ui-grid-column {:width 8 :textAlign "right"}
           (u.links/ui-debit-link props))
-        (ui-grid-column {:width 8} (u.links/ui-currency-link currency)))
-      (when show-debits-debug
+        (ui-grid-column {:width 8}
+          (when currency
+            (u.links/ui-currency-link currency))))
+      (when debug-debits
         (ui-grid-row {}
           (dom/div {} "Debug section")
           (u.debug/log-props props)))
@@ -200,10 +215,12 @@
                    ::j.transactions/positive-debits []
                    ::j.transactions/negative-debits []}}
   (dom/div :.ui.item
-    (dom/div :.ui.segment
+    (ui-segment {}
       (dom/div {} (u.links/ui-transaction-link props))
       (dom/div {}
-        (ui-moment {:fromNow true :withTitle true}
+        (if use-moment
+          (ui-moment {:fromNow true :withTitle true}
+            (str date))
           (str date)))
       (ui-grid {:padded false}
         (ui-grid-row {}
@@ -222,6 +239,7 @@
    :action (fn [this] (form/create! this NewTransaction))})
 
 (def show-controls true)
+
 (report/defsc-report Report
   [this props]
   {ro/BodyItem            BodyItem
@@ -235,18 +253,17 @@
    ro/initial-sort-params {:sort-by          ::m.transactions/date
                            :sortable-columns #{::m.transactions/date}
                            :ascending?       false}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
-   ro/route               "transactions"
+   ro/machine             spr/machine
+   ro/page-size           10
+   ro/paginate?           true
    ro/row-pk              m.transactions/id
    ro/run-on-mount?       true
    ro/source-attribute    ::j.transactions/index
    ro/title               "Transaction Report"}
-  (log/info :Report/starting {:props props})
+  (log/debug :Report/starting {:props props})
   (let [{:ui/keys [current-rows]} props]
     (dom/div :.ui.container.centered
-      (dom/div :.ui.segment
+      (ui-segment {}
         (ui-grid {}
           (ui-grid-row {:centered true}
             (ui-grid-column {:width 12}
@@ -255,12 +272,15 @@
             (ui-grid-column {:width 4 :floated "right"}
               (ui-button-group {:compact true :floated "right"}
                 (ui-button {:onClick (fn [_] (form/create! this NewTransaction))} "New")
-                (ui-button {:icon    "refresh"
-                            :onClick (fn [_] (control/run! this))})))))
+                (ui-button {:icon "refresh" :onClick (fn [_] (control/run! this))})))))
         (when show-controls
           ((report/control-renderer this) this))
         (dom/div :.ui.container.centered
           (map ui-body-item  current-rows))))))
+
+(def ui-report
+  "Index transactions report"
+  (comp/factory Report))
 
 (report/defsc-report RecentReport
   [_this props]
@@ -287,39 +307,83 @@
       (map ui-body-item  current-rows))))
 
 (defsc Show
-  [this {::m.transactions/keys [description date]
-         debit-count           ::j.transactions/debit-count
-         :ui/keys              [debits]}]
+  [this {::m.transactions/keys [description date id]
+         ::j.transactions/keys [debit-count]
+         :ui/keys              [debits]
+         :as                   props}]
   {:ident         ::m.transactions/id
    :initial-state {::m.transactions/description ""
                    ::m.transactions/id          nil
                    ::m.transactions/date        ""
                    ::j.transactions/debit-count 0
                    :ui/debits                   {}}
-   :pre-merge     (u.loader/page-merger ::m.transactions/id {:ui/debits [u.t.debits/SubPage {}]})
+   ;; :pre-merge     (u.loader/page-merger ::m.transactions/id {:ui/debits [u.t.debits/SubPage {}]})
    :query         [::m.transactions/description
                    ::m.transactions/id
                    ::m.transactions/date
                    ::j.transactions/debit-count
-                   {:ui/debits (comp/get-query u.t.debits/SubPage)}]
+                   {:ui/debits (comp/get-query u.t.debits/SubPage)}]}
+  (log/debug :Show/starting {:props props})
+  (dom/div {}
+    (if id
+      (ui-segment {}
+        (dom/h1 {}
+          (str description))
+        (dom/div {}
+          (str "Debit Count: " debit-count))
+        (dom/p {}
+          (dom/span {}
+            "Date: ")
+          (dom/span {}
+            (ui-moment {:fromNow true :withTitle true}
+              (str date))))
+        (dom/button {:classes [:.ui :.button]
+                     :onClick (fn [_e]
+                                (let [props (comp/props this)]
+                                  (log/info :Show/clicked {:props props})
+                                  (let [id (::m.transactions/id props)]
+                                    (form/edit! this NewTransaction id))))}
+          "Edit"))
+      (ui-segment {:color "red" :inverted true} "Failed to load record"))
+    (ui-segment {}
+      (if debits
+        (u.t.debits/ui-sub-page debits)
+        (dom/p {} "Transaction debits not loaded")))))
+
+(def ui-show (comp/factory Show))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [_] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["transactions"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (log/debug :IndexPage/starting {:props props})
+  (if report
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys     [target]
+          ::m.transactions/keys [id]
+          :as                   props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}
+                   ::m.transactions/id nil}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}
+                   ::m.transactions/id]
    :route-segment ["transaction" :id]
-   :will-enter    (partial u.loader/page-loader ::m.transactions/id ::Show)}
-  (comp/fragment
-   (dom/div :.ui.segment
-     (dom/h1 {} (str description))
-     (dom/div {} (str "Debit Count: " debit-count))
-     (dom/p {}
-       "Date: "
-       (ui-moment {:fromNow true :withTitle true}
-         (str date)))
-     (dom/button {:classes [:.ui :.button]
-                  :onClick (fn [_e]
-                             (let [props (comp/props this)]
-                               (log/info :Show/clicked {:props props})
-                               (let [id (::m.transactions/id props)]
-                                 (form/edit! this NewTransaction id))))}
-       "Edit"))
-   (dom/div  :.ui.segment
-     (if debits
-       (u.t.debits/ui-sub-page debits)
-       (dom/p {} "Transaction debits not loaded")))))
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/debug :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

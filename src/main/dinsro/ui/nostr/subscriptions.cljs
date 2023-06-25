@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.subscriptions :as j.n.subscriptions]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -16,8 +17,12 @@
    [dinsro.ui.nostr.subscription-pubkeys :as u.n.subscription-pubkeys]
    [lambdaisland.glogc :as log]))
 
-;; [[../../actions/nostr/subscriptions.clj][Subscription Actions]]
-;; [[../../model/nostr/subscriptions.cljc][Subscriptions Model]]
+;; [[../../actions/nostr/subscriptions.clj]]
+;; [[../../model/nostr/subscriptions.cljc]]
+
+(def index-page-key :nostr-subscriptions)
+(def model-key ::m.n.subscriptions/id)
+(def show-page-key :nostr-subscriptions-show)
 
 (report/defsc-report Report
   [_this _props]
@@ -29,11 +34,12 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "subscriptions"
    ro/row-pk            m.n.subscriptions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.subscriptions/index
    ro/title             "Subscriptions"})
+
+(def ui-report (comp/factory Report))
 
 (defrouter Router
   [_this _props]
@@ -53,17 +59,14 @@
                        ::m.n.subscriptions/relay {}
                        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :nostr-subscriptions :id id})
                        :ui/router                {}}))
-   :pre-merge     (u.loader/page-merger
-                   ::m.n.subscriptions/id
-                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-subscriptions}]
-                    :ui/router   [Router {}]})
+   :pre-merge     (u.loader/page-merger ::m.n.subscriptions/id
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-subscriptions}]
+                     :ui/router   [Router {}]})
    :query         [::m.n.subscriptions/id
                    ::m.n.subscriptions/code
                    {::m.n.subscriptions/relay (comp/get-query u.links/RelayLinkForm)}
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
-   :route-segment ["subscription" :id]
-   :will-enter    (partial u.loader/page-loader ::m.n.subscriptions/id ::Show)}
+                   {:ui/router (comp/get-query Router)}]}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
@@ -77,3 +80,32 @@
                                 (log/info :a/b {:e (comp/props this)}))} "click"))
       (u.menus/ui-nav-menu nav-menu)
       (ui-router router))))
+
+(def ui-show (comp/factory Show))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["subscriptions"]
+   :will-enter    (u.loader/page-loader index-page-key)}
+  (log/debug :IndexPage/starting {:props props})
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {:ui/keys [record]
+          :as      props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id show-page-key
+                   :ui/record      {}}
+   :query         [::m.navlinks/id
+                   {:ui/record (comp/get-query Show)}]
+   :route-segment ["subscription" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/debug :ShowPage/starting {:props props})
+  (ui-show record))

@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.transactions :as m.c.transactions]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.transactions :as mu.c.transactions]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.transactions.inputs :as u.c.t.inputs]
@@ -18,7 +19,9 @@
 ;; [[../../joins/core/transactions.cljc]]
 ;; [[../../model/core/transactions.cljc]]
 
+(def index-page-key :core-transactions)
 (def model-key ::m.c.transactions/id)
+(def show-page-key :core-transactions-show)
 
 (defsc Show
   "Show a core tx"
@@ -33,10 +36,9 @@
                    :ui/inputs                  {}
                    :ui/outputs                 {}
                    ::m.c.transactions/fetched? false}
-   :pre-merge     (u.loader/page-merger
-                   ::m.c.transactions/id
-                   {:ui/inputs  [u.c.t.inputs/SubPage {}]
-                    :ui/outputs [u.c.t.outputs/SubPage {}]})
+   ;; :pre-merge     (u.loader/page-merger ::m.c.transactions/id
+   ;;                  {:ui/inputs  [u.c.t.inputs/SubPage {}]
+   ;;                   :ui/outputs [u.c.t.outputs/SubPage {}]})
    :query         [::m.c.transactions/id
                    ::m.c.transactions/tx-id
                    ::m.c.transactions/hash
@@ -45,9 +47,7 @@
                    {:ui/inputs (comp/get-query u.c.t.inputs/SubPage)}
                    {:ui/outputs (comp/get-query u.c.t.outputs/SubPage)}
                    {::m.c.transactions/block (comp/get-query u.links/BlockHeightLinkForm)}
-                   [df/marker-table '_]]
-   :route-segment ["tx" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.transactions/id ::Show)}
+                   [df/marker-table '_]]}
   (dom/div {}
     (dom/div :.ui.segment
       (dom/h1 {} "Transaction")
@@ -70,6 +70,8 @@
        (when outputs ((comp/factory u.c.t.outputs/SubPage) outputs)))
       (dom/p {} "id not set"))))
 
+(def ui-show (comp/factory Show))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.transactions/block #(u.links/ui-block-height-link %2)
@@ -84,10 +86,34 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "transactions"
    ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
                          (u.buttons/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
    ro/row-pk            m.c.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.transactions/index
    ro/title             "Transactions"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["transactions"]
+   :will-enter    (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["transaction" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (ui-show target))

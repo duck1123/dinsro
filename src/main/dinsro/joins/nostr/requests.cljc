@@ -27,8 +27,8 @@
      {::admin-index (j/make-admin-indexer join-info env props)})})
 
 (defattr index ::index :ref
-  {ao/target    :m.n.requests/id
-   ao/pc-output [{::index [:total {:results [:m.n.requests/id]}]}]
+  {ao/target    ::m.n.requests/id
+   ao/pc-output [{::index [:total {:results [::m.n.requests/id]}]}]
    ao/pc-resolve
    (fn [env props]
      {::index (j/make-indexer join-info env props)})})

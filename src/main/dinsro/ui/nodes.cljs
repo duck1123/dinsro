@@ -4,8 +4,11 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.report :as report]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.nodes.core :as u.no.core]
    [dinsro.ui.nodes.ln :as u.no.ln]))
+
+(def index-page-key :nodes)
 
 (defsc Dashboard
   [_this {:ui/keys [core-report ln-report]}]
@@ -39,8 +42,10 @@
 
 (defsc Page
   [_this {:ui/keys [router]}]
-  {:ident         (fn [] [:page/id ::Page])
-   :initial-state {:ui/router {}}
-   :query         [{:ui/router (comp/get-query Router)}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/router      {}}
+   :query         [::m.navlinks/id
+                   {:ui/router (comp/get-query Router)}]
    :route-segment ["nodes"]}
   (ui-router router))

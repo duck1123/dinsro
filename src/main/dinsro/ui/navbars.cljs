@@ -5,18 +5,29 @@
    [com.fulcrologic.fulcro.algorithms.form-state :as fs]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.dom :as dom]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.authorization :as auth]
+   [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu-menu :refer [ui-menu-menu]]
    [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar :refer [ui-sidebar]]
+   [dinsro.joins.navbars :as j.navbars]
+   [dinsro.joins.navlinks :as j.navlinks]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.navbars :as mu.navbars]
    [dinsro.ui.home :as u.home]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
+
+;; [../joins/navbars.cljc]
+;; [../model/navbars.cljc]
+;; [../mutations/navbars.cljc]
+
+(def index-page-key :navbars)
 
 (defn get-logged-in
   [props]
@@ -32,33 +43,27 @@
   {:query         [{::fs/config (comp/get-query FormStateConfigQuery)}]
    :initial-state {::fs/config {}}})
 
-(defsc RouteQuery
-  [_ _]
-  {:query         [{::dr/current-route (comp/get-query FormStateQuery)}]
-   :initial-state {::dr/current-route {}}})
-
 (defsc NavLink
-  [this {::m.navlinks/keys [label] :as props}]
+  [this {::j.navlinks/keys [path]
+         ::m.navlinks/keys [label]
+         :as               props}]
   {:ident         ::m.navlinks/id
    :initial-state {::m.navlinks/id         nil
                    ::m.navlinks/label      ""
                    ::m.navlinks/auth-link? false
                    ::m.navlinks/route      nil
-                   :ui/router              {}}
-   :pre-merge     (fn [{:keys [current-normalized data-tree]}]
-                    (let [defaults {:ui/router (comp/get-initial-state RouteQuery)}]
-                      (merge current-normalized data-tree defaults)))
+                   ::j.navlinks/path       []}
    :query         [::m.navlinks/id
                    ::m.navlinks/label
                    ::m.navlinks/route
                    ::m.navlinks/auth-link?
-                   {[:ui/router '_] (comp/get-query RouteQuery)}]}
-  (log/fine :Navlink/starting {:props props})
+                   ::j.navlinks/path]}
+  (log/trace :Navlink/starting {:props props :path path})
   (dom/a :.item
     {:onClick (fn [e]
                 (.preventDefault e)
                 (let [props (comp/props this)]
-                  (log/info :NavLink/clicked {:props props})
+                  (log/debug :NavLink/clicked {:props props})
                   (comp/transact! this [(mu.navbars/navigate! props)])))}
     label))
 
@@ -67,20 +72,15 @@
 (defsc TopNavLink
   [_this {::m.navlinks/keys [children] :as props}]
   {:ident         ::m.navlinks/id
-   :initial-state {::m.navlinks/id         nil
-                   ::m.navlinks/label       ""
-                   ::m.navlinks/route nil
-                   ::m.navlinks/children   []
-                   :ui/router             {}}
-   :pre-merge     (fn [{:keys [current-normalized data-tree]}]
-                    (let [defaults {:ui/router (comp/get-initial-state RouteQuery)}]
-                      (merge current-normalized data-tree defaults)))
+   :initial-state {::m.navlinks/id       nil
+                   ::m.navlinks/label    ""
+                   ::m.navlinks/route    nil
+                   ::m.navlinks/children []}
    :query         [::m.navlinks/auth-link?
                    ::m.navlinks/id
                    ::m.navlinks/label
                    ::m.navlinks/route
-                   {::m.navlinks/children (comp/get-query NavLink)}
-                   {[:ui/router '_] (comp/get-query RouteQuery)}]}
+                   {::m.navlinks/children (comp/get-query NavLink)}]}
   (log/debug :top-nav-link/rendered {:props props})
   (if (seq children)
     (dom/div :.ui.simple.dropdown.item
@@ -125,11 +125,11 @@
 
 (defsc MenuItem
   [_this _props]
-  {:initial-state {::m.navbars/id    nil
-                   ::m.navbars/items []}
+  {:initial-state {::m.navbars/id       nil
+                   ::m.navbars/children []}
    :ident         ::m.navbars/id
    :query         [::m.navbars/id
-                   {::m.navbars/items (comp/get-query NavLink)}]})
+                   {::m.navbars/children (comp/get-query NavLink)}]})
 
 (defsc NavbarSidebar
   [this {:ui/keys         [inverted?]
@@ -162,7 +162,7 @@
       :visible   visible?}
      (if logged-in?
        (comp/fragment
-        (map ui-nav-link (::m.navbars/items sidebar))
+        (map ui-nav-link (::m.navbars/children sidebar))
         (ui-navbar-logout-link {}))
        (ui-navbar-login-link {})))))
 
@@ -191,11 +191,11 @@
 
 (defsc SiteButton
   [this _props]
-  {:css   [[:.site-button {:font-weight "bold"
-                           :color       "blue !important"}]]
-   :query []
+  {:css           [[:.site-button {:font-weight "bold"
+                                   :color       "blue !important"}]]
+   :query         []
    :initial-state {}
-   :ident (fn [_] [:component/id ::SiteButton])}
+   :ident         (fn [_] [:component/id ::SiteButton])}
   (let [{:keys [site-button]} (css/get-classnames SiteButton)]
     (dom/a :.item
       {:classes [:.item site-button]
@@ -262,7 +262,7 @@
                    [::uism/asm-id ::mu.navbars/navbarsm]]}
   (log/trace :navbar/pre-rendering {:props props})
   (let [logged-in? (get-logged-in props)
-        links      (::m.navbars/items (if logged-in? authenticated unauthenticated))]
+        links      (::m.navbars/children (if logged-in? authenticated unauthenticated))]
     (log/trace :navbar/rendering {:inverted? inverted? :logged-in? logged-in?})
     (ui-menu {:fixed "top" :inverted true}
       (ui-site-button site-button)
@@ -271,3 +271,34 @@
         (ui-logout-nav-link {})))))
 
 (def ui-navbar (comp/factory Navbar))
+
+(report/defsc-report Report
+  [_this _props]
+  {ro/columns             [m.navbars/id
+                           m.navbars/parent
+                           m.navbars/child-count]
+   ro/control-layout      {:action-buttons [::refresh]}
+   ro/controls            {::refresh u.links/refresh-control}
+   ro/initial-sort-params {:sort-by          ::m.navbars/date
+                           :sortable-columns #{::m.navbars/date}
+                           :ascending?       false}
+   ro/row-pk              m.navbars/id
+   ro/run-on-mount?       true
+   ro/source-attribute    ::j.navbars/index
+   ro/title               "Navbars"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report] :as props}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [_] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   ::m.navlinks/id    :navbars
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["navbars"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (log/trace :Page/starting {:props props})
+  (ui-report report))

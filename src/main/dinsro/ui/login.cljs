@@ -9,21 +9,23 @@
    [com.fulcrologic.semantic-ui.collections.form.ui-form-field :refer [ui-form-field]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations]
    [dinsro.mutations.session :as mu.session]))
 
 (defsc Page
   [this {:user/keys [message password username]} {:keys [visible?]}]
-  {:ident               (fn [_] [:page/id ::Page])
-   :initial-state       {:user/username m.users/default-username
-                         :user/message  nil
-                         :user/password m.users/default-password}
+  {:ident               (fn [_] [::m.navlinks/id :login])
+   :initial-state       {::m.navlinks/id :login
+                         :user/username  m.users/default-username
+                         :user/message   nil
+                         :user/password  m.users/default-password}
    ::auth/provider      :local
    ::auth/check-session `dinsro.mutations.session/check-session
    ::auth/logout        `dinsro.mutations.session/logout
    :query               [[::auth/authorization :local]
-                         :component/id
+                         ::m.navlinks/id
                          :user/username
                          :user/password
                          :user/message]

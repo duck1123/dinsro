@@ -1,8 +1,11 @@
 (ns dinsro.ui.admin.core
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.admin.core.addresses :as u.a.c.addresses]
    [dinsro.ui.admin.core.blocks :as u.a.c.blocks]
    [dinsro.ui.admin.core.chains :as u.a.c.chains]
@@ -22,42 +25,50 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.a.c.dashboard/Dashboard
+   [u.a.c.dashboard/Page
     u.a.c.addresses/NewForm
-    u.a.c.addresses/Report
-    u.a.c.blocks/Show
-    u.a.c.blocks/Report
+    u.a.c.addresses/IndexPage
+    u.a.c.blocks/ShowPage
+    u.a.c.blocks/IndexPage
     u.a.c.chains/NewForm
-    u.a.c.chains/Report
-    u.a.c.chains/Show
-    u.a.c.mnemonics/Report
-    u.a.c.networks/Report
-    u.a.c.networks/Show
+    u.a.c.chains/IndexPage
+    u.a.c.chains/ShowPage
+    u.a.c.mnemonics/IndexPage
+    u.a.c.networks/IndexPage
+    u.a.c.networks/ShowPage
     u.a.c.nodes/NewForm
-    u.a.c.nodes/Report
-    u.a.c.nodes/Show
-    u.a.c.peers/Report
-    u.a.c.peers/Show
+    u.a.c.nodes/IndexPage
+    u.a.c.nodes/ShowPage
+    u.a.c.peers/IndexPage
+    u.a.c.peers/ShowPage
     u.a.c.peers/NewForm
-    u.a.c.transactions/Report
-    u.a.c.transactions/Show
+    u.a.c.transactions/IndexPage
+    u.a.c.transactions/ShowPage
     u.a.c.wallets/NewForm
-    u.a.c.wallets/Show
-    u.a.c.wallets/Report
-    u.a.c.words/Report]})
+    u.a.c.wallets/ShowPage
+    u.a.c.wallets/IndexPage
+    u.a.c.words/IndexPage]})
 
 (def ui-router (comp/factory Router))
 
 (defsc Page
-  [_this {:ui/keys [nav-menu router]}]
-  {:ident         (fn [] [:component/id ::Page])
+  [_this {:ui/keys [nav-menu router]
+          :as      props}]
+  {:ident         (fn [] [::m.navlinks/id :admin-core])
    :initial-state (fn [props]
                     (log/trace :Page/initial-state {:props props})
-                    {:ui/nav-menu (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin-core})
-                     :ui/router   (comp/get-initial-state Router)})
-   :query         [{:ui/nav-menu (comp/get-query u.menus/NavMenu)}
+                    {::m.navbars/id :admin-core
+                     :ui/nav-menu   (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin-core})
+                     :ui/router     (comp/get-initial-state Router)})
+   :query         [::m.navlinks/id
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["core"]}
-  (comp/fragment
-   (u.menus/ui-nav-menu nav-menu)
-   (ui-router router)))
+  (log/debug :Page/starting {:props props})
+  (dom/div {}
+    (if nav-menu
+      (u.menus/ui-nav-menu nav-menu)
+      (ui-segment {} "Failed to load menu"))
+    (if router
+      (ui-router router)
+      (ui-segment {} "Failed to load router"))))

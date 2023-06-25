@@ -6,9 +6,11 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.networks :as j.c.networks]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.core.networks.addresses :as u.c.n.addresses]
    [dinsro.ui.core.networks.blocks :as u.c.n.blocks]
    [dinsro.ui.core.networks.ln-nodes :as u.c.n.ln-nodes]
@@ -17,12 +19,15 @@
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]))
+   [dinsro.ui.menus :as u.menus]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/networks.cljc]]
 ;; [[../../../model/core/networks.cljc]]
 
+(def index-page-key :admin-core-networks)
 (def model-key ::m.c.networks/id)
+(def show-page-key :admin-core-networks-show)
 
 (defrouter Router
   [_this _props]
@@ -34,6 +39,7 @@
     u.c.n.wallets/SubPage]})
 
 (def ui-router (comp/factory Router))
+(def debug-load-errors false)
 
 (defsc Show
   [_this {::m.c.networks/keys [id chain name]
@@ -42,22 +48,21 @@
   {:ident         ::m.c.networks/id
    :initial-state (fn [props]
                     (let [id (::m.c.networks/id props)]
-                      {model-key    nil
+                      {model-key            nil
                        ::m.c.networks/name  ""
                        ::m.c.networks/chain {}
                        :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-networks :id id})
                        :ui/router           (comp/get-initial-state Router)}))
-   :pre-merge     (u.loader/page-merger
-                   ::m.c.networks/id
-                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-networks}]
-                    :ui/router   [Router {}]})
+   ;; :pre-merge     (u.loader/page-merger model-key
+   ;;                  {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-key}]
+   ;;                   :ui/router   [Router {}]})
    :query         [::m.c.networks/id
                    ::m.c.networks/name
                    {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
-   :route-segment ["network" :id]
-   :will-enter    (partial u.loader/page-loader model-key ::Show)}
+   :route-segment ["network" :id]}
+  (log/info :Show/starting {:props props})
   (if id
     (comp/fragment
      (dom/div :.ui.segment
@@ -66,11 +71,18 @@
          (dom/dd {} (str name))
          (dom/dt {} "Chain")
          (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
-     (u.menus/ui-nav-menu nav-menu)
-     (ui-router router))
-    (dom/div :.ui.segment
+     (if nav-menu
+       (u.menus/ui-nav-menu nav-menu)
+       (ui-segment {} "Failed to load menu"))
+     (if router
+       (ui-router router)
+       (ui-segment {} "Failed to load router")))
+    (ui-segment {}
       (dom/h3 {} "Network Not loaded")
-      (u.debug/ui-props-logger props))))
+      (when debug-load-errors
+        (u.debug/ui-props-logger props)))))
+
+(def ui-show (comp/factory Show))
 
 (report/defsc-report Report
   [_this _props]
@@ -83,8 +95,40 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "networks"
    ro/row-pk            m.c.networks/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.networks/index
    ro/title             "Networks"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["networks"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.c.networks/keys [id]
+          ::m.navlinks/keys   [target]
+          :as                 props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.c.networks/id   nil
+                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.c.networks/id
+                   ::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["network" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (ui-segment {} "Failed to load record")))

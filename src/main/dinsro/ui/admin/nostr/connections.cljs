@@ -5,19 +5,25 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.connections :as j.n.connections]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.mutations.nostr.connections :as mu.n.connections]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]))
+   [dinsro.ui.menus :as u.menus]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/nostr/connections.cljc]]
 ;; [[../../../model/nostr/connections.cljc]]
+;; [[../../../ui/nostr/connections.cljs]]
 
+(def index-page-key :admin-nostr-connections)
 (def model-key ::m.n.connections/id)
+(def show-page-key :admin-nostr-connections-show)
 
 (defsc Show
   [_this {::m.n.connections/keys [id status relay start-time end-time]
@@ -39,17 +45,21 @@
                    {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}
                    ::m.n.connections/start-time
                    ::m.n.connections/end-time
-                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}]
-   :route-segment ["connections" :id]
-   :will-enter    (partial u.loader/page-loader ::m.n.connections/id ::Show)}
-  (dom/div {}
-    (dom/div :.ui.segment
-      (dom/div {} (str id))
-      (dom/div {} (name status))
-      (dom/div {} (u.links/ui-relay-link relay))
-      (dom/div {} (str start-time))
-      (dom/div {} (str end-time)))
-    (u.menus/ui-nav-menu nav-menu)))
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}]}
+  (if id
+    (dom/div {}
+      (ui-segment {}
+        (dom/div {} (str id))
+        (dom/div {} (name status))
+        (dom/div {} (u.links/ui-relay-link relay))
+        (dom/div {} (str start-time))
+        (dom/div {} (str end-time)))
+      (u.menus/ui-nav-menu nav-menu))
+
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))
+
+(def ui-show (comp/factory Show))
 
 (report/defsc-report Report
   [_this _props]
@@ -65,9 +75,38 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "connections"
-   ro/row-actions       [(u.buttons/row-action-button "Disconnect" ::m.n.connections/id mu.n.connections/disconnect!)]
+   ro/row-actions       [(u.buttons/row-action-button "Disconnect" model-key mu.n.connections/disconnect!)]
    ro/row-pk            m.n.connections/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.connections/index
    ro/title             "Connections"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["connections"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (log/info :IndexPage/starting {:props props})
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]
+          :as               props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["connections" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (ui-show target))

@@ -43,8 +43,8 @@
    (pc/defmutation fetch!
      [_env props]
      {::pc/params #{::m.n.events/id}
-      ::pc/output [::status
-                   ::errors
+      ::pc/output [::mu/status
+                   ::mu/errors
                    ::m.n.events/item]}
      (try
        (let [updated-item (p.n.events/fetch! props)]

@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.events :as mu.n.events]
@@ -25,6 +26,7 @@
 ;; [[../../ui/nostr/relays.cljs]]
 
 (def ident-key ::m.n.relays/id)
+(def index-page-key :admin-nostr-relays-pubkeys)
 (def model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
@@ -58,9 +60,9 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/subrow-action-button "Fetch" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/fetch!)
-                         (u.buttons/subrow-action-button "Fetch Events" ::m.n.pubkeys/id ident-key  mu.n.events/fetch-events!)
-                         (u.buttons/subrow-action-button "Fetch Contacts" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/fetch-contacts!)]
+   ro/row-actions       [(u.buttons/subrow-action-button "Fetch" model-key ident-key  mu.n.pubkeys/fetch!)
+                         (u.buttons/subrow-action-button "Fetch Events" model-key ident-key  mu.n.events/fetch-events!)
+                         (u.buttons/subrow-action-button "Fetch Contacts" model-key ident-key  mu.n.pubkeys/fetch-contacts!)]
    ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.pubkeys/index
@@ -71,9 +73,11 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["pubkeys"]}
   (ui-report report))

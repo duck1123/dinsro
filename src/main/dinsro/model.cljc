@@ -27,6 +27,8 @@
    [dinsro.joins.ln.payreqs :as j.ln.payreqs]
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
+   [dinsro.joins.navbars :as j.navbars]
+   [dinsro.joins.navlinks :as j.navlinks]
    [dinsro.joins.nostr.badge-acceptances :as j.n.badge-acceptances]
    [dinsro.joins.nostr.badge-awards :as j.n.badge-awards]
    [dinsro.joins.nostr.badge-definitions :as j.n.badge-definitions]
@@ -76,8 +78,8 @@
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
-   #?(:clj [dinsro.model.navbars :as m.navbars])
-   #?(:clj [dinsro.model.navlinks :as m.navlinks])
+   [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.badge-acceptances :as m.n.badge-acceptances]
    [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
@@ -175,6 +177,8 @@
         j.ln.payreqs/attributes
         j.ln.peers/attributes
         j.ln.remote-nodes/attributes
+        j.navbars/attributes
+        j.navlinks/attributes
         j.n.badge-acceptances/attributes
         j.n.badge-awards/attributes
         j.n.badge-definitions/attributes
@@ -224,6 +228,8 @@
         m.ln.payreqs/attributes
         m.ln.peers/attributes
         m.ln.remote-nodes/attributes
+        m.navbars/attributes
+        m.navlinks/attributes
         m.n.badge-acceptances/attributes
         m.n.badge-awards/attributes
         m.n.badge-definitions/attributes
@@ -252,8 +258,6 @@
 #?(:clj
    (def all-resolvers
      (vec (concat
-           m.navbars/resolvers
-           m.navlinks/resolvers
            mu.accounts/resolvers
            mu.categories/resolvers
            mu.contacts/resolvers

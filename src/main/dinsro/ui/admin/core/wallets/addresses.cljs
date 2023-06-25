@@ -10,6 +10,7 @@
    [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.buttons :as u.buttons]
@@ -19,6 +20,7 @@
 ;; [[../../../../joins/core/addresses.cljc]]
 ;; [[../../../../model/core/addresses.cljc]]
 
+(def index-page-key :admin-core-wallets-addresses)
 (def model-key ::m.c.wallet-addresses/id)
 
 (form/defsc-form NewForm
@@ -97,7 +99,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "wallets-addresses"
-   ro/row-actions       [(u.buttons/row-action-button "Generate" ::m.c.wallet-addresses/id mu.c.wallet-addresses/generate!)]
+   ro/row-actions       [(u.buttons/row-action-button "Generate" model-key mu.c.wallet-addresses/generate!)]
    ro/row-pk            m.c.wallet-addresses/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.wallet-addresses/index-by-wallet
@@ -108,10 +110,12 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [:component/id ::SubPage])
+   :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.c.wallets/id nil
+                       ::m.navlinks/id  index-page-key
                        :ui/report       {}}
    :query             [::m.c.wallets/id
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]}
   (ui-report report))
 

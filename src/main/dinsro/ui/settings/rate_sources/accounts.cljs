@@ -7,11 +7,13 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.rate-sources/id)
+(def index-page-key :settings-rate-sources-accounts)
 (def router-key :dinsro.ui.settings.rate-sources/Router)
 
 (report/defsc-report Report
@@ -37,9 +39,12 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["accounts"]}
+
   (ui-report report))

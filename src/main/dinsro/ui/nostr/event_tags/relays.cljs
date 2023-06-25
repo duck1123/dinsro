@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.relays :as j.n.relays]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.event-tags :as mu.n.event-tags]
@@ -23,6 +24,7 @@
 ;; [../../../ui/nostr.cljs]
 
 (def ident-key ::m.n.event-tags/id)
+(def index-page-key :nostr-event-tags-relays)
 (def router-key :dinsro.ui.nostr.event-tags/Router)
 
 (form/defsc-form NewForm
@@ -64,9 +66,11 @@
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["items"]}
   (log/info :SubPage/starting {:props props})

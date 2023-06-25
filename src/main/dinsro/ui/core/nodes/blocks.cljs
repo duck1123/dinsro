@@ -8,17 +8,20 @@
    [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogi :as log]))
 
 ;; [[../../../joins/core/blocks.cljc]]
 ;; [[../../../model/core/blocks.cljc]]
 
-(def ident-key ::m.c.nodes/id)
+(def index-page-key :core-nodes-blocks)
 (def model-key ::m.c.blocks/id)
+(def parent-model-key ::m.c.nodes/id)
 (def router-key :dinsro.ui.core.nodes/Router)
 
 (def generate-button
@@ -61,9 +64,10 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [:component/id ::SubPage])
+   :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {:ui/report {}}
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["blocks"]}
+   :route-segment     ["blocks"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))

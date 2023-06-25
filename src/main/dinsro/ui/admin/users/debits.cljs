@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
@@ -14,9 +15,9 @@
 ;; [[../../../joins/debits.cljc]]
 ;; [[../../../model/debits.cljc]]
 
-(def model-key ::m.debits/id)
-
 (def ident-key ::m.users/id)
+(def index-page-key :admin-users-debits)
+(def model-key ::m.debits/id)
 (def router-key :dinsro.ui.admin.users/Router)
 
 (report/defsc-report Report
@@ -46,9 +47,11 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["debits"]}
   (ui-report report))

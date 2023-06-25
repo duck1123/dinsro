@@ -11,12 +11,12 @@
    #?(:clj [dinsro.processors.nostr.relays :as p.n.relays])
    #?(:cljs [dinsro.responses.nostr.relays :as r.n.relays])))
 
-;; [[../../actions/nostr/relays.clj][Actions]]
-;; [../../joins/nostr/relays.cljc]
-;; [[../../model/nostr/relays.cljc][Model]]
-;; [[../../queries/nostr/relays.clj][Queries]]
+;; [[../../actions/nostr/relays.clj]]
+;; [[../../joins/nostr/relays.cljc]]
+;; [[../../model/nostr/relays.cljc]]
+;; [[../../queries/nostr/relays.clj]]
 ;; [[../../ui/nostr/event_tags/relays.cljs]]
-;; [[../../ui/nostr/relays.cljs][UI]]
+;; [[../../ui/nostr/relays.cljs]]
 
 #?(:cljs (comment ::pc/_ ::m.n.relays/_ ::mu/_))
 
@@ -53,7 +53,7 @@
    (pc/defmutation connect!
      [_env props]
      {::pc/params #{::m.n.relays/id}
-      ::pc/output [::status ::errors ::m.n.relays/item]}
+      ::pc/output [::mu/status ::mu/errors ::m.n.relays/item]}
      (p.n.relays/connect! props))
 
    :cljs

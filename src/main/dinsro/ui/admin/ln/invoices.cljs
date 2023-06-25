@@ -9,13 +9,16 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.invoices :as j.ln.invoices]
    [dinsro.model.ln.invoices :as m.ln.invoices]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.invoices :as mu.ln.invoices]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/ln/invoices.cljc]]
 ;; [[../../../model/ln/invoices.cljc]]
 
+(def index-page-key :admin-ln-invoices)
 (def model-key ::m.ln.invoices/id)
 
 (def submit-button
@@ -63,6 +66,21 @@
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.invoices/index
    ro/title            "Lightning Invoices Report"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["invoices"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
 
 (defsc Show
   [_this _props]

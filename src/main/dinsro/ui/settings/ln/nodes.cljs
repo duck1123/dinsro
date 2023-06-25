@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
@@ -17,6 +18,7 @@
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
    [dinsro.ui.debug :as u.debug]
@@ -29,7 +31,12 @@
    [dinsro.ui.ln.nodes.transactions :as u.ln.n.transactions]
    [dinsro.ui.ln.nodes.wallet-addresses :as u.ln.n.wallet-addresses]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]))
+   [dinsro.ui.menus :as u.menus]
+   [lambdaisland.glogc :as log]))
+
+(def index-page-key :settings-ln-nodes)
+(def model-key ::m.ln.nodes/id)
+(def show-page-key :settings-ln-nodes-show)
 
 (declare CreateLightningNodeForm)
 
@@ -171,10 +178,9 @@
                        ::m.ln.nodes/hasMacaroon? false
                        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings-ln-nodes :id id})
                        :ui/router                (comp/get-initial-state Router)}))
-   :pre-merge     (u.loader/page-merger
-                   ::m.ln.nodes/id
-                   {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :settings-ln-nodes}]
-                    :ui/router   [Router {}]})
+   :pre-merge     (u.loader/page-merger ::m.ln.nodes/id
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :settings-ln-nodes}]
+                     :ui/router   [Router {}]})
    :query         [::m.ln.nodes/id
                    ::m.ln.nodes/host
                    ::m.ln.nodes/port
@@ -184,11 +190,9 @@
                    {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
                    {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
-   :route-segment ["nodes" :id]
-   :will-enter    (partial u.loader/page-loader ::m.ln.nodes/id ::Show)}
+                   {:ui/router (comp/get-query Router)}]}
   (dom/div {}
-    (dom/div :.ui.segment
+    (ui-segment {}
       (ui-actions-menu
        {::m.ln.nodes/id           id
         ::m.ln.nodes/hasCert?     hasCert?
@@ -228,6 +232,8 @@
         (dom/h3 {} "Network Router not loaded")
         (u.debug/ui-props-logger props)))))
 
+(def ui-show (comp/factory Show))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.ln.nodes/name      #(u.links/ui-node-link %3)
@@ -246,8 +252,41 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "nodes"
    ro/row-pk            m.ln.nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.ln.nodes/index
    ro/title             "Lightning Node Report"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["nodes"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (log/debug :IndexPage/starting {:props props})
+  (dom/div {}
+    (if report
+      (ui-report report)
+      (ui-segment {} "Failed to load page"))))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]
+          :as               props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["node" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/debug :ShowPage/starting {:props props})
+  (if target
+    (ui-show target)
+    (ui-segment {} "Failed to load page")))

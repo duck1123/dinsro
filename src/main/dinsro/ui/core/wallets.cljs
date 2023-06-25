@@ -9,9 +9,11 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.buttons :as u.buttons]
@@ -26,6 +28,7 @@
 ;; [[../../model/core/wallets.cljc]]
 ;; [[../../../../test/dinsro/ui/core/wallets_test.cljs]]
 
+(def index-page-key :core-wallets)
 (def model-key ::m.c.wallets/id)
 (def show-page-key :core-wallets-show)
 
@@ -100,11 +103,10 @@
                    :ui/accounts                  {}
                    :ui/addresses                 {}
                    :ui/words                     {}}
-   :pre-merge     (u.loader/page-merger
-                   ::m.c.wallets/id
-                   {:ui/accounts  [u.c.w.accounts/SubPage {}]
-                    :ui/addresses [u.c.w.addresses/SubPage {}]
-                    :ui/words     [u.c.w.words/SubPage {}]})
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/accounts  [u.c.w.accounts/SubPage {}]
+                     :ui/addresses [u.c.w.addresses/SubPage {}]
+                     :ui/words     [u.c.w.words/SubPage {}]})
    :query         [::m.c.wallets/id
                    ::m.c.wallets/name
                    ::m.c.wallets/derivation
@@ -116,12 +118,10 @@
                    {:ui/accounts (comp/get-query u.c.w.accounts/SubPage)}
                    {:ui/addresses (comp/get-query u.c.w.addresses/SubPage)}
                    {:ui/words (comp/get-query u.c.w.words/SubPage)}
-                   [df/marker-table '_]]
-   :route-segment ["wallets" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.wallets/id ::Show)}
-  (log/info :ShowWallet/creating {:id id :props props :this this})
+                   [df/marker-table '_]]}
+  (log/info :ShowWallet/starting {:id id :props props :this this})
   (dom/div {}
-    (dom/div :.ui.segment
+    (ui-segment {}
       (dom/h1 {} "Wallet")
       (dom/button
         {:onClick (fn [_]
@@ -145,13 +145,15 @@
         (dom/dd {} ext-private-key)))
     (if id
       (comp/fragment
-       (dom/div :.ui.segment
+       (ui-segment {}
          (u.c.w.words/ui-sub-page words))
-       (dom/div :.ui.segment
+       (ui-segment {}
          (u.c.w.accounts/ui-sub-page accounts))
-       (dom/div :.ui.segment
+       (ui-segment {}
          (u.c.w.addresses/ui-sub-page addresses)))
       (dom/p {} "id not set"))))
+
+(def ui-show (comp/factory Show))
 
 (report/defsc-report Report
   [_this _props]
@@ -168,9 +170,44 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "wallets"
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.wallets/delete!)]
    ro/row-pk            m.c.wallets/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.wallets/index
    ro/title             "Wallet Report"})
+
+(def ui-report (comp/factory Report))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
+   :initial-state {::m.navlinks/id index-page-key
+                   :ui/report      {}}
+   :query         [::m.navlinks/id
+                   {:ui/report (comp/get-query Report)}]
+   :route-segment ["wallets"]
+   :will-enter    (u.loader/page-loader index-page-key)}
+  (log/info :IndexPage/starting {:props props})
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.c.wallets/keys [id]
+          ::m.navlinks/keys  [target]
+          :as                props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state (fn [_props]
+                    {model-key       nil
+                     ::m.navlinks/id show-page-key
+                     :ui/record      (comp/get-initial-state Show)})
+   :query         (fn [_props]
+                    [model-key
+                     ::m.navlinks/id
+                     {:ui/record (comp/get-query Show)}])
+   :route-segment ["wallet" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (ui-segment {} "Failed to load record")))

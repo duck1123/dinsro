@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
@@ -16,6 +17,7 @@
 ;; [[../model/user_pubkeys.cljc]]
 
 (def ident-key ::m.users/id)
+(def index-page-key :admin-users-pubkeys)
 (def model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.admin.users/Router)
 
@@ -39,9 +41,11 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["pubkeys"]}
   (ui-report report))

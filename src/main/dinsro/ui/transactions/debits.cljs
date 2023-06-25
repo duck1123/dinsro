@@ -7,8 +7,11 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.ui.links :as u.links]))
+
+(def index-page-key :transactions-debits)
 
 (report/defsc-report Report
   [_this _props]
@@ -33,13 +36,15 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]
+  [_this {:ui/keys              [report]
           ::m.transactions/keys [id]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [:component/id ::SubPage])
+   :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.transactions/id nil
+                       ::m.navlinks/id     index-page-key
                        :ui/report          {}}
    :query             [::m.transactions/id
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]}
   (if id
     (ui-report report)

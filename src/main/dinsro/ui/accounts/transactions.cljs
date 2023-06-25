@@ -6,19 +6,23 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.transactions :as u.transactions]))
+   [dinsro.ui.transactions :as u.transactions]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../joins/transactions.cljc]]
 ;; [[../model/accounts.cljc]]
 ;; [[../model/transactions.cljc]]
 
-(def ident-key ::m.accounts/id)
+(def index-page-key :accounts-transactions)
 (def model-key ::m.transactions/id)
+(def parent-model-key ::m.accounts/id)
 (def router-key :dinsro.ui.accounts/Router)
 
 (report/defsc-report Report
@@ -46,13 +50,18 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys   [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report      {}}
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["transactions"]}
-  (ui-report report))
-
-(def ui-sub-page (comp/factory SubPage))
+   :route-segment     ["transactions"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+  (log/debug :SubPage/starting {:props props})
+  (if report
+    (ui-report report)
+    (ui-segment {} "Failed to load page")))

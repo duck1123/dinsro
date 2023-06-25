@@ -8,14 +8,16 @@
    [dinsro.joins.core.networks :as j.c.networks]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.core.networks :as m.c.networks]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../joins/core/networks.cljc]]
 ;; [[../../../model/core/networks.cljc]]
 
-(def ident-key ::m.c.chains/id)
+(def index-page-key :core-chains-networks)
 (def model-key ::m.c.networks/id)
+(def parent-model-key ::m.c.chains/id)
 (def router-key :dinsro.ui.core.chains/Router)
 
 (report/defsc-report Report
@@ -40,10 +42,13 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["networks"]}
+   :route-segment     ["networks"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))

@@ -6,6 +6,9 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.specs :as ds]))
 
+;; [[../joins/transactions.cljc]]
+;; [[../ui/transactions.cljs]]
+
 (>def ::id        uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

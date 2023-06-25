@@ -10,6 +10,7 @@
    [dinsro.joins.ln.channels :as j.ln.channels]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.nodes :as m.ln.nodes]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.channels :as mu.ln.channels]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
@@ -21,7 +22,9 @@
 ;; [[../../../model/ln/channels.cljc]]
 
 (def ident-key ::m.ln.nodes/id)
+(def index-page-key :ln-nodes-channels)
 (def model-key ::m.ln.channels/id)
+(def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (def new-button
@@ -71,9 +74,12 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["channels"]}
+   :route-segment     ["channels"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))

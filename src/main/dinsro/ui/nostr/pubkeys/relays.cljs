@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.relays :as j.n.relays]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.events :as mu.n.events]
@@ -17,6 +18,7 @@
 ;; [[../../model/nostr/relays.cljc][Relays Model]]
 
 (def ident-key ::m.n.pubkeys/id)
+(def index-page-key :nostr-pubkeys-relays)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
 (report/defsc-report Report
@@ -43,9 +45,11 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
-   :ident             (fn [] [:component/id ::SubPage])
-   :initial-state     {:ui/report {}}
-   :query             [{:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [[::dr/id router-key]
+                       ::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
    :route-segment     ["relays"]}
   (ui-report report))

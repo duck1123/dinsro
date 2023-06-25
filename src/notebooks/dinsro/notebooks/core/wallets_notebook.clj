@@ -153,7 +153,7 @@
   (.key xpriv2)
   (.hexLE wallet-a-seed)
 
-  (def wallet-a-seed-hex)
+  (def wallet-a-seed-hex nil)
 
   (.toStringSensitive wallet-a-seed)
 
