@@ -25,10 +25,12 @@
         (dom/p {} "Core router failed to match any target")
         (dom/code {} (pr-str props))))))
 
+(def ui-router (comp/factory Router))
+
 (defsc Page
   [_this {:ui/keys [router]}]
   {:ident         (fn [] [:component/id ::CorePage])
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["core"]}
-  ((comp/factory Router) router))
+  (ui-router router))

@@ -283,4 +283,4 @@
             (dom/div {} "Sig: " (str sig))
             (dom/div {} "Note Id: " (str note-id))))))
     (u.menus/ui-nav-menu nav-menu)
-    ((comp/factory Router) router)))
+    (ui-router router)))

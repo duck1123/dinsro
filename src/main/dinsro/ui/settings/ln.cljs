@@ -39,4 +39,4 @@
     (dom/div :.ui.container
       (u.menus/ui-nav-menu nav-menu)
       (dom/div {:classes [:.nostr-page router-wrapper]}
-        ((comp/factory Router) router)))))
+        (ui-router router)))))

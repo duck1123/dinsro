@@ -45,10 +45,12 @@
     u.n.subscriptions/Show
     u.n.witnesses/Report]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Page
   [_this {:ui/keys [router]}]
   {:ident         (fn [] [:page/id ::Page])
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["nostr"]}
-  ((comp/factory Router) router))
+  (ui-router router))

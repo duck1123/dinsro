@@ -41,6 +41,8 @@
     u.c.rate-sources/SubPage
     u.c.rates/SubPage]})
 
+(def ui-router (comp/factory Router))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.currencies/name #(u.links/ui-currency-link %3)}
@@ -88,4 +90,4 @@
    (dom/div :.ui.segment
      (dom/h1 {} (str name)))
    (u.menus/ui-nav-menu nav-menu)
-   ((comp/factory Router) router)))
+   (ui-router router)))

@@ -44,6 +44,8 @@
     u.n.p.events/SubPage
     u.n.p.users/SubPage]})
 
+(def ui-router (comp/factory Router))
+
 (def show-border false)
 
 (defsc PubkeyInfo
@@ -131,7 +133,7 @@
     (dom/div {:classes [main]}
       (ui-pubkey-info props)
       (u.menus/ui-nav-menu nav-menu)
-      ((comp/factory Router) router))))
+      (ui-router router))))
 
 (form/defsc-form CreateForm
   [_this _props]

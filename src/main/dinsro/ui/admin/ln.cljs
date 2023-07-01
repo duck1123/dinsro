@@ -38,6 +38,8 @@
                     u.a.ln.peers/Report
                     u.a.ln.remote-nodes/Report]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Page
   [_this {:ui/keys [router vertical-menu]}]
   {:ident         (fn [] [:component/id ::Page])
@@ -53,4 +55,4 @@
      (dom/div :.ui.four.wide.column
        (u.menus/ui-vertical-menu vertical-menu))
      (dom/div :.ui.twelve.wide.column
-       ((comp/factory Router) router)))))
+       (ui-router router)))))

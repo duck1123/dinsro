@@ -114,6 +114,6 @@
             (dom/p {} (str raw-value))
             (dom/p {} (u.links/ui-event-tag-link pubkey))))))
     (u.menus/ui-nav-menu nav-menu)
-    ((comp/factory Router) router)))
+    (ui-router router)))
 
 (def ui-show (comp/factory Show))

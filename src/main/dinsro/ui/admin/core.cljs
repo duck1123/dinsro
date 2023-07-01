@@ -46,6 +46,8 @@
     u.a.c.wallets/Report
     u.a.c.words/Report]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Page
   [_this {:ui/keys [nav-menu router]}]
   {:ident         (fn [] [:component/id ::Page])
@@ -59,4 +61,4 @@
    :route-segment ["core"]}
   (comp/fragment
    (u.menus/ui-nav-menu nav-menu)
-   ((comp/factory Router) router)))
+   (ui-router router)))

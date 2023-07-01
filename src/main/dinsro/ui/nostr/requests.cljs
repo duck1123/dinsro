@@ -24,6 +24,8 @@
     u.n.rq.filters/SubPage
     u.n.rq.runs/SubPage]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Show
   [_this {::m.n.requests/keys [code relay]
           ::j.n.requests/keys [query-string]
@@ -62,4 +64,4 @@
         (dom/div {} (str "Query String: " query-string))
         (dom/div {} (u.links/ui-relay-link relay)))
       (u.menus/ui-nav-menu nav-menu)
-      ((comp/factory Router) router))))
+      (ui-router router))))

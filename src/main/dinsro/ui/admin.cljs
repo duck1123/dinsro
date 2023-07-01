@@ -43,6 +43,8 @@
       (dom/div {}
         (dom/div "No route selected.")))))
 
+(def ui-router (comp/factory Router))
+
 (defsc Page
   [_this {:ui/keys [nav-menu router]}]
   {:ident         (fn [] [:page/id ::Page])
@@ -56,4 +58,4 @@
    :route-segment ["admin"]}
   (dom/div :.admin-page
     (u.menus/ui-nav-menu nav-menu)
-    ((comp/factory Router) router)))
+    (ui-router router)))

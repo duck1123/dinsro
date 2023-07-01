@@ -83,6 +83,8 @@
     u.a.n.r.events/SubPage
     u.a.n.r.witnesses/SubPage]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Show
   [_this {::m.n.relays/keys [address]
           ::j.n.relays/keys [connection-count]
@@ -118,4 +120,4 @@
           (dom/dt {} "Connections")
           (dom/dd {} (str connection-count))))
       (u.menus/ui-nav-menu nav-menu)
-      ((comp/factory Router) router))))
+      (ui-router router))))

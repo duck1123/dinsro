@@ -36,10 +36,12 @@
   (dom/div :.router
     (route-factory route-props)))
 
+(def ui-router (comp/factory Router))
+
 (defsc Page
   [_this {:ui/keys [router]}]
   {:ident         (fn [] [:page/id ::Page])
    :initial-state {:ui/router {}}
    :query         [{:ui/router (comp/get-query Router)}]
    :route-segment ["nodes"]}
-  ((comp/factory Router) router))
+  (ui-router router))

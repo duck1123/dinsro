@@ -36,4 +36,4 @@
    :route-segment ["ln"]}
   (let [{:keys [router-wrapper]} (css/get-classnames Page)]
     (dom/div {:classes [:.nostr-page router-wrapper]}
-      ((comp/factory Router) router))))
+      (ui-router router))))

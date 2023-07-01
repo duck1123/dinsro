@@ -28,6 +28,8 @@
     u.c.n.ln-nodes/SubPage
     u.c.n.wallets/SubPage]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Show
   [_this {::m.c.networks/keys [id chain name]
           :ui/keys            [nav-menu router]
@@ -62,7 +64,7 @@
          (dom/dt {} "Chain")
          (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
      (u.menus/ui-nav-menu nav-menu)
-     ((comp/factory Router) router))
+     (ui-router router))
     (dom/div :.ui.segment
       (dom/h3 {} "Network Not loaded")
       (u.debug/ui-props-logger props))))

@@ -16,6 +16,8 @@
    [u.n.f.filter-items/SubPage
     u.n.f.filter-items/NewForm]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Show
   [_this {::m.n.filters/keys [id index request]
           :ui/keys           [nav-menu router]}]
@@ -44,4 +46,4 @@
     (dom/div {} (str index))
     (dom/div {} (u.links/ui-request-link request))
     (u.menus/ui-nav-menu nav-menu)
-    ((comp/factory Router) router)))
+    (ui-router router)))

@@ -35,6 +35,8 @@
   {:router-targets
    [u.n.c.runs/SubPage]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Show
   [_this {::m.n.connections/keys [id status relay start-time end-time]
           :ui/keys               [nav-menu router]}]
@@ -72,7 +74,7 @@
       (dom/div {} (str start-time))
       (dom/div {} (str end-time)))
     (u.menus/ui-nav-menu nav-menu)
-    ((comp/factory Router) router)))
+    (ui-router router)))
 
 (report/defsc-report Report
   [_this _props]

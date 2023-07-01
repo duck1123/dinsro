@@ -41,6 +41,8 @@
     u.a.n.runs/Report
     u.a.n.witnesses/Report]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Page
   [_this {:ui/keys [nav-menu router vertical-menu]}]
   {:ident         (fn [] [:component/id ::Page])
@@ -65,4 +67,4 @@
         (ui-grid {:centered true}
           (ui-grid-row {}
             (ui-grid-column {:computer 16 :tablet 16 :mobile 16}
-              ((comp/factory Router) router))))))))
+              (ui-router router))))))))

@@ -27,6 +27,8 @@
     u.s.categories/Show
     u.s.categories/NewForm]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Page
   [_this {:ui/keys [nav-menu router vertical-menu]}]
   {:ident         (fn [_] [:page/id ::Page])
@@ -48,4 +50,4 @@
       (ui-grid-column {:width 4 :only "computer" :floated "left"}
         (u.menus/ui-vertical-menu vertical-menu))
       (ui-grid-column {:mobile 16 :tablet 16 :computer 12}
-        ((comp/factory Router) router)))))
+        (ui-router router)))))

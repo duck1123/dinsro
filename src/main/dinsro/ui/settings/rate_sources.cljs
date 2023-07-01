@@ -128,4 +128,4 @@
        (u.s.rs.rates/ui-report rates)))
    (ui-container {}
      (u.menus/ui-nav-menu nav-menu)
-     ((comp/factory Router) router))))
+     (ui-router router))))

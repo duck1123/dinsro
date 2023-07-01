@@ -95,7 +95,7 @@
           (dom/dt {} "Network")
           (dom/dd {} (u.links/ui-network-link network))))
       (u.menus/ui-nav-menu nav-menu)
-      ((comp/factory Router) router))))
+      (ui-router router))))
 
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.c.nodes/name

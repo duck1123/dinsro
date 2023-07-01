@@ -31,6 +31,8 @@
   {:router-targets
    [u.n.r.witnesses/SubPage]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Show
   [_this {::m.n.runs/keys [id]
           :ui/keys        [nav-menu router]}]
@@ -56,4 +58,4 @@
         (dom/div "Run")
         (dom/div {} (str id)))
       (u.menus/ui-nav-menu nav-menu)
-      ((comp/factory Router) router))))
+      (ui-router router))))

@@ -21,6 +21,8 @@
   {:router-targets
    [u.ln.rn.peers/SubPage]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Show
   [_this {:ui/keys                 [peers router]
           ::m.ln.remote-nodes/keys [id pubkey]}]
@@ -46,7 +48,7 @@
       (dom/p {} "id: " (pr-str id))
       (dom/p {} "pubkey: " (str pubkey)))
     (u.ln.rn.peers/ui-sub-page peers)
-    ((comp/factory Router) router)))
+    (ui-router router)))
 
 (report/defsc-report Report
   [_this _props]

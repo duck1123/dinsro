@@ -40,6 +40,8 @@
   {:router-targets
    [u.n.subscription-pubkeys/SubPage]})
 
+(def ui-router (comp/factory Router))
+
 (defsc Show
   [_this {::m.n.subscriptions/keys [code relay]
           :ui/keys                 [nav-menu router]}]
@@ -75,4 +77,4 @@
                      :onClick (fn [this]
                                 (log/info :a/b {:e (comp/props this)}))} "click"))
       (u.menus/ui-nav-menu nav-menu)
-      ((comp/factory Router) router))))
+      (ui-router router))))
