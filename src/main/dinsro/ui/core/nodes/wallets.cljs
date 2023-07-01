@@ -37,6 +37,8 @@
    ro/source-attribute  ::j.c.wallets/index
    ro/title             "Wallets"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
@@ -45,4 +47,4 @@
                        :ui/report     {}}
    :query             [::m.c.nodes/id
                        {:ui/report (comp/get-query Report)}]}
-  ((comp/factory Report) report))
+  (ui-report report))

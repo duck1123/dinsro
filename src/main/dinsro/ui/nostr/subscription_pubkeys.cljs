@@ -41,6 +41,8 @@
    ro/source-attribute  ::j.n.subscription-pubkeys/index
    ro/title             "Subscription Pubkeys"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
@@ -49,7 +51,7 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["pubkeys"]}
-  ((comp/factory Report) report))
+  (ui-report report))
 
 (defsc Show
   [_this {::m.n.subscription-pubkeys/keys [subscription pubkey]}]

@@ -38,6 +38,8 @@
    ro/source-attribute  ::j.n.connections/index
    ro/title             "Connections"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
@@ -46,4 +48,4 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["connections"]}
-  ((comp/factory Report) report))
+  (ui-report report))

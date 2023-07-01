@@ -52,6 +52,8 @@
    ro/source-attribute  ::j.c.blocks/index
    ro/title             "Node Blocks"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
@@ -60,4 +62,4 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["blocks"]}
-  ((comp/factory Report) report))
+  (ui-report report))

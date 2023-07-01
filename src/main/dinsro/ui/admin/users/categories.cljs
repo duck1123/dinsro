@@ -141,6 +141,8 @@
           (dom/div {}
             (map ui-body-item current-rows)))))))
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [form report] :as props}]
   {:componentDidMount (fn [this]
@@ -162,4 +164,4 @@
          query (comp/get-query NewForm)]
      (log/info :SubPage/stateing {:state state :query query})
      (ui-new-form form))
-   ((comp/factory Report) report)))
+   (ui-report report)))

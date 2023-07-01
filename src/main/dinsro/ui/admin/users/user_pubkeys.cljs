@@ -27,6 +27,8 @@
    ro/source-attribute  ::j.user-pubkeys/index
    ro/title             "User-Pubkeys"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
@@ -35,4 +37,4 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["user-pubkeys"]}
-  ((comp/factory Report) report))
+  (ui-report report))

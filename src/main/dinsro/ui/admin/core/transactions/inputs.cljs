@@ -26,6 +26,8 @@
    ro/source-attribute ::j.c.tx-in/index
    ro/title            "Inputs"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
@@ -34,4 +36,4 @@
                        :ui/report            {}}
    :query             [::m.c.transactions/id
                        {:ui/report (comp/get-query Report)}]}
-  ((comp/factory Report) report))
+  (ui-report report))

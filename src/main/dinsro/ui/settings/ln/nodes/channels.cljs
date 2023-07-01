@@ -62,6 +62,8 @@
    ro/source-attribute ::j.ln.channels/index
    ro/title            "Node Channels"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
@@ -70,4 +72,4 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["channels"]}
-  ((comp/factory Report) report))
+  (ui-report report))

@@ -52,6 +52,6 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["transactions"]}
-  ((comp/factory Report) report))
+  (ui-report report))
 
 (def ui-sub-page (comp/factory SubPage))

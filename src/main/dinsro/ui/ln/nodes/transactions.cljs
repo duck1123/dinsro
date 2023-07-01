@@ -36,6 +36,8 @@
    ro/source-attribute  ::j.c.transactions/index
    ro/title             "Node Transactions"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
@@ -44,4 +46,4 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["transactions"]}
-  ((comp/factory Report) report))
+  (ui-report report))

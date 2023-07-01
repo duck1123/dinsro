@@ -71,6 +71,8 @@
           (dom/div :.ui.items
             (map ui-account-row current-rows)))))))
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
@@ -79,4 +81,4 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["accounts"]}
-  ((comp/factory Report) report))
+  (ui-report report))

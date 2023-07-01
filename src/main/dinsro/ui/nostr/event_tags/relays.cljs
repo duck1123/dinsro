@@ -59,6 +59,8 @@
    ro/source-attribute  ::j.n.relays/index
    ro/title             "Relays"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
@@ -68,4 +70,4 @@
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["items"]}
   (log/info :SubPage/starting {:props props})
-  ((comp/factory Report) report))
+  (ui-report report))

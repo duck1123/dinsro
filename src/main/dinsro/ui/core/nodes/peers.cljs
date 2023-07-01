@@ -71,6 +71,8 @@
    ro/source-attribute  ::j.c.peers/index
    ro/title             "Node Peers"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:query             [{:ui/report (comp/get-query Report)}
@@ -79,4 +81,4 @@
    :route-segment     ["peers"]
    :initial-state     {:ui/report {}}
    :ident             (fn [] [:component/id ::SubPage])}
-  ((comp/factory Report) report))
+  (ui-report report))

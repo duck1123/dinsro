@@ -29,6 +29,8 @@
    ro/source-attribute ::j.debits/index
    ro/title            "Debits"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
@@ -37,4 +39,4 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["debits"]}
-  ((comp/factory Report) report))
+  (ui-report report))

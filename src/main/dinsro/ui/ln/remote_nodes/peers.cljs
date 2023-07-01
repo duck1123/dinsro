@@ -34,12 +34,14 @@
    ro/row-pk            m.ln.peers/id
    ro/run-on-mount?     true})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [{:ui/report (comp/get-query Report)}]}
-  ((comp/factory Report) report))
+  (ui-report report))
 
 (def ui-sub-page (comp/factory SubPage))

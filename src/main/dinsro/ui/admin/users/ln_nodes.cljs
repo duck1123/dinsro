@@ -34,6 +34,8 @@
    ro/source-attribute  ::j.ln.nodes/index
    ro/title             "User Ln Nodes"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
@@ -42,4 +44,4 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["ln-nodes"]}
-  ((comp/factory Report) report))
+  (ui-report report))

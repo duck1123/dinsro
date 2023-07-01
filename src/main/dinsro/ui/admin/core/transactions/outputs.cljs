@@ -26,10 +26,12 @@
    ro/source-attribute ::j.c.tx-out/index
    ro/title            "Outputs"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [:component/id ::SubPage])
    :initial-state     {:ui/report {}}
    :query             [{:ui/report (comp/get-query Report)}]}
-  ((comp/factory Report) report))
+  (ui-report report))

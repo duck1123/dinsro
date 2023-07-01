@@ -69,6 +69,8 @@
           (dom/div {:classes [:.ui :.items :.unstackable]}
             (map u.n.events/ui-event-box current-rows)))))))
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   "Event subpage for events"
   [_this {:ui/keys [report]}]
@@ -78,4 +80,4 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["events"]}
-  ((comp/factory Report) report))
+  (ui-report report))

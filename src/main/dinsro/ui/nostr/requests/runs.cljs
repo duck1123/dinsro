@@ -39,6 +39,8 @@
    ro/source-attribute  ::j.n.runs/index
    ro/title             "Runs"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
@@ -47,4 +49,4 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["runs"]}
-  ((comp/factory Report) report))
+  (ui-report report))

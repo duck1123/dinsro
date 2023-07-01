@@ -29,6 +29,8 @@
    ro/source-attribute  ::j.rates/index
    ro/title             "Rates"})
 
+(def ui-report (comp/factory Report))
+
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:parent-router     router-key
@@ -39,4 +41,4 @@
    :query             [[::dr/id router-key]
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["rates"]}
-  ((comp/factory Report) report))
+  (ui-report report))
