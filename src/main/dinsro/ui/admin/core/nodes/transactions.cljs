@@ -12,7 +12,11 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../../joins/core/transactions.cljc]]
+;; [[../../../../model/core/transactions.cljc]]
+
 (def ident-key ::m.c.nodes/id)
+(def model-key ::m.c.transactions/id)
 (def router-key :dinsro.ui.core.nodes/Router)
 
 (report/defsc-report Report
@@ -25,13 +29,13 @@
                          m.c.transactions/fetched?
                          m.c.transactions/block]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::m.c.nodes/id {:type :uuid :label "id"}
-                         ::refresh      u.links/refresh-control}
+   ro/controls          {ident-key {:type :uuid :label "id"}
+                         ::refresh u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.transactions/fetch!)
+                         (u.buttons/row-action-button "Delete" model-key mu.c.transactions/delete!)]
    ro/row-pk            m.c.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.transactions/index

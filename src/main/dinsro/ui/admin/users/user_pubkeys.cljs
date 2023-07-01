@@ -10,7 +10,11 @@
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/nostr/pubkeys.cljc]]
+;; [[../../../model/nostr/pubkeys.cljc]]
+
 (def ident-key ::m.users/id)
+(def model-key ::m.user-pubkeys/id)
 (def router-key :dinsro.ui.admin.users/Router)
 
 (report/defsc-report Report

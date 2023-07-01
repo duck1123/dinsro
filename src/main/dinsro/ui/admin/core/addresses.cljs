@@ -10,6 +10,11 @@
    [dinsro.mutations.core.addresses :as mu.c.addresses]
    [dinsro.ui.buttons :as u.buttons]))
 
+;; [[../../../joins/core/addresses.cljc]]
+;; [[../../../model/core/addresses.cljc]]
+
+(def model-key ::m.c.addresses/id)
+
 (form/defsc-form NewForm
   [_this _props]
   {fo/attributes   [m.c.addresses/address]
@@ -28,9 +33,9 @@
   {ro/columns          [m.c.addresses/address]
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-button}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/route            "addresses"
    ro/row-actions      [(u.buttons/row-action-button "Fetch" ::m.c.addresses/id mu.c.addresses/delete!)]
    ro/row-pk           m.c.addresses/id

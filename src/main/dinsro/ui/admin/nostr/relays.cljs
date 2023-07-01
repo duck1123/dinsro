@@ -25,6 +25,11 @@
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../joins/nostr/relays.cljc]]
+;; [[../../../model/nostr/relays.cljc]]
+
+(def model-key ::m.n.relays/id)
+
 (def submit-button
   {:type   :button
    :local? true

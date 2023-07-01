@@ -15,6 +15,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../joins/core/transactions.cljc]]
+;; [[../../model/core/transactions.cljc]]
+
+(def model-key ::m.c.transactions/id)
+
 (defsc Show
   "Show a core tx"
   [this {::m.c.transactions/keys [id tx-id hash fetched? block size]

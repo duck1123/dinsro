@@ -10,9 +10,12 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.ui.links :as u.links]))
 
-;; [[../joins/categories.cljc][Category Joins]]
-;; [[../model/categories.cljc][Categories Model]]
-;; [../ui/admin/users/categories.cljs]
+;; [[../joins/categories.cljc]]
+;; [[../model/categories.cljc]]
+;; [[../ui/admin/users/categories.cljs]]
+
+(def model-key ::m.categories/id)
+(def show-page-key :categories-show)
 
 (form/defsc-form NewForm
   [_this _props]

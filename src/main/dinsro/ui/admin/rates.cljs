@@ -9,9 +9,11 @@
    [dinsro.model.rates :as m.rates]
    [dinsro.ui.links :as u.links]))
 
-;; [[../actions/rates.clj][Rate Actions]]
-;; [[../joins/rates.cljc][Rate Joins]]
-;; [[../model/rates.cljc][Rates Model]]
+;; [[../actions/rates.clj]]
+;; [[../joins/rates.cljc]]
+;; [[../model/rates.cljc]]
+
+(def model-key ::m.rates/id)
 
 (report/defsc-report Report
   [_this _props]

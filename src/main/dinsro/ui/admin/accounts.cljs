@@ -15,6 +15,10 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../joins/accounts.cljc]]
+;; [[../../model/accounts.cljc]]
+
+(def model-key ::m.accounts/id)
 (def override-form true)
 
 (form/defsc-form NewForm

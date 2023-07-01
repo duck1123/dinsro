@@ -10,7 +10,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../joins/ln/peers.cljc]]
+;; [[../../../model/ln/peers.cljc]]
+
 (def ident-key ::m.ln.remote-nodes/id)
+(def model-ley ::m.ln.peers/id)
 (def router-key :dinsro.ui.ln.remote-nodes/Router)
 
 (report/defsc-report Report

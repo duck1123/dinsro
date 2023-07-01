@@ -23,6 +23,11 @@
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]))
 
+;; [[../../../joins/core/nodes.cljc]]
+;; [[../../../model/core/nodes.cljc]]
+
+(def model-key ::m.c.nodes/id)
+
 (def button-info
   [{:label "fetch" :action mu.c.nodes/fetch!}
    {:label "fetch peers" :action mu.c.nodes/fetch-peers!}
@@ -32,7 +37,7 @@
   [this {:keys [label mutation id]}]
   (ui-dropdown-item
    {:text    label
-    :onClick #(comp/transact! this [(mutation {::m.c.nodes/id id})])}))
+    :onClick #(comp/transact! this [(mutation {model-key id})])}))
 
 (def ui-actions-menu-item (comp/factory ActionsMenuItem {:keyfn :label}))
 
@@ -83,11 +88,11 @@
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["node" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.nodes/id ::Show)}
+   :will-enter    (partial u.loader/page-loader model-key ::Show)}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (dom/div :.ui.segment
-        (ui-actions-menu {::m.c.nodes/id id})
+        (ui-actions-menu {model-key id})
         (dom/dl {}
           (dom/dt {} "Name")
           (dom/dd {} (str name))
@@ -127,8 +132,8 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "nodes"
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.nodes/fetch!)
+                         (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!)]
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.nodes/index

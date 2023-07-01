@@ -19,6 +19,11 @@
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]))
 
+;; [[../../../joins/core/networks.cljc]]
+;; [[../../../model/core/networks.cljc]]
+
+(def model-key ::m.c.networks/id)
+
 (defrouter Router
   [_this _props]
   {:router-targets
@@ -37,7 +42,7 @@
   {:ident         ::m.c.networks/id
    :initial-state (fn [props]
                     (let [id (::m.c.networks/id props)]
-                      {::m.c.networks/id    nil
+                      {model-key    nil
                        ::m.c.networks/name  ""
                        ::m.c.networks/chain {}
                        :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-networks :id id})
@@ -52,7 +57,7 @@
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["network" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.networks/id ::Show)}
+   :will-enter    (partial u.loader/page-loader model-key ::Show)}
   (if id
     (comp/fragment
      (dom/div :.ui.segment

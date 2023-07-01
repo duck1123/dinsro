@@ -13,6 +13,11 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../joins/ln/payreqs.cljc]]
+;; [[../../../model/ln/payreqs.cljc]]
+
+(def model-key ::m.ln.payreqs/id)
+
 (def decode-button
   {:type   :button
    :local? true

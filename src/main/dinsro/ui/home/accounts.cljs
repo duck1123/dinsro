@@ -18,6 +18,11 @@
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../joins/accounts.cljc]]
+;; [[../../model/accounts.cljc]]
+
+(def model-key ::m.accounts/id)
+
 (def override-account-report false)
 (def show-account-controls false)
 

@@ -9,6 +9,11 @@
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../../joins/core/tx_in.cljc]]
+;; [[../../../../model/core/tx_out.cljc]]
+
+(def model-key ::m.c.tx-in/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.tx-in/vout

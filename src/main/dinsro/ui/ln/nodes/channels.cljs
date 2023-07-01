@@ -17,7 +17,11 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogi :as log]))
 
+;; [[../../../joins/ln/channels.cljc]]
+;; [[../../../model/ln/channels.cljc]]
+
 (def ident-key ::m.ln.nodes/id)
+(def model-key ::m.ln.channels/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (def new-button

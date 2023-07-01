@@ -14,7 +14,11 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
+;; [[../../../../joins/core/blocks.cljc]]
+;; [[../../../../model/core/blocks.cljc]]
+
 (def ident-key ::m.c.nodes/id)
+(def model-key ::m.c.blocks/id)
 (def router-key :dinsro.ui.core.nodes/Router)
 
 (def generate-button
@@ -44,8 +48,8 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "blocks"
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.blocks/fetch!)
+                         (u.buttons/row-action-button "Delete" model-key mu.c.blocks/delete!)]
    ro/row-pk            m.c.blocks/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.blocks/index

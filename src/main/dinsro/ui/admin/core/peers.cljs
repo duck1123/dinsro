@@ -17,6 +17,11 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../joins/core/peers.cljc]]
+;; [[../../../model/core/peers.cljc]]
+
+(def model-key ::m.c.peers/id)
+
 (def submit-button
   {:type   :button
    :local? true
@@ -88,7 +93,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "peers"
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.peers/id mu.c.peers/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!)]
    ro/row-pk            m.c.peers/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.peers/index

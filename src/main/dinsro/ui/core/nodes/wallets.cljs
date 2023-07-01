@@ -12,6 +12,11 @@
    [dinsro.ui.core.wallets :as u.c.wallets]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/core/wallets.cljc]]
+;; [[../../../model/core/wallets.cljc]]
+
+(def model-key ::m.c.wallets/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)

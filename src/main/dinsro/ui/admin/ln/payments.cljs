@@ -9,6 +9,11 @@
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/ln/payments.cljc]]
+;; [[../../../model/ln/payments.cljc]]
+
+(def model-key ::m.ln.payments/id)
+
 (report/defsc-report Report
   [this _props]
   {ro/columns          [m.ln.payments/payment-hash

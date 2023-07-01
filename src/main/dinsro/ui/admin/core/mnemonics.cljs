@@ -7,15 +7,20 @@
    [dinsro.model.core.mnemonics :as m.c.mnemonics]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/core/mnemonics.cljc]]
+;; [[../../../model/core/mnemonics.cljc]]
+
+(def model-key ::m.c.mnemonics/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.mnemonics/name
                         m.c.mnemonics/entropy
                         m.c.mnemonics/user]
    ro/field-formatters {::m.c.mnemonics/user #(u.links/ui-user-link %2)}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/route            "mnemonics"
    ro/row-pk           m.c.mnemonics/id
    ro/run-on-mount?    true

@@ -11,7 +11,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../../joins/nostr/witnesses.cljc]]
+;; [[../../../../model/nostr/witnesses.cljc]]
+
 (def ident-key ::m.n.relays/id)
+(def model-key ::m.n.witnesses/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
 (report/defsc-report Report

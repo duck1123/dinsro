@@ -23,6 +23,11 @@
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]))
 
+;; [[../../joins/core/nodes.cljc]]
+;; [[../../model/core/nodes.cljc]]
+
+(def model-key ::m.c.nodes/id)
+
 (def button-info
   [{:label "fetch" :action mu.c.nodes/fetch!}
    {:label "fetch peers" :action mu.c.nodes/fetch-peers!}

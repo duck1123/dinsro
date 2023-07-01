@@ -10,6 +10,9 @@
    [dinsro.ui.menus :as u.menus]
    [dinsro.ui.nostr.filters.filter-items :as u.n.f.filter-items]))
 
+(def show-page-key :nostr-filters-show)
+(def model-key ::m.n.filters/id)
+
 (defrouter Router
   [_this _props]
   {:router-targets

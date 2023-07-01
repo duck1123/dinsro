@@ -17,7 +17,11 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
+;; [[../../../joins/core/peers.cljc]]
+;; [[../../../model/core/peers.cljc]]
+
 (def ident-key ::m.c.nodes/id)
+(def model-key ::m.c.peers/id)
 (def router-key :dinsro.ui.core.nodes/Router)
 
 (def fetch-button

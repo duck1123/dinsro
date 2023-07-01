@@ -10,6 +10,11 @@
    [dinsro.mutations.core.addresses :as mu.c.addresses]
    [dinsro.ui.buttons :as u.buttons]))
 
+;; [[../../joins/core/addresses.cljc]]
+;; [[../../model/core/addresses.cljc]]
+
+(def model-key ::m.c.addresses/id)
+
 (form/defsc-form NewForm
   [_this _props]
   {fo/attributes   [m.c.addresses/address]

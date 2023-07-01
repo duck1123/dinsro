@@ -15,6 +15,11 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../joins/core/nodes.cljc]]
+;; [[../../model/core/nodes.cljc]]
+
+(def model-key ::m.c.nodes/id)
+
 (def override-report false)
 
 (defsc BodyItem-Item

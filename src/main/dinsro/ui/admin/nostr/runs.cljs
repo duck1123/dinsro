@@ -9,7 +9,10 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
-;; [../../../joins/nostr/runs.cljc]
+;; [[../../../joins/nostr/runs.cljc]]
+;; [[../../../model/nostr/runs.cljc]]
+
+(def model-key ::m.n.runs/id)
 
 (report/defsc-report Report
   [_this _props]

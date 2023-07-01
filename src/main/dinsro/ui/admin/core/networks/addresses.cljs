@@ -13,7 +13,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../../joins/core/addresses.cljc]]
+;; [[../../../../model/core/addresses.cljc]]
+
 (def ident-key ::m.c.networks/id)
+(def model-key ::m.c.addresses/id)
 (def router-key :dinsro.ui.core.networks/Router)
 
 (report/defsc-report Report
@@ -27,8 +31,8 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.addresses/id mu.c.addresses/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.addresses/id mu.c.addresses/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.addresses/fetch!)
+                         (u.buttons/row-action-button "Delete" model-key mu.c.addresses/delete!)]
    ro/row-pk            m.c.addresses/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.addresses/index

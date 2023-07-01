@@ -11,7 +11,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../joins/transactions.cljc]]
+;; [[../../../model/transactions.cljc]]
+
 (def ident-key ::m.users/id)
+(def model-key ::m.transactions/id)
 (def router-key :dinsro.ui.admin.users/Router)
 
 (report/defsc-report Report

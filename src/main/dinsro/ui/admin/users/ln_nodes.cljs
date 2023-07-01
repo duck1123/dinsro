@@ -11,11 +11,12 @@
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
 
-;; [[../actions/users.clj][User Actions]]
-;; [../../../joins/ln/nodes.cljc]
-;; [../../../model/ln/nodes.cljc]
+;; [[../../../actions/users.clj]]
+;; [[../../../joins/ln/nodes.cljc]]
+;; [[../../../model/ln/nodes.cljc]]
 
 (def ident-key ::m.users/id)
+(def model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.admin.users/Router)
 
 (report/defsc-report Report

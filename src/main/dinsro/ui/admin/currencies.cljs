@@ -11,8 +11,10 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
-;; [../../actions/currencies.clj]
-;; [../../queries/currencies.clj]
+;; [[../../actions/currencies.clj]]
+;; [[../../queries/currencies.clj]]
+
+(def model-key ::m.currencies/id)
 
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.currencies/name
@@ -38,7 +40,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             ["currencies"]
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.currencies/id mu.currencies/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.currencies/delete!)]
    ro/row-pk            m.currencies/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.currencies/index

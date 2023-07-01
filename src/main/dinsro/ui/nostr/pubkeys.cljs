@@ -32,6 +32,9 @@
 ;; [[../../mutations/nostr/pubkey_contacts.cljc][Pubkey Contact Mutations]]
 ;; [[../../mutations/nostr/pubkeys.cljc][Pubkey Mutations]]
 
+(def model-key ::m.n.pubkeys/id)
+(def show-page-key :nostr-pubkeys-show)
+
 (defrouter Router
   [_this _props]
   {:router-targets

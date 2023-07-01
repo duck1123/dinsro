@@ -20,7 +20,11 @@
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]))
 
-;; [../actions/currencies.clj]
+;; [[../actions/currencies.clj]]
+;; [[../joins/currencies.cljc]]
+;; [[../model/currencies.cljc]]
+
+(def model-key ::m.currencies/id)
 
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.currencies/name

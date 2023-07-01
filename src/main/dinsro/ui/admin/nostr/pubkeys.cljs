@@ -7,6 +7,11 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/nostr/pubkeys.cljc]]
+;; [[../../../model/nostr/pubkeys.cljc]]
+
+(def model-key ::m.n.pubkeys/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.pubkeys/hex     #(u.links/ui-pubkey-link %3)

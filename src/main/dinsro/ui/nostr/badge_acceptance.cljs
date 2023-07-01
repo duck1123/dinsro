@@ -7,6 +7,11 @@
    [dinsro.model.nostr.badge-acceptances :as m.n.badge-acceptances]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../joins/nostr/badge_acceptances.cljc]]
+;; [[../../model/nostr/badge_acceptances.cljc]]
+
+(def model-link ::m.n.badge-acceptances/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.n.badge-acceptances/id]

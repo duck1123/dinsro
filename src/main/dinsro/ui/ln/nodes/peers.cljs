@@ -14,7 +14,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../joins/ln/peers.cljc]]
+;; [[../../../model/ln/peers.cljc]]
+
 (def ident-key ::m.ln.nodes/id)
+(def model-key ::m.ln.peers/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (def fetch-button

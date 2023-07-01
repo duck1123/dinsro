@@ -13,6 +13,11 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../joins/transactions.cljc]]
+;; [[../../model/transactions.cljc]]
+
+(def model-key ::m.transactions/id)
+
 (form/defsc-form NewForm [_this _props]
   {fo/attributes    [m.transactions/description]
    fo/cancel-route  ["transactions"]

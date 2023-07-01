@@ -15,6 +15,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../joins/core/transactions.cljc]]
+;; [[../../../model/core/transactions.cljc]]
+
+(def model-key ::m.c.transactions/id)
+
 (defsc Show
   "Show a core tx"
   [this {::m.c.transactions/keys [id tx-id hash fetched? block size]
@@ -42,7 +47,7 @@
                    {::m.c.transactions/block (comp/get-query u.links/BlockHeightLinkForm)}
                    [df/marker-table '_]]
    :route-segment ["tx" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.transactions/id ::Show)}
+   :will-enter    (partial u.loader/page-loader model-key ::Show)}
   (dom/div {}
     (dom/div :.ui.segment
       (dom/h1 {} "Transaction")

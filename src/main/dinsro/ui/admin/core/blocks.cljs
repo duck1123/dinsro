@@ -16,7 +16,11 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../joins/core/blocks.cljc]]
+;; [[../../../model/core/blocks.cljc]]
+
 (def force-fetch-button false)
+(def model-key ::m.c.blocks/id)
 (def debug-page false)
 
 (defsc RefRow
@@ -34,7 +38,7 @@
       (dom/button {:classes [:.ui.button]
                    :onClick (fn [event]
                               (log/info :fetch-button/clicked {:event event})
-                              (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
+                              (comp/transact! this [(mu.c.blocks/fetch! {model-key id})]))}
         "Fetch"))))
 
 (s/def ::row
@@ -60,7 +64,7 @@
                    ::m.c.blocks/fetched?       false
                    ::m.c.blocks/network        {}
                    :ui/transactions            {}}
-   :pre-merge     (u.loader/page-merger ::m.c.blocks/id {:ui/transactions [u.a.c.b.transactions/SubPage {}]})
+   :pre-merge     (u.loader/page-merger model-key {:ui/transactions [u.a.c.b.transactions/SubPage {}]})
    :query         [::m.c.blocks/id
                    ::m.c.blocks/height
                    ::m.c.blocks/hash
@@ -73,7 +77,7 @@
                    {:ui/transactions (comp/get-query u.a.c.b.transactions/SubPage)}
                    [df/marker-table '_]]
    :route-segment ["blocks" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.blocks/id ::Show)}
+   :will-enter    (partial u.loader/page-loader model-key ::Show)}
   (log/trace :Show/creating {:id id :props props :this this})
   (dom/div {}
     (dom/div :.ui.segment
@@ -83,7 +87,7 @@
           (comp/fragment
            " ("
            (dom/a {:href    "#"
-                   :onClick #(comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})])}
+                   :onClick #(comp/transact! this [(mu.c.blocks/fetch! {model-key id})])}
              "unfetched")
            ")")))
       (dom/dl {}
@@ -106,7 +110,7 @@
       (when debug-page
         (dom/button {:onClick (fn [_e]
                                 (log/info :ShowBlock/fetch-button-clicked {})
-                                (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
+                                (comp/transact! this [(mu.c.blocks/fetch! {model-key id})]))}
 
           "Fetch")))
     (if id
@@ -127,7 +131,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "blocks"
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.blocks/delete!)]
    ro/row-pk            m.c.blocks/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.blocks/admin-index

@@ -15,6 +15,10 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../joins/categories.cljc]]
+;; [[../../model/categories.cljc]]
+
+(def model-key ::m.categories/id)
 (def override-admin-form true)
 
 (def user-picker

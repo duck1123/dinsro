@@ -13,7 +13,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../../joins/core/blocks.cljc]]
+;; [[../../../../model/core/blocks.cljc]]
+
 (def ident-key ::m.c.networks/id)
+(def model-key ::m.c.blocks/id)
 (def router-key :dinsro.ui.core.networks/Router)
 
 (report/defsc-report Report
@@ -29,8 +33,8 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.blocks/fetch!)
+                         (u.buttons/row-action-button "Delete" model-key mu.c.blocks/delete!)]
    ro/row-pk            m.c.blocks/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.blocks/index

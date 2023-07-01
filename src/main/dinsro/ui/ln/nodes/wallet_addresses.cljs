@@ -13,7 +13,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../joins/core/wallet_addresses.cljc]]
+;; [[../../../model/core/wallet_addresses.cljc]]
+
 (def ident-key ::m.ln.nodes/id)
+(def model-key ::m.c.wallet-addresses/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (report/defsc-report Report

@@ -8,8 +8,10 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-;; [../model/debits.cljc]
-;; [../joins/debits.cljc]
+;; [[../model/debits.cljc]]
+;; [[../joins/debits.cljc]]
+
+(def model-key ::m.debits/id)
 
 (def show-props false)
 

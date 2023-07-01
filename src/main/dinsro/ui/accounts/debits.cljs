@@ -11,7 +11,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../joins/debits.cljc]]
+;; [[../../model/debits.cljc]]
+
 (def ident-key ::m.accounts/id)
+(def model-key ::m.debits/id)
 (def router-key :dinsro.ui.accounts/Router)
 
 (report/defsc-report Report
@@ -21,10 +25,10 @@
                         :action-buttons [::refresh]}
    ro/controls         {::m.accounts/id {:type :uuid :label "id"}
                         ::refresh       u.links/refresh-control}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
-   ro/row-pk           m.debits/id
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
+   ro/row-pk           model-key
    ro/run-on-mount?    true
    ro/source-attribute ::j.debits/index
    ro/title            "Debits"})

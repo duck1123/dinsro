@@ -11,6 +11,11 @@
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../joins/ln/channels.cljc]]
+;; [[../../model/ln/channels.cljc]]
+
+(def model-key ::m.ln.channels/id)
+
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.ln.channels/id
                     m.ln.channels/active

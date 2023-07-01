@@ -16,6 +16,11 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
+;; [[../../joins/core/blocks.cljc]]
+;; [[../../model/core/blocks.cljc]]
+
+(def model-key ::m.c.blocks/id)
+
 (def force-fetch-button false)
 (def debug-page false)
 

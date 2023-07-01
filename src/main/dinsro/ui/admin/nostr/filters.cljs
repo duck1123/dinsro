@@ -7,6 +7,11 @@
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/nostr/filters.cljc]]
+;; [[../../../model/nostr/filters.cljc]]
+
+(def model-key ::m.n.filters/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.filters/request #(u.links/ui-request-link %2)

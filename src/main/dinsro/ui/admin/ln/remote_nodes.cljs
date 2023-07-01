@@ -16,6 +16,11 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../joins/ln/remote_nodes.cljc]]
+;; [[../../../model/ln/remote_nodes.cljc]]
+
+(def model-key ::m.ln.remote-nodes/id)
+
 (defrouter Router
   [_this _props]
   {:router-targets

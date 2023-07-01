@@ -15,7 +15,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../../joins/nostr/requests.cljc]]
+;; [[../../../../model/nostr/requests.cljc]]
+
 (def ident-key ::m.n.relays/id)
+(def model-key ::m.n.requests/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
 (form/defsc-form NewForm

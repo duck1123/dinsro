@@ -17,6 +17,11 @@
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]))
 
+;; [[../../joins/core/chains.cljc]]
+;; [[../../model/core/chains.cljc]]
+
+(def model-key ::m.c.chains/id)
+
 (def override-form false)
 
 (form/defsc-form NewForm

@@ -10,6 +10,11 @@
    [dinsro.model.core.words :as m.c.words]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../../joins/core/words.cljc]]
+;; [[../../../../model/core/words.cljc]]
+
+(def model-key ::m.c.words/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}

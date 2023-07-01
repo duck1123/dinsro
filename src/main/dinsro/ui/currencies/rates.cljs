@@ -11,7 +11,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../joins/rates.cljc]]
+;; [[../../model/rates.cljc]]
+
 (def ident-key ::m.currencies/id)
+(def model-key ::m.rates/id)
 (def router-key :dinsro.ui.currencies/Router)
 
 (report/defsc-report Report

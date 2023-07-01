@@ -7,6 +7,11 @@
    [dinsro.model.core.mnemonics :as m.c.mnemonics]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../joins/core/mnemonics.cljc]]
+;; [[../../model/core/mnemonics.cljc]]
+
+(def model-key ::m.c.mnemonics/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.c.mnemonics/name

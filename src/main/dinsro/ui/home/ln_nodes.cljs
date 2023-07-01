@@ -10,6 +10,11 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../joins/ln/nodes.cljc]]
+;; [[../../model/ln/nodes.cljc]]
+
+(def model-key ::m.ln.nodes/id)
+
 (def override-ln-nodes-report false)
 
 (defsc BodyItem

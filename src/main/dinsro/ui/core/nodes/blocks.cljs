@@ -14,7 +14,11 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogi :as log]))
 
+;; [[../../../joins/core/blocks.cljc]]
+;; [[../../../model/core/blocks.cljc]]
+
 (def ident-key ::m.c.nodes/id)
+(def model-key ::m.c.blocks/id)
 (def router-key :dinsro.ui.core.nodes/Router)
 
 (def generate-button

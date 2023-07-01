@@ -14,6 +14,10 @@
    [dinsro.model.users :as m.users]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/ln/nodes.cljc]]
+;; [[../../../model/ln/nodes.cljc]]
+
+(def model-key ::m.ln.nodes/id)
 (def override-create-form false)
 
 (form/defsc-form NewForm

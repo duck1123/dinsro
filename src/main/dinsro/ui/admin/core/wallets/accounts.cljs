@@ -9,6 +9,11 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../../joins/accounts.cljc]]
+;; [[../../../../model/accounts.cljc]]
+
+(def model-key ::m.accounts/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.accounts/name #(u.links/ui-account-link %3)

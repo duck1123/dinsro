@@ -17,6 +17,10 @@
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]))
 
+;; [[../../../joins/core/chains.cljc]]
+;; [[../../../model/core/chains.cljc]]
+
+(def model-key ::m.c.chains/id)
 (def override-form false)
 
 (form/defsc-form NewForm
@@ -44,11 +48,10 @@
   {:ident         ::m.c.chains/id
    :initial-state (fn [props]
                     (let [id (::m.c.chains/id props)]
-                      {::m.c.chains/id   nil
+                      {model-key         nil
                        ::m.c.chains/name ""
-                       :ui/nav-menu
-                       (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-chains
-                                                                :id            id})
+                       :ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-chains
+                                                                                  :id            id})
                        :ui/router        (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger
                    ::m.c.chains/id
@@ -59,7 +62,7 @@
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["chain" :id]
-   :will-enter    (partial u.loader/page-loader ::m.c.chains/id ::Show)}
+   :will-enter    (partial u.loader/page-loader model-key ::Show)}
   (comp/fragment
    (dom/div :.ui.segment
      (dom/h1 {} "Show Chain")

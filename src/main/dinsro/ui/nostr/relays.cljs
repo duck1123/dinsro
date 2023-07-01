@@ -30,6 +30,9 @@
 ;; [[../../mutations/nostr/relays.cljc][Mutations]]
 ;; [[../../queries/nostr/relays.clj][Queries]]
 
+(def model-key ::m.n.relays/id)
+(def show-page-key :nostr-relays-show)
+
 (def submit-button
   {:type   :button
    :local? true

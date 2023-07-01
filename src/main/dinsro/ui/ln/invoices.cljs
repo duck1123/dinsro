@@ -13,6 +13,11 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+;; [[../../joins/ln/invoices.cljc]]
+;; [[../../model/ln/invoices.cljc]]
+
+(def model-key ::m.ln.invoices/id)
+
 (def submit-button
   {:type   :button
    :local? true

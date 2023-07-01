@@ -11,7 +11,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../../joins/core/wallets.cljc]]
+;; [[../../../../model/core/wallets.cljc]]
+
 (def ident-key ::m.c.networks/id)
+(def model-key ::m.c.wallets/id)
 (def router-key :dinsro.ui.core.networks/Router)
 
 (report/defsc-report Report

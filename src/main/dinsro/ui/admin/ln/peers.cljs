@@ -15,6 +15,11 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../joins/ln/peers.cljc]]
+;; [[../../../model/ln/peers.cljc]]
+
+(def model-key ::m.ln.peers/id)
+
 (def submit-button
   {:type   :button
    :local? true

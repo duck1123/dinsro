@@ -11,7 +11,10 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.ui.links :as u.links]))
 
-;; [[../joins/contacts.cljc][Contact Joins]]
+;; [[../joins/contacts.cljc]]
+;; [[../model/contacts.cljc]]
+
+(def model-key ::m.contacts/id)
 
 (form/defsc-form NewContactForm
   [_this _props]

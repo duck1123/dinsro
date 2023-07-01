@@ -7,9 +7,11 @@
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.ui.links :as u.links]))
 
-;; [../../../actions/nostr/witnesses.clj]
-;; [../../../joins/nostr/witnesses.cljc]
-;; [../../../model/nostr/witnesses.cljc]
+;; [[../../../actions/nostr/witnesses.clj]]
+;; [[../../../joins/nostr/witnesses.cljc]]
+;; [[../../../model/nostr/witnesses.cljc]]
+
+(def model-key ::m.n.witnesses/id)
 
 (report/defsc-report Report
   [_this _props]

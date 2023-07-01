@@ -17,14 +17,15 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-;; [[../../joins/nostr/pubkeys.cljc][Pubkeys Join]]
-;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
-;; [[../../model/nostr/relays.cljc][Relay Model]]
-;; [[../../model/nostr/relay_pubkeys.cljc][Relay Pubkeys Model]]
-;; [[../../mutations/nostr/pubkeys.cljc][Pubkeys Mutations]]
-;; [[../../ui/nostr/relays.cljs][Relays UI]]
+;; [[../../joins/nostr/pubkeys.cljc]]
+;; [[../../model/nostr/pubkeys.cljc]]
+;; [[../../model/nostr/relays.cljc]]
+;; [[../../model/nostr/relay_pubkeys.cljc]]
+;; [[../../mutations/nostr/pubkeys.cljc]]
+;; [[../../ui/nostr/relays.cljs]]
 
 (def ident-key ::m.n.relays/id)
+(def model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
 (form/defsc-form AddForm

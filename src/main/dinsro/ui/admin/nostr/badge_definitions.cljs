@@ -7,6 +7,11 @@
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/nostr/badge_definitions.cljc]]
+;; [[../../../model/nostr/badge_definitions.cljc]]
+
+(def model-key ::m.n.badge-definitions/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.n.badge-definitions/id

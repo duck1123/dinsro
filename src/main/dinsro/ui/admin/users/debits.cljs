@@ -11,6 +11,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../joins/debits.cljc]]
+;; [[../../../model/debits.cljc]]
+
+(def model-key ::m.debits/id)
+
 (def ident-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)
 

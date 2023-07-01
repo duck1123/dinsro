@@ -13,9 +13,11 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-;; [../../../model/accounts.cljc]
+;; [[../../../joins/accounts.cljc]]
+;; [[../../../model/accounts.cljc]]
 
 (def ident-key ::m.users/id)
+(def model-key ::m.accounts/id)
 (def router-key :dinsro.ui.admin.users/Router)
 
 (def override-report true)

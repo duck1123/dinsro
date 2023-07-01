@@ -13,7 +13,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../../joins/nostr/runs.cljc]]
+;; [[../../../../model/nostr/runs.cljc]]
+
 (def ident-key ::m.n.requests/id)
+(def model-key ::m.n.runs/id)
 (def router-key :dinsro.ui.nostr.requests/Router)
 
 (report/defsc-report Report

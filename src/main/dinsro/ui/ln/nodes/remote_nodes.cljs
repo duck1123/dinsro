@@ -13,7 +13,11 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../joins/ln/remote_nodes.cljc]]
+;; [[../../../model/ln/remote_nodes.cljc]]
+
 (def ident-key ::m.ln.nodes/id)
+(def model-key ::m.ln.remote-nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (report/defsc-report Report

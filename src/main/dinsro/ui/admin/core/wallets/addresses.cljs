@@ -16,6 +16,11 @@
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../../joins/core/addresses.cljc]]
+;; [[../../../../model/core/addresses.cljc]]
+
+(def model-key ::m.c.wallet-addresses/id)
+
 (form/defsc-form NewForm
   [_this _props]
   {fo/attributes    [m.c.wallet-addresses/address
@@ -42,7 +47,7 @@
    :action (fn [this props]
              (let [{::m.c.wallet-addresses/keys [id]} props]
                (log/info :generate-button/clicked {:props props})
-               (comp/transact! this [(mu.c.wallet-addresses/generate! {::m.c.wallet-addresses/id id})])))})
+               (comp/transact! this [(mu.c.wallet-addresses/generate! {model-key id})])))})
 
 (form/defsc-form WalletAddressForm
   [_this _props]

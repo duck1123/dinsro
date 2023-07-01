@@ -7,6 +7,11 @@
    [dinsro.model.debits :as m.debits]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../joins/debits.cljc]]
+;; [[../../model/debits.cljc]]
+
+(def model-key ::m.debits/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.debits/account     #(u.links/ui-account-link %2)

@@ -22,7 +22,9 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-;; [[../../../../test/dinsro/ui/core/wallets_test.cljs][Wallets Test]]
+;; [[../../../joins/core/wallets.cljc]]
+;; [[../../../model/core/wallets.cljc]]
+;; [[../../../../test/dinsro/ui/core/wallets_test.cljs]]
 
 (def create-button
   {:type   :button

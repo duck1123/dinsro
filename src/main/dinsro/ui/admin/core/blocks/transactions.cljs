@@ -12,6 +12,11 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../../joins/core/transactions.cljc]]
+;; [[../../../../model/core/transactions.cljc]]
+
+(def model-key ::m.c.transactions/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.transactions/tx-id (u.links/report-link ::m.c.transactions/tx-id u.links/ui-core-tx-link)}

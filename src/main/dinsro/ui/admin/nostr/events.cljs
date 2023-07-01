@@ -7,6 +7,11 @@
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/nostr/events.cljc]]
+;; [[../../../model/nostr/events.cljc]]
+
+(def model-key ::m.n.events/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)

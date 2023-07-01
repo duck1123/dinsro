@@ -12,7 +12,11 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/core/transactions.cljc]]
+;; [[../../../model/core/transactions.cljc]]
+
 (def ident-key ::m.c.nodes/id)
+(def model-key ::m.c.transactions/id)
 (def router-key :dinsro.ui.core.nodes/Router)
 
 (report/defsc-report Report

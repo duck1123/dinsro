@@ -18,6 +18,11 @@
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]))
 
+;; [[../../../joins/nostr/requests.cljc]]
+;; [[../../../model/nostr/requests.cljc]]
+
+(def model-key ::m.n.requests/id)
+
 (defrouter Router
   [_this _props]
   {:router-targets

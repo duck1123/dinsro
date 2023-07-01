@@ -14,6 +14,11 @@
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]))
 
+;; [[../../../joins/nostr/connections.cljc]]
+;; [[../../../model/nostr/connections.cljc]]
+
+(def model-key ::m.n.connections/id)
+
 (defsc Show
   [_this {::m.n.connections/keys [id status relay start-time end-time]
           :ui/keys               [nav-menu]}]

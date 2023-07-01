@@ -32,6 +32,11 @@
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
+;; [[../../joins/ln/nodes.cljc]]
+;; [[../../model/ln/nodes.cljc]]
+
+(def model-key ::m.ln.nodes/id)
+
 (declare CreateLightningNodeForm)
 
 (def new-node-button

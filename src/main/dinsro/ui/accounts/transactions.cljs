@@ -13,11 +13,12 @@
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.transactions :as u.transactions]))
 
-;; [[../joins/transactions.cljc][Transaction Joins]]
-;; [[../model/accounts.cljc][Accounts Model]]
-;; [[../model/transactions.cljc][Transactions Model]]
+;; [[../joins/transactions.cljc]]
+;; [[../model/accounts.cljc]]
+;; [[../model/transactions.cljc]]
 
 (def ident-key ::m.accounts/id)
+(def model-key ::m.transactions/id)
 (def router-key :dinsro.ui.accounts/Router)
 
 (report/defsc-report Report

@@ -29,9 +29,10 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-;; [[../joins/accounts.cljc][Account Joins]]
-;; [[../model/accounts.cljc][Account Models]]
+;; [[../joins/accounts.cljc]]
+;; [[../model/accounts.cljc]]
 
+(def model-key ::m.accounts/id)
 (def override-form true)
 
 (form/defsc-form NewForm

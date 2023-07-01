@@ -7,6 +7,11 @@
    [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../joins/nostr/badge_awards.cljc]]
+;; [[../../../model/nostr/badge_awards.cljc]]
+
+(def model-key ::m.n.badge-awards/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.n.badge-awards/id]

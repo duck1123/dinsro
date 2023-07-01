@@ -7,6 +7,11 @@
    [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../joins/ln/accounts.cljc]]
+;; [[../../model/ln/accounts.cljc]]
+
+(def model-key ::m.ln.accounts/id)
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.ln.accounts/node #(u.links/ui-node-link %2)}

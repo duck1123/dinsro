@@ -21,12 +21,13 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-;; [../../../model/categories.cljc]
-;; [../../../mutations/categories.cljc]
-;; [../../../ui/categories.cljs]
-;; [../../../../../test/dinsro/ui/admin/users/categories_test.cljs]
+;; [[../../../model/categories.cljc]]
+;; [[../../../mutations/categories.cljc]]
+;; [[../../../ui/categories.cljs]]
+;; [[../../../../../test/dinsro/ui/admin/users/categories_test.cljs]]
 
 (def ident-key ::m.users/id)
+(def model-key ::m.categories/id)
 (def router-key :dinsro.ui.admin.users/Router)
 
 (def override-report false)
