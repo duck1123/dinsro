@@ -8,6 +8,7 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.specs]))
 
+;; [[../../joins/nostr/events.cljc]]
 ;; [[../../mutations/nostr/events.cljc]]
 ;; [[../../queries/nostr/events.clj]]
 ;; [[../../ui/nostr/events.cljs]]

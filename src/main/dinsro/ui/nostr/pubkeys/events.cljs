@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.events :as m.n.events]
@@ -16,6 +17,9 @@
    [dinsro.ui.nostr.events :as u.n.events]
    [nextjournal.markdown :as md]
    [nextjournal.markdown.transform :as transform]))
+
+;; [[../../../model/nostr/events.cljc]]
+;; [[../../../ui/nostr/event_tags.cljs]]
 
 (def index-page-key :nostr-pubkeys-events)
 (def parent-model-key ::m.n.pubkeys/id)
@@ -32,7 +36,7 @@
    :query         [::m.n.events/id ::m.n.events/content ::m.n.events/created-at ::m.n.events/note-id]}
   (dom/div :.ui.item
     (dom/div :.content
-      (dom/div :.ui.segment
+      (ui-segment {}
         (u.links/ui-event-link event)
         (dom/div {} (str id))
         (dom/div {} (str (transform/->hiccup (md/parse content))))
@@ -65,7 +69,7 @@
   (if override-report
     (report/render-layout this)
     (let [{:ui/keys [current-rows]} props]
-      (dom/div {:classes [:.ui :.segment]}
+      (ui-segment {}
         (dom/div {:classes [:.ui :.container]}
           ((report/control-renderer this) this)
           (dom/div {:classes [:.ui :.items :.unstackable]}

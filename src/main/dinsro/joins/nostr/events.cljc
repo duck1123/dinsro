@@ -15,10 +15,10 @@
    [nextjournal.markdown :as md]
    [nextjournal.markdown.transform :as transform]))
 
-;; [[../../actions/nostr/events.clj][Event Actions]]
-;; [[../../model/nostr/events.cljc][Event Model]]
-;; [[../../queries/nostr/events.clj][Event Queries]]
-;; [[../../ui/nostr/events.cljs][Event UI]]
+;; [[../../actions/nostr/events.clj]]
+;; [[../../model/nostr/events.cljc]]
+;; [[../../queries/nostr/events.clj]]
+;; [[../../ui/nostr/events.cljs]]
 
 (def join-info
   (merge

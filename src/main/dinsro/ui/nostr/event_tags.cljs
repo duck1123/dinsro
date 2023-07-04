@@ -9,6 +9,7 @@
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
+   [dinsro.mutations.nostr.event-tags :as mu.n.event-tags]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -16,16 +17,17 @@
    [dinsro.ui.nostr.event-tags.relays :as u.n.et.relays]
    [lambdaisland.glogc :as log]))
 
+;; [[../../mutations/nostr/event_tags.cljc]]
 ;; [[../../ui/nostr/event_tags/relays.cljs]]
 ;; [[../../../../test/dinsro/ui/nostr/event_tags_test.cljs]]
 
-(def model-key ::m.n.event-tags)
+(def model-key ::m.n.event-tags/id)
 (def show-page-key :nostr-event-tags-show)
 
 (def log-tag-props false)
 
 (defsc TagDisplay
-  [_this {::m.n.event-tags/keys [id pubkey event raw-value extra type] :as props}]
+  [this {::m.n.event-tags/keys [id pubkey event raw-value extra type] :as props}]
   {:query         [::m.n.event-tags/id
                    {::m.n.event-tags/pubkey (comp/get-query u.links/PubkeyNameLinkForm)}
                    {::m.n.event-tags/event (comp/get-query u.links/ui-event-link)}
@@ -41,31 +43,55 @@
                    ::m.n.event-tags/raw-value nil
                    ::m.n.event-tags/extra     nil
                    ::m.n.event-tags/type      nil}}
-  (if log-tag-props
-    (u.debug/log-props props)
-    (let [show-labels false
-          tag?        (= type "t")
-          event?      (= type "e")]
-      (ui-list-item {}
-        (when log-tag-props
-          (u.debug/log-props props))
-        (dom/div {:style {:marginRight "5px"}}
-          "[" (u.links/ui-event-tag-link props) "] ")
+  (let [show-labels false
+        tag?        (= type "t")
+        event?      (= type "e")
+        nonce?      (= type "nonce")
+        client?     (= type "client")]
+    (ui-list-item {}
+      (when log-tag-props
+        (u.debug/log-props props))
+      (dom/div {:style {:marginRight "5px"}}
+        "[" (u.links/ui-event-tag-link props) "] ")
+      (dom/div {}
         (when tag?
           (str "#" raw-value))
+        (when client?
+          (str "Client: " raw-value))
+        (when nonce?
+          (str "POW=" extra))
         (when pubkey
           (dom/div {}
             (when show-labels "Pubkey: ")
-            (u.links/ui-pubkey-name-link pubkey)))
+            (u.links/ui-pubkey-name-link pubkey)
+            (ui-button
+             {:onClick
+              (fn [_]
+                (let [props (comp/props this)
+                      id    (model-key props)]
+                  (comp/transact! this [(mu.n.event-tags/fetch! {model-key id})])))}
+             "Fetch")))
         (when event?
           (dom/div {}
-            (when show-labels "Event: ")
-            (when event (u.links/ui-event-link event))))
-        (when-not (or pubkey event tag?)
+            (when show-labels
+              "Event: ")
+            (if event
+              (u.links/ui-event-link event)
+              (dom/div {}
+                "Not Loaded"
+                (ui-button
+                 {:onClick (fn [_]
+                             (let [props (comp/props this)
+                                   id    (model-key props)]
+                               (comp/transact! this [(mu.n.event-tags/fetch! {model-key id})])))}
+                 "Register")))))
+
+        (when-not (or pubkey event tag? nonce? client?)
           (comp/fragment
            (dom/div {} "Type: " (str type))
            (dom/div {} "Raw Value: " (str raw-value))))
-        (when extra (dom/div {} "Extra: " (str extra)))
+        (when (and extra (not (or nonce? client?)))
+          (dom/div {} "Extra: " (str extra)))
         (when event?
           (ui-button
            {:onClick (fn [_]

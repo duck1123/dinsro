@@ -6,10 +6,11 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]))
 
-;; [[../../actions/nostr/pubkeys.clj][Pubkeys Actions]]
-;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
-;; [[../../queries/nostr/pubkeys.clj][Pubkey Queries]]
-;; [[../../ui/nostr/pubkeys.cljs][Pubkeys UI]]
+;; [[../../actions/nostr/pubkeys.clj]]
+;; [[../../joins/nostr/pubkeys.cljc]]
+;; [[../../queries/nostr/pubkeys.clj]]
+;; [[../../ui/admin/nostr/pubkeys.cljs]]
+;; [[../../ui/nostr/pubkeys.cljs]]
 
 (>def ::id uuid?)
 (defattr id ::id :uuid

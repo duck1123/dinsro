@@ -22,15 +22,17 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
-                         ::m.n.events/note-id #(u.links/ui-event-link %3)}
-   ro/columns           [m.n.events/pubkey
+  {ro/column-formatters {::m.n.events/pubkey  #(u.links/ui-admin-pubkey-link %2)
+                         ::m.n.events/note-id #(u.links/ui-admin-event-link %3)}
+   ro/columns           [m.n.events/note-id
+                         m.n.events/pubkey
                          m.n.events/kind
-                         m.n.events/content]
+                         m.n.events/content
+                         m.n.events/created-at]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/machine           spr/machine
-   ro/page-size         10
+   ro/page-size         100
    ro/paginate?         true
    ro/row-pk            m.n.events/id
    ro/run-on-mount?     true

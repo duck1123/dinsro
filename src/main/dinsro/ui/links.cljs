@@ -107,6 +107,14 @@
 
 (def ui-admin-core-node-link (comp/factory AdminCoreNodeLinkForm {:keyfn ::m.c.nodes/id}))
 
+(form/defsc-form AdminEventLinkForm [this {::m.n.events/keys [id note-id]}]
+  {fo/id           m.n.events/id
+   fo/route-prefix "admin-event-link"
+   fo/attributes   [m.n.events/note-id]}
+  (form-link this id note-id :dinsro.ui.nostr.events/AdminShowPage))
+
+(def ui-admin-event-link (comp/factory AdminEventLinkForm {:keyfn ::m.n.events/note-id}))
+
 (form/defsc-form AdminLnNodeLinkForm
   [this {::m.ln.nodes/keys [id name] :as props}]
   {fo/id         m.ln.nodes/id
@@ -116,6 +124,23 @@
   (form-link this id name :dinsro.ui.admin.ln.nodes/ShowPage))
 
 (def ui-admin-ln-node-link (comp/factory AdminLnNodeLinkForm {:keyfn ::m.ln.nodes/id}))
+
+(form/defsc-form AdminEventTagLinkForm [this {::m.n.event-tags/keys [id index]}]
+  {fo/id           m.n.event-tags/id
+   fo/route-prefix "admin-event-tags-link"
+   fo/attributes   [m.n.event-tags/id]}
+  (form-link this id (str index) :dinsro.ui.admin.nostr.event-tags/ShowPage))
+
+(def ui-admin-event-tag-link (comp/factory AdminEventTagLinkForm {:keyfn ::m.n.event-tags/id}))
+
+(form/defsc-form AdminPubkeyLinkForm [this {::m.n.pubkeys/keys [id name hex]}]
+  {fo/id           m.n.pubkeys/id
+   fo/route-prefix "admin-pubkey-link"
+   fo/attributes   [m.n.pubkeys/hex
+                    m.n.pubkeys/name]}
+  (form-link this id (or name hex) :dinsro.ui.admin.nostr.pubkeys.events/SubPage))
+
+(def ui-admin-pubkey-link (comp/factory AdminPubkeyLinkForm {:keyfn ::m.n.pubkeys/id}))
 
 (form/defsc-form AdminPubkeyNameLinkForm [this {::j.n.pubkeys/keys [npub]
                                                 ::m.n.pubkeys/keys [id name]}]

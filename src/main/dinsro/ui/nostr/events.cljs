@@ -146,8 +146,10 @@
       (dom/div {:classes [:.header] :style {:width "100%"}}
         (ui-grid {}
           (ui-grid-row {}
-            (ui-grid-column {:stretched true :width 10} (u.links/ui-pubkey-name-link pubkey))
-            (ui-grid-column {:textAlign "right" :width 6} (str (::m.n.pubkeys/nip05 pubkey))))))
+            (ui-grid-column {:stretched true :width 10}
+              (u.links/ui-pubkey-name-link pubkey))
+            (ui-grid-column {:textAlign "right" :width 6}
+              (str (::m.n.pubkeys/nip05 pubkey))))))
       (dom/div {:classes [:.meta] :style {:width "100%"}}
         (ui-grid {}
           (ui-grid-row {}
