@@ -61,3 +61,29 @@
              groups)))))
 
 (def ui-sub-page (comp/factory SubPage))
+
+(defsc SubSection
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.c.wallets/id nil
+                       ::m.navlinks/id  index-page-key
+                       :ui/report       {}}
+   :query             [::m.c.wallets/id
+                       ::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]}
+  (let [{:ui/keys [current-rows]} report
+        sorted-rows               (sort-by ::m.c.words/position current-rows)
+        groups                    (partition 12 sorted-rows)]
+    (dom/div {}
+      (dom/div :.ui.grid
+        (map (fn [words]
+               (dom/div :.eight.wide.column
+                 (map
+                  (fn [row]
+                    (let [{::m.c.words/keys [position word]} row]
+                      (dom/div :.eight.wide.column (str position) ". " (str word))))
+                  words)))
+             groups)))))
+
+(def ui-sub-section (comp/factory SubSection))

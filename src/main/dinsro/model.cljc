@@ -27,6 +27,7 @@
    [dinsro.joins.ln.payreqs :as j.ln.payreqs]
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
+   [dinsro.joins.models :as j.models]
    [dinsro.joins.navbars :as j.navbars]
    [dinsro.joins.navlinks :as j.navlinks]
    [dinsro.joins.nostr.badge-acceptances :as j.n.badge-acceptances]
@@ -78,6 +79,7 @@
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
+   [dinsro.model.models :as m.models]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.badge-acceptances :as m.n.badge-acceptances]
@@ -177,6 +179,7 @@
         j.ln.payreqs/attributes
         j.ln.peers/attributes
         j.ln.remote-nodes/attributes
+        j.models/attributes
         j.navbars/attributes
         j.navlinks/attributes
         j.n.badge-acceptances/attributes
@@ -228,6 +231,7 @@
         m.ln.payreqs/attributes
         m.ln.peers/attributes
         m.ln.remote-nodes/attributes
+        m.models/attributes
         m.navbars/attributes
         m.navlinks/attributes
         m.n.badge-acceptances/attributes

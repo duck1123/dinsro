@@ -18,8 +18,8 @@
 ;; [[../../actions/nostr/event_tags.clj][Event Tag Actions]]
 ;; [[../../model/nostr/event_tags.cljc][Event Tags Model]]
 
-(def ident-key ::m.n.events/id)
 (def index-page-key :nostr-events-event-tags)
+(def parent-model-key ::m.n.events/id)
 (def router-key :dinsro.ui.nostr.events/Router)
 
 (form/defsc-form AddForm
@@ -57,12 +57,13 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}
    :query             [[::dr/id router-key]
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["tags"]}
+   :route-segment     ["tags"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))

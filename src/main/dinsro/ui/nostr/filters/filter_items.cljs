@@ -20,8 +20,8 @@
 ;; [../../../queries/nostr/filter_items.clj]
 ;; [../../../ui/nostr/requests/filter_items.cljs]
 
-(def ident-key ::m.n.filters/id)
 (def index-page-key :nostr-filters-filter-items)
+(def parent-model-key ::m.n.filters/id)
 (def router-key :dinsro.ui.nostr.filters/Router)
 
 (form/defsc-form NewForm
@@ -69,13 +69,14 @@
 
 (defsc SubPage
   [_this {:ui/keys [report] :as props}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}
    :query             [[::dr/id router-key]
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["items"]}
+   :route-segment     ["items"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
   (ui-report report))

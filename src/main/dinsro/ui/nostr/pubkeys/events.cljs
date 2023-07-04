@@ -17,8 +17,8 @@
    [nextjournal.markdown :as md]
    [nextjournal.markdown.transform :as transform]))
 
-(def ident-key ::m.n.pubkeys/id)
 (def index-page-key :nostr-pubkeys-events)
+(def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
 (defsc EventListItem
@@ -76,12 +76,13 @@
 (defsc SubPage
   "Event subpage for events"
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}
    :query             [[::dr/id router-key]
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["events"]}
+   :route-segment     ["events"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))

@@ -104,8 +104,8 @@
                    :ui/addresses                 {}
                    :ui/words                     {}}
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/accounts  [u.c.w.accounts/SubPage {}]
-                     :ui/addresses [u.c.w.addresses/SubPage {}]
+                    {:ui/accounts  [u.c.w.accounts/SubSection {}]
+                     :ui/addresses [u.c.w.addresses/SubSection {}]
                      :ui/words     [u.c.w.words/SubPage {}]})
    :query         [::m.c.wallets/id
                    ::m.c.wallets/name
@@ -115,43 +115,45 @@
                    ::m.c.wallets/key
                    ::m.c.wallets/ext-private-key
                    ::m.c.wallets/ext-public-key
-                   {:ui/accounts (comp/get-query u.c.w.accounts/SubPage)}
-                   {:ui/addresses (comp/get-query u.c.w.addresses/SubPage)}
-                   {:ui/words (comp/get-query u.c.w.words/SubPage)}
+                   {:ui/accounts (comp/get-query u.c.w.accounts/SubSection)}
+                   {:ui/addresses (comp/get-query u.c.w.addresses/SubSection)}
+                   {:ui/words (comp/get-query u.c.w.words/SubSection)}
                    [df/marker-table '_]]}
   (log/info :ShowWallet/starting {:id id :props props :this this})
-  (dom/div {}
-    (ui-segment {}
-      (dom/h1 {} "Wallet")
-      (dom/button
-        {:onClick (fn [_]
-                    (log/info :ShowWallet/derive-clicked {})
-                    (comp/transact! this [(mu.c.wallets/derive! {::m.c.wallets/id id})]))}
-        "derive")
-      (dom/dl {}
-        (dom/dt {} "Name")
-        (dom/dd {} (str name))
-        (dom/dt {} "Derivation")
-        (dom/dd {} (str derivation))
-        (dom/dt {} "Key")
-        (dom/dd {} (str key))
-        (dom/dt {} "Network")
-        (dom/dd {} (u.links/ui-network-link network))
-        (dom/dt {} "User")
-        (dom/dd {} (u.links/ui-user-link user))
-        (dom/dt {} "Extended Public Key")
-        (dom/dd {} ext-public-key)
-        (dom/dt {} "Extended Private Key")
-        (dom/dd {} ext-private-key)))
-    (if id
-      (comp/fragment
-       (ui-segment {}
-         (u.c.w.words/ui-sub-page words))
-       (ui-segment {}
-         (u.c.w.accounts/ui-sub-page accounts))
-       (ui-segment {}
-         (u.c.w.addresses/ui-sub-page addresses)))
-      (dom/p {} "id not set"))))
+  (if id
+    (dom/div {}
+     (ui-segment {}
+       (dom/h1 {} "Wallet")
+       (dom/button
+         {:onClick (fn [_] (comp/transact! this [(mu.c.wallets/derive! {::m.c.wallets/id id})]))}
+         "derive")
+       (dom/dl {}
+         (dom/dt {} "Name")
+         (dom/dd {} (str name))
+         (dom/dt {} "Derivation")
+         (dom/dd {} (str derivation))
+         (dom/dt {} "Key")
+         (dom/dd {} (str key))
+         (dom/dt {} "Network")
+         (dom/dd {} (u.links/ui-network-link network))
+         (dom/dt {} "User")
+         (dom/dd {} (u.links/ui-user-link user))
+         (dom/dt {} "Extended Public Key")
+         (dom/dd {} ext-public-key)
+         (dom/dt {} "Extended Private Key")
+         (dom/dd {} ext-private-key)))
+     (if id
+       (comp/fragment
+        (ui-segment {}
+          (u.c.w.words/ui-sub-section words))
+        (ui-segment {}
+          (u.c.w.accounts/ui-sub-section accounts))
+        (ui-segment {}
+          (u.c.w.addresses/ui-sub-section addresses)))
+       (dom/p {} "id not set")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")
+    ))
 
 (def ui-show (comp/factory Show))
 
@@ -198,16 +200,17 @@
           :as                props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
    :initial-state (fn [_props]
-                    {model-key       nil
-                     ::m.navlinks/id show-page-key
-                     :ui/record      (comp/get-initial-state Show)})
+                    {model-key           nil
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target (comp/get-initial-state Show)})
    :query         (fn [_props]
                     [model-key
                      ::m.navlinks/id
-                     {:ui/record (comp/get-query Show)}])
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["wallet" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {} "Failed to load record")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))

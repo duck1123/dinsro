@@ -800,6 +800,14 @@
     ::required-role  :user
     ::requires-auth? true}
 
+   :core
+   {::label "Core"
+    ::description "Router for core"
+    ::control :dinsro.ui.core/Page
+    ::route :dinsro.ui.core.dashboard/Page
+    ::router :route
+    ::required-role :guest}
+
    :core-blocks-show
    {::label         "Show Block"
     ::input-key     :dinsro.model.core.blocks/id

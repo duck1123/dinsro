@@ -28,7 +28,9 @@
                 :admin-debits
                 :admin-rate-sources
                 :admin-rates
-                :admin-models]}
+                :admin-models
+                :navbars
+                :navlinks]}
 
    :admin-core
    {::parent   :admin
@@ -153,9 +155,7 @@
                 :contacts
                 :nostr-events
                 :settings
-                :admin
-                :navbars
-                :navlinks]}
+                :admin]}
 
    :nostr-connections
    {::parent   :nostr

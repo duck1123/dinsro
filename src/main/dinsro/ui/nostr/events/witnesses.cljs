@@ -16,8 +16,8 @@
 
 ;; [../../../actions/nostr/witnesses.clj]
 
-(def ident-key ::m.n.events/id)
 (def index-page-key :nostr-events-witnesses)
+(def parent-model-key ::m.n.events/id)
 (def router-key :dinsro.ui.nostr.events/Router)
 
 (def log-item-props false)
@@ -66,12 +66,13 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}
    :query             [[::dr/id router-key]
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["witnesses"]}
+   :route-segment     ["witnesses"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))

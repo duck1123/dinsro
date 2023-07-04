@@ -52,3 +52,17 @@
   (ui-report report))
 
 (def ui-sub-page (comp/factory SubPage))
+
+(defsc SubSection
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.c.wallets/id nil
+                       ::m.navlinks/id  index-page-key
+                       :ui/report       {}}
+   :query             [::m.c.wallets/id
+                       ::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]}
+  (ui-report report))
+
+(def ui-sub-section (comp/factory SubSection))
