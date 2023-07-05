@@ -9,7 +9,7 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../../mutations/nostr/event_tags.cljc]]
-;; [[../../queries/nostr/event_tags.clj][Event Tag Queries]]
+;; [[../../queries/nostr/event_tags.clj]]
 ;; [[../../ui/nostr/event_tags.cljs]]
 
 (>defn register-tag!
@@ -64,6 +64,11 @@
     (if-let [tag (q.n.event-tags/read-record event-tag-id)]
       (do
         (log/info :fetch!/read {:tag tag})
+        (let [{::m.n.event-tags/keys [type]} tag]
+          (if (= type "p")
+            (log/info :fetch!/pubkey {})
+            (log/info :fetch!/other {})))
+
         nil)
       nil)))
 
