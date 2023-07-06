@@ -91,7 +91,7 @@ https://cert-manager.io/docs/installation/kubectl/
 **** install cert manager manifests
 
 #+BEGIN_SRC  shell
-  kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.1/cert-manager.yaml
+  kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
 #+END_SRC
 
 **** Create letsencrypt provider
