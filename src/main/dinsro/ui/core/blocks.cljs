@@ -69,6 +69,10 @@
                    ::m.c.blocks/fetched?       false
                    ::m.c.blocks/network        {}
                    :ui/transactions            {}}
+   :pre-merge         (u.loader/page-merger model-key
+                        {:ui/transactions   [u.c.b.transactions/SubPage {}]
+                         ;; :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-blocks}]
+                         })
    :query         [::m.c.blocks/id
                    ::m.c.blocks/height
                    ::m.c.blocks/hash
@@ -80,7 +84,10 @@
                    {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {:ui/transactions (comp/get-query u.c.b.transactions/SubPage)}
                    [df/marker-table '_]]}
-  (log/trace :Show/creating {:id id :props props :this this})
+  (log/debug :Show/creating {:props props
+                             ;; :id id
+                             ;; :this this
+                             })
   (dom/div {}
     (if id
       (ui-segment {}
@@ -158,17 +165,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
+  [_this {::m.c.blocks/keys [id]
+          ::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
    :initial-state {::m.navlinks/id     show-page-key
                    ::m.navlinks/target {}}
    :query         [::m.navlinks/id
+                   ::m.c.blocks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["block" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
-  (if target
+  (if (and target id)
     (ui-show target)
     (ui-segment {:color "red" :inverted true}
       "Failed to load record")))

@@ -55,7 +55,8 @@
   (log/info :Show/starting {:props props})
   (if id
     (ui-segment {} "TODO: Show filter item")
-    (ui-segment {} "Failed to load record")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))
 
 (def ui-show (comp/factory Show))
 
@@ -88,4 +89,5 @@
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {} "Failed to load record")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))

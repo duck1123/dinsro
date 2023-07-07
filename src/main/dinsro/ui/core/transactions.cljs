@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.navlinks :as m.navlinks]
@@ -14,7 +15,8 @@
    [dinsro.ui.core.transactions.inputs :as u.c.t.inputs]
    [dinsro.ui.core.transactions.outputs :as u.c.t.outputs]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/core/transactions.cljc]]
 ;; [[../../model/core/transactions.cljc]]
@@ -26,7 +28,8 @@
 (defsc Show
   "Show a core tx"
   [this {::m.c.transactions/keys [id tx-id hash fetched? block size]
-         :ui/keys                [inputs outputs]}]
+         :ui/keys                [inputs outputs]
+         :as                     props}]
   {:ident         ::m.c.transactions/id
    :initial-state {::m.c.transactions/id       nil
                    ::m.c.transactions/tx-id    nil
@@ -36,9 +39,9 @@
                    :ui/inputs                  {}
                    :ui/outputs                 {}
                    ::m.c.transactions/fetched? false}
-   ;; :pre-merge     (u.loader/page-merger ::m.c.transactions/id
-   ;;                  {:ui/inputs  [u.c.t.inputs/SubPage {}]
-   ;;                   :ui/outputs [u.c.t.outputs/SubPage {}]})
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/inputs  [u.c.t.inputs/SubPage {}]
+                     :ui/outputs [u.c.t.outputs/SubPage {}]})
    :query         [::m.c.transactions/id
                    ::m.c.transactions/tx-id
                    ::m.c.transactions/hash
@@ -48,27 +51,32 @@
                    {:ui/outputs (comp/get-query u.c.t.outputs/SubPage)}
                    {::m.c.transactions/block (comp/get-query u.links/BlockHeightLinkForm)}
                    [df/marker-table '_]]}
-  (dom/div {}
-    (dom/div :.ui.segment
-      (dom/h1 {} "Transaction")
-      (dom/dl {}
-        (dom/dt {} "TX id")
-        (dom/dd {} (str tx-id))
-        (dom/dt {} "Hash: ")
-        (dom/dd {} (str hash))
-        (dom/dt {} "Block: ")
-        (dom/dd {} (u.links/ui-block-height-link block))
-        (dom/dt {} "Fetched")
-        (dom/dd {} (dom/a {:onClick #(comp/transact! this [(mu.c.transactions/fetch! {::m.c.transactions/id id})])
-                           :href    "#"}
-                     (str fetched?)))
-        (dom/dt {} "Size")
-        (dom/dd {} (str size))))
-    (if id
-      (comp/fragment
-       (when inputs ((comp/factory u.c.t.inputs/SubPage) inputs))
-       (when outputs ((comp/factory u.c.t.outputs/SubPage) outputs)))
-      (dom/p {} "id not set"))))
+  (log/info :Show/starting {:props props})
+  (if id
+    (dom/div {}
+      (ui-segment {}
+        (dom/h1 {} "Transaction")
+        (dom/dl {}
+          (dom/dt {} "TX id")
+          (dom/dd {} (str tx-id))
+          (dom/dt {} "Hash: ")
+          (dom/dd {} (str hash))
+          (dom/dt {} "Block: ")
+          (dom/dd {} (u.links/ui-block-height-link block))
+          (dom/dt {} "Fetched")
+          (dom/dd {} (dom/a {:onClick #(comp/transact! this [(mu.c.transactions/fetch! {::m.c.transactions/id id})])
+                             :href    "#"}
+                       (str fetched?)))
+          (dom/dt {} "Size")
+          (dom/dd {} (str size))))
+      (if id
+        (dom/div {}
+          (when inputs ((comp/factory u.c.t.inputs/SubPage) inputs))
+          (when outputs ((comp/factory u.c.t.outputs/SubPage) outputs)))
+        (ui-segment {:color "red" :inverted true}
+          "id not set")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))
 
 (def ui-show (comp/factory Show))
 
@@ -86,8 +94,8 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.transactions/fetch!)
+                         (u.buttons/row-action-button "Delete" model-key mu.c.transactions/delete!)]
    ro/row-pk            m.c.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.transactions/index
@@ -108,12 +116,20 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]}]
+  [_this {::m.c.transactions/keys [id]
+          ::m.navlinks/keys [target]
+          :as props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
+   :initial-state {::m.c.transactions/id nil
+                   ::m.navlinks/id     show-page-key
                    ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
+   :query         [::m.c.transactions/id
+                   ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["transaction" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (ui-show target))
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

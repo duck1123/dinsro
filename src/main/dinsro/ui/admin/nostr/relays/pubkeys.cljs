@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -16,7 +17,8 @@
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/nostr/pubkeys.cljc]]
 ;; [[../../model/nostr/pubkeys.cljc]]
@@ -25,9 +27,9 @@
 ;; [[../../mutations/nostr/pubkeys.cljc]]
 ;; [[../../ui/nostr/relays.cljs]]
 
-(def ident-key ::m.n.relays/id)
 (def index-page-key :admin-nostr-relays-pubkeys)
 (def model-key ::m.n.pubkeys/id)
+(def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
 (form/defsc-form AddForm
@@ -60,9 +62,9 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/subrow-action-button "Fetch" model-key ident-key  mu.n.pubkeys/fetch!)
-                         (u.buttons/subrow-action-button "Fetch Events" model-key ident-key  mu.n.events/fetch-events!)
-                         (u.buttons/subrow-action-button "Fetch Contacts" model-key ident-key  mu.n.pubkeys/fetch-contacts!)]
+   ro/row-actions       [(u.buttons/subrow-action-button "Fetch" model-key parent-model-key  mu.n.pubkeys/fetch!)
+                         (u.buttons/subrow-action-button "Fetch Events" model-key parent-model-key  mu.n.events/fetch-events!)
+                         (u.buttons/subrow-action-button "Fetch Contacts" model-key parent-model-key  mu.n.pubkeys/fetch-contacts!)]
    ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.pubkeys/index
@@ -71,13 +73,22 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  [_this {::m.n.relays/keys [id]
+          :ui/keys          [report]
+          :as               props}]
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
+                       ::m.n.relays/id nil
                        :ui/report      {}}
    :query             [[::dr/id router-key]
                        ::m.navlinks/id
+                       ::m.n.relays/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["pubkeys"]}
-  (ui-report report))
+   :route-segment     ["pubkeys"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+  (log/info :SubPage/starting {:props props})
+  (if (and report id)
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

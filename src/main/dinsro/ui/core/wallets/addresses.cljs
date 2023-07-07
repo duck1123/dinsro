@@ -80,12 +80,6 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewForm))})
 
-(def calculate-action-button
-  {:type   :button
-   :local? true
-   :label  "Calculate"
-   :action (u.buttons/report-action ::m.c.wallets/id mu.c.wallets/calculate-addresses!)})
-
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
@@ -96,7 +90,7 @@
    ro/controls          {::m.c.wallets/id {:type :uuid :label "id"}
                          ::new            new-action-button
                          ::refresh        u.links/refresh-control
-                         ::calculate      calculate-action-button}
+                         ::calculate      (u.buttons/report-action-button "Calculate" model-key mu.c.wallets/calculate-addresses!)}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true

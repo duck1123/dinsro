@@ -149,7 +149,8 @@
   (log/info :Page/starting {:props props})
   (if report
     (ui-report report)
-    (ui-segment {} "Failed to load page")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))
 
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]}]
@@ -162,4 +163,5 @@
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (if target
     (ui-show target)
-    (ui-segment {} "Failed to load page")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

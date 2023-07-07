@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.peers :as j.c.peers]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
@@ -91,4 +92,7 @@
                        [::dr/id router-key]]
    :route-segment     ["peers"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (ui-report report))
+  (if report
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

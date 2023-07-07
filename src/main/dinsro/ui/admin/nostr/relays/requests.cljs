@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.relays :as m.n.relays]
@@ -66,15 +67,21 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]
+  [_this {::m.n.relays/keys [id]
+          :ui/keys [report]
           :as      props}]
   {:ident         (fn [] [::m.navlinks/id index-page-key])
    :initial-state {::m.navlinks/id index-page-key
+                   ::m.n.relays/id nil
                    :ui/report      {}}
    :query         [[::dr/id router-key]
                    ::m.navlinks/id
+                   ::m.n.relays/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["requests"]
    :will-enter    (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/debug :SubPage/starting {:props props})
-  (ui-report report))
+  (if (and report id)
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

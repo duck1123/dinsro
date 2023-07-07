@@ -4,6 +4,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.transactions :as m.c.transactions]
@@ -51,4 +52,7 @@
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (ui-report report))
+  (if report
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

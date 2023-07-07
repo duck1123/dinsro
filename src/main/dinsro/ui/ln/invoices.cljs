@@ -108,4 +108,5 @@
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {} "Failed to load record")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))

@@ -12,6 +12,7 @@
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]))
 
+(def model-key ::m.c.nodes/id)
 (def log-item-props false)
 
 (defsc BodyItem
@@ -35,6 +36,7 @@
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.c.nodes/id}))
 
+;; Index core nodes
 (report/defsc-report Report
   [_this props]
   {ro/column-formatters {::m.c.nodes/name    #(u.links/ui-core-node-link %3)
@@ -47,8 +49,8 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.nodes/id mu.c.nodes/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.nodes/id mu.c.nodes/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.nodes/fetch!)
+                         (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!)]
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.nodes/index

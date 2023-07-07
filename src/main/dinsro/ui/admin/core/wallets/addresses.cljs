@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -15,6 +16,7 @@
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../../joins/core/addresses.cljc]]
@@ -22,6 +24,7 @@
 
 (def index-page-key :admin-core-wallets-addresses)
 (def model-key ::m.c.wallet-addresses/id)
+(def parent-model-key ::m.c.wallets/id)
 
 (form/defsc-form NewForm
   [_this _props]
@@ -78,12 +81,6 @@
    :label  "New"
    :action (fn [this _] (form/create! this NewForm))})
 
-(def calculate-action-button
-  {:type   :button
-   :local? true
-   :label  "Calculate"
-   :action (u.buttons/report-action ::m.c.wallets/id mu.c.wallets/calculate-addresses!)})
-
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
@@ -94,7 +91,7 @@
    ro/controls          {::m.c.wallets/id {:type :uuid :label "id"}
                          ::new            new-action-button
                          ::refresh        u.links/refresh-control
-                         ::calculate      calculate-action-button}
+                         ::calculate      (u.buttons/report-action-button "Calculate" model-key mu.c.wallets/calculate-addresses!)}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -108,7 +105,9 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this {::m.c.wallets/keys [id]
+          :ui/keys           [report]
+          :as                props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.c.wallets/id nil
@@ -116,7 +115,10 @@
                        :ui/report       {}}
    :query             [::m.c.wallets/id
                        ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]}
-  (ui-report report))
-
-(def ui-sub-page (comp/factory SubPage))
+                       {:ui/report (comp/get-query Report)}]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+  (log/info :SubPage/starting {:props props})
+  (if (and report id)
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

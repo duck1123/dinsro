@@ -55,7 +55,6 @@
         (dom/div {} (str start-time))
         (dom/div {} (str end-time)))
       (u.menus/ui-nav-menu nav-menu))
-
     (ui-segment {:color "red" :inverted true}
       "Failed to load record")))
 

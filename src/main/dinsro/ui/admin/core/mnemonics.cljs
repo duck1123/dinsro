@@ -19,17 +19,19 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.c.mnemonics/name
-                        m.c.mnemonics/entropy
-                        m.c.mnemonics/user]
-   ro/field-formatters {::m.c.mnemonics/user #(u.links/ui-user-link %2)}
-   ro/machine          spr/machine
-   ro/page-size        10
-   ro/paginate?        true
-   ro/row-pk           m.c.mnemonics/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.c.mnemonics/index
-   ro/title            "Mnemonics"})
+  {ro/column-formatters {::m.c.mnemonics/user #(u.links/ui-user-link %2)}
+   ro/columns           [m.c.mnemonics/name
+                         m.c.mnemonics/entropy
+                         m.c.mnemonics/user]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
+   ro/row-pk            m.c.mnemonics/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.mnemonics/index
+   ro/title             "Mnemonics"})
 
 (def ui-report (comp/factory Report))
 

@@ -83,22 +83,28 @@
                        :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-nodes
                                                                                     :id            id})
                        :ui/router          (comp/get-initial-state Router)}))
+   :pre-merge         (u.loader/page-merger model-key
+                        {:ui/router   [Router {}]
+                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-nodes}]})
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
                    {::m.c.nodes/network (comp/get-query u.links/NetworkLinkForm)}
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]}
-  (let [{:keys [main _sub]} (css/get-classnames Show)]
-    (dom/div {:classes [main]}
-      (dom/div :.ui.segment
-        (ui-actions-menu {::m.c.nodes/id id})
-        (dom/dl {}
-          (dom/dt {} "Name")
-          (dom/dd {} (str name))
-          (dom/dt {} "Network")
-          (dom/dd {} (u.links/ui-network-link network))))
-      (u.menus/ui-nav-menu nav-menu)
-      (ui-router router))))
+  (if id
+    (let [{:keys [main _sub]} (css/get-classnames Show)]
+      (dom/div {:classes [main]}
+        (ui-segment {}
+          (ui-actions-menu {::m.c.nodes/id id})
+          (dom/dl {}
+            (dom/dt {} "Name")
+            (dom/dd {} (str name))
+            (dom/dt {} "Network")
+            (dom/dd {} (u.links/ui-network-link network))))
+        (u.menus/ui-nav-menu nav-menu)
+        (ui-router router)))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))
 
 (def ui-show (comp/factory Show))
 
@@ -165,8 +171,9 @@
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["node" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {} "Failed to load record")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))

@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
@@ -21,9 +22,12 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.nodes.blocks :as u.c.n.blocks]
    [dinsro.ui.core.nodes.peers :as u.c.n.peers]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]))
+   [dinsro.ui.menus :as u.menus]
+   [dinsro.ui.pickers :as u.pickers]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/nodes.cljc]]
 ;; [[../../../model/core/nodes.cljc]]
@@ -32,6 +36,7 @@
 (def model-key ::m.c.nodes/id)
 (def show-page-key :admin-core-nodes-show)
 
+(def debug-props false)
 (def button-info
   [{:label "fetch" :action mu.c.nodes/fetch!}
    {:label "fetch peers" :action mu.c.nodes/fetch-peers!}
@@ -69,40 +74,103 @@
 
 (def ui-router (comp/factory Router))
 
+(form/defsc-form EditForm
+  [this props]
+  {fo/attributes [m.c.nodes/name
+                  m.c.nodes/host
+                  m.c.nodes/port
+                  m.c.nodes/network
+                  m.c.nodes/rpcuser
+                  m.c.nodes/rpcpass]
+   fo/field-options {::m.c.nodes/network u.pickers/network-picker}
+   fo/field-styles   {::m.c.nodes/network :pick-one}
+   fo/id m.c.nodes/id
+   fo/route-prefix "edit-node"
+   fo/title "Edit Node"}
+  (log/info :EditForm/starting {:props props})
+  (form/render-layout this props))
+
+(def ui-edit-form (comp/factory EditForm))
+
 (defsc Show
   "Show a core node"
-  [_this {::m.c.nodes/keys [id name network]
-          :ui/keys         [nav-menu router]}]
+  [_this {::m.c.nodes/keys [id name network host port rpcuser rpcpass pruned?]
+          :ui/keys         [edit-form editing?  nav-menu router]
+          :as              props}]
   {:ident         ::m.c.nodes/id
    :initial-state (fn [props]
                     (let [id (::m.c.nodes/id props)]
-                      {::m.c.nodes/id      nil
-                       ::m.c.nodes/name    ""
-                       ::m.c.nodes/network (comp/get-initial-state u.links/NetworkLinkForm)
-                       :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-nodes
-                                                                                    :id            id})
-                       :ui/router          (comp/get-initial-state Router)}))
+                      {::m.c.nodes/id                      nil
+                       ::m.c.nodes/name                    ""
+                       ::m.c.nodes/host                    ""
+                       ::m.c.nodes/port                    0
+                       ::m.c.nodes/rpcuser                 ""
+                       ::m.c.nodes/rpcpass                 ""
+                       ::m.c.nodes/pruned?                 true
+                       ::m.c.nodes/difficulty              0
+                       ::m.c.nodes/size-on-disk            0
+                       ::m.c.nodes/initial-block-download? true
+                       ::m.c.nodes/network                 (comp/get-initial-state u.links/NetworkLinkForm)
+                       :ui/edit-form                       (comp/get-initial-state EditForm)
+                       :ui/editing?                        false
+                       :ui/nav-menu                        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-nodes
+                                                                                                    :id            id})
+                       :ui/router                          (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-nodes}]
-                     :ui/router   [Router {}]})
+                    {:ui/edit-form [EditForm {}]
+                     :ui/nav-menu  [u.menus/NavMenu {::m.navbars/id :core-nodes}]
+                     :ui/router    [Router {}]})
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
+                   ::m.c.nodes/host
+                   ::m.c.nodes/port
+                   ::m.c.nodes/rpcuser
+                   ::m.c.nodes/rpcpass
+                   ::m.c.nodes/pruned?
+                   ::m.c.nodes/difficulty
+                   ::m.c.nodes/size-on-disk
+                   ::m.c.nodes/initial-block-download?
                    {::m.c.nodes/network (comp/get-query u.links/NetworkLinkForm)}
+                   {:ui/edit-form (comp/get-query EditForm)}
+                   :ui/editing?
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]}
-  (let [{:keys [main _sub]} (css/get-classnames Show)]
-    (if id
+  (log/info :Show/starting {:props props})
+  (if id
+    (let [{:keys [main _sub]} (css/get-classnames Show)]
       (dom/div {:classes [main]}
         (ui-segment {}
           (ui-actions-menu {model-key id})
-          (dom/dl {}
-            (dom/dt {} "Name")
-            (dom/dd {} (str name))
-            (dom/dt {} "Network")
-            (dom/dd {} (u.links/ui-network-link network))))
-        (u.menus/ui-nav-menu nav-menu)
-        (ui-router router))
-      (ui-segment {} "Failed to load record"))))
+          (if editing?
+            (ui-edit-form edit-form)
+            (dom/dl {}
+              (dom/dt {} "Name")
+              (dom/dd {} (str name))
+              (dom/dt {} "Network")
+              (dom/dd {} (u.links/ui-network-link network))
+              (dom/dt {} "Host")
+              (dom/dd {} host)
+              (dom/dt {} "RPC User")
+              (dom/dd {} rpcuser)
+              (dom/dt {} "RPC Pass")
+              (dom/dd {} rpcpass)
+              (dom/dt {} "Port")
+              (dom/dd {} port)
+              (dom/dt {} "Pruned?")
+              (dom/dd {} (str pruned?))))
+          (when debug-props
+            (u.debug/log-props (dissoc props :ui/nav-menu)))
+          (ui-button {:onClick (fn [evt] (log/info :Show/edit-clicked {:id id :evt evt}))} "Edit"))
+        (if nav-menu
+          (u.menus/ui-nav-menu nav-menu)
+          (ui-segment {:color "red" :inverted true}
+            "Failed to load page"))
+        (if router
+          (ui-router router)
+          (ui-segment {:color "red" :inverted true}
+            "Failed to load page"))))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))
 
 (def ui-show (comp/factory Show))
 
@@ -125,7 +193,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.nodes/name    #(u.links/ui-core-node-link %3)
+  {ro/column-formatters {::m.c.nodes/name    #(u.links/ui-admin-core-node-link %3)
                          ::m.c.nodes/network #(u.links/ui-network-link %2)}
    ro/columns           [m.c.nodes/name
                          m.c.nodes/host
@@ -159,14 +227,20 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]}]
+  [_this {::m.c.nodes/keys  [id]
+          ::m.navlinks/keys [target]
+          :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id show-page-key
-                   ::m.navlinks/target     {}}
-   :query         [::m.navlinks/id
+   :initial-state {::m.c.nodes/id      nil
+                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.c.nodes/id
+                   ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["node" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (if target
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
     (ui-show target)
-    (ui-segment {} "Failed to load page")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

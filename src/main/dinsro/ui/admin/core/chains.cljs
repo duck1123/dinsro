@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.chains :as j.c.chains]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.navbars :as m.navbars]
@@ -56,25 +57,22 @@
                        :ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-chains
                                                                                   :id            id})
                        :ui/router        (comp/get-initial-state Router)}))
-   ;; :pre-merge     (u.loader/page-merger model-key
-   ;;                  {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-chains}]
-   ;;                   :ui/router   [Router {}]})
    :query         [::m.c.chains/id
                    ::m.c.chains/name
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]}
-  (comp/fragment
-   (dom/div :.ui.segment
-     (dom/h1 {} "Show Chain")
-     (dom/dl {}
-       (dom/dt {} "Name")
-       (dom/dd {} (str name))))
-   (u.menus/ui-nav-menu nav-menu)
-   (if router
-     (ui-router router)
-     (dom/div :.ui.segment
-       (dom/h3 {} "Chain Router not loaded")
-       (u.debug/ui-props-logger props)))))
+  (dom/div {}
+    (ui-segment {}
+      (dom/h1 {} "Show Chain")
+      (dom/dl {}
+        (dom/dt {} "Name")
+        (dom/dd {} (str name))))
+    (u.menus/ui-nav-menu nav-menu)
+    (if router
+      (ui-router router)
+      (ui-segment {}
+        (dom/h3 {} "Chain Router not loaded")
+        (u.debug/ui-props-logger props)))))
 
 (def ui-show (comp/factory Show))
 

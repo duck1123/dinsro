@@ -166,11 +166,12 @@
    :route-segment     ["categories"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/debug :SubPage/starting {:props props})
-  (if id
+  (if (and report id)
     (dom/div {}
       (let [state (comp/get-initial-state NewForm)
             query (comp/get-query NewForm)]
         (log/info :SubPage/stateing {:state state :query query})
         (ui-new-form form))
       (ui-report report))
-    (ui-segment {} "Failed to load page")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

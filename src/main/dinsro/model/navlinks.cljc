@@ -413,6 +413,12 @@
     ::router        :admin-ln
     ::required-role :admin}
 
+   :admin-models
+   {::label         "Models"
+    ::route         :dinsro.ui.admin.models/IndexPage
+    ::router        :admin
+    ::required-role :admin}
+
    :admin-nostr
    {::label         "Nostr"
     ::route         :dinsro.ui.admin.nostr.dashboard/Page
@@ -491,7 +497,7 @@
 
    :admin-nostr-events
    {::label         "Events"
-    ::description "Admin index of events"
+    ::description   "Admin index of events"
     ::model-key     :dinsro.model.nostr.events/id
     ::route         :dinsro.ui.admin.nostr.events/IndexPage
     ::router        :admin-nostr
@@ -499,7 +505,7 @@
 
    :admin-nostr-events-show
    {::label          "Show Event"
-    ::description "Admin page for an event"
+    ::description    "Admin page for an event"
     ::model-key      :dinsro.model.nostr.events/id
     ::route          :dinsro.ui.admin.nostr.events/ShowPage
     ::router         :admin-nostr
@@ -592,7 +598,7 @@
 
    :admin-nostr-relays-pubkeys
    {::label         "Pubkeys"
-    ::input-key      :dinsro.model.nostr.relays/id
+    ::input-key     :dinsro.model.nostr.relays/id
     ::model-key     :dinsro.model.nostr.pubkeys/id
     ::route         :dinsro.ui.admin.nostr.relays.pubkeys/SubPage
     ::router        :admin-nostr-relays
@@ -600,7 +606,7 @@
 
    :admin-nostr-relays-requests
    {::label         "Requests"
-    ::input-key      :dinsro.model.nostr.relays/id
+    ::input-key     :dinsro.model.nostr.relays/id
     ::model-key     :dinsro.model.nostr.requests/id
     ::route         :dinsro.ui.admin.nostr.relays.requests/SubPage
     ::router        :admin-nostr-relays
@@ -608,7 +614,7 @@
 
    :admin-nostr-relays-runs
    {::label         "Runs"
-    ::input-key      :dinsro.model.nostr.relays/id
+    ::input-key     :dinsro.model.nostr.relays/id
     ::model-key     :dinsro.model.nostr.runs/id
     ::route         :dinsro.ui.admin.nostr.relays.runs/SubPage
     ::router        :admin-nostr-relays
@@ -616,7 +622,7 @@
 
    :admin-nostr-relays-witnesses
    {::label         "Witnesses"
-    ::input-key      :dinsro.model.nostr.relays/id
+    ::input-key     :dinsro.model.nostr.relays/id
     ::model-key     :dinsro.model.nostr.witnesses/id
     ::route         :dinsro.ui.admin.nostr.relays.witnesses/SubPage
     ::router        :admin-nostr-relays
@@ -761,6 +767,7 @@
 
    :admin-users-show
    {::label          "Admin Show User"
+    ::input-key      :dinsro.model.users/id
     ::model-key      :dinsro.model.users/id
     ::route          :dinsro.ui.admin.users/ShowPage
     ::router         :admin
@@ -801,11 +808,11 @@
     ::requires-auth? true}
 
    :core
-   {::label "Core"
-    ::description "Router for core"
-    ::control :dinsro.ui.core/Page
-    ::route :dinsro.ui.core.dashboard/Page
-    ::router :route
+   {::label         "Core"
+    ::description   "Router for core"
+    ::control       :dinsro.ui.core/Page
+    ::route         :dinsro.ui.core.dashboard/Page
+    ::router        :route
     ::required-role :guest}
 
    :core-blocks-show
@@ -858,6 +865,14 @@
     ::router        :core-networks
     ::required-role :user}
 
+   :core-networks-show
+   {::label         "Show Network"
+    ::input-key     :dinsro.model.core.networks/id
+    ::model-key     :dinsro.model.core.networks/id
+    ::route         :dinsro.ui.core.networks/ShowPage
+    ::router        :core
+    ::required-role :user}
+
    :core-networks-wallets
    {::label         "Wallets"
     ::model-key     :dinsro.model.core.wallets/id
@@ -877,6 +892,22 @@
     ::model-key     :dinsro.model.core.peers/id
     ::route         :dinsro.ui.core.nodes.peers/SubPage
     ::router        :core-nodes
+    ::required-role :user}
+
+   :core-nodes-show
+   {::label         "Show Node"
+    ::input-key     :dinsro.model.core.nodes/id
+    ::model-key     :dinsro.model.core.nodes/id
+    ::route         :dinsro.ui.core.nodes/ShowPage
+    ::router        :core
+    ::required-role :user}
+
+   :core-transactions-show
+   {::label         "Show Transaction"
+    ::input-key     :dinsro.model.core.transactions/id
+    ::model-key     :dinsro.model.core.transactions/id
+    ::route         :dinsro.ui.core.transactions/ShowPage
+    ::router        :core
     ::required-role :user}
 
    :core-wallets-show
@@ -1244,12 +1275,12 @@
     ::required-role :user}
 
    :nostr-requests-show
-   {::label          "Show Requests"
-    ::input-key      :dinsro.model.nostr.requests/id
-    ::model-key      :dinsro.model.nostr.requests/id
-    ::route          :dinsro.ui.nostr.requests/ShowPage
-    ::router         :nostr
-    ::required-role  :user}
+   {::label         "Show Requests"
+    ::input-key     :dinsro.model.nostr.requests/id
+    ::model-key     :dinsro.model.nostr.requests/id
+    ::route         :dinsro.ui.nostr.requests/ShowPage
+    ::router        :nostr
+    ::required-role :user}
 
    :nostr-runs-witnesses
    {::label         "Witnesses"
@@ -1271,9 +1302,9 @@
     ::required-role :guest}
 
    :settings
-   {::label          "Settings"
-    ::route          :dinsro.ui.settings.dashboard/Page
-    ::router         :root
+   {::label         "Settings"
+    ::route         :dinsro.ui.settings.dashboard/Page
+    ::router        :root
     ::required-role :user}
 
    :settings-categories

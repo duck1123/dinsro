@@ -92,23 +92,28 @@
                        {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                        {:ui/router (comp/get-query Router)}]}
   (log/info :Show/starting {:props props})
-  (dom/div :.show
-    (dom/div :.show-inner
-      (dom/div :.ui.segment
-        (dom/p {} "Show User " (str name))
-        (dom/p {} "Id: " (str id))
-        (dom/p {} "Name: " (str name))
-        (dom/div {} (str role)))
-      (if nav-menu
-        (u.menus/ui-nav-menu nav-menu)
-        (dom/div :.ui.segment "Failed to load menu"))
-      (if router
-        (ui-router router)
-        (dom/div :.ui.segment "Failed to load router")))
-    (when debug-show
-      (dom/div :.ui.segment
-        (dom/h3 {} "Admin Show User")
-        (u.debug/log-props props)))))
+  (if id
+    (dom/div :.show
+      (dom/div :.show-inner
+        (ui-segment {}
+          (dom/p {} "Show User " (str name))
+          (dom/p {} "Id: " (str id))
+          (dom/p {} "Name: " (str name))
+          (dom/div {} (str role)))
+        (if nav-menu
+          (u.menus/ui-nav-menu nav-menu)
+          (ui-segment {:color "red" :inverted true}
+            "Failed to load menu"))
+        (if router
+          (ui-router router)
+          (ui-segment {:color "red" :inverted true}
+            "Failed to load router")))
+      (when debug-show
+        (ui-segment {}
+          (dom/h3 {} "Admin Show User")
+          (u.debug/log-props props))))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))
 
 (def ui-show (comp/factory Show))
 
@@ -170,9 +175,10 @@
   (dom/div {}
     (if report
       (ui-report report)
-      (dom/div :.ui.segment "Failed to load report"))
+      (ui-segment {:color "red" :inverted true}
+        "Failed to load report"))
     (when debug-page
-      (dom/div :.ui.segment
+      (ui-segment {:color "red" :inverted true}
         (dom/h3 "Admin Users Page")
         (u.debug/log-props props)))))
 
@@ -195,8 +201,9 @@
   (dom/div :.show-page
     (if (and id target)
       (ui-show target)
-      (ui-segment {} "Failed to load record"))
+      (ui-segment {:color "red" :inverted true}
+        "Failed to load record"))
     (when debug-show-page
-      (ui-segment {}
+      (ui-segment {:color "red" :inverted true}
         (dom/h3 {} "Admin Show User Page")
         (u.debug/log-props props)))))

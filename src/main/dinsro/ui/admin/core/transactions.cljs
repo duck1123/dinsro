@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.navlinks :as m.navlinks]
@@ -36,9 +37,6 @@
                    :ui/inputs                  {}
                    :ui/outputs                 {}
                    ::m.c.transactions/fetched? false}
-   ;; :pre-merge     (u.loader/page-merger model-key
-   ;;                  {:ui/inputs  [u.c.t.inputs/SubPage {}]
-   ;;                   :ui/outputs [u.c.t.outputs/SubPage {}]})
    :query         [::m.c.transactions/id
                    ::m.c.transactions/tx-id
                    ::m.c.transactions/hash
@@ -65,10 +63,11 @@
         (dom/dt {} "Size")
         (dom/dd {} (str size))))
     (if id
-      (comp/fragment
-       (when inputs ((comp/factory u.c.t.inputs/SubPage) inputs))
-       (when outputs ((comp/factory u.c.t.outputs/SubPage) outputs)))
-      (dom/p {} "id not set"))))
+      (dom/div {}
+        (when inputs ((comp/factory u.c.t.inputs/SubPage) inputs))
+        (when outputs ((comp/factory u.c.t.outputs/SubPage) outputs)))
+      (ui-segment {:color "red" :inverted true}
+        "id not set"))))
 
 (def ui-show (comp/factory Show))
 

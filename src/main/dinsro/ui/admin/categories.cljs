@@ -110,8 +110,9 @@
   (dom/div {}
     (if report
       (ui-report report)
-      (dom/div :.ui.segment
-        (dom/div :.ui.segment "Failed to load admin categories report")
+      (ui-segment {}
+        (ui-segment {:color "red" :inverted true}
+          "Failed to load admin categories report")
         (when debug-props
           (u.debug/log-props props))))))
 
@@ -126,4 +127,5 @@
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (if target
     (ui-show target)
-    (ui-segment {} "Failed to load page")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

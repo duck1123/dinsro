@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.networks :as j.c.networks]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.navbars :as m.navbars]
@@ -18,7 +19,8 @@
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]))
+   [dinsro.ui.menus :as u.menus]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/core/networks.cljc]]
 ;; [[../../model/core/networks.cljc]]
@@ -50,24 +52,28 @@
                        ::m.c.networks/chain {}
                        :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-networks :id id})
                        :ui/router           (comp/get-initial-state Router)}))
+   :pre-merge         (u.loader/page-merger model-key
+                        {:ui/router   [Router {}]
+                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-networks}]})
    :query         [::m.c.networks/id
                    ::m.c.networks/name
                    {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]}
+  (log/info :Show/starting {:props props})
   (if id
-    (comp/fragment
-     (dom/div :.ui.segment
-       (dom/dl {}
-         (dom/dt {} "Name")
-         (dom/dd {} (str name))
-         (dom/dt {} "Chain")
-         (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
-     (u.menus/ui-nav-menu nav-menu)
-     (ui-router router))
-    (dom/div :.ui.segment
+    (dom/div {}
+      (ui-segment {}
+        (dom/dl {}
+          (dom/dt {} "Name")
+          (dom/dd {} (str name))
+          (dom/dt {} "Chain")
+          (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
+      (u.menus/ui-nav-menu nav-menu)
+      (ui-router router))
+    (ui-segment {:color "red" :inverted true}
       (dom/h3 {} "Network Not loaded")
-      (u.debug/ui-props-logger props))))
+      (u.debug/log-props props))))
 
 (def ui-show (comp/factory Show))
 
@@ -102,12 +108,20 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]}]
+  [_this {::m.c.networks/keys [id]
+          ::m.navlinks/keys [target]
+          :as props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id show-page-key
+   :initial-state {::m.c.networks/id nil
+                   ::m.navlinks/id show-page-key
                    ::m.navlinks/target      {}}
-   :query         [::m.navlinks/id
+   :query         [::m.c.networks/id
+                   ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["network" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (ui-show target))
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

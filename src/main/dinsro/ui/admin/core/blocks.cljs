@@ -140,4 +140,5 @@
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (if target
     (ui-show target)
-    (ui-segment {} "Failed to load page")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

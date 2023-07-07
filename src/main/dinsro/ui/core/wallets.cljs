@@ -5,16 +5,13 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.wallets :as j.c.wallets]
-   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.users :as m.users]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.wallets.accounts :as u.c.w.accounts]
@@ -22,6 +19,7 @@
    [dinsro.ui.core.wallets.words :as u.c.w.words]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/core/wallets.cljc]]
@@ -47,26 +45,8 @@
    fo/controls       (merge form/standard-controls {::create create-button})
    fo/field-styles   {::m.c.wallets/node :pick-one
                       ::m.c.wallets/user :pick-one}
-   fo/field-options  {::m.c.wallets/node
-                      {::picker-options/query-key       ::m.c.nodes/index
-                       ::picker-options/query-component u.links/CoreNodeLinkForm
-                       ::picker-options/options-xform
-                       (fn [_ options]
-                         (mapv
-                          (fn [{::m.c.nodes/keys [id name]}]
-                            {:text  (str name)
-                             :value [::m.c.nodes/id id]})
-                          (sort-by ::m.c.nodes/name options)))}
-                      ::m.c.wallets/user
-                      {::picker-options/query-key       ::m.users/index
-                       ::picker-options/query-component u.links/UserLinkForm
-                       ::picker-options/options-xform
-                       (fn [_ options]
-                         (mapv
-                          (fn [{::m.users/keys [id name]}]
-                            {:text  (str name)
-                             :value [::m.users/id id]})
-                          (sort-by ::m.users/name options)))}}
+   fo/field-options  {::m.c.wallets/node u.pickers/node-picker
+                      ::m.c.wallets/user u.pickers/user-picker}
    fo/id             m.c.wallets/id
    fo/route-prefix   "new-wallet"
    fo/title          "New Wallet"}

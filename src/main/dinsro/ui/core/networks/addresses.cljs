@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.addresses :as j.c.addresses]
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.networks :as m.c.networks]
@@ -53,4 +54,7 @@
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["addresses"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (ui-report report))
+  (if report
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

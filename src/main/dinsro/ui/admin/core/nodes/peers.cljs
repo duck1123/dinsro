@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.peers :as j.c.peers]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
@@ -16,14 +17,15 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogi :as log]))
 
 ;; [[../../../../joins/core/peers.cljc]]
 ;; [[../../../../model/core/peers.cljc]]
 
-(def ident-key ::m.c.nodes/id)
 (def index-page-key :admin-core-nodes-peers)
 (def model-key ::m.c.peers/id)
+(def parent-model-key ::m.c.nodes/id)
 (def router-key :dinsro.ui.core.nodes/Router)
 
 (def fetch-button
@@ -62,11 +64,11 @@
                          m.c.peers/connection-type
                          m.c.peers/node]
    ro/control-layout    {:action-buttons [::new ::fetch ::refresh]
-                         :inputs         [[ident-key]]}
-   ro/controls          {ident-key {:type :uuid :label "Nodes"}
-                         ::refresh u.links/refresh-control
-                         ::fetch   fetch-button
-                         ::new     new-button}
+                         :inputs         [[parent-model-key]]}
+   ro/controls          {parent-model-key {:type :uuid :label "Nodes"}
+                         ::refresh        u.links/refresh-control
+                         ::fetch          fetch-button
+                         ::new            new-button}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -79,14 +81,22 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this {::m.c.nodes/keys [id]
+          :ui/keys         [report]
+          :as              props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :initial-state     {::m.c.nodes/id  nil
+                       ::m.navlinks/id index-page-key
                        :ui/report      {}}
-   :query             [{:ui/report (comp/get-query Report)}
+   :query             [[::dr/id router-key]
+                       ::m.c.nodes/id
                        ::m.navlinks/id
-                       [::dr/id router-key]]
-   :route-segment     ["peers"]}
-
-  (ui-report report))
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["peers"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+  (log/info :SubPage/starting {:props props})
+  (if (and report id)
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

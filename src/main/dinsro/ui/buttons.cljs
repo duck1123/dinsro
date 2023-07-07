@@ -13,32 +13,42 @@
            ::control/value))
 
 (defn report-action
+  "Create a report row button definition calling the mutation with this record's id param"
   [id-key mutation]
   (fn [this]
     (let [id (get-control-value this id-key)]
       (comp/transact! this [(mutation {id-key id})]))))
 
+(defn report-action-button
+  [button-label model-key mutation]
+  {:type   :button
+   :local? true
+   :label  button-label
+   :action (report-action model-key mutation)})
+
 (defn fetch-button
-  [id-key mutation]
+  [model-key mutation]
   {:type   :button
    :label  "Fetch"
-   :action (report-action id-key mutation)})
+   :action (report-action model-key mutation)})
 
 (defn row-action-button
-  [label id-key mutation]
-  {:label  label
-   :action (fn [report-instance p]
-             (let [id    (get p id-key)
-                   props {id-key id}]
-               (comp/transact! report-instance [(mutation props)])))})
+  "Create a report row button definition calling the mutation with this record's id param"
+  [button-label model-key mutation]
+  {:label  button-label
+   :action (fn [this p]
+             (let [id    (get p model-key)
+                   props {model-key id}]
+               (comp/transact! this [(mutation props)])))})
 
 (defn subrow-action-button
-  [label id-key parent-key mutation]
+  "Create a report row button definition calling the mutation with this record's id and the parent record's id as params"
+  [label model-key parent-model-key mutation]
   {:label  label
    :action (fn [report-instance p]
-             (let [id        (get p id-key)
-                   parent-id (get-control-value report-instance parent-key)
-                   props     {id-key id parent-key parent-id}]
+             (let [record-id (get p model-key)
+                   parent-id (get-control-value report-instance parent-model-key)
+                   props     {model-key record-id parent-model-key parent-id}]
                (comp/transact! report-instance [(mutation props)])))})
 
 (defn sub-page-action-button

@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.addresses :as j.c.addresses]
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.networks :as m.c.networks]
@@ -12,7 +13,8 @@
    [dinsro.mutations.core.addresses :as mu.c.addresses]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../../../joins/core/addresses.cljc]]
 ;; [[../../../../model/core/addresses.cljc]]
@@ -43,14 +45,22 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this {::m.c.networks/keys [id]
+          :ui/keys [report]
+          :as props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :initial-state     {::m.c.networks/id nil
+                       ::m.navlinks/id index-page-key
                        :ui/report      {}}
    :query             [[::dr/id router-key]
+                       ::m.c.networks/id
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["addresses"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (ui-report report))
+  (log/info :SubPage/starting {:props props})
+  (if (and report id)
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

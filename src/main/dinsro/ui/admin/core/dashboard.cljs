@@ -19,4 +19,5 @@
    :route-segment ["dashboard"]
    :will-enter    (u.loader/page-loader index-page-key)}
   (ui-segment {}
-    (dom/h1 "Dashboard")))
+    (dom/h1 "Dashboard")
+    (dom/p "TODO: Admin Core Dashboard")))

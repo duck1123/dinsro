@@ -105,3 +105,14 @@
     (ui-inner-prop-logger props)))
 
 (def ui-props-logger (comp/factory PropsLogger))
+
+(defn load-error
+  "Displays a notice that a component failed to load"
+  ([] (load-error nil))
+  ([props]
+   (load-error props "record"))
+  ([props label]
+   (ui-segment {:color "red" :inverted true}
+     (dom/h3 {} (str "Failed to load " label))
+     (when props
+       (log-props props)))))

@@ -69,6 +69,14 @@
 
 (def ui-report (comp/factory Report))
 
+(defsc Show
+  [_this _props]
+  {:ident         ::m.ln.invoices/id
+   :initial-state {::m.ln.invoices/id nil}
+   :query         [::m.ln.invoices/id]
+   :route-segment ["invoices" :id]}
+  (dom/div {}))
+
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
@@ -81,11 +89,3 @@
    :will-enter        (u.loader/page-loader index-page-key)}
   (dom/div {}
     (ui-report report)))
-
-(defsc Show
-  [_this _props]
-  {:ident         ::m.ln.invoices/id
-   :initial-state {::m.ln.invoices/id nil}
-   :query         [::m.ln.invoices/id]
-   :route-segment ["invoices" :id]}
-  (dom/div {}))

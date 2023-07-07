@@ -68,7 +68,9 @@
   (dom/div {}
     (if nav-menu
       (u.menus/ui-nav-menu nav-menu)
-      (ui-segment {} "Failed to load menu"))
+      (ui-segment {:color "red" :inverted true}
+        "Failed to load menu"))
     (if router
       (ui-router router)
-      (ui-segment {} "Failed to load router"))))
+      (ui-segment {:color "red" :inverted true}
+        "Failed to load router"))))

@@ -5,7 +5,6 @@
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -17,6 +16,7 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/peers.cljc]]
@@ -45,16 +45,7 @@
    fo/attributes     [m.c.peers/addr
                       m.c.peers/node]
    fo/controls       {::submit submit-button}
-   fo/field-options  {::m.c.peers/node
-                      {::picker-options/query-key       ::m.c.nodes/index
-                       ::picker-options/query-component u.links/CoreNodeLinkForm
-                       ::picker-options/options-xform
-                       (fn [_ options]
-                         (mapv
-                          (fn [{::m.c.nodes/keys [id name]}]
-                            {:text  (str name)
-                             :value [::m.c.nodes/id id]})
-                          (sort-by ::m.c.nodes/name options)))}}
+   fo/field-options  {::m.c.peers/node u.pickers/node-picker}
    fo/field-styles   {::m.c.peers/node :pick-one}
    fo/id             m.c.peers/id
    fo/route-prefix   "new-peer"
@@ -90,9 +81,10 @@
                          m.c.peers/subver
                          m.c.peers/peer-id
                          m.c.peers/node]
+   ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::m.c.nodes/id {:type :uuid :label "Nodes"}
-                         ::refresh      u.links/refresh-control
-                         ::new-peer     new-peer-control}
+                         ::new          new-peer-control
+                         ::refresh      u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true

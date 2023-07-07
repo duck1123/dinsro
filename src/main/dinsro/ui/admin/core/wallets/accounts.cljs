@@ -4,17 +4,20 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.ui.links :as u.links]))
+   [dinsro.ui.links :as u.links]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../../../joins/accounts.cljc]]
 ;; [[../../../../model/accounts.cljc]]
 
 (def index-page-key :admin-core-wallets-accounts)
 (def model-key ::m.accounts/id)
+(def parent-model-key ::m.c.wallets/id)
 
 (report/defsc-report Report
   [_this _props]
@@ -37,7 +40,9 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this {::m.c.wallets/keys [id]
+          :ui/keys           [report]
+          :as                props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.c.wallets/id nil
@@ -46,6 +51,8 @@
    :query             [::m.c.wallets/id
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]}
-  (ui-report report))
-
-(def ui-sub-page (comp/factory SubPage))
+  (log/info :SubPage/starting {:props props})
+  (if (and report id)
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

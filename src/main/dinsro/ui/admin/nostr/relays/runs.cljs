@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.runs :as j.n.runs]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.relays :as m.n.relays]
@@ -13,14 +14,15 @@
    [dinsro.mutations.nostr.runs :as mu.n.runs]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../../../joins/nostr/runs.cljc]]
 ;; [[../../../../model/nostr/runs.cljc]]
 
-(def ident-key ::m.n.relays/id)
 (def index-page-key :admin-nostr-relays-runs)
 (def model-key ::m.n.runs/id)
+(def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
 (report/defsc-report Report
@@ -49,13 +51,22 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  [_this {::m.n.relays/keys [id]
+          :ui/keys          [report]
+          :as               props}]
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
+                       ::m.n.relays/id nil
                        :ui/report      {}}
    :query             [[::dr/id router-key]
                        ::m.navlinks/id
+                       ::m.n.relays/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["runs"]}
-  (ui-report report))
+   :route-segment     ["runs"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+  (log/info :SubPage/starting {:props props})
+  (if (and report id)
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

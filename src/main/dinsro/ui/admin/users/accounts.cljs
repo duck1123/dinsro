@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.navlinks :as m.navlinks]
@@ -20,6 +21,7 @@
 (def ident-key ::m.users/id)
 (def index-page-key :admin-users-accounts)
 (def model-key ::m.accounts/id)
+(def parent-model-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)
 
 (def override-report true)
@@ -37,14 +39,14 @@
   (log/info :AccountRow/starting {:props props})
   (if override-row
     (report/render-row this Report props)
-    (dom/div :.item.segment
-      (dom/div :.header (str name))
-      (dom/div :.meta
-        (dom/div {}
-          "foo"
-          (u.links/ui-currency-link currency))))))
+    (dom/div :.item
+      (ui-segment {}
+        (dom/div :.header (str name))
+        (dom/div :.meta
+          (dom/div {}
+            (u.links/ui-currency-link currency)))))))
 
-(def ui-account-row (comp/factory AccountRow {:keyfn ::m.accounts/id}))
+(def ui-account-row (comp/factory AccountRow {:keyfn model-key}))
 
 (report/defsc-report Report
   [this props]
@@ -67,7 +69,7 @@
          :ui/keys          [current-rows]} props]
     (if override-report
       (report/render-layout this)
-      (dom/div :.ui.segment
+      (ui-segment {}
         ((report/control-renderer this) this)
         (dom/div {}
           (dom/div {} "Name: " (str name))
@@ -78,13 +80,22 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this {::m.users/keys [id]
+          :ui/keys       [report]
+          :as            props}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
+                       ::m.users/id    nil
                        :ui/report      {}}
    :query             [[::dr/id router-key]
                        ::m.navlinks/id
+                       ::m.users/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["accounts"]}
-  (ui-report report))
+   :route-segment     ["accounts"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+  (log/info :SubPage/starting {:props props})
+  (if (and report id)
+    (ui-report report)
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load page")))

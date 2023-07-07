@@ -60,25 +60,26 @@
                        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-chains
                                                                 :id            id})
                        :ui/router        (comp/get-initial-state Router)}))
-   ;; :pre-merge     (u.loader/page-merger ::m.c.chains/id
-   ;;                  {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-chains}]
-   ;;                   :ui/router   [Router {}]})
+   :pre-merge         (u.loader/page-merger model-key
+                        {:ui/router   [Router {}]
+                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-chains}]})
    :query         [::m.c.chains/id
                    ::m.c.chains/name
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]}
-  (comp/fragment
-   (dom/div :.ui.segment
-     (dom/h1 {} "Show Chain")
-     (dom/dl {}
-       (dom/dt {} "Name")
-       (dom/dd {} (str name))))
-   (u.menus/ui-nav-menu nav-menu)
-   (if router
-     (ui-router router)
-     (dom/div :.ui.segment
-       (dom/h3 {} "Chain Router not loaded")
-       (u.debug/ui-props-logger props)))))
+  (log/debug :Show/starting {:props props})
+  (dom/div {}
+    (ui-segment {}
+      (dom/h1 {} "Show Chain")
+      (dom/dl {}
+        (dom/dt {} "Name")
+        (dom/dd {} (str name))))
+    (u.menus/ui-nav-menu nav-menu)
+    (if router
+      (ui-router router)
+      (ui-segment {}
+        (dom/h3 {} "Chain Router not loaded")
+        (u.debug/ui-props-logger props)))))
 
 (def ui-show (comp/factory Show))
 
@@ -126,4 +127,5 @@
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {} "Failed to load record")))
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))

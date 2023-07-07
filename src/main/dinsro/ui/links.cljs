@@ -161,6 +161,14 @@
 
 (def ui-admin-user-link (comp/factory AdminUserLinkForm {:keyfn ::m.users/id}))
 
+(form/defsc-form AdminWalletLinkForm [this {::m.c.wallets/keys [id name]}]
+  {fo/id         m.c.wallets/id
+   fo/route-prefix "admin-wallet-link"
+   fo/attributes [m.c.wallets/name]}
+  (form-link this id name :dinsro.ui.admin.core.wallets/ShowPage))
+
+(def ui-admin-wallet-link (comp/factory AdminWalletLinkForm {:keyfn ::m.c.wallets/id}))
+
 (form/defsc-form BlockLinkForm
   [this {::m.c.blocks/keys [id hash]}]
   {fo/id         m.c.blocks/id

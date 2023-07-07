@@ -28,6 +28,7 @@
 (def index-page-key :admin-core-networks)
 (def model-key ::m.c.networks/id)
 (def show-page-key :admin-core-networks-show)
+(def show-router-id :admin-core-networks)
 
 (defrouter Router
   [_this _props]
@@ -52,32 +53,36 @@
                        ::m.c.networks/name  ""
                        ::m.c.networks/chain {}
                        :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-networks :id id})
-                       :ui/router           (comp/get-initial-state Router)}))
-   ;; :pre-merge     (u.loader/page-merger model-key
-   ;;                  {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-key}]
-   ;;                   :ui/router   [Router {}]})
+                       :ui/router           (comp/get-initial-state Router)
+                       :ui/editing? false}))
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-router-id}]
+                     :ui/router   [Router {}]})
    :query         [::m.c.networks/id
                    ::m.c.networks/name
                    {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
+                   {:ui/router (comp/get-query Router)}
+                   :ui/editing?]
    :route-segment ["network" :id]}
   (log/info :Show/starting {:props props})
   (if id
-    (comp/fragment
-     (dom/div :.ui.segment
-       (dom/dl {}
-         (dom/dt {} "Name")
-         (dom/dd {} (str name))
-         (dom/dt {} "Chain")
-         (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
-     (if nav-menu
-       (u.menus/ui-nav-menu nav-menu)
-       (ui-segment {} "Failed to load menu"))
-     (if router
-       (ui-router router)
-       (ui-segment {} "Failed to load router")))
-    (ui-segment {}
+    (dom/div {}
+      (ui-segment {}
+        (dom/dl {}
+          (dom/dt {} "Name")
+          (dom/dd {} (str name))
+          (dom/dt {} "Chain")
+          (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
+      (if nav-menu
+        (u.menus/ui-nav-menu nav-menu)
+        (ui-segment {:color "red" :inverted true}
+          "Failed to load menu"))
+      (if router
+        (ui-router router)
+        (ui-segment {:color "red" :inverted true}
+          "Failed to load router")))
+    (ui-segment {:color "red" :inverted true}
       (dom/h3 {} "Network Not loaded")
       (when debug-load-errors
         (u.debug/ui-props-logger props)))))
@@ -131,4 +136,4 @@
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {} "Failed to load record")))
+    (u.debug/load-error props)))

@@ -7,6 +7,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.ln.remote-nodes :as j.ln.remote-nodes]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.navlinks :as m.navlinks]
@@ -48,7 +49,7 @@
                    {:ui/router (comp/get-query Router)}
                    [df/marker-table '_]]}
   (dom/div {}
-    (dom/div {:classes [:.ui.segment]}
+    (ui-segment {}
       (dom/h1 {} "Remote Node")
       (dom/p {} "id: " (pr-str id))
       (dom/p {} "pubkey: " (str pubkey)))
