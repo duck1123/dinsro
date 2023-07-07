@@ -73,12 +73,12 @@ This will create a registry to share created images with the cluster
 
 This will create a single node kubernetes cluster in a docker container
 
-#+BEGIN_SRC  shell
+#+BEGIN_SRC shell
   k3d cluster create \
       --api-port 6550 \
       -p "80:80@loadbalancer" \
       -p "443:443@loadbalancer" \
-      --k3s-server-arg "--no-deploy=traefik"
+      --k3s-arg "--disable=traefik@server:0" \
       --servers 1 \
       --registry-use k3d-myregistry.localtest.me:12345 \
       --kubeconfig-update-default
