@@ -14,7 +14,7 @@
 ;; [[../../../joins/core/tx_in.cljc]]
 ;; [[../../../model/core/tx_in.cljc]]
 
-(def index-page-key :core-transactions-outputs)
+(def index-page-key :core-transactions-show-outputs)
 (def model-key ::m.c.tx-out/id)
 (def parent-model-key ::m.c.transactions/id)
 

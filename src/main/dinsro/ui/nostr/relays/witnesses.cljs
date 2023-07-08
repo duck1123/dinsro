@@ -13,7 +13,7 @@
    [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.n.relays/id)
-(def index-page-key :nostr-relays-witnesses)
+(def index-page-key :nostr-relays-show-witnesses)
 (def router-key :dinsro.ui.nostr.relays/Router)
 
 (report/defsc-report Report

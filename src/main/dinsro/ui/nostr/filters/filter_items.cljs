@@ -20,7 +20,7 @@
 ;; [../../../queries/nostr/filter_items.clj]
 ;; [../../../ui/nostr/requests/filter_items.cljs]
 
-(def index-page-key :nostr-filters-filter-items)
+(def index-page-key :nostr-filters-show-filter-items)
 (def parent-model-key ::m.n.filters/id)
 (def router-key :dinsro.ui.nostr.filters/Router)
 

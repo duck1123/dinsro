@@ -9,6 +9,7 @@
    [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -22,10 +23,10 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.debits/account     #(u.links/ui-admin-account-link %2)
+  {ro/column-formatters {::m.debits/value       #(u.links/ui-admin-debit-link %3)
+                         ::m.debits/account     #(u.links/ui-admin-account-link %2)
                          ::m.debits/transaction #(u.links/ui-admin-transaction-link %2)}
-   ro/columns           [m.debits/id
-                         m.debits/value
+   ro/columns           [m.debits/value
                          m.debits/account
                          m.debits/transaction]
    ro/controls          {::refresh u.links/refresh-control}
@@ -65,16 +66,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
+  [_this {::m.debits/keys   [id]
+          ::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
+   :initial-state {::m.debits/id       nil
+                   ::m.navlinks/id     show-page-key
                    ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
+   :query         [::m.debits/id
+                   ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["debit" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
-  (if target
+  (if (and target id)
     (ui-show target)
-    (ui-segment {} "Failed to load page")))
+    (u.debug/load-error props "admin show debit")))

@@ -20,7 +20,7 @@
 ;; [[../../../../model/core/blocks.cljc]]
 
 (def ident-key ::m.c.networks/id)
-(def index-page-key :admin-core-networks-blocks)
+(def index-page-key :admin-core-networks-show-blocks)
 (def model-key ::m.c.blocks/id)
 (def parent-model-key ::m.c.networks/id)
 (def router-key :dinsro.ui.core.networks/Router)

@@ -20,7 +20,7 @@
 ;; [[../../../../joins/nostr/runs.cljc]]
 ;; [[../../../../model/nostr/runs.cljc]]
 
-(def index-page-key :admin-nostr-relays-runs)
+(def index-page-key :admin-nostr-relays-show-runs)
 (def model-key ::m.n.runs/id)
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)

@@ -16,7 +16,7 @@
 ;; [[../../../joins/core/wallets.cljc]]
 ;; [[../../../model/core/wallets.cljc]]
 
-(def index-page-key :core-networks-wallets)
+(def index-page-key :core-networks-show-wallets)
 (def model-key ::m.c.wallets/id)
 (def parent-model-key ::m.c.networks/id)
 (def router-key :dinsro.ui.core.networks/Router)

@@ -19,7 +19,7 @@
 ;; [[../../../joins/ln/nodes.cljc]]
 ;; [[../../../model/ln/nodes.cljc]]
 
-(def index-page-key :admin-users-ln-nodes)
+(def index-page-key :admin-users-show-ln-nodes)
 (def model-key ::m.ln.nodes/id)
 (def parent-model-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)

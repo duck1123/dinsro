@@ -15,7 +15,7 @@
 ;; [../../../joins/nostr/relays.cljc]
 ;; [../../../model/nostr/relays.cljc]
 
-(def index-page-key :nostr-events-relays)
+(def index-page-key :nostr-events-show-relays)
 (def parent-model-key ::m.n.events/id)
 (def router-key :dinsro.ui.nostr.events/Router)
 

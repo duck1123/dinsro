@@ -12,7 +12,7 @@
    [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.ln.remote-nodes/id)
-(def index-page-key :settings-ln-remote-nodes-peers)
+(def index-page-key :settings-ln-remote-nodes-show-peers)
 (def router-key :dinsro.ui.ln.remote-nodes/Router)
 
 (report/defsc-report Report

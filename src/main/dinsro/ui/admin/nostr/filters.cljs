@@ -9,6 +9,7 @@
    [dinsro.joins.nostr.filters :as j.n.filters]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.filters :as m.n.filters]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -22,8 +23,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.filters/request #(u.links/ui-request-link %2)
-                         ::m.n.filters/index   #(u.links/ui-filter-link %3)}
+  {ro/column-formatters {::m.n.filters/request #(u.links/ui-admin-request-link %2)
+                         ::m.n.filters/index   #(u.links/ui-admin-filter-link %3)}
    ro/columns           [m.n.filters/index
                          m.n.filters/request
                          m.n.filters/since
@@ -36,7 +37,7 @@
    ro/paginate?         true
    ro/row-pk            m.n.filters/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.filters/index
+   ro/source-attribute  ::j.n.filters/admin-index
    ro/title             "Filters"})
 
 (def ui-report (comp/factory Report))
@@ -53,8 +54,7 @@
   (if id
     (ui-segment {:color "yellow" :inverted true}
       "TODO: Show event")
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+    (u.debug/load-error props "admin filters record")))
 
 (def ui-show (comp/factory Show))
 
@@ -84,10 +84,9 @@
    :query         [::m.n.filters/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
-   :route-segment ["event" :id]
+   :route-segment ["filter" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+    (u.debug/load-error props "admin show nostr filter")))

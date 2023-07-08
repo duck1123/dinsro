@@ -17,7 +17,7 @@
 
 ;; [[../../model/nostr/relays.cljc][Relays Model]]
 
-(def index-page-key :nostr-pubkeys-relays)
+(def index-page-key :nostr-pubkeys-show-relays)
 (def model-key ::m.n.relays/id)
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)

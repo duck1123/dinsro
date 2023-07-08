@@ -44,8 +44,7 @@
 (def index-page-key :nostr-events)
 (def model-key ::m.n.events/id)
 (def show-page-key :nostr-events-show)
-
-(def log-event-props false)
+(def show-menu-key :nostr-events)
 
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.n.events/id]
@@ -87,11 +86,6 @@
   (when picture (dom/img {:src picture :width 100 :height 100})))
 
 (def ui-event-author-image (comp/factory EventAuthorImage))
-
-(def debug-tags true)
-
-(def log-run-props false)
-(def log-connection-props true)
 
 (def transform-markup true)
 (def convert-html true)
@@ -245,8 +239,9 @@
 (def ui-router (comp/factory Router))
 
 (defsc Show
-  [_this {::m.n.events/keys [content pubkey kind sig created-at note-id]
-          :ui/keys          [nav-menu router]}]
+  [_this {::m.n.events/keys [content id pubkey kind sig created-at note-id]
+          :ui/keys          [nav-menu router]
+          :as               props}]
   {:ident         ::m.n.events/id
    :initial-state (fn [props]
                     (let [id (::m.n.events/id props)]
@@ -257,9 +252,9 @@
                        ::m.n.events/kind       nil
                        ::m.n.events/created-at 0
                        ::m.n.events/sig        ""
-                       :ui/nav-menu            (comp/get-initial-state
-                                                u.menus/NavMenu
-                                                {::m.navbars/id :nostr-events :id id})
+                       :ui/nav-menu            (comp/get-initial-state u.menus/NavMenu
+                                                 {::m.navbars/id show-menu-key
+                                                  :id            id})
                        :ui/router              (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger ::m.n.events/id {:ui/router [Router {}]})
    :query         [::m.n.events/id
@@ -271,24 +266,26 @@
                    ::m.n.events/sig
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]}
-  (ui-segment {}
+  (if id
     (ui-segment {}
-      (dom/div :.ui.items.unstackable
-        (dom/div :.item
-          (dom/div :.ui.tiny.image
-            (ui-event-author-image pubkey))
-          (dom/div :.content
-            (dom/div {:classes [:.header]}
-              (u.links/ui-pubkey-name-link pubkey))
-            (dom/div {:classes [:.meta]}
-              (dom/span {:classes [:.date]}
-                (str created-at) " - " (str kind)))
-            (dom/div {:classes [:.description]}
-              (str content))
-            (dom/div {} "Sig: " (str sig))
-            (dom/div {} "Note Id: " (str note-id))))))
-    (u.menus/ui-nav-menu nav-menu)
-    (ui-router router)))
+      (ui-segment {}
+        (dom/div :.ui.items.unstackable
+          (dom/div :.item
+            (dom/div :.ui.tiny.image
+              (ui-event-author-image pubkey))
+            (dom/div :.content
+              (dom/div {:classes [:.header]}
+                (u.links/ui-pubkey-name-link pubkey))
+              (dom/div {:classes [:.meta]}
+                (dom/span {:classes [:.date]}
+                  (str created-at) " - " (str kind)))
+              (dom/div {:classes [:.description]}
+                (str content))
+              (dom/div {} "Sig: " (str sig))
+              (dom/div {} "Note Id: " (str note-id))))))
+      (u.menus/ui-nav-menu nav-menu)
+      (ui-router router))
+    (u.debug/load-error props "show nostr event record")))
 
 (def ui-show (comp/factory Show))
 
@@ -307,8 +304,7 @@
   (dom/div {}
     (if report
       (ui-report report)
-      (ui-segment {:color "red" :inverted true}
-        "Failed to load report"))))
+      (u.debug/load-error props "index nostr events page"))))
 
 (defsc ShowPage
   [_this {::m.n.events/keys [id]
@@ -326,5 +322,4 @@
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+    (u.debug/load-error props "show nostr event page")))

@@ -18,7 +18,7 @@
 ;; [[../../model/debits.cljc]]
 
 (def ident-key ::m.accounts/id)
-(def index-page-key :accounts-debits)
+(def index-page-key :accounts-show-debits)
 (def model-key ::m.debits/id)
 (def parent-model-key ::m.accounts/id)
 (def router-key :dinsro.ui.accounts/Router)

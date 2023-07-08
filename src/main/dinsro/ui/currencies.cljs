@@ -18,6 +18,7 @@
    [dinsro.ui.currencies.accounts :as u.c.accounts]
    [dinsro.ui.currencies.rate-sources :as u.c.rate-sources]
    [dinsro.ui.currencies.rates :as u.c.rates]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
@@ -74,7 +75,8 @@
 
 (defsc Show
   [_this {::m.currencies/keys [id name]
-          :ui/keys            [nav-menu router]}]
+          :ui/keys            [nav-menu router]
+          :as                 props}]
   {:ident         ::m.currencies/id
    :initial-state (fn [props]
                     (let [id (::m.currencies/id props)]
@@ -98,8 +100,7 @@
         (dom/h1 {} (str name)))
       (u.menus/ui-nav-menu nav-menu)
       (ui-router router))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+    (u.debug/load-error props "Show currency record")))
 
 (def ui-show (comp/factory Show))
 
@@ -119,8 +120,7 @@
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "show currency page")))
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]

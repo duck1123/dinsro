@@ -7,6 +7,10 @@
    #?(:clj [dinsro.queries.core.addresses :as q.c.addresses])
    [dinsro.specs]))
 
+;; [[../../model/core/addresses.cljc]]
+;; [[../../ui/admin/core/addresses.cljs]]
+;; [[../../ui/core/addresses.cljs]]
+
 (def join-info
   (merge
    {:idents m.c.addresses/idents}

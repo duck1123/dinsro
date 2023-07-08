@@ -16,6 +16,7 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
@@ -37,8 +38,8 @@
 
 (def index-page-key :nostr-pubkeys)
 (def model-key ::m.n.pubkeys/id)
-(def navbar-id :nostr-pubkeys)
 (def show-page-key :nostr-pubkeys-show)
+(def show-menu-key :nostr-pubkeys)
 
 (defrouter Router
   [_this _props]
@@ -119,10 +120,12 @@
                        ::m.n.pubkeys/picture      ""
                        ::m.n.pubkeys/website      ""
                        :ui/nav-menu               (comp/get-initial-state u.menus/NavMenu
-                                                                          {::m.navbars/id navbar-id :id id})
+                                                    {::m.navbars/id show-menu-key
+                                                     :id            id})
                        :ui/router                 (comp/get-initial-state Router)}))
-   :pre-merge     (u.loader/page-merger ::m.n.pubkeys/id {:ui/router [Router {}]
-                                                          :ui/nav-menu [u.menus/NavMenu {::m.navbars/id navbar-id}]})
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/router   [Router {}]
+                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]})
    :query         [::m.n.pubkeys/about
                    ::m.n.pubkeys/display-name
                    ::m.n.pubkeys/hex
@@ -142,8 +145,7 @@
         (ui-pubkey-info props)
         (u.menus/ui-nav-menu nav-menu)
         (ui-router router))
-      (ui-segment {:color "red" :inverted true}
-        "Failed to load record"))))
+      (u.debug/load-error props "Show nostr pubkey record"))))
 
 (def ui-show (comp/factory Show))
 

@@ -22,7 +22,7 @@
 ;; [[../../../model/ln/channels.cljc]]
 
 (def ident-key ::m.ln.nodes/id)
-(def index-page-key :ln-nodes-channels)
+(def index-page-key :ln-nodes-show-channels)
 (def model-key ::m.ln.channels/id)
 (def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)

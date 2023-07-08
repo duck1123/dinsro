@@ -26,16 +26,22 @@
   [_this {:keys [current-state route-factory route-props router-state] :as props}]
   {:always-render-body? true
    :router-targets      [u.a.accounts/IndexPage
+                         u.a.accounts/ShowPage
                          u.a.categories/IndexPage
+                         u.a.categories/ShowPage
                          u.a.core/Page
                          u.a.currencies/IndexPage
+                         u.a.currencies/ShowPage
                          u.a.debits/IndexPage
+                         u.a.debits/ShowPage
                          u.a.ln/Page
                          u.a.nostr/Page
-                         u.a.rates/ShowPage
                          u.a.rates/IndexPage
+                         u.a.rates/ShowPage
                          u.a.rate-sources/IndexPage
+                         u.a.rate-sources/ShowPage
                          u.a.transactions/IndexPage
+                         u.a.transactions/ShowPage
                          u.a.users/IndexPage
                          u.a.users/ShowPage]}
   (log/info :Router/starting {:props props})

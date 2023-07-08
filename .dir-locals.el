@@ -26,6 +26,7 @@
            (form 1)
            (HEAD 2)
            (GET 2)
+           (get-initial-state 1)
            (h1 1)
            (h2 1)
            (info 1)

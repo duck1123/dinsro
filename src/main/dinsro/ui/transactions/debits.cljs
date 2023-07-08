@@ -11,7 +11,7 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.ui.links :as u.links]))
 
-(def index-page-key :transactions-debits)
+(def index-page-key :transactions-show-debits)
 
 (report/defsc-report Report
   [_this _props]

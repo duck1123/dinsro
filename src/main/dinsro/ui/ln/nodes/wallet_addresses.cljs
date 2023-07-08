@@ -18,14 +18,15 @@
 ;; [[../../../model/core/wallet_addresses.cljc]]
 
 (def ident-key ::m.ln.nodes/id)
-(def index-page-key :ln-nodes-wallet-addresses)
+(def index-page-key :ln-nodes-show-wallet-addresses)
 (def model-key ::m.c.wallet-addresses/id)
 (def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
+  {ro/column-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)
+                         ::m.c.wallet-addresses/address #(u.links/ui-admin-address-link %2)}
    ro/columns           [m.c.wallet-addresses/address
                          m.c.wallet-addresses/wallet
                          m.c.wallet-addresses/path-index]

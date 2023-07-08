@@ -18,7 +18,7 @@
 ;; [[../../../model/ln/accounts.cljc]]
 
 (def ident-key ::m.ln.nodes/id)
-(def index-page-key :ln-nodes-accounts)
+(def index-page-key :ln-nodes-show-accounts)
 (def model-key ::m.ln.accounts/id)
 (def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)

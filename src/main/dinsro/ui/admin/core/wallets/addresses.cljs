@@ -3,11 +3,9 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -15,32 +13,29 @@
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../../joins/core/addresses.cljc]]
+;; [[../../../../joins/core/wallet_addresses.cljc]]
 ;; [[../../../../model/core/addresses.cljc]]
 
-(def index-page-key :admin-core-wallets-addresses)
+(def index-page-key :admin-core-wallets-show-addresses)
 (def model-key ::m.c.wallet-addresses/id)
 (def parent-model-key ::m.c.wallets/id)
+
+(def generate-action
+  (u.buttons/row-action-button "Generate" model-key mu.c.wallet-addresses/generate!))
 
 (form/defsc-form NewForm
   [_this _props]
   {fo/attributes    [m.c.wallet-addresses/address
                      m.c.wallet-addresses/wallet]
    fo/field-styles  {::m.c.wallet-addresses/wallet :pick-one}
-   fo/field-options {::m.c.wallet-addresses/wallet
-                     {::picker-options/query-key       ::m.c.wallets/index
-                      ::picker-options/query-component u.links/WalletLinkForm
-                      ::picker-options/options-xform
-                      (fn [_ options]
-                        (mapv
-                         (fn [{::m.c.wallets/keys [id name]}]
-                           {:text  (str name)
-                            :value [::m.c.wallets/id id]})
-                         (sort-by ::m.c.wallets/name options)))}}
+   fo/field-options {::m.c.wallet-addresses/wallet u.pickers/admin-wallet-picker}
    fo/id            m.c.wallet-addresses/id
    fo/route-prefix  "new-wallet-address"
    fo/title         "New Wallet Address"})
@@ -61,16 +56,7 @@
                       m.c.wallet-addresses/wallet]
    fo/controls       {::generate generate-button}
    fo/field-styles   {::m.c.wallet-addresses/wallet :pick-one}
-   fo/field-options  {::m.c.wallet-addresses/wallet
-                      {::picker-options/query-key       ::m.c.wallets/index
-                       ::picker-options/query-component u.links/WalletLinkForm
-                       ::picker-options/options-xform
-                       (fn [_ options]
-                         (mapv
-                          (fn [{::m.c.wallets/keys [id name]}]
-                            {:text  (str name)
-                             :value [::m.c.wallets/id id]})
-                          (sort-by ::m.c.wallets/name options)))}}
+   fo/field-options  {::m.c.wallet-addresses/wallet u.pickers/wallet-picker}
    fo/id             m.c.wallet-addresses/id
    fo/route-prefix   "wallet-address"
    fo/title          "Wallet Address"})
@@ -83,12 +69,13 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
+  {ro/column-formatters {::m.c.wallet-addresses/address #(u.links/ui-admin-address-link %2)
+                         ::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
    ro/columns           [m.c.wallet-addresses/path-index
                          m.c.wallet-addresses/address]
-   ro/control-layout    {:inputs         [[::m.c.wallets/id]]
+   ro/control-layout    {:inputs         [[parent-model-key]]
                          :action-buttons [::new ::calculate ::refresh]}
-   ro/controls          {::m.c.wallets/id {:type :uuid :label "id"}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::new            new-action-button
                          ::refresh        u.links/refresh-control
                          ::calculate      (u.buttons/report-action-button "Calculate" model-key mu.c.wallets/calculate-addresses!)}
@@ -96,10 +83,10 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "wallets-addresses"
-   ro/row-actions       [(u.buttons/row-action-button "Generate" model-key mu.c.wallet-addresses/generate!)]
+   ro/row-actions       [generate-action]
    ro/row-pk            m.c.wallet-addresses/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.c.wallet-addresses/index-by-wallet
+   ro/source-attribute  ::j.c.wallet-addresses/admin-index
    ro/title             "Addresses"})
 
 (def ui-report (comp/factory Report))
@@ -120,5 +107,6 @@
   (log/info :SubPage/starting {:props props})
   (if (and report id)
     (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin wallet addresses page")))
+
+(def ui-sub-page (comp/factory SubPage))

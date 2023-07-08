@@ -5,13 +5,13 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.connections :as j.n.connections]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.connections :as mu.n.connections]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -19,10 +19,13 @@
 ;; [[../../../../joins/nostr/connections.cljc]]
 ;; [[../../../../model/nostr/connections.cljc]]
 
-(def index-page-key :admin-nostr-relays-connections)
+(def index-page-key :admin-nostr-relays-show-connections)
 (def model-key ::m.n.connections/id)
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
+
+(def disconnect-action
+  (u.buttons/row-action-button "Disconnect" model-key mu.n.connections/disconnect!))
 
 (report/defsc-report Report
   [_this _props]
@@ -35,12 +38,12 @@
                          m.n.connections/end-time
                          j.n.connections/run-count]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::m.n.relays/id {:type :uuid :label "id"}
-                         ::refresh       u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Disconnect" model-key mu.n.connections/disconnect!)]
+   ro/row-actions       [disconnect-action]
    ro/row-pk            m.n.connections/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.connections/index
@@ -63,8 +66,7 @@
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["connections"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (log/info :ShowPage/starting {:props props})
+  (log/info :SubPage/starting {:props props})
   (if (and report id)
     (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin relay connection page")))

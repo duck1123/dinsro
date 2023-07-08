@@ -21,7 +21,7 @@
 ;; [[../../../model/nostr/events.cljc]]
 ;; [[../../../ui/nostr/event_tags.cljs]]
 
-(def index-page-key :nostr-pubkeys-events)
+(def index-page-key :nostr-pubkeys-show-events)
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 

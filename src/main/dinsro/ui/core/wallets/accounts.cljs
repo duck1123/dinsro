@@ -14,7 +14,7 @@
 ;; [[../../../joins/accounts.cljc]]
 ;; [[../../../model/accounts.cljc]]
 
-(def index-page-key :core-wallets-accounts)
+(def index-page-key :core-wallets-show-accounts)
 (def model-key ::m.accounts/id)
 (def parent-model-key ::m.c.wallets/id)
 

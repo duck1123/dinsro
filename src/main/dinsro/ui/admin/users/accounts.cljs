@@ -11,6 +11,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -19,7 +20,7 @@
 ;; [[../../../model/accounts.cljc]]
 
 (def ident-key ::m.users/id)
-(def index-page-key :admin-users-accounts)
+(def index-page-key :admin-users-show-accounts)
 (def model-key ::m.accounts/id)
 (def parent-model-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)
@@ -56,14 +57,14 @@
    ro/columns           [m.accounts/name
                          m.accounts/currency]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::m.users/id {:type :uuid :label "id"}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh    u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
    ro/row-pk            m.accounts/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.accounts/index
+   ro/source-attribute  ::j.accounts/admin-index
    ro/title             "Accounts"}
   (let [{::m.accounts/keys [name]
          :ui/keys          [current-rows]} props]
@@ -97,5 +98,4 @@
   (log/info :SubPage/starting {:props props})
   (if (and report id)
     (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin user accounts page")))

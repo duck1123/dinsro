@@ -18,7 +18,7 @@
 ;; [[../../../model/transactions.cljc]]
 
 (def ident-key ::m.users/id)
-(def index-page-key :admin-users-transactions)
+(def index-page-key :admin-users-show-transactions)
 (def model-key ::m.transactions/id)
 (def parent-model-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)

@@ -14,7 +14,7 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-(def index-page-key :settings-ln-nodes-transactions)
+(def index-page-key :settings-ln-nodes-show-transactions)
 (def parent-model-key ::m.c.transactions/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 

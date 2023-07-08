@@ -18,7 +18,7 @@
 ;; [[../../../model/ln/remote_nodes.cljc]]
 
 (def ident-key ::m.ln.nodes/id)
-(def index-page-key :ln-nodes-remote-nodes)
+(def index-page-key :ln-nodes-show-remote-nodes)
 (def model-key ::m.ln.remote-nodes/id)
 (def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)

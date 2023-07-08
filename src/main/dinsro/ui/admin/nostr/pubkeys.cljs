@@ -10,6 +10,7 @@
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -59,7 +60,9 @@
                      ::j.n.pubkeys/npub         ""
                      ::m.n.pubkeys/picture      ""
                      ::m.n.pubkeys/website      ""})
-   ;; :pre-merge     (u.loader/page-merger ::m.n.pubkeys/id {:ui/router [Router {}]})
+   :pre-merge     (u.loader/page-merger model-key
+                    {;; :ui/router [Router {}]
+                     })
    :query         [::m.n.pubkeys/about
                    ::m.n.pubkeys/display-name
                    ::m.n.pubkeys/hex
@@ -77,13 +80,14 @@
   (let [{:keys [main]} (css/get-classnames Show)]
     (if id
       (dom/div {:classes [main]}
-        (dom/div {} "TODO: Admin pubkey")
+        (ui-segment {}
+          (dom/div {} "TODO: Admin pubkey")
+          (u.debug/log-props props))
         ;; (ui-pubkey-info props)
         ;; (u.menus/ui-nav-menu nav-menu)
         ;; (ui-router router)
         )
-      (ui-segment {:color "red" :inverted true}
-        "Failed to load record"))))
+      (u.debug/load-error props "admin pubkey record"))))
 
 (def ui-show (comp/factory Show))
 
@@ -108,7 +112,8 @@
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
    :initial-state (fn [_props]
-                    {model-key           show-page-key
+                    {model-key           nil
+                     ::m.navlinks/id     show-page-key
                      ::m.navlinks/target {}})
    :query         (fn [_props]
                     [model-key
@@ -119,5 +124,4 @@
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load Page")))
+    (u.debug/load-error props "admin show pubkey page")))

@@ -13,6 +13,7 @@
   dd                    [[:inner 0]]
   dl                    [[:inner 0]]
   error-action          [[:inner 0]]
+  get-initial-state     [[:inner 0]]
   footer                [[:inner 0]]
   form                  [[:inner 0]]
   h1                    [[:inner 0]]

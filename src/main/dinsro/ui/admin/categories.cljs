@@ -60,14 +60,13 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.categories/name #(u.links/ui-category-link %3)
-                         ::m.categories/user #(u.links/ui-user-link %2)}
+  {ro/column-formatters {::m.categories/name #(u.links/ui-admin-category-link %3)
+                         ::m.categories/user #(u.links/ui-admin-user-link %2)}
    ro/columns           [m.categories/name
                          m.categories/user
                          j.categories/transaction-count]
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
-   ;; ro/form-links        {::m.categories/name NewForm}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -78,8 +77,6 @@
    ro/title             "Categories"})
 
 (def ui-report (comp/factory Report))
-
-(def debug-props false)
 
 (defsc Show
   [_this {::m.categories/keys [name]}]
@@ -110,22 +107,21 @@
   (dom/div {}
     (if report
       (ui-report report)
-      (ui-segment {}
-        (ui-segment {:color "red" :inverted true}
-          "Failed to load admin categories report")
-        (when debug-props
-          (u.debug/log-props props))))))
+      (u.debug/load-error props "admin index categories page"))))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]}]
+  [_this {::m.categories/keys [id]
+          ::m.navlinks/keys [target]
+          :as props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
+   :initial-state {::m.categories/id nil
+                   ::m.navlinks/id     show-page-key
                    ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
+   :query         [::m.categories/id
+                   ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["node" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (if target
+  (if (and target id)
     (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin show category")))

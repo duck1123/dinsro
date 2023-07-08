@@ -10,22 +10,8 @@
    [dinsro.model.navlinks :as m.navlinks]
    [lambdaisland.glogc :as log]))
 
-(defsc PageInfo
-  [_this _props]
-  {:ident         ::m.navlinks/id
-   :initial-state {::m.navlinks/id    nil
-                   ::m.navlinks/label "unset"
-                   ::m.navlinks/route nil
-                   ::j.navlinks/path  []
-                   :ui/router         {}}
-   :query         [::m.navlinks/id
-                   ::m.navlinks/label
-                   ::m.navlinks/route
-                   ::j.navlinks/path
-                   :ui/router]})
-
 (defsc BreadcrumbLink
-  [_this {::m.navlinks/keys [label]
+  [_this {::m.navlinks/keys [label route]
           :as               props}]
   {:ident         ::m.navlinks/id
    :initial-state (fn [x]
@@ -38,7 +24,12 @@
                    ::m.navlinks/label
                    ::m.navlinks/route]}
   (log/trace :BreadcrumbLink/starting {:props props})
-  (ui-breadcrumb-section {:link true}
+  (ui-breadcrumb-section
+    {:link    true
+     :onClick (fn [evt] (log/info :BreadcrumbLink/clicked
+                          {:route route
+                           :evt   evt
+                           :props props}))}
     (str label)))
 
 (def ui-breadcrumb-link
@@ -61,9 +52,11 @@
   {:ident         ::m.navlinks/id
    :initial-state {::m.navlinks/id    nil
                    ::m.navlinks/label ""
+                   ::m.navlinks/route nil
                    ::j.navlinks/path  []}
    :query         [::m.navlinks/id
                    ::m.navlinks/label
+                   ::m.navlinks/route
                    {::j.navlinks/path (comp/get-query BreadcrumbLink)}]}
   (log/trace :BreadcrumbsInner/starting {:props props})
   (dom/div {}

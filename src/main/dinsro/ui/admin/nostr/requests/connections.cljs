@@ -19,7 +19,7 @@
 ;; [[../../../../joins/nostr/connections.cljc]]
 ;; [[../../../../model/nostr/connections.cljc]]
 
-(def index-page-key :admin-nostr-requests-connections)
+(def index-page-key :admin-nostr-requests-show-connections)
 (def model-key ::m.n.connections/id)
 (def parent-model-key ::m.n.requests/id)
 (def router-key :dinsro.ui.nostr.requests/Router)

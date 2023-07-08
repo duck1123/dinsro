@@ -14,6 +14,9 @@
   (:import
    org.bitcoins.core.crypto.ExtPublicKey))
 
+;; [[../../model/core/wallet_addresses.cljc]]
+;; [[../../ui/admin/core/wallet_addresses.cljs]]
+
 (>defn register-address!
   [wallet address path-index]
   [::m.c.wallets/item ::m.c.addresses/address ::m.c.wallet-addresses/path-index => any?]
@@ -83,3 +86,7 @@
     (do
       (log/error :calculate-addresses!/no-wallet {:wallet-id wallet-id})
       (throw (ex-info "Failed to find wallet" {})))))
+
+(defn delete!
+  [id]
+  (log/info :delete!/starting {:id id}))

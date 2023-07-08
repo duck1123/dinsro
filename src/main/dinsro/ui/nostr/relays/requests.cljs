@@ -17,7 +17,7 @@
    [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.n.relays/id)
-(def index-page-key :nostr-relays-requests)
+(def index-page-key :nostr-relays-show-requests)
 (def router-key :dinsro.ui.nostr.relays/Router)
 
 (form/defsc-form NewForm

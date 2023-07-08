@@ -23,9 +23,15 @@
    [dinsro.ui.settings.rate-sources.rates :as u.s.rs.rates]
    [lambdaisland.glogc :as log]))
 
+;; [[../../joins/rate_sources.cljc]]
+;; [[../../model/rate_sources.cljc]]
+;; [[../../mutations/rate_sources.cljc]]
+;; [[../../ui/admin/rate_sources.cljs]]
+
 (def index-page-key :settings-rate-sources)
 (def model-key ::m.rate-sources/id)
 (def show-page-key :settings-rate-sources-show)
+(def show-menu-key :settings-rate-sources)
 
 (def create-button
   {:type   :button
@@ -80,8 +86,8 @@
                          m.rate-sources/active?
                          j.rate-sources/rate-count]
    ro/control-layout    {:action-buttons [::new ::refresh]}
-   ro/controls          {::new new-action-button
-                         ::refresh         u.links/refresh-control}
+   ro/controls          {::new     new-action-button
+                         ::refresh u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -111,13 +117,13 @@
                            ::m.rate-sources/currency {}
                            ::m.rate-sources/url      ""
                            :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
-                                                                             {::m.navbars/id :settings-rate-sources
-                                                                              :id            id})
+                                                       {::m.navbars/id show-menu-key
+                                                        :id            id})
                            :ui/rates                 (comp/get-initial-state u.s.rs.rates/Report)
                            :ui/router                (comp/get-initial-state Router)}))
    :pre-merge         (u.loader/page-merger
                         ::m.rate-sources/id
-                        {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :settings-rate-sources}]
+                        {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
                          :ui/router   [Router {}]
                          :ui/rates    [u.s.rs.rates/Report {}]})
    :query             [::m.rate-sources/name
@@ -131,30 +137,23 @@
   (if id
     (dom/div {}
       (ui-container {:fluid true}
-        (dom/div :.ui.segment
+        (ui-segment {}
           (dom/h1 {} (str name))
           (dom/p {} "Url: " (str url))
           (dom/p {} "Active: " (str (boolean active)))
           (dom/p {} "Currency: " (u.links/ui-currency-link currency)))
-        (dom/div :.ui.segment
-          (if rates
-            (u.s.rs.rates/ui-report rates)
-            (ui-segment {:color "red" :inverted true}
-              "Failed to load rates"))))
+        (if rates
+          (ui-segment {}
+            (u.s.rs.rates/ui-report rates))
+          (u.debug/load-error props "settings rate-sources rates")))
       (ui-container {}
         (if nav-menu
           (u.menus/ui-nav-menu nav-menu)
-          (ui-segment {:color "red" :inverted true}
-            "Failed to load menu"))
+          (u.debug/load-error props "settings rate sources nav menu"))
         (if router
           (ui-router router)
-          (dom/div {}
-            (ui-segment {:color "red" :inverted true}
-              "Failed to load router")
-            (when debug-props2
-              (u.debug/log-props props))))))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+          (u.debug/load-error props "settings rate sources router"))))
+    (u.debug/load-error props "settings rate sources")))
 
 (def ui-show (comp/factory Show))
 

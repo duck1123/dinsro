@@ -5,9 +5,7 @@
    [dinsro.joins :as j]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
-   #?(:clj [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses])
-   [dinsro.specs]
-   [lambdaisland.glogc :as log]))
+   #?(:clj [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses])))
 
 (comment ::m.c.wallets/_)
 
@@ -31,18 +29,4 @@
    (fn [env props]
      {::index (j/make-indexer join-info env props)})})
 
-(defattr index-by-wallet ::index-by-wallet :ref
-  {ao/target    ::m.c.wallet-addresses/id
-   ao/pc-output [{::index-by-wallet [::m.c.wallet-addresses/id]}]
-   ao/pc-resolve
-   (fn [{:keys [query-params]} _]
-     (log/info :index-by-wallet/starting {:query-params query-params})
-     (let [ids #?(:clj
-                  (if-let [wallet-id (::m.c.wallets/id query-params)]
-                    (q.c.wallet-addresses/find-by-wallet wallet-id)
-                    (do
-                      (log/warn :index-by-wallet/no-wallet-id {:query-params query-params})
-                      [])) :cljs [])]
-       {::index-by-wallet (m.c.wallet-addresses/idents ids)}))})
-
-(def attributes [admin-index index index-by-wallet])
+(def attributes [admin-index index])

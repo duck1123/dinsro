@@ -7,13 +7,13 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations.nostr.requests :as mu.n.requests]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -21,10 +21,13 @@
 ;; [[../../../../joins/nostr/requests.cljc]]
 ;; [[../../../../model/nostr/requests.cljc]]
 
-(def index-page-key :admin-nostr-relays-requests)
+(def index-page-key :admin-nostr-relays-show-requests)
 (def model-key ::m.n.requests/id)
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
+
+(def run-action
+  (u.buttons/row-action-button "Run" model-key mu.n.requests/run!))
 
 (form/defsc-form NewForm
   [_this _props]
@@ -52,13 +55,13 @@
                          j.n.requests/filter-count
                          j.n.requests/run-count]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::m.n.relays/id {:type :uuid :label "id"}
+   ro/controls          {model-key {:type :uuid :label "id"}
                          ::new           new-button
                          ::refresh       u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Run" model-key mu.n.requests/run!)]
+   ro/row-actions       [run-action]
    ro/row-pk            m.n.requests/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.requests/index
@@ -83,5 +86,4 @@
   (log/debug :SubPage/starting {:props props})
   (if (and report id)
     (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin relay requests page")))

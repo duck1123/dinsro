@@ -317,15 +317,16 @@
                    ::m.transactions/date        ""
                    ::j.transactions/debit-count 0
                    :ui/debits                   {}}
-   ;; :pre-merge     (u.loader/page-merger ::m.transactions/id {:ui/debits [u.t.debits/SubPage {}]})
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/debits [u.t.debits/SubPage {}]})
    :query         [::m.transactions/description
                    ::m.transactions/id
                    ::m.transactions/date
                    ::j.transactions/debit-count
                    {:ui/debits (comp/get-query u.t.debits/SubPage)}]}
   (log/debug :Show/starting {:props props})
-  (dom/div {}
-    (if id
+  (if id
+    (dom/div {}
       (ui-segment {}
         (dom/h1 {}
           (str description))
@@ -344,11 +345,11 @@
                                   (let [id (::m.transactions/id props)]
                                     (form/edit! this NewTransaction id))))}
           "Edit"))
-      (ui-segment {:color "red" :inverted true} "Failed to load record"))
-    (ui-segment {}
       (if debits
-        (u.t.debits/ui-sub-page debits)
-        (dom/p {} "Transaction debits not loaded")))))
+        (ui-segment {}
+          (u.t.debits/ui-sub-page debits))
+        (u.debug/load-error props "show transaction debits")))
+    (u.debug/load-error props "show transaction record")))
 
 (def ui-show (comp/factory Show))
 
@@ -385,5 +386,4 @@
   (log/debug :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "show transaction page")))

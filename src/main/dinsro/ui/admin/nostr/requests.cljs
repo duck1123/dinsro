@@ -26,6 +26,7 @@
 (def index-page-key :admin-nostr-requests)
 (def model-key ::m.n.requests/id)
 (def show-page-key :admin-nostr-requests-show)
+(def show-menu-key :admin-nostr-requests)
 
 (defrouter Router
   [_this _props]
@@ -43,22 +44,20 @@
           :ui/keys            [nav-menu router]}]
   {:ident         ::m.n.requests/id
    :initial-state (fn [props]
-                    (let [id (::m.n.requests/id props)]
-                      {::m.n.requests/id           nil
-                       :ui/nav-menu
-                       (comp/get-initial-state
-                        u.menus/NavMenu
-                        {::m.navbars/id :admin-nostr-requests
-                         :id            id})
-                       :ui/router                  (comp/get-initial-state Router)
+                    (let [id (model-key props)]
+                      {model-key                   id
+                       ::j.n.requests/query-string ""
                        ::m.n.requests/code         ""
                        ::m.n.requests/relay        (comp/get-initial-state u.links/RelayLinkForm)
-                       ::j.n.requests/query-string ""}))
+                       :ui/nav-menu                (comp/get-initial-state u.menus/NavMenu
+                                                     {::m.navbars/id show-menu-key
+                                                      :id            id})
+                       :ui/router                  (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :admin-nostr-requests}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
                      :ui/router   [Router {}]})
-   :query         [::m.n.requests/id
-                   ::m.n.requests/code
+   :query         [::m.n.requests/code
+                   ::m.n.requests/id
                    ::j.n.requests/query-string
                    {::m.n.requests/relay (comp/get-query u.links/RelayLinkForm)}
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}

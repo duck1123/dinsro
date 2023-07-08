@@ -14,14 +14,16 @@
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/addresses.cljc]]
 ;; [[../../../model/core/addresses.cljc]]
 
-(def index-page-key :core-wallets-addresses)
+(def index-page-key :core-wallets-show-addresses)
 (def model-key ::m.c.wallet-addresses/id)
 (def parent-model-key ::m.c.wallets/id)
 
@@ -30,16 +32,7 @@
   {fo/attributes    [m.c.wallet-addresses/address
                      m.c.wallet-addresses/wallet]
    fo/field-styles  {::m.c.wallet-addresses/wallet :pick-one}
-   fo/field-options {::m.c.wallet-addresses/wallet
-                     {::picker-options/query-key       ::m.c.wallets/index
-                      ::picker-options/query-component u.links/WalletLinkForm
-                      ::picker-options/options-xform
-                      (fn [_ options]
-                        (mapv
-                         (fn [{::m.c.wallets/keys [id name]}]
-                           {:text  (str name)
-                            :value [::m.c.wallets/id id]})
-                         (sort-by ::m.c.wallets/name options)))}}
+   fo/field-options {::m.c.wallet-addresses/wallet u.pickers/wallet-picker}
    fo/id            m.c.wallet-addresses/id
    fo/route-prefix  "new-wallet-address"
    fo/title         "New Wallet Address"})
@@ -98,7 +91,7 @@
    ro/row-actions       [(u.buttons/row-action-button "Generate" model-key mu.c.wallet-addresses/generate!)]
    ro/row-pk            m.c.wallet-addresses/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.c.wallet-addresses/index-by-wallet
+   ro/source-attribute  ::j.c.wallet-addresses/index
    ro/title             "Addresses"})
 
 (def ui-report (comp/factory Report))
@@ -119,7 +112,9 @@
 (def ui-sub-page (comp/factory SubPage))
 
 (defsc SubSection
-  [_this {:ui/keys [report]}]
+  [_this {::m.c.wallets/keys [id]
+          :ui/keys           [report]
+          :as                props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.c.wallets/id nil
@@ -128,6 +123,9 @@
    :query             [::m.c.wallets/id
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]}
-  (ui-report report))
+  (log/debug :SubSection/starting {:props props})
+  (if (and report id)
+    (ui-report report)
+    (u.debug/load-error props "wallet addresses subsection")))
 
 (def ui-sub-section (comp/factory SubSection))

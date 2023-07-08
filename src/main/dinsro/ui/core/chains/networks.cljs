@@ -16,7 +16,7 @@
 ;; [[../../../joins/core/networks.cljc]]
 ;; [[../../../model/core/networks.cljc]]
 
-(def index-page-key :core-chains-networks)
+(def index-page-key :core-chains-show-networks)
 (def model-key ::m.c.networks/id)
 (def parent-model-key ::m.c.chains/id)
 (def router-key :dinsro.ui.core.chains/Router)

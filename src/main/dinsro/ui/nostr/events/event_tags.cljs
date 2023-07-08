@@ -18,7 +18,7 @@
 ;; [[../../actions/nostr/event_tags.clj][Event Tag Actions]]
 ;; [[../../model/nostr/event_tags.cljc][Event Tags Model]]
 
-(def index-page-key :nostr-events-event-tags)
+(def index-page-key :nostr-events-show-event-tags)
 (def parent-model-key ::m.n.events/id)
 (def router-key :dinsro.ui.nostr.events/Router)
 

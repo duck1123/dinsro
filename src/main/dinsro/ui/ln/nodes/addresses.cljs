@@ -16,7 +16,7 @@
 ;; [[../../../model/core/addresses.cljc]]
 
 (def ident-key ::m.ln.nodes/id)
-(def index-page-key :ln-nodes-addresses)
+(def index-page-key :ln-nodes-show-addresses)
 (def model-key ::m.c.addresses/id)
 (def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)

@@ -31,6 +31,7 @@
 
 (def index-page-key :core-nodes)
 (def model-key ::m.c.nodes/id)
+(def show-menu-key :core-nodes)
 (def show-page-key :core-nodes-show)
 
 (def button-info
@@ -80,12 +81,13 @@
                       {::m.c.nodes/id      nil
                        ::m.c.nodes/name    ""
                        ::m.c.nodes/network (comp/get-initial-state u.links/NetworkLinkForm)
-                       :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-nodes
-                                                                                    :id            id})
+                       :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu
+                                             {::m.navbars/id show-menu-key
+                                              :id            id})
                        :ui/router          (comp/get-initial-state Router)}))
-   :pre-merge         (u.loader/page-merger model-key
-                        {:ui/router   [Router {}]
-                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-nodes}]})
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/router   [Router {}]
+                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]})
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
                    {::m.c.nodes/network (comp/get-query u.links/NetworkLinkForm)}

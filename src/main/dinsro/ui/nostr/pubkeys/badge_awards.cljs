@@ -12,7 +12,7 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-(def index-page-key :nostr-pubkeys-badge-awards)
+(def index-page-key :nostr-pubkeys-show-badge-awards)
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 

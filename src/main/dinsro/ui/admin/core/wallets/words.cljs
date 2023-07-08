@@ -10,6 +10,7 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -17,24 +18,24 @@
 ;; [[../../../../joins/core/words.cljc]]
 ;; [[../../../../model/core/words.cljc]]
 
-(def index-page-key :admin-core-wallets-words)
+(def index-page-key :admin-core-wallets-show-words)
 (def model-key ::m.c.words/id)
 (def parent-model-key ::m.c.wallets/id)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}
+  {ro/column-formatters {::m.c.words/wallet #(u.links/ui-admin-wallet-link %2)}
    ro/columns           [m.c.words/word
                          m.c.words/position]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::m.c.wallets/id {:type :uuid :label "id"}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
    ro/row-pk            m.c.words/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.c.words/index
+   ro/source-attribute  ::j.c.words/admin-index
    ro/title             "Words"})
 
 (defsc SubPage
@@ -57,13 +58,17 @@
           groups                    (partition 12 sorted-rows)]
       (dom/div {}
         (dom/div :.ui.grid
-          (map (fn [words]
-                 (dom/div :.eight.wide.column
-                   (map
-                    (fn [row]
-                      (let [{::m.c.words/keys [position word]} row]
-                        (dom/div :.eight.wide.column (str position) ". " (str word))))
-                    words)))
-               groups))))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+          (if (seq groups)
+            (map (fn [words]
+                   (dom/div :.eight.wide.column
+                     (map
+                      (fn [row]
+                        (let [{::m.c.words/keys [position word]} row]
+                          (dom/div :.eight.wide.column (str position) ". " (str word))))
+                      words)))
+                 groups)
+            (ui-segment {}
+              "No words")))))
+    (u.debug/load-error props "admin wallet words page")))
+
+(def ui-sub-page (comp/factory SubPage))

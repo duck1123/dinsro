@@ -19,7 +19,7 @@
 ;; [[../../../../joins/core/addresses.cljc]]
 ;; [[../../../../model/core/addresses.cljc]]
 
-(def index-page-key :admin-core-networks-addresses)
+(def index-page-key :admin-core-networks-show-addresses)
 (def model-key ::m.c.addresses/id)
 (def parent-model-key ::m.c.networks/id)
 (def router-key :dinsro.ui.core.networks/Router)

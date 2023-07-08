@@ -15,7 +15,7 @@
 ;; [[../../joins/nostr/pubkey_contacts.cljc][Pubkey Contacts Joins]]
 ;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
 
-(def index-page-key :nostr-pubkeys-contacts)
+(def index-page-key :nostr-pubkeys-show-contacts)
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 

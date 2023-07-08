@@ -15,7 +15,7 @@
    [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.n.requests/id)
-(def index-page-key :nostr-requests-connections)
+(def index-page-key :nostr-requests-show-connections)
 (def router-key :dinsro.ui.nostr.requests/Router)
 
 (report/defsc-report Report

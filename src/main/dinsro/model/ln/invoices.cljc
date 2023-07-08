@@ -1,46 +1,11 @@
 (ns dinsro.model.ln.invoices
   (:require
-   [clojure.set :as set]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
-   [tick.alpha.api :as t]))
-
-(def rename-map
-  {:amtPaid         ::ammount-paid
-   :addIndex        ::add-index
-   :cltvExpiry      ::cltv-expiry
-   :private         ::private?
-   :isKeysend       ::keysend?
-   :value           ::value
-   :rHash           ::r-hash
-   :rPreimage       ::r-preimage
-   :paymentAddr     ::payment-address
-   :paymentRequest  ::payment-request
-   :state           ::state
-   :settled         ::settled?
-   :fallbackAddr    ::fallback-address
-   :settleDate      ::settle-date
-   :settleIndex     ::settle-index
-   :descriptionHash ::description-hash
-   :isAmp           ::amp?
-   :creationDate    ::creation-date
-   :expiry          ::expiry
-   :memo            ::memo})
-
-(defn prepare-params
-  [params]
-  (let [creation-date (:creationDate params)]
-    (-> (set/rename-keys params rename-map)
-        (dissoc :amtPaidMsat)
-        (dissoc :amtPaidSat)
-        (dissoc :valueMsat)
-        (dissoc :routeHints)
-        (dissoc :htlcs)
-        (assoc ::creation-date (t/instant (* creation-date 1000))))))
+   [dinsro.model.ln.nodes :as m.ln.nodes]))
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

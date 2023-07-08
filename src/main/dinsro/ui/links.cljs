@@ -13,6 +13,7 @@
    [dinsro.joins.users :as j.users]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
+   [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.core.networks :as m.c.networks]
@@ -97,6 +98,33 @@
   "Display account as a link"
   (comp/factory AdminAccountLinkForm {:keyfn ::m.accounts/id}))
 
+(form/defsc-form AdminAddressLinkForm
+  [this {::m.c.addresses/keys [id address]}]
+  {fo/id         m.c.addresses/id
+   fo/route-prefix "admin-address-link"
+   fo/attributes [m.c.addresses/id m.c.addresses/address]}
+  (form-link this id (str address) :dinsro.ui.admin.core.addresses/ShowPage))
+
+(def ui-admin-address-link (comp/factory AdminAddressLinkForm {:keyfn ::m.c.addresses/id}))
+
+(form/defsc-form AdminBlockHeightLinkForm
+  [this {::m.c.blocks/keys [id height]}]
+  {fo/id           m.c.blocks/id
+   fo/route-prefix "admin-block-height-link"
+   fo/attributes   [m.c.blocks/height]}
+  (form-link this id height :dinsro.ui.admin.core.blocks/ShowPage))
+
+(def ui-admin-block-height-link (comp/factory AdminBlockHeightLinkForm {:keyfn ::m.c.blocks/id}))
+
+(form/defsc-form AdminCategoryLinkForm
+  [this {::m.categories/keys [id name]}]
+  {fo/id         m.categories/id
+   fo/route-prefix "admin-category-link"
+   fo/attributes [m.categories/name]}
+  (form-link this id name :dinsro.ui.admin.categories/ShowPage))
+
+(def ui-admin-category-link (comp/factory AdminCategoryLinkForm {:keyfn ::m.categories/id}))
+
 (form/defsc-form AdminCoreNodeLinkForm
   [this {::m.c.nodes/keys [id name] :as props}]
   {fo/id         m.c.nodes/id
@@ -107,6 +135,31 @@
 
 (def ui-admin-core-node-link (comp/factory AdminCoreNodeLinkForm {:keyfn ::m.c.nodes/id}))
 
+(form/defsc-form AdminCoreTxLinkForm
+  [this {::m.c.transactions/keys [id tx-id]}]
+  {fo/id         m.c.transactions/id
+   fo/route-prefix "admin-core-tx-link"
+   fo/attributes [m.c.transactions/id m.c.transactions/tx-id]}
+  (form-link this id tx-id :dinsro.ui.admin.core.transactions/ShowPage))
+
+(def ui-admin-core-tx-link (comp/factory AdminCoreTxLinkForm {:keyfn ::m.c.transactions/id}))
+
+(form/defsc-form AdminCurrencyLinkForm [this {::m.currencies/keys [id name]}]
+  {fo/id         m.currencies/id
+   fo/route-prefix "admin-currency-link"
+   fo/attributes [m.currencies/name]}
+  (form-link this id name :dinsro.ui.admin.currencies/ShowPage))
+
+(def ui-admin-currency-link (comp/factory AdminCurrencyLinkForm {:keyfn ::m.currencies/name}))
+
+(form/defsc-form AdminDebitLinkForm [this {::m.debits/keys [id value]}]
+  {fo/id         m.debits/id
+   fo/route-prefix "admin-debit-link"
+   fo/attributes [m.debits/value]}
+  (form-link this id value :dinsro.ui.admin.debits/ShowPage))
+
+(def ui-admin-debit-link (comp/factory AdminDebitLinkForm {:keyfn ::m.debits/id}))
+
 (form/defsc-form AdminEventLinkForm [this {::m.n.events/keys [id note-id]}]
   {fo/id           m.n.events/id
    fo/route-prefix "admin-event-link"
@@ -114,6 +167,14 @@
   (form-link this id note-id :dinsro.ui.nostr.events/AdminShowPage))
 
 (def ui-admin-event-link (comp/factory AdminEventLinkForm {:keyfn ::m.n.events/note-id}))
+
+(form/defsc-form AdminFilterLinkForm [this {::m.n.filters/keys [id index]}]
+  {fo/id           m.n.filters/id
+   fo/route-prefix "admin-filter-link"
+   fo/attributes   [m.n.filters/index]}
+  (form-link this id (str index) :dinsro.ui.admin.nostr.filters/ShowPage))
+
+(def ui-admin-filter-link (comp/factory AdminFilterLinkForm {:keyfn ::m.n.filters/id}))
 
 (form/defsc-form AdminLnNodeLinkForm
   [this {::m.ln.nodes/keys [id name] :as props}]
@@ -152,6 +213,14 @@
   (form-link this id (or name npub "(unknown)") :dinsro.ui.admin.nostr.pubkeys/ShowPage))
 
 (def ui-admin-pubkey-name-link (comp/factory AdminPubkeyNameLinkForm {:keyfn ::m.n.pubkeys/id}))
+
+(form/defsc-form AdminRequestLinkForm [this {::m.n.requests/keys [id code]}]
+  {fo/id           m.n.requests/id
+   fo/route-prefix "admin-request-link"
+   fo/attributes   [m.n.requests/code]}
+  (form-link this id (str code) :dinsro.ui.admin.nostr.requests/ShowPage))
+
+(def ui-admin-request-link (comp/factory AdminRequestLinkForm {:keyfn ::m.n.requests/id}))
 
 (form/defsc-form AdminUserLinkForm [this {::m.users/keys [id name]}]
   {fo/id         m.users/id
@@ -453,7 +522,7 @@
   {fo/id           m.n.relays/id
    fo/route-prefix "relay-link"
    fo/attributes   [m.n.relays/address]}
-  (form-link this id address :dinsro.ui.admin.nostr.relays/ShowPage))
+  (form-link this id address :dinsro.ui.admin.nostr.relays.connections/SubPage))
 
 (def ui-admin-relay-link (comp/factory AdminRelayLinkForm {:keyfn ::m.n.relays/id}))
 

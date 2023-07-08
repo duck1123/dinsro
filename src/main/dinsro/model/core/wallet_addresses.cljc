@@ -9,6 +9,8 @@
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.wallets :as m.c.wallets]))
 
+;; [[../../ui/admin/core/wallet_addresses.cljs]]
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

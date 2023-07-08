@@ -23,7 +23,7 @@
 ;; [[../../../joins/core/peers.cljc]]
 ;; [[../../../model/core/peers.cljc]]
 
-(def index-page-key :core-nodes-peers)
+(def index-page-key :core-nodes-show-peers)
 (def model-key ::m.c.peers/id)
 (def parent-model-key ::m.c.nodes/id)
 (def router-key :dinsro.ui.core.nodes/Router)

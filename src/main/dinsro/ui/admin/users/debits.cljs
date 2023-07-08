@@ -17,7 +17,7 @@
 ;; [[../../../joins/debits.cljc]]
 ;; [[../../../model/debits.cljc]]
 
-(def index-page-key :admin-users-debits)
+(def index-page-key :admin-users-show-debits)
 (def model-key ::m.debits/id)
 (def parent-model-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)

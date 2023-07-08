@@ -23,7 +23,7 @@
 ;; [../../../mutations/nostr/relays.cljc]
 ;; [../../../ui/nostr.cljs]
 
-(def index-page-key :nostr-event-tags-relays)
+(def index-page-key :nostr-event-tags-show-relays)
 (def parent-model-key ::m.n.event-tags/id)
 (def router-key :dinsro.ui.nostr.event-tags/Router)
 

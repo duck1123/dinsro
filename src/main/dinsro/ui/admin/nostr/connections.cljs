@@ -12,6 +12,7 @@
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.mutations.nostr.connections :as mu.n.connections]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
@@ -24,10 +25,12 @@
 (def index-page-key :admin-nostr-connections)
 (def model-key ::m.n.connections/id)
 (def show-page-key :admin-nostr-connections-show)
+(def show-menu-key :admin-nostr-connections)
 
 (defsc Show
   [_this {::m.n.connections/keys [id status relay start-time end-time]
-          :ui/keys               [nav-menu]}]
+          :ui/keys               [nav-menu]
+          :as                    props}]
   {:ident         ::m.n.connections/id
    :initial-state (fn [props]
                     (let [id (::m.n.connections/id props)]
@@ -36,10 +39,9 @@
                        ::m.n.connections/relay      {}
                        ::m.n.connections/start-time nil
                        ::m.n.connections/end-time   nil
-                       :ui/nav-menu                 (comp/get-initial-state
-                                                     u.menus/NavMenu
-                                                     {::m.navbars/id :admin-nostr-connections
-                                                      :id            id})}))
+                       :ui/nav-menu                 (comp/get-initial-state u.menus/NavMenu
+                                                      {::m.navbars/id show-menu-key
+                                                       :id            id})}))
    :query         [::m.n.connections/id
                    ::m.n.connections/status
                    {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}
@@ -55,8 +57,7 @@
         (dom/div {} (str start-time))
         (dom/div {} (str end-time)))
       (u.menus/ui-nav-menu nav-menu))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+    (u.debug/load-error props "admin show connection record")))
 
 (def ui-show (comp/factory Show))
 
@@ -98,14 +99,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
+  [_this {::m.n.connections/keys [id]
+          ::m.navlinks/keys      [target]
+          :as                    props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
+   :initial-state {::m.n.connections/id nil
+                   ::m.navlinks/id      show-page-key
+                   ::m.navlinks/target  {}}
+   :query         [::m.n.connections/id
+                   ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["connections" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
-  (ui-show target))
+  (if (and target id)
+    (ui-show target)
+    (u.debug/load-error props "Admin show nostr connection page")))

@@ -5,11 +5,11 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.users :as m.users]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -19,7 +19,7 @@
 ;; [[../queries/user_pubkeys.clj]]
 ;; [[../model/user_pubkeys.cljc]]
 
-(def index-page-key :admin-users-pubkeys)
+(def index-page-key :admin-users-show-pubkeys)
 (def model-key ::m.n.pubkeys/id)
 (def parent-model-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)
@@ -29,8 +29,8 @@
   {ro/column-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
    ro/columns           [m.n.pubkeys/hex]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::m.users/id {:type :uuid :label "id"}
-                         ::refresh    u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -59,5 +59,4 @@
   (log/info :SubPage/starting {:props props})
   (if (and report id)
     (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin user pubkeys page")))

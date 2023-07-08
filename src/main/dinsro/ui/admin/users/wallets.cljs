@@ -18,7 +18,7 @@
 ;; [[../../../model/core/wallets.cljc]]
 
 (def ident-key ::m.users/id)
-(def index-page-key :admin-users-wallets)
+(def index-page-key :admin-users-show-wallets)
 (def model-key ::m.c.wallets/id)
 (def parent-model-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)

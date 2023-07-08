@@ -46,9 +46,9 @@
                       {::m.n.runs/id nil
                        :ui/router    (comp/get-initial-state Router)
                        :ui/nav-menu  (comp/get-initial-state
-                                      u.menus/NavMenu
-                                      {::m.navbars/id :nostr-runs
-                                       :id            id})}))
+                                       u.menus/NavMenu
+                                       {::m.navbars/id :nostr-runs
+                                        :id            id})}))
    :pre-merge     (u.loader/page-merger ::m.n.runs/id {:ui/router [Router {}]})
    :query         [::m.n.runs/id
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}

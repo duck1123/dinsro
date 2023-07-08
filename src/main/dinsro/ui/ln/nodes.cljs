@@ -236,11 +236,8 @@
         (u.menus/ui-nav-menu nav-menu))
       (if router
         (ui-router router)
-        (ui-segment {:color "red" :inverted true}
-          (dom/h3 {} "Network Router not loaded")
-          (u.debug/ui-props-logger props))))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+        (u.debug/load-error props "ln node show router")))
+    (u.debug/load-error props "ln node show")))
 
 (def ui-show (comp/factory Show))
 
@@ -299,5 +296,4 @@
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "ln node show page")))

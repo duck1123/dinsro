@@ -20,7 +20,7 @@
 ;; [[../model/accounts.cljc]]
 ;; [[../model/transactions.cljc]]
 
-(def index-page-key :accounts-transactions)
+(def index-page-key :accounts-show-transactions)
 (def model-key ::m.transactions/id)
 (def parent-model-key ::m.accounts/id)
 (def router-key :dinsro.ui.accounts/Router)

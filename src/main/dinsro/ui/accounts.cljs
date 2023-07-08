@@ -233,13 +233,11 @@
                        ::m.navlinks/id
                        {::m.navlinks/target (comp/get-query Show)}]
    :route-segment     ["account" :id]
-   :will-enter        (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter        (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (dom/div {}
-      (dom/div :.ui.segment "Failed to load record")
-      (u.debug/log-props props))))
+    (u.debug/load-error props "show account page")))
 
 (defsc IndexPage
   [_this {:ui/keys [report] :as props}]

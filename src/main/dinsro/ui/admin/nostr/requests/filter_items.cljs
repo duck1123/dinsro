@@ -20,7 +20,7 @@
 ;; [[../../../../joins/nostr/filter_items.cljc]]
 ;; [[../../../../model/nostr/filter_items.cljc]]
 
-(def index-page-key :admin-nostr-requests-filter-items)
+(def index-page-key :admin-nostr-requests-show-filter-items)
 (def model-key ::m.n.filter-items/id)
 (def parent-model-key ::m.n.requests/id)
 (def router-key :dinsro.ui.nostr.requests/Router)

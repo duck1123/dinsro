@@ -18,7 +18,7 @@
 ;; [[../../model/rate_sources.cljc]]
 
 (def ident-key ::m.currencies/id)
-(def index-page-key :currencies-rate-sources)
+(def index-page-key :currencies-show-rate-sources)
 (def model-key ::m.rate-sources/id)
 (def parent-model-key ::m.currencies/id)
 (def router-key :dinsro.ui.currencies/Router)

@@ -19,6 +19,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.categories :as mu.categories]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -28,7 +29,7 @@
 ;; [[../../../ui/categories.cljs]]
 ;; [[../../../../../test/dinsro/ui/admin/users/categories_test.cljs]]
 
-(def index-page-key :admin-users-categories)
+(def index-page-key :admin-users-show-categories)
 (def model-key ::m.categories/id)
 (def parent-model-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)
@@ -55,25 +56,28 @@
    fo/title          "Create Category"})
 
 (defsc NewForm
-  [this {::m.categories/keys [name]}]
+  [this {::m.categories/keys [name]
+         :as                 props}]
   {:ident         (fn [] [:component/id ::NewForm])
    :initial-state {::m.categories/name ""}
    :query         [::m.categories/name]}
-  (ui-form {}
-    (ui-form-field {}
-      (ui-form-input
-       {:value    name
-        :onChange (fn [evt _] (fm/set-string! this ::m.categories/name :event evt))
-        :label    "Name"}))
-    (ui-form-field {}
-      (ui-button
-       {:content "Submit"
-        :primary true
-        :fluid   true
-        :size    "large"
-        :onClick
-        (fn [_ev]
-          (comp/transact! this [(mu.categories/create! {::m.categories/name name})]))}))))
+  (log/debug :NewForm/starting {:props props})
+  (ui-segment {}
+    (ui-form {}
+      (ui-form-field {}
+        (ui-form-input
+         {:value    name
+          :onChange (fn [evt _] (fm/set-string! this ::m.categories/name :event evt))
+          :label    "Name"}))
+      (ui-form-field {}
+        (ui-button
+         {:content "Submit"
+          :primary true
+          :fluid   true
+          :size    "large"
+          :onClick
+          (fn [_ev]
+            (comp/transact! this [(mu.categories/create! {::m.categories/name name})]))})))))
 
 (def ui-new-form (comp/factory NewForm))
 
@@ -133,15 +137,16 @@
    ro/paginate?        true
    ro/row-pk           m.categories/id
    ro/run-on-mount?    true
-   ro/source-attribute ::j.categories/index
+   ro/source-attribute ::j.categories/admin-index
    ro/title            "Categories"}
+  (log/info :Report/starting {:props props})
   (let [{:ui/keys [current-rows]} props]
     (if override-report
       (report/render-layout this)
       (ui-segment {}
-        (when show-controls ((report/control-renderer this) this))
+        (when show-controls
+          ((report/control-renderer this) this))
         (dom/div {}
-          (log/info :Report/info {:props props})
           (dom/div {}
             (map ui-body-item current-rows)))))))
 
@@ -168,10 +173,6 @@
   (log/debug :SubPage/starting {:props props})
   (if (and report id)
     (dom/div {}
-      (let [state (comp/get-initial-state NewForm)
-            query (comp/get-query NewForm)]
-        (log/info :SubPage/stateing {:state state :query query})
-        (ui-new-form form))
+      (ui-new-form form)
       (ui-report report))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin user categories")))

@@ -14,7 +14,7 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-(def index-page-key :settings-ln-nodes-remote-nodes)
+(def index-page-key :settings-ln-nodes-show-remote-nodes)
 (def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 

@@ -17,7 +17,7 @@
 ;; [[../../../../joins/nostr/witnesses.cljc]]
 ;; [[../../../../model/nostr/witnesses.cljc]]
 
-(def index-page-key :admin-nostr-relays-witnesses)
+(def index-page-key :admin-nostr-relays-show-witnesses)
 (def model-key ::m.n.witnesses/id)
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)

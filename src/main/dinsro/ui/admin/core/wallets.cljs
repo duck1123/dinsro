@@ -13,10 +13,11 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
+   [dinsro.ui.admin.core.wallets.accounts :as u.a.c.w.accounts]
+   [dinsro.ui.admin.core.wallets.addresses :as u.a.c.w.addresses]
+   [dinsro.ui.admin.core.wallets.words :as u.a.c.w.words]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.core.wallets.accounts :as u.c.w.accounts]
-   [dinsro.ui.core.wallets.addresses :as u.c.w.addresses]
-   [dinsro.ui.core.wallets.words :as u.c.w.words]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.pickers :as u.pickers]
@@ -63,7 +64,7 @@
   "Show a wallet"
   [this {::m.c.wallets/keys [id name derivation key network user
                              ext-public-key ext-private-key]
-         :ui/keys           [addresses words accounts]
+         :ui/keys           [admin-addresses admin-words admin-accounts]
          :as                props}]
   {:ident         ::m.c.wallets/id
    :initial-state {::m.c.wallets/id              nil
@@ -74,13 +75,13 @@
                    ::m.c.wallets/ext-public-key  ""
                    ::m.c.wallets/network         {}
                    ::m.c.wallets/user            {}
-                   :ui/accounts                  {}
-                   :ui/addresses                 {}
-                   :ui/words                     {}}
+                   :ui/admin-accounts            {}
+                   :ui/admin-addresses           {}
+                   :ui/admin-words               {}}
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/accounts  [u.c.w.accounts/SubPage {}]
-                     :ui/addresses [u.c.w.addresses/SubPage {}]
-                     :ui/words     [u.c.w.words/SubPage {}]})
+                    {:ui/admin-accounts  [u.a.c.w.accounts/SubPage {}]
+                     :ui/admin-addresses [u.a.c.w.addresses/SubPage {}]
+                     :ui/admin-words     [u.a.c.w.words/SubPage {}]})
    :query         [::m.c.wallets/id
                    ::m.c.wallets/name
                    ::m.c.wallets/derivation
@@ -89,19 +90,16 @@
                    ::m.c.wallets/key
                    ::m.c.wallets/ext-private-key
                    ::m.c.wallets/ext-public-key
-                   {:ui/accounts (comp/get-query u.c.w.accounts/SubPage)}
-                   {:ui/addresses (comp/get-query u.c.w.addresses/SubPage)}
-                   {:ui/words (comp/get-query u.c.w.words/SubPage)}
+                   {:ui/admin-accounts (comp/get-query u.a.c.w.accounts/SubPage)}
+                   {:ui/admin-addresses (comp/get-query u.a.c.w.addresses/SubPage)}
+                   {:ui/admin-words (comp/get-query u.a.c.w.words/SubPage)}
                    [df/marker-table '_]]}
   (log/info :Show/creating {:id id :props props :this this})
   (if id
     (dom/div {}
       (ui-segment {}
         (dom/h1 {} "Wallet")
-        (dom/button
-          {:onClick (fn [_]
-                      (log/info :ShowWallet/derive-clicked {})
-                      (comp/transact! this [(mu.c.wallets/derive! {model-key id})]))}
+        (dom/button {:onClick (fn [_] (comp/transact! this [(mu.c.wallets/derive! {model-key id})]))}
           "derive")
         (dom/dl {}
           (dom/dt {} "Name")
@@ -119,12 +117,12 @@
           (dom/dt {} "Extended Private Key")
           (dom/dd {} ext-private-key)))
       (ui-segment {}
-        (u.c.w.words/ui-sub-page words))
-      (u.c.w.accounts/ui-sub-page accounts)
+        (u.a.c.w.words/ui-sub-page admin-words))
       (ui-segment {}
-        (u.c.w.addresses/ui-sub-page addresses)))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+        (u.a.c.w.accounts/ui-sub-page admin-accounts))
+      (ui-segment {}
+        (u.a.c.w.addresses/ui-sub-page admin-addresses)))
+    (u.debug/load-error props "admin show wallet")))
 
 (def ui-show (comp/factory Show))
 
@@ -180,5 +178,4 @@
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin show wallet page")))

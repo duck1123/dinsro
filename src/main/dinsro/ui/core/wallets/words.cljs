@@ -15,7 +15,7 @@
 ;; [[../../../joins/core/words.cljc]]
 ;; [[../../../model/core/words.cljc]]
 
-(def index-page-key :core-wallets-words)
+(def index-page-key :core-wallets-show-words)
 (def model-key ::m.c.words/id)
 (def parent-model-key ::m.c.wallets/id)
 

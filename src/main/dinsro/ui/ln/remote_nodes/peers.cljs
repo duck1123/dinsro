@@ -14,7 +14,7 @@
 ;; [[../../../joins/ln/peers.cljc]]
 ;; [[../../../model/ln/peers.cljc]]
 
-(def index-page-key :ln-remote-nodes-peers)
+(def index-page-key :ln-remote-nodes-show-peers)
 (def model-key ::m.ln.peers/id)
 (def parent-model-key ::m.ln.remote-nodes/id)
 (def router-key :dinsro.ui.ln.remote-nodes/Router)

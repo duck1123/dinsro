@@ -18,7 +18,7 @@
 ;; [[../../../model/nostr/runs.cljc]]
 
 (def ident-key ::m.n.connections/id)
-(def index-page-key :nostr-connections-runs)
+(def index-page-key :nostr-connections-show-runs)
 (def parent-model-key ::m.n.connections/id)
 (def router-key :dinsro.ui.nostr.connections/Router)
 

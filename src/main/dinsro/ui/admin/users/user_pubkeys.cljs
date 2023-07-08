@@ -17,7 +17,7 @@
 ;; [[../../../joins/nostr/pubkeys.cljc]]
 ;; [[../../../model/nostr/pubkeys.cljc]]
 
-(def index-page-key :admin-users-user-pubkeys)
+(def index-page-key :admin-users-show-user-pubkeys)
 (def model-key ::m.user-pubkeys/id)
 (def parent-model-key ::m.users/id)
 (def router-key :dinsro.ui.admin.users/Router)

@@ -19,7 +19,7 @@
 ;; [[../../../../joins/core/transactions.cljc]]
 ;; [[../../../../model/core/transactions.cljc]]
 
-(def index-page-key :admin-core-blocks-transactions)
+(def index-page-key :admin-core-blocks-show-transactions)
 (def model-key ::m.c.transactions/id)
 (def parent-model-key ::m.c.blocks/id)
 

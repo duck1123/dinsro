@@ -22,6 +22,7 @@
    [dinsro.ui.admin.nostr.relays.runs :as u.a.n.r.runs]
    [dinsro.ui.admin.nostr.relays.witnesses :as u.a.n.r.witnesses]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
@@ -29,11 +30,15 @@
 
 ;; [[../../../joins/nostr/relays.cljc]]
 ;; [[../../../model/nostr/relays.cljc]]
+;; [[../../../ui/nostr/relays.cljs]]
 
 (def index-page-key :admin-nostr-relays)
 (def model-key ::m.n.relays/id)
 (def show-navbar-id :admin-nostr-relays)
 (def show-page-key :admin-nostr-relays-show)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.relays/delete!))
 
 (def submit-button
   {:type   :button
@@ -76,7 +81,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "relays"
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.n.relays/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.n.relays/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.relays/index
@@ -118,25 +123,22 @@
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]}
   (log/debug :Show/starting {:props props})
-  (let [{:keys [main _sub]} (css/get-classnames Show)]
-    (dom/div {:classes [main]}
-      (if id
+  (if id
+    (let [{:keys [main _sub]} (css/get-classnames Show)]
+      (dom/div {:classes [main]}
         (ui-segment {}
           (dom/dl {}
             (dom/dt {} "Address")
             (dom/dd {} (str address))
             (dom/dt {} "Connections")
             (dom/dd {} (str connection-count))))
-        (ui-segment {:color "red" :inverted true}
-          "Failed to load record"))
-      (if nav-menu
-        (u.menus/ui-nav-menu nav-menu)
-        (ui-segment {:color "red" :inverted true}
-          "Failed to load nav menu"))
-      (if router
-        (ui-router router)
-        (ui-segment {:color "red" :inverted true}
-          "Failed to load router")))))
+        (if nav-menu
+          (u.menus/ui-nav-menu nav-menu)
+          (u.debug/load-error props "admin show relay nav menu"))
+        (if router
+          (ui-router router)
+          (u.debug/load-error props "admin show relay router"))))
+    (u.debug/load-error props "admin show relay")))
 
 (def ui-show (comp/factory Show))
 
@@ -156,17 +158,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as props}]
+  [_this {::m.n.relays/keys [id]
+          ::m.navlinks/keys [target]
+          :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id show-page-key
-                   ::m.navlinks/target      {}}
-   :query         [::m.navlinks/id
+   :initial-state {::m.n.relays/id     nil
+                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.n.relays/id
+                   ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["relay" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
-  (if target
+  (if (and target id)
     (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin relays page")))

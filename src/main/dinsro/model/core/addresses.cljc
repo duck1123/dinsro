@@ -5,6 +5,8 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]))
 
+;; [[../../joins/core/addresses.cljc]]
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

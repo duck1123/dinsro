@@ -18,7 +18,7 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogi :as log]))
 
-(def index-page-key :settings-ln-nodes-channels)
+(def index-page-key :settings-ln-nodes-show-channels)
 (def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 

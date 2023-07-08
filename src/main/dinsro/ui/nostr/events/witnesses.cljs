@@ -16,7 +16,7 @@
 
 ;; [../../../actions/nostr/witnesses.clj]
 
-(def index-page-key :nostr-events-witnesses)
+(def index-page-key :nostr-events-show-witnesses)
 (def parent-model-key ::m.n.events/id)
 (def router-key :dinsro.ui.nostr.events/Router)
 

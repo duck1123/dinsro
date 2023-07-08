@@ -19,7 +19,7 @@
 ;; [[../../../model/ln/peers.cljc]]
 
 (def ident-key ::m.ln.nodes/id)
-(def index-page-key :ln-nodes-peers)
+(def index-page-key :ln-nodes-show-peers)
 (def model-key ::m.ln.peers/id)
 (def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)

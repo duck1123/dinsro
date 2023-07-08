@@ -102,18 +102,11 @@
           (dom/div {} (str role)))
         (if nav-menu
           (u.menus/ui-nav-menu nav-menu)
-          (ui-segment {:color "red" :inverted true}
-            "Failed to load menu"))
+          (u.debug/load-error props "admin show user menu"))
         (if router
           (ui-router router)
-          (ui-segment {:color "red" :inverted true}
-            "Failed to load router")))
-      (when debug-show
-        (ui-segment {}
-          (dom/h3 {} "Admin Show User")
-          (u.debug/log-props props))))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+          (u.debug/load-error props "admin show user router"))))
+    (u.debug/load-error props "admin show user")))
 
 (def ui-show (comp/factory Show))
 
@@ -172,15 +165,9 @@
    :route-segment     ["users"]
    :will-enter        (u.loader/page-loader index-page-key)}
   (log/info :Page/starting {:props props})
-  (dom/div {}
-    (if report
-      (ui-report report)
-      (ui-segment {:color "red" :inverted true}
-        "Failed to load report"))
-    (when debug-page
-      (ui-segment {:color "red" :inverted true}
-        (dom/h3 "Admin Users Page")
-        (u.debug/log-props props)))))
+  (if report
+    (ui-report report)
+    (u.debug/load-error props "admin index users report")))
 
 (defsc ShowPage
   [_this {::m.users/keys    [id]
@@ -201,9 +188,4 @@
   (dom/div :.show-page
     (if (and id target)
       (ui-show target)
-      (ui-segment {:color "red" :inverted true}
-        "Failed to load record"))
-    (when debug-show-page
-      (ui-segment {:color "red" :inverted true}
-        (dom/h3 {} "Admin Show User Page")
-        (u.debug/log-props props)))))
+      (u.debug/load-error props "Admin Show User Page"))))

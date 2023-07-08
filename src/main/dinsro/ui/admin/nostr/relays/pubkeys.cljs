@@ -8,7 +8,6 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -16,6 +15,7 @@
    [dinsro.mutations.nostr.events :as mu.n.events]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -27,10 +27,19 @@
 ;; [[../../mutations/nostr/pubkeys.cljc]]
 ;; [[../../ui/nostr/relays.cljs]]
 
-(def index-page-key :admin-nostr-relays-pubkeys)
+(def index-page-key :admin-nostr-relays-show-pubkeys)
 (def model-key ::m.n.pubkeys/id)
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
+
+(def fetch-action
+  (u.buttons/subrow-action-button "Fetch" model-key parent-model-key  mu.n.pubkeys/fetch!))
+
+(def fetch-events-action
+  (u.buttons/subrow-action-button "Fetch Events" model-key parent-model-key  mu.n.events/fetch-events!))
+
+(def fetch-contacts-action
+  (u.buttons/subrow-action-button "Fetch Contacts" model-key parent-model-key  mu.n.pubkeys/fetch-contacts!))
 
 (form/defsc-form AddForm
   [_this _props]
@@ -62,9 +71,9 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/subrow-action-button "Fetch" model-key parent-model-key  mu.n.pubkeys/fetch!)
-                         (u.buttons/subrow-action-button "Fetch Events" model-key parent-model-key  mu.n.events/fetch-events!)
-                         (u.buttons/subrow-action-button "Fetch Contacts" model-key parent-model-key  mu.n.pubkeys/fetch-contacts!)]
+   ro/row-actions       [fetch-action
+                         fetch-events-action
+                         fetch-contacts-action]
    ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.pubkeys/index
@@ -90,5 +99,4 @@
   (log/info :SubPage/starting {:props props})
   (if (and report id)
     (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin relay pubkeys page")))

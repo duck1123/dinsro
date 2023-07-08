@@ -13,7 +13,7 @@
    [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.n.runs/id)
-(def index-page-key :nostr-runs-witnesses)
+(def index-page-key :nostr-runs-show-witnesses)
 (def router-key :dinsro.ui.nostr.runs/Router)
 
 (report/defsc-report Report

@@ -8,7 +8,24 @@
    #?(:clj [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses])
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/core/wallet_addresses.clj]]
+
 #?(:cljs (comment ::m.c.wallet-addresses/_ ::pc/_ ::log/_ ::mu/_))
+
+#?(:clj
+   (pc/defmutation delete!
+     [_env {::m.c.wallet-addresses/keys [id]}]
+     {::pc/params #{::m.c.wallet-addresses/id}
+      ::pc/output [::mu/status]}
+     (log/info :delete!/starting {:id id})
+     (let [node (q.c.wallet-addresses/read-record id)]
+       (a.c.wallet-addresses/delete! node)
+       {::mu/status :ok}))
+
+   :cljs
+   (defmutation delete! [_props]
+     (action [_env] true)
+     (remote [_env] true)))
 
 #?(:clj
    (pc/defmutation generate!
@@ -26,4 +43,4 @@
      (remote [_env] true)))
 
 #?(:clj
-   (def resolvers [generate!]))
+   (def resolvers [delete! generate!]))

@@ -4,13 +4,11 @@
    [com.fulcrologic.fulcro.dom :as dom]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.transactions :as j.transactions]
-   [dinsro.model.accounts :as m.accounts]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.mutations.transactions :as mu.transactions]
@@ -18,6 +16,7 @@
    [dinsro.ui.controls :refer [ui-moment]]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/transactions.cljc]]
@@ -31,16 +30,7 @@
   {fo/attributes    [m.transactions/description]
    fo/cancel-route  ["transactions"]
    fo/field-styles  {::m.transactions/account :pick-one}
-   fo/field-options {::m.transactions/account
-                     {::picker-options/query-key       ::m.accounts/index
-                      ::picker-options/query-component u.links/AccountLinkForm
-                      ::picker-options/options-xform
-                      (fn [_ options]
-                        (mapv
-                         (fn [{::m.accounts/keys [id name]}]
-                           {:text  (str name)
-                            :value [::m.accounts/id id]})
-                         (sort-by ::m.accounts/name options)))}}
+   fo/field-options {::m.transactions/account u.pickers/account-picker}
    fo/id            m.transactions/id
    fo/route-prefix  "transaction-form"
    fo/title         "Transaction"})

@@ -19,7 +19,7 @@
 ;; [[../../../../joins/core/transactions.cljc]]
 ;; [[../../../../model/core/transactions.cljc]]
 
-(def index-page-key :core-nodes-transactions)
+(def index-page-key :core-nodes-show-transactions)
 (def model-key ::m.c.transactions/id)
 (def parent-model-key ::m.c.nodes/id)
 (def router-key :dinsro.ui.core.nodes/Router)

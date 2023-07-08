@@ -44,7 +44,8 @@
                 :admin-core-nodes
                 :admin-core-peers
                 :admin-core-transactions
-                :admin-core-wallets]}
+                :admin-core-wallets
+                :admin-core-wallet-addresses]}
 
    :admin-ln
    {::parent   :admin
@@ -78,74 +79,74 @@
    :admin-nostr-connections
    {::parent   :admin-nostr
     ::router   :dinsro.ui.admin.nostr.connections/Router
-    ::children [:admin-nostr-connections-runs]}
+    ::children [:admin-nostr-connections-show-runs]}
 
    :admin-nostr-relays
    {::parent   :admin-nostr
     ::router   :dinsro.ui.admin.nostr.relays/Router
-    ::children [:admin-nostr-relays-connections
-                :admin-nostr-relays-requests
-                :admin-nostr-relays-events
-                :admin-nostr-relays-pubkeys
-                :admin-nostr-relays-runs
-                :admin-nostr-relays-witnesses]}
+    ::children [:admin-nostr-relays-show-connections
+                :admin-nostr-relays-show-requests
+                :admin-nostr-relays-show-events
+                :admin-nostr-relays-show-pubkeys
+                :admin-nostr-relays-show-runs
+                :admin-nostr-relays-show-witnesses]}
 
    :admin-nostr-requests
    {::parent   :admin-nostr
     ::router   :dinsro.ui.admin.nostr.requests/Router
-    ::children [:admin-nostr-requests-filters
-                :admin-nostr-requests-items
-                :admin-nostr-requests-runs
-                :admin-nostr-requests-connections]}
+    ::children [:admin-nostr-requests-show-filters
+                :admin-nostr-requests-show-items
+                :admin-nostr-requests-show-runs
+                :admin-nostr-requests-show-connections]}
 
    :admin-users
    {::parent   :admin
     ::router   :dinsro.ui.admin.users/Router
-    ::children [:admin-users-accounts
-                :admin-users-categories
-                :admin-users-debits
-                :admin-users-ln-nodes
-                :admin-users-pubkeys
-                :admin-users-transactions
-                :admin-users-user-pubkeys
-                :admin-users-wallets]}
+    ::children [:admin-users-show-accounts
+                :admin-users-show-categories
+                :admin-users-show-debits
+                :admin-users-show-ln-nodes
+                :admin-users-show-pubkeys
+                :admin-users-show-transactions
+                :admin-users-show-user-pubkeys
+                :admin-users-show-wallets]}
 
    :core-chains
    {::parent   :core
     ::router   :dinsro.ui.core.chains/Router
-    ::children [:core-chains-networks]}
+    ::children [:core-chains-show-networks]}
 
    :core-networks
    {::parent   :core
     ::router   :dinsro.ui.core.networks/Router
-    ::children [:core-networks-addresses
-                :core-networks-blocks
-                :core-networks-ln-nodes
-                :core-networks-core-nodes
-                :core-networks-wallets]}
+    ::children [:core-networks-show-addresses
+                :core-networks-show-blocks
+                :core-networks-show-ln-nodes
+                :core-networks-show-core-nodes
+                :core-networks-show-wallets]}
 
    :core-nodes
    {::parent   :core
     ::router :dinsro.ui.core.nodes/Router
-    ::children [:core-nodes-peers
-                :core-nodes-blocks]}
+    ::children [:core-nodes-show-peers
+                :core-nodes-show-blocks]}
 
    :currencies
    {::parent   :root
     ::router :dinsro.ui.currencies/Router
-    ::children [:currencies-rate-sources
-                :currencies-accounts
-                :currencies-rates]}
+    ::children [:currencies-show-rate-sources
+                :currencies-show-accounts
+                :currencies-show-rates]}
 
    :ln-nodes
    {::parent   :ln
     ::router :dinsro.ui.ln.nodes/Router
-    ::children [:ln-nodes-accounts
-                :ln-nodes-addresses
-                :ln-nodes-channels
-                :ln-nodes-peers
-                :ln-nodes-remote-nodes
-                :ln-nodes-wallet-addresses]}
+    ::children [:ln-nodes-show-accounts
+                :ln-nodes-show-addresses
+                :ln-nodes-show-channels
+                :ln-nodes-show-peers
+                :ln-nodes-show-remote-nodes
+                :ln-nodes-show-wallet-addresses]}
 
    ;; Main top bar
    :main
@@ -159,51 +160,51 @@
 
    :nostr-connections
    {::parent   :nostr
-    ::children [:nostr-connections-runs]}
+    ::children [:nostr-connections-show-runs]}
 
    :nostr-event-tags
    {::parent   :nostr
-    ::children [:nostr-event-tags-relays]}
+    ::children [:nostr-event-tags-show-relays]}
 
    :nostr-events
    {::parent   :nostr
-    ::children [:nostr-events-tags
-                :nostr-events-witnesses
-                :nostr-events-relays]}
+    ::children [:nostr-events-show-tags
+                :nostr-events-show-witnesses
+                :nostr-events-show-relays]}
 
    :nostr-filters
    {::parent   :nostr
-    ::children [:nostr-filters-items]}
+    ::children [:nostr-filters-show-items]}
 
    :nostr-relays
    {::parent   :nostr
-    ::children [:nostr-relays-connections
-                :nostr-relays-requests
-                :nostr-relays-events
-                :nostr-relays-pubkeys
-                :nostr-relays-runs
-                :nostr-relays-witnesses]}
+    ::children [:nostr-relays-show-connections
+                :nostr-relays-show-requests
+                :nostr-relays-show-events
+                :nostr-relays-show-pubkeys
+                :nostr-relays-show-runs
+                :nostr-relays-show-witnesses]}
 
    :nostr-requests
    {::parent   :nostr
-    ::children [:nostr-requests-filters
-                :nostr-requests-items
-                :nostr-requests-runs
-                :nostr-requests-connections]}
+    ::children [:nostr-requests-show-filters
+                :nostr-requests-show-items
+                :nostr-requests-show-runs
+                :nostr-requests-show-connections]}
 
    :nostr-pubkeys
    {::parent   :nostr
-    ::children [:nostr-pubkeys-events
-                :nostr-pubkeys-relays
-                :nostr-pubkeys-items]}
+    ::children [:nostr-pubkeys-show-events
+                :nostr-pubkeys-show-relays
+                :nostr-pubkeys-show-items]}
 
    :nostr-runs
    {::parent   :nostr
-    ::children [:nostr-runs-witnesses]}
+    ::children [:nostr-runs-show-witnesses]}
 
    :nostr-subscriptions
    {::parent   :nostr
-    ::children [:nostr-subscriptions-pubkeys]}
+    ::children [:nostr-subscriptions-show-pubkeys]}
 
    :root
    {::parent   nil
@@ -233,12 +234,12 @@
 
    :settings-ln-nodes
    {::parent   :settings-ln
-    ::children [:settings-ln-nodes-accounts
-                :settings-ln-nodes-addresses
-                :settings-ln-nodes-channels
-                :settings-ln-nodes-peers
-                :settings-ln-nodes-remote-nodes
-                :settings-ln-nodes-wallet-addresses]}
+    ::children [:settings-ln-nodes-show-accounts
+                :settings-ln-nodes-show-addresses
+                :settings-ln-nodes-show-channels
+                :settings-ln-nodes-show-peers
+                :settings-ln-nodes-show-remote-nodes
+                :settings-ln-nodes-show-wallet-addresses]}
 
    :settings
    {::parent   :root
@@ -250,7 +251,7 @@
 
    :settings-rate-sources
    {::parent   :settings
-    ::children [:settings-rate-sources-accounts]}
+    ::children [:settings-rate-sources-show-accounts]}
 
    :sidebar
    {::parent   :root

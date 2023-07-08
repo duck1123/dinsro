@@ -35,6 +35,7 @@
 (def index-page-key :admin-core-nodes)
 (def model-key ::m.c.nodes/id)
 (def show-page-key :admin-core-nodes-show)
+(def show-menu-key :admin-core-nodes)
 
 (def debug-props false)
 (def button-info
@@ -113,12 +114,12 @@
                        ::m.c.nodes/network                 (comp/get-initial-state u.links/NetworkLinkForm)
                        :ui/edit-form                       (comp/get-initial-state EditForm)
                        :ui/editing?                        false
-                       :ui/nav-menu                        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-nodes
+                       :ui/nav-menu                        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id show-menu-key
                                                                                                     :id            id})
                        :ui/router                          (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/edit-form [EditForm {}]
-                     :ui/nav-menu  [u.menus/NavMenu {::m.navbars/id :core-nodes}]
+                     :ui/nav-menu  [u.menus/NavMenu {::m.navbars/id show-menu-key}]
                      :ui/router    [Router {}]})
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name

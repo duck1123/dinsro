@@ -4,9 +4,9 @@
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.debug :as u.debug]
    [lambdaisland.glogc :as log]))
 
 (defn convert-item
@@ -65,9 +65,7 @@
                                 (log/debug :NavMenu/click-no-id {})
                                 (rroute/route-to! this route {}))))
                           (throw (js/Error. "no route"))))})
-
-      (ui-segment {:color "red" :inverted true}
-        "No items"))))
+      (u.debug/load-error props "Nav menu children"))))
 
 (def ui-nav-menu
   "Display a nav menu for controlling subpages"

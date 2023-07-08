@@ -16,7 +16,7 @@
 ;; [[../../../../joins/core/tx_in.cljc]]
 ;; [[../../../../model/core/tx_out.cljc]]
 
-(def index-page-key :admin-core-transactions-inputs)
+(def index-page-key :admin-core-transactions-show-inputs)
 (def model-key ::m.c.tx-in/id)
 (def parent-model-key ::m.c.transactions/id)
 
@@ -57,3 +57,5 @@
     (ui-report report)
     (ui-segment {:color "red" :inverted true}
       "Failed to load page")))
+
+(def ui-subpage (comp/factory SubPage))

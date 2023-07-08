@@ -4,18 +4,18 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../../joins/accounts.cljc]]
 ;; [[../../../../model/accounts.cljc]]
 
-(def index-page-key :admin-core-wallets-accounts)
+(def index-page-key :admin-core-wallets-show-accounts)
 (def model-key ::m.accounts/id)
 (def parent-model-key ::m.c.wallets/id)
 
@@ -25,16 +25,16 @@
                          ::m.accounts/user #(u.links/ui-user-link %2)}
    ro/columns           [m.accounts/name
                          m.accounts/user]
-   ro/control-layout    {:inputs         [[::m.c.wallets/id]]
+   ro/control-layout    {:inputs         [[parent-model-key]]
                          :action-buttons [::refresh]}
    ro/controls          {::refresh        u.links/refresh-control
-                         ::m.c.wallets/id {:type "uuid"}}
+                         parent-model-key {:type "uuid"}}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
    ro/row-pk            m.accounts/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.accounts/index
+   ro/source-attribute  ::j.accounts/admin-index
    ro/title             "Accounts"})
 
 (def ui-report (comp/factory Report))
@@ -54,5 +54,6 @@
   (log/info :SubPage/starting {:props props})
   (if (and report id)
     (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin show wallet accounts page")))
+
+(def ui-sub-page (comp/factory SubPage))

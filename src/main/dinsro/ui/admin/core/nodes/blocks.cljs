@@ -20,7 +20,7 @@
 ;; [[../../../../joins/core/blocks.cljc]]
 ;; [[../../../../model/core/blocks.cljc]]
 
-(def index-page-key :admin-core-nodes-blocks)
+(def index-page-key :admin-core-nodes-show-blocks)
 (def model-key ::m.c.blocks/id)
 (def parent-model-key ::m.c.nodes/id)
 (def router-key :dinsro.ui.core.nodes/Router)
