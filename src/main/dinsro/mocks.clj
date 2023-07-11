@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -9,6 +10,8 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    [dinsro.queries.accounts :as q.accounts]
+   [dinsro.queries.core.blocks :as q.c.blocks]
+   [dinsro.queries.core.transactions :as q.c.transactions]
    [dinsro.queries.currencies :as q.currencies]
    [dinsro.queries.ln.nodes :as q.ln.nodes]
    [dinsro.queries.rate-sources :as q.rate-sources]
@@ -99,6 +102,10 @@
         id (q.ln.nodes/create-record params)]
     (q.ln.nodes/read-record id)))
 
+(defn mock-block
+  []
+  {})
+
 (comment
   (ds/gen-key ::m.users/id)
   (ds/gen-key ::m.users/hashed-value)
@@ -136,5 +143,22 @@
 
   (mock-ln-node)
   (ds/gen-key ::m.ln.nodes/item)
+
+  (ds/gen-key ::m.c.blocks/item)
+  (q.c.blocks/index-ids)
+  (q.c.blocks/read-record (first (q.c.blocks/index-ids)))
+
+  (def network-id #uuid "018931eb-598f-834e-b8b9-4d815e052199")
+
+  (q.c.blocks/index-ids {::m.c.blocks/network network-id})
+
+  (q.c.blocks/fetch-by-network-and-height network-id 109)
+
+  (q.c.transactions/index-records
+   #_{::m.c.blocks/id
+      #uuid "018931eb-6610-8b93-999d-fc556048c121"})
+  (q.c.transactions/index-ids
+   {::m.c.blocks/id
+    #uuid "018931eb-6610-8b93-999d-fc556048c121"})
 
   nil)

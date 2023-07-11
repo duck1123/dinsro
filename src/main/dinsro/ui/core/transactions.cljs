@@ -14,12 +14,14 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.transactions.inputs :as u.c.t.inputs]
    [dinsro.ui.core.transactions.outputs :as u.c.t.outputs]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/core/transactions.cljc]]
 ;; [[../../model/core/transactions.cljc]]
+;; [[../../ui/admin/core/transactions.cljs]]
 
 (def index-page-key :core-transactions)
 (def model-key ::m.c.transactions/id)
@@ -116,20 +118,22 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.c.transactions/keys [id]
-          ::m.navlinks/keys [target]
-          :as props}]
+  [_this {::m.navlinks/keys [target]
+          :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.c.transactions/id nil
-                   ::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
+   :initial-state (fn [props]
+                    (let [id (get props model-key)]
+                      {model-key           id
+                       ::m.navlinks/id     show-page-key
+                       ::m.navlinks/target {}}))
    :query         [::m.c.transactions/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["transaction" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+  (if (get props model-key)
+    (if target
+      (ui-show target)
+      (u.debug/load-error props "core transactions page"))
+    (u.debug/load-error props "core transactions page")))

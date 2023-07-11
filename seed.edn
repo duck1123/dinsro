@@ -33,15 +33,14 @@
    :rpcpass "rpcpassword"
    :peers   []}
 
-  #_
-  {:name    "bitcoin-larry"
-   :host    "larry-bitcoind.larry"
-   :port    18332
-   :chain   "bitcoin"
-   :network "testnet"
-   :rpcuser "rpcuser"
-   :rpcpass "rpcpassword"
-   :peers   []}]
+  #_{:name    "bitcoin-larry"
+     :host    "larry-bitcoind.larry"
+     :port    18332
+     :chain   "bitcoin"
+     :network "testnet"
+     :rpcuser "rpcuser"
+     :rpcpass "rpcpassword"
+     :peers   []}]
 
  :users
  [{:username "admin"
@@ -270,6 +269,7 @@
      :blockheight 0
      :name        "Wallet A"
      :descriptor  "wpkh([7c6cf2c1/84h/1h/0h]tpubDDV8TbjuWeytsM7mAwTTkwVqWvmZ6TpMj1qQ8xNmNe6fZcZPwf1nDocKoYSF4vjM1XAoVdie8avWzE8hTpt8pgsCosTdAjnweSy7bR1kAwc/0/*)#8phlkw5l"
+     ;; universe loud stable patrol artwork chimney acoustic chief one use object gossip enter green scout brother worry fancy olive salmon chef repair hospital milk
      :seed        ["universe" "loud"   "stable" "patrol"  "artwork"  "chimney"
                    "acoustic" "chief"  "one"    "use"     "object"   "gossip"
                    "enter"    "green"  "scout"  "brother" "worry"    "fancy"

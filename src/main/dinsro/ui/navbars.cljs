@@ -28,6 +28,7 @@
 ;; [../mutations/navbars.cljc]
 
 (def index-page-key :navbars)
+(def log-props true)
 
 (defn get-logged-in
   [props]
@@ -260,7 +261,7 @@
                    {[::auth/authorization :local] (comp/get-query NavbarAuthQuery)}
                    :ui/expanded?
                    [::uism/asm-id ::mu.navbars/navbarsm]]}
-  (log/trace :navbar/pre-rendering {:props props})
+  (log/trace :Navbar/starting {:props props})
   (let [logged-in? (get-logged-in props)
         links      (::m.navbars/children (if logged-in? authenticated unauthenticated))]
     (log/trace :navbar/rendering {:inverted? inverted? :logged-in? logged-in?})

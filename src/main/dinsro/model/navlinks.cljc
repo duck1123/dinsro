@@ -208,6 +208,51 @@
     ::router        :admin-core
     ::required-role :admin}
 
+   :admin-core-networks-show-addresses
+   {::control       :dinsro.ui.admin.core.networks.addresses/SubPage
+    ::label         "Addresses"
+    ::model-key     :dinsro.model.core.addresses/id
+    ::parent-key    :admin-core-networks-show
+    ::route         :dinsro.ui.admin.core.networks.addresses/SubPage
+    ::router        :admin-core-networks
+    ::required-role :admin}
+
+   :admin-core-networks-show-blocks
+   {::control       :dinsro.ui.admin.core.networks.blocks/SubPage
+    ::label         "Blocks"
+    ::model-key     :dinsro.model.core.blocks/id
+    ::parent-key    :admin-core-networks-show
+    ::route         :dinsro.ui.admin.core.networks.blocks/SubPage
+    ::router        :admin-core-networks
+    ::required-role :admin}
+
+   :admin-core-networks-show-core-nodes
+   {::control       :dinsro.ui.admin-core.networks.nodes/SubPage
+    ::label         "Core Nodes"
+    ::model-key     :dinsro.model.core.nodes/id
+    ::parent-key    :admin-core-networks-show
+    ::route         :dinsro.ui.admin-core.networks.nodes/SubPage
+    ::router        :admin-core-networks
+    ::required-role :admin}
+
+   :admin-core-networks-show-ln-nodes
+   {::control       :dinsro.ui.admin-core.networks.ln-nodes/SubPage
+    ::label         "LN Nodes"
+    ::model-key     :dinsro.model.ln.nodes/id
+    ::parent-key    :admin-core-networks-show
+    ::route         :dinsro.ui.admin-core.networks.ln-nodes/SubPage
+    ::router        :admin-core-networks
+    ::required-role :admin}
+
+   :admin-core-networks-show-wallets
+   {::control       :dinsro.ui.admin.core.networks.wallets/SubPage
+    ::label         "Wallets"
+    ::model-key     :dinsro.model.core.wallets/id
+    ::parent-key    :admin-core-networks-show
+    ::route         :dinsro.ui.admin.core.networks.wallets/SubPage
+    ::router        :admin-core-networks
+    ::required-role :admin}
+
    :admin-core-nodes
    {::label         "Nodes"
     ::control       :dinsro.ui.admin.core.nodes/IndexPage
@@ -721,9 +766,19 @@
     ::label         "Show Pubkey"
     ::model-key     :dinsro.model.nostr.pubkeys/id
     ::parent-key    :admin-nostr-pubkeys
+    ::navigate-key :admin-nostr-pubkeys-show-relays
     ::route         :dinsro.ui.admin.nostr.pubkeys/ShowPage
     ::router        :admin-nostr
     ::required-role :admin}
+
+   :admin-nostr-pubkeys-show-relays
+   {::control       :dinsro.ui.admin.nostr.pubkeys.relays/SubPage
+    ::label         "Relays"
+    ::model-key     :dinsro.model.nostr.relays/id
+    ::parent-key    :nostr-pubkeys-show
+    ::route         :dinsro.ui.admin.nostr.pubkeys.relays/SubPage
+    ::router        :nostr-pubkeys
+    ::required-role :user}
 
    :admin-nostr-relays
    {::control       :dinsro.ui.admin.nostr.relays/IndexPage
@@ -1020,13 +1075,22 @@
     ::router        :root
     ::required-role :user}
 
+   :contacts-show
+   {::control       :dinsro.ui.contacts/ShowPage
+    ::label         "Show Contact"
+    ::model-key     :dinsro.model.contacts/id
+    ::parent-key    :root
+    ::route         :dinsro.ui.contacts/ShowPage
+    ::router        :root
+    ::required-role :user}
+
    :core
    {::control       :dinsro.ui.core/Page
     ::description   "Router for core"
     ::label         "Core"
     ::parent-key    :root
     ::route         :dinsro.ui.core.dashboard/Page
-    ::router        :route
+    ::router        :root
     ::required-role :guest}
 
    :core-blocks-show
@@ -1982,6 +2046,7 @@
 (defattr navigate ::navigate :ref
   {ao/identities #{::id}
    ao/pc-input   #{::id}
+   ao/target     ::id
    ao/pc-resolve
    (fn [_env props]
      (let [{::keys [id]} props
@@ -2001,6 +2066,7 @@
 (defattr parent ::parent :ref
   {ao/identities #{::id}
    ao/pc-input   #{::id ::parent-key}
+   ao/target     ::id
    ao/pc-resolve (fn [_env {:keys [parent-key]}]
                    {::parent (ident parent-key)})})
 

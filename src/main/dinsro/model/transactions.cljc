@@ -7,6 +7,7 @@
    [dinsro.specs :as ds]))
 
 ;; [[../joins/transactions.cljc]]
+;; [[../ui/admin/transactions.cljs]]
 ;; [[../ui/transactions.cljs]]
 
 (>def ::id        uuid?)

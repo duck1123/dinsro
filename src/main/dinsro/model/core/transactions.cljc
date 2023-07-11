@@ -9,6 +9,9 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [lambdaisland.glogc :as log]))
 
+;; [[../../queries/core/transactions.clj]]
+;; [[../../ui/core/transactions.cljs]]
+
 (s/def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

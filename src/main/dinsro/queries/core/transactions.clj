@@ -14,6 +14,10 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../joins/core/transactions.cljc]]
+;; [[../../model/core/transactions.cljc]]
+;; [[../../../../test/dinsro/queries/core/transactions_test.clj]]
+
 (def query-info
   {:ident   ::m.c.transactions/id
    :pk      '?transaction-id
@@ -24,12 +28,12 @@
    (fn [[network-id block-id tx-in-id] rules]
      (->> rules
           (concat-when block-id
-            [['?block-id         ::m.c.blocks/network     '?network-id]])
+            [['?transaction-id   ::m.c.transactions/block '?block-id]])
           (concat-when network-id
-            [['?network-block-id ::m.c.blocks/network     '?network-id]
-             ['?transaction-id   ::m.c.transactions/block '?network-block-id]])
+            [['?network-block-id ::m.c.blocks/network       '?network-id]
+             ['?transaction-id   ::m.c.transactions/block   '?network-block-id]])
           (concat-when tx-in-id
-            [['?tx-in-id         ::m.c.tx-in/transaction  '?transaction-id]])))})
+            [['?tx-in-id         ::m.c.tx-in/transaction    '?transaction-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))

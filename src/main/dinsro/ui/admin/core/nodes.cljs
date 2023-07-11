@@ -77,17 +77,17 @@
 
 (form/defsc-form EditForm
   [this props]
-  {fo/attributes [m.c.nodes/name
-                  m.c.nodes/host
-                  m.c.nodes/port
-                  m.c.nodes/network
-                  m.c.nodes/rpcuser
-                  m.c.nodes/rpcpass]
+  {fo/attributes    [m.c.nodes/name
+                     m.c.nodes/host
+                     m.c.nodes/port
+                     m.c.nodes/network
+                     m.c.nodes/rpcuser
+                     m.c.nodes/rpcpass]
    fo/field-options {::m.c.nodes/network u.pickers/network-picker}
-   fo/field-styles   {::m.c.nodes/network :pick-one}
-   fo/id m.c.nodes/id
-   fo/route-prefix "edit-node"
-   fo/title "Edit Node"}
+   fo/field-styles  {::m.c.nodes/network :pick-one}
+   fo/id            m.c.nodes/id
+   fo/route-prefix  "edit-node"
+   fo/title         "Edit Node"}
   (log/info :EditForm/starting {:props props})
   (form/render-layout this props))
 

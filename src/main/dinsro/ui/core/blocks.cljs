@@ -14,6 +14,7 @@
    [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.blocks.transactions :as u.c.b.transactions]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -88,48 +89,47 @@
                              ;; :id id
                              ;; :this this
                              })
-  (dom/div {}
-    (if id
-      (ui-segment {}
-        (dom/h1 {}
-          "Block " height
-          (when-not (and (not force-fetch-button) fetched?)
-            (dom/span {}
-              " ("
-              (dom/a {:href    "#"
-                      :onClick #(comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})])}
-                "unfetched")
-              ")")))
-        (dom/dl {}
-          (dom/dt {} "Hash")
-          (dom/dd {} hash)
-          (dom/dt {} "Weight")
-          (dom/dd {} weight)
-          (dom/dt {} "Nonce")
-          (dom/dd {} nonce)
-          (dom/dt {} "Network")
-          (dom/dd {} (u.links/ui-network-link network))
-          (when previous-block
-            (comp/fragment
-             (dom/dt {} "Previous")
-             (dom/dd {} (u.links/ui-block-height-link previous-block))))
-          (when next-block
-            (comp/fragment
-             (dom/dt {} "Next")
-             (dom/dd {} (u.links/ui-block-height-link next-block)))))
-        (when debug-page
-          (dom/button {:onClick (fn [_e]
-                                  (log/info :ShowBlock/fetch-button-clicked {})
-                                  (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
-            "Fetch")))
-      (ui-segment {:color "red" :inverted true}
-        "Failed to load record"))
-    (if id
-      (dom/div {}
-        ((comp/factory u.c.b.transactions/SubPage) transactions))
-      (dom/div {}
-        (ui-segment {:color "red" :inverted true}
-          "No id")))))
+  (if id
+    (dom/div {}
+      (if id
+        (ui-segment {}
+          (dom/h1 {}
+            "Block " height
+            (when-not (and (not force-fetch-button) fetched?)
+              (dom/span {}
+                " ("
+                (dom/a {:href    "#"
+                        :onClick #(comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})])}
+                  "unfetched")
+                ")")))
+          (dom/dl {}
+            (dom/dt {} "Hash")
+            (dom/dd {} hash)
+            (dom/dt {} "Weight")
+            (dom/dd {} weight)
+            (dom/dt {} "Nonce")
+            (dom/dd {} nonce)
+            (dom/dt {} "Network")
+            (dom/dd {} (u.links/ui-network-link network))
+            (when previous-block
+              (comp/fragment
+               (dom/dt {} "Previous")
+               (dom/dd {} (u.links/ui-block-height-link previous-block))))
+            (when next-block
+              (comp/fragment
+               (dom/dt {} "Next")
+               (dom/dd {} (u.links/ui-block-height-link next-block)))))
+          (when debug-page
+            (dom/button {:onClick (fn [_e]
+                                    (log/info :ShowBlock/fetch-button-clicked {})
+                                    (comp/transact! this [(mu.c.blocks/fetch! {::m.c.blocks/id id})]))}
+              "Fetch")))
+        (u.debug/load-error props "record"))
+      (if id
+        (dom/div {}
+          (u.c.b.transactions/ui-subpage transactions))
+        (u.debug/load-error props "no id")))
+    (u.debug/load-error props "no id")))
 
 (def ui-show (comp/factory Show))
 

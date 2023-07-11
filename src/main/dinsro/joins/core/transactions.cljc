@@ -15,6 +15,8 @@
    #?(:clj [dinsro.queries.core.tx-out :as q.c.tx-out])
    [dinsro.specs]))
 
+;; [[../../queries/core/transactions.clj]]
+
 (comment ::m.c.blocks/_)
 
 (def join-info

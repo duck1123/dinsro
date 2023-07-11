@@ -6,8 +6,21 @@
    [dinsro.responses.contacts :as r.contacts]
    [lambdaisland.glogc :as log]))
 
-;; [../actions/contacts.clj]
-;; [../mutations/contacts.cljc]
+;; [[../actions/contacts.clj]]
+;; [[../mutations/contacts.cljc]]
+;; [[../ui/contacts.cljs]]
+
+(defn create!
+  [{:keys [query-params]} props]
+  (log/info :create!/starting {:props props :query-params query-params})
+  (let [actor-id (:actor/id query-params)
+        props    (assoc props ::m.contacts/user actor-id)
+        props    (dissoc props ::m.contacts/id)
+        id       (a.contacts/create! props)
+        ids      [id]
+        idents   (m.contacts/idents ids)]
+    {::mu/status                  :ok
+     ::r.contacts/created-records idents}))
 
 (defn delete!
   [_env props]

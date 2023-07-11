@@ -40,6 +40,7 @@
 (def override-form true)
 (def override-report false)
 (def show-controls false)
+(def show-transactions true)
 (def show-page-key :accounts-show)
 
 (form/defsc-form NewForm
@@ -171,8 +172,6 @@
             (map ui-body-item current-rows)))))))
 
 (def ui-report (comp/factory Report))
-
-(def show-transactions false)
 
 (defsc Show
   [_this {::m.accounts/keys [name currency source wallet]

@@ -24,6 +24,9 @@
 (def model-key ::m.currencies/id)
 (def show-page-key :admin-currencies-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.currencies/delete!))
+
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.currencies/name
                     m.currencies/code]
@@ -39,7 +42,8 @@
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.currencies/name #(u.links/ui-currency-link %3)}
-   ro/columns           [m.currencies/name m.currencies/code
+   ro/columns           [m.currencies/name
+                         m.currencies/code
                          j.currencies/source-count
                          j.currencies/rate-count]
    ro/controls          {::new     new-button
@@ -47,7 +51,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.currencies/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.currencies/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.currencies/index

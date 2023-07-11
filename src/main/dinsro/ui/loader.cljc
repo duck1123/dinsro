@@ -33,8 +33,12 @@
 (defn subpage-loader
   "componentDidMount handler for SubPage components that load a report"
   [parent-model-key router-key Report this]
-  (let [props    (comp/props this)
+  (let [props     (comp/props this)
         parent-id (get-in props [[::dr/id router-key] parent-model-key])]
+    (log/info :subpage-loader/starting
+      {:parent-id        parent-id
+       :parent-model-key parent-model-key
+       :props            props})
     (report/start-report! this Report {:route-params {parent-model-key parent-id}})))
 
 (defn merge-pages
@@ -65,7 +69,7 @@
   [parent-ident-key mappings]
   (fn [ctx]
     (let [merged (merge-pages ctx parent-ident-key mappings)]
-      (log/trace :page-merger/finished
+      (log/debug :page-merger/finished
         {:parent-ident-key parent-ident-key
          :merged           merged
          :mappings         mappings
@@ -177,9 +181,10 @@
           ident                     [::m.navlinks/id page-id]
           control                   (comp/registry-key->class control-key)]
       (log/debug :targeted-subpage-loader/starting
-        {:page-id page-id
-         :props props
-         :record-id record-id})
+        {:page-id   page-id
+         :props     props
+         :record-id record-id
+         :model-key model-key})
       (swap! state-atom assoc-in [::m.navlinks/id page-id model-key] record-id)
       (dr/route-deferred ident
         (fn []

@@ -143,7 +143,7 @@
          (take record-limit)
          (map (fn [[date rate]] [(.getTime date) rate])))))
 
-(>defn delete-record
+(>defn delete!
   [id]
   [:xt/id => nil?]
   (let [node (c.xtdb/get-node)]

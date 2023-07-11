@@ -9,6 +9,8 @@
    [dinsro.ui.debug :as u.debug]
    [lambdaisland.glogc :as log]))
 
+(def log-props? false)
+
 (defn convert-item
   [item]
   (log/trace :convert-item/starting {:item item})
@@ -50,21 +52,23 @@
        :children        children
        :converted-items converted-items})
     (if (seq converted-items)
-      (ui-menu
-        {:items       converted-items
-         :onItemClick (fn [_e d]
-                        (if-let [route-name (get (js->clj d) "route")]
-                          (let [route-kw (keyword route-name)
-                                route    (comp/registry-key->class route-kw)]
-                            (log/info :NavMenu/clicked {:route-kw route-kw :route route :id id})
-                            (if id
-                              (do
-                                (log/debug :NavMenu/click-with-id {:id id})
-                                (rroute/route-to! this route {:id (str id)}))
-                              (do
-                                (log/debug :NavMenu/click-no-id {})
-                                (rroute/route-to! this route {}))))
-                          (throw (js/Error. "no route"))))})
+      (comp/fragment
+       (ui-menu
+         {:items       converted-items
+          :onItemClick (fn [_e d]
+                         (if-let [route-name (get (js->clj d) "route")]
+                           (let [route-kw (keyword route-name)
+                                 route    (comp/registry-key->class route-kw)]
+                             (log/info :NavMenu/clicked {:route-kw route-kw :route route :id id})
+                             (if id
+                               (do
+                                 (log/debug :NavMenu/click-with-id {:id id})
+                                 (rroute/route-to! this route {:id (str id)}))
+                               (do
+                                 (log/debug :NavMenu/click-no-id {})
+                                 (rroute/route-to! this route {}))))
+                           (throw (js/Error. "no route"))))})
+       (when log-props? (u.debug/log-props props)))
       (u.debug/load-error props "Nav menu children"))))
 
 (def ui-nav-menu

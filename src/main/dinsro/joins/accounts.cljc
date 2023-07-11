@@ -13,31 +13,39 @@
    #?(:clj [dinsro.queries.transactions :as q.transactions])
    [dinsro.specs]))
 
+;; [[../model/accounts.cljc]]
+;; [[../ui/accounts.cljs]]
+
 (comment ::m.c.wallets/_ ::m.rate-sources/_)
+
+(def model-key ::m.accounts/id)
 
 (def join-info
   (merge
-   {:idents m.accounts/idents}
+   {:model-key model-key
+    :idents m.accounts/idents}
    #?(:clj {:indexer q.accounts/index-ids
             :counter q.accounts/count-ids})))
 
-(defattr admin-index
-  "All accounts regardless of user"
-  ::admin-index :ref
-  {ao/target    ::m.accounts/id
-   ao/pc-output [{::admin-index [:total {:results [::m.accounts/id]}]}]
-   ao/pc-resolve
-   (fn [env props]
-     {::admin-index (j/make-admin-indexer join-info env props)})})
+(defattr admin-index ::admin-index :ref
+  {ao/target     model-key
+   ao/pc-output  [{::admin-index [:total {:results [model-key]}]}]
+   ao/pc-resolve (fn [env props] {::admin-index (j/make-admin-indexer join-info env props)})})
 
-(defattr index
-  "All accounts belonging to authenticated user"
-  ::index :ref
-  {ao/target    ::m.accounts/id
-   ao/pc-output [{::index [:total {:results [::m.accounts/id]}]}]
-   ao/pc-resolve
-   (fn [env props]
-     {::index (j/make-indexer join-info env props)})})
+(defattr flat-admin-index ::flat-admin-index :ref
+  {ao/target     model-key
+   ao/pc-output  [{::flat-admin-index [model-key]}]
+   ao/pc-resolve (fn [env props] {::flat-admin-index (j/make-flat-admin-indexer join-info env props)})})
+
+(defattr flat-index ::flat-index :ref
+  {ao/target    model-key
+   ao/pc-output [{::flat-index [model-key]}]
+   ao/pc-resolve (fn [env props] {::flat-index (j/make-flat-indexer join-info env props)})})
+
+(defattr index ::index :ref
+  {ao/target    model-key
+   ao/pc-output [{::index [:total {:results [model-key]}]}]
+   ao/pc-resolve (fn [env props] {::index (j/make-indexer join-info env props)})})
 
 (defattr debit-count
   "Count of debits associated with account"
@@ -80,4 +88,6 @@
    ao/pc-resolve (fn [_ {::keys [transactions]}] {::transaction-count (count transactions)})})
 
 (def attributes
-  [admin-index debits debit-count index transaction-count transactions])
+  [admin-index debits debit-count
+   flat-index flat-admin-index
+   index transaction-count transactions])

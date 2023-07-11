@@ -47,6 +47,21 @@
                 :admin-core-wallets
                 :admin-core-wallet-addresses]}
 
+   :admin-core-networks
+   {::parent   :admin-core
+    ::router   :dinsro.ui.admin.core.networks/Router
+    ::children [:admin-core-networks-show-addresses
+                :admin-core-networks-show-blocks
+                :admin-core-networks-show-ln-nodes
+                :admin-core-networks-show-core-nodes
+                :admin-core-networks-show-wallets]}
+
+   :admin-core-nodes
+   {::parent   :admin-core
+    ::router   :dinsro.ui.admin.core.nodes/Router
+    ::children [:admin-core-nodes-show-peers
+                :admin-core-nodes-show-blocks]}
+
    :admin-ln
    {::parent   :admin
     ::router   :dinsro.ui.admin.ln/Router
@@ -80,6 +95,11 @@
    {::parent   :admin-nostr
     ::router   :dinsro.ui.admin.nostr.connections/Router
     ::children [:admin-nostr-connections-show-runs]}
+
+   :admin-nostr-pubkeys
+   {::parent   :admin-nostr
+    ::router   :dinsro.ui.admin.nostr.pubkeys/Router
+    ::children [:admin-nostr-pubkeys-show-relays]}
 
    :admin-nostr-relays
    {::parent   :admin-nostr
@@ -127,20 +147,20 @@
 
    :core-nodes
    {::parent   :core
-    ::router :dinsro.ui.core.nodes/Router
+    ::router   :dinsro.ui.core.nodes/Router
     ::children [:core-nodes-show-peers
                 :core-nodes-show-blocks]}
 
    :currencies
    {::parent   :root
-    ::router :dinsro.ui.currencies/Router
+    ::router   :dinsro.ui.currencies/Router
     ::children [:currencies-show-rate-sources
                 :currencies-show-accounts
                 :currencies-show-rates]}
 
    :ln-nodes
    {::parent   :ln
-    ::router :dinsro.ui.ln.nodes/Router
+    ::router   :dinsro.ui.ln.nodes/Router
     ::children [:ln-nodes-show-accounts
                 :ln-nodes-show-addresses
                 :ln-nodes-show-channels

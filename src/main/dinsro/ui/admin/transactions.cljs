@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.transactions :as j.transactions]
+   [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.mutations.transactions :as mu.transactions]
@@ -21,18 +22,34 @@
 
 ;; [[../../joins/transactions.cljc]]
 ;; [[../../model/transactions.cljc]]
+;; [[../../ui/transactions.cljs]]
 
 (def index-page-key :admin-transactions)
 (def model-key ::m.transactions/id)
 (def show-page-key :admin-transactions-show)
 
+(form/defsc-form NewDebit
+  [_this _props]
+  {fo/attributes    [m.debits/value
+                     m.debits/account]
+   fo/field-options {::m.debits/account u.pickers/admin-account-picker}
+   fo/field-styles  {::m.debits/account :pick-one}
+   fo/title         "Debit"
+   fo/route-prefix  "new-debit"
+   fo/id            m.debits/id})
+
 (form/defsc-form NewForm [_this _props]
-  {fo/attributes    [m.transactions/description]
+  {fo/attributes    [m.transactions/description
+                     m.transactions/date
+                     j.transactions/debits
+                     #_m.transactions/account
+                     #_m.transactions/user]
    fo/cancel-route  ["transactions"]
-   fo/field-styles  {::m.transactions/account :pick-one}
-   fo/field-options {::m.transactions/account u.pickers/account-picker}
+   ;; fo/field-styles  {::m.transactions/account :pick-one}
+   ;; fo/field-options {::m.transactions/account u.pickers/account-picker}
    fo/id            m.transactions/id
-   fo/route-prefix  "transaction-form"
+   fo/route-prefix  "new-transaction"
+   fo/subforms      {::j.transactions/debits {fo/ui NewDebit}}
    fo/title         "Transaction"})
 
 (def new-button

@@ -4,7 +4,6 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.transactions :as m.c.transactions]
@@ -12,6 +11,7 @@
    [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.mutations.core.transactions :as mu.c.transactions]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
@@ -28,9 +28,9 @@
    ro/columns           [m.c.transactions/tx-id
                          m.c.transactions/fetched?]
    ro/control-layout    {:action-buttons [::fetch ::refresh]}
-   ro/controls          {::fetch         (u.buttons/fetch-button ::m.c.blocks/id mu.c.blocks/fetch-transactions!)
-                         ::refresh       u.links/refresh-control
-                         ::m.c.blocks/id {:type :uuid :label "Block"}}
+   ro/controls          {::fetch          (u.buttons/fetch-button parent-model-key mu.c.blocks/fetch-transactions!)
+                         ::refresh        u.links/refresh-control
+                         parent-model-key {:type :uuid :label "Block"}}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -44,15 +44,24 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this {:ui/keys [report]
+          :as props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [props]
+                        (let [id (get props parent-model-key)]
+                          {parent-model-key id
+                           ::m.navlinks/id index-page-key
+                           :ui/report      {}}))
+   :query             (fn [_props]
+                        [parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (if report
-    (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "page"))
+    (u.debug/load-error props "id")))
+
+(def ui-subpage (comp/factory SubPage))

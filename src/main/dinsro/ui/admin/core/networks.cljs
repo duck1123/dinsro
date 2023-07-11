@@ -91,8 +91,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.networks/chain #(u.links/ui-chain-link %2)
-                         ::m.c.networks/name  #(u.links/ui-network-link %3)}
+  {ro/column-formatters {::m.c.networks/chain #(u.links/ui-admin-chain-link %2)
+                         ::m.c.networks/name  #(u.links/ui-admin-network-link %3)}
    ro/columns           [m.c.networks/name
                          m.c.networks/chain]
    ro/control-layout    {:action-buttons [::refresh]}

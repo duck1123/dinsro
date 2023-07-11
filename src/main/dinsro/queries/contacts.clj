@@ -9,6 +9,8 @@
    [dinsro.specs]
    [xtdb.api :as xt]))
 
+;; [[../actions/contacts.clj]]
+
 (def query-info
   {:ident   ::m.contacts/id
    :pk      '?contacts-id

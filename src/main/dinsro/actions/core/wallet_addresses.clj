@@ -7,6 +7,7 @@
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
+   [dinsro.queries.core.addresses :as q.c.addresses]
    [dinsro.queries.core.nodes :as q.c.nodes]
    [dinsro.queries.core.wallet-addresses :as q.c.wallet-addresses]
    [dinsro.queries.core.wallets :as q.c.wallets]
@@ -15,6 +16,7 @@
    org.bitcoins.core.crypto.ExtPublicKey))
 
 ;; [[../../model/core/wallet_addresses.cljc]]
+;; [[../../mutations/core/wallet_addresses.cljc]]
 ;; [[../../ui/admin/core/wallet_addresses.cljs]]
 
 (>defn register-address!
@@ -36,19 +38,26 @@
               ::m.c.wallet-addresses/path-index path-index})))))))
 
 (>defn generate!
-  [{wallet-id                   ::m.c.wallet-addresses/wallet
-    ::m.c.wallet-addresses/keys [address]}]
+  [{wallet-id  ::m.c.wallet-addresses/wallet
+    address-id ::m.c.wallet-addresses/address
+    :as        props}]
   [::m.c.wallet-addresses/item => any?]
-  (log/info :generate!/starting {:address address :wallet-id wallet-id})
+  (log/info :generate!/starting {:address-id address-id
+                                 :wallet-id  wallet-id
+                                 :props      props})
   (if-let [wallet (q.c.wallets/read-record wallet-id)]
-    (if-let [network-id (::m.c.wallets/network wallet)]
-      (if-let [node-id (first (q.c.nodes/find-by-network network-id))]
-        (if-let [node (q.c.nodes/read-record node-id)]
-          (let [client (a.c.node-base/get-client node)]
-            (c.bitcoin-s/generate-to-address! client address))
-          (throw (ex-info "Failed to find node" {})))
-        (throw (ex-info "Failed to find node id" {})))
-      (throw (ex-info "no network id" {})))
+    (if-let [address-record (q.c.addresses/read-record address-id)]
+      (if-let [network-id (::m.c.wallets/network wallet)]
+        (if-let [node-id (first (q.c.nodes/find-by-network network-id))]
+          (if-let [node (q.c.nodes/read-record node-id)]
+            (let [client (a.c.node-base/get-client node)
+                  address (::m.c.addresses/address address-record)]
+              (log/info :generate!/starting {:client client :address address})
+              (c.bitcoin-s/generate-to-address! client address))
+            (throw (ex-info "Failed to find node" {})))
+          (throw (ex-info "Failed to find node id" {})))
+        (throw (ex-info "no network id" {})))
+      (throw (ex-info "no address record" {})))
     (throw (ex-info "Failed to find wallet" {}))))
 
 (defn calculate-address!

@@ -41,6 +41,7 @@
                          u.a.rate-sources/IndexPage
                          u.a.rate-sources/ShowPage
                          u.a.transactions/IndexPage
+                         u.a.transactions/NewForm
                          u.a.transactions/ShowPage
                          u.a.users/IndexPage
                          u.a.users/ShowPage]}

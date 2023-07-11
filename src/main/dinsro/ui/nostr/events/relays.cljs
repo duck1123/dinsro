@@ -12,8 +12,8 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-;; [../../../joins/nostr/relays.cljc]
-;; [../../../model/nostr/relays.cljc]
+;; [[../../../joins/nostr/relays.cljc]]
+;; [[../../../model/nostr/relays.cljc]]
 
 (def index-page-key :nostr-events-show-relays)
 (def parent-model-key ::m.n.events/id)

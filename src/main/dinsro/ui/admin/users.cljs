@@ -42,6 +42,9 @@
   "The navlink id of the show page"
   :admin-users-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.users/delete!))
+
 (def debug-show false)
 (def debug-show-page false)
 (def debug-page false)
@@ -145,7 +148,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.users/id mu.users/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.users/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.users/admin-index
@@ -185,7 +188,9 @@
    :route-segment     ["user" :id]
    :will-enter        (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
-  (dom/div :.show-page
-    (if (and id target)
-      (ui-show target)
-      (u.debug/load-error props "Admin Show User Page"))))
+  (if id
+    (dom/div :.show-page
+      (if target
+        (ui-show target)
+        (u.debug/load-error props "Admin Show User Page target")))
+    (u.debug/load-error props "Admin Show User Page")))

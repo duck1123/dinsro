@@ -55,7 +55,9 @@
   [_this {::m.n.relays/keys [id]
           :ui/keys          [report]
           :as               props}]
-  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
+  {:componentDidMount
+   ;; #(report/start-report! % Report {:route-params (comp/props %)})
+   (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        ::m.n.relays/id nil

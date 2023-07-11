@@ -15,7 +15,10 @@
    [tick.alpha.api :as t]
    [xtdb.api :as xt]))
 
-;; [../ui/transactions.cljs]
+;; [[../actions/transactions.clj]]
+;; [[../joins/transactions.cljc]]
+;; [[../model/transactions.cljc]]
+;; [[../ui/transactions.cljs]]
 
 (def query-info
   {:ident   ::m.transactions/id
@@ -117,9 +120,10 @@
   [=> (s/coll-of ::m.transactions/item)]
   (map read-record (index-ids)))
 
-(>defn delete-record
+(>defn delete!
   [id]
   [:xt/id => nil?]
+  (log/info :delete!/starting {:id id})
   (let [node (c.xtdb/get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
@@ -128,7 +132,7 @@
   []
   [=> nil?]
   (doseq [id (index-ids)]
-    (delete-record id)))
+    (delete! id)))
 
 (defn find-by-account-and-user
   [account-id user-id]

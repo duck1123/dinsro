@@ -70,7 +70,7 @@
      :where [[?relay-id ::m.n.relays/address ?address]]}
    [address]))
 
-(>defn delete-record
+(>defn delete!
   [id]
   [:xt/id => nil?]
   (let [node (c.xtdb/get-node)]
@@ -80,7 +80,7 @@
 (>defn delete-all
   []
   [=> nil?]
-  (doseq [id (index-ids)] (delete-record id)))
+  (doseq [id (index-ids)] (delete! id)))
 
 (>defn register-relay
   [address]

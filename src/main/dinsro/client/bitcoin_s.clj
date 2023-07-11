@@ -193,6 +193,7 @@
 
 (defn ->bitcoin-address
   ^BitcoinAddress [address-s]
+  (log/info :->bitcoin-address/starting {:address-s address-s})
   (BitcoinAddress/apply address-s))
 
 (defn generate-to-address!

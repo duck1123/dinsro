@@ -105,7 +105,7 @@
       id)
     (throw (ex-info "User already exists" {}))))
 
-(>defn delete-record
+(>defn delete!
   "delete user by id"
   [id]
   [:xt/id => nil?]

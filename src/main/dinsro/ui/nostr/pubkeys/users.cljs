@@ -12,6 +12,8 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../model/users.cljc]]
+
 (def index-page-key :nostr-pubkeys-show-users)
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
