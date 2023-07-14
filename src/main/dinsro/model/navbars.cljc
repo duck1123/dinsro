@@ -12,281 +12,320 @@
 
 #?(:cljs (comment ::m.navlinks/id))
 
-(def menus
-  {;; The top sub menu on admin pages
-   :admin
-   {::parent   :root
-    ::router   :dinsro.ui.admin/Router
-    ::children [:admin-users
-                :admin-core
-                :admin-ln
-                :admin-nostr
-                :admin-categories
-                :admin-accounts
-                :admin-currencies
-                :admin-transactions
-                :admin-debits
-                :admin-rate-sources
-                :admin-rates
-                :admin-models
-                :navbars
-                :navlinks]}
+(defonce menus-atom (atom {}))
 
-   :admin-core
-   {::parent   :admin
-    ::router   :dinsro.ui.admin.core/Router
-    ::children [:admin-core-dashboard
-                :admin-core-addresses
-                :admin-core-blocks
-                :admin-core-chains
-                :admin-core-mnemonics
-                :admin-core-networks
-                :admin-core-nodes
-                :admin-core-peers
-                :admin-core-transactions
-                :admin-core-wallets
-                :admin-core-wallet-addresses]}
+(defn defmenu
+  [key options]
+  (swap! menus-atom assoc key options))
 
-   :admin-core-networks
-   {::parent   :admin-core
-    ::router   :dinsro.ui.admin.core.networks/Router
-    ::children [:admin-core-networks-show-addresses
-                :admin-core-networks-show-blocks
-                :admin-core-networks-show-ln-nodes
-                :admin-core-networks-show-core-nodes
-                :admin-core-networks-show-wallets]}
+;; The top sub menu on admin pages
+(defmenu :admin
+  {::parent   :root
+   ::router   :dinsro.ui.admin/Router
+   ::children [:admin-users
+               :admin-core
+               :admin-ln
+               :admin-nostr
+               :admin-categories
+               :admin-accounts
+               :admin-currencies
+               :admin-transactions
+               :admin-debits
+               :admin-rate-sources
+               :admin-rates
+               :admin-models
+               :navbars
+               :navlinks]})
 
-   :admin-core-nodes
-   {::parent   :admin-core
-    ::router   :dinsro.ui.admin.core.nodes/Router
-    ::children [:admin-core-nodes-show-peers
-                :admin-core-nodes-show-blocks]}
+(defmenu :admin-core
+  {::parent   :admin
+   ::router   :dinsro.ui.admin.core/Router
+   ::children [:admin-core-dashboard
+               :admin-core-addresses
+               :admin-core-blocks
+               :admin-core-chains
+               :admin-core-mnemonics
+               :admin-core-networks
+               :admin-core-nodes
+               :admin-core-peers
+               :admin-core-transactions
+               :admin-core-wallets
+               :admin-core-wallet-addresses]})
 
-   :admin-ln
-   {::parent   :admin
-    ::router   :dinsro.ui.admin.ln/Router
-    ::children [:admin-ln-dashboard
-                :admin-ln-accounts
-                :admin-ln-channels
-                :admin-ln-invoices
-                :admin-ln-nodes
-                :admin-ln-payreqs
-                :admin-ln-peers
-                :admin-ln-remote-nodes]}
+(defmenu
+  :admin-core-networks
+  {::parent   :admin-core
+   ::router   :dinsro.ui.admin.core.networks/Router
+   ::children [:admin-core-networks-show-addresses
+               :admin-core-networks-show-blocks
+               :admin-core-networks-show-ln-nodes
+               :admin-core-networks-show-core-nodes
+               :admin-core-networks-show-wallets]})
 
-   :admin-nostr
-   {::parent   :admin
-    ::router   :dinsro.ui.admin.nostr/Router
-    ::children [:admin-nostr-dashboard
-                :admin-nostr-relays
-                :admin-nostr-pubkeys
-                :admin-nostr-events
-                :admin-nostr-filters
-                :admin-nostr-badge-acceptances
-                :admin-nostr-badge-awards
-                :admin-nostr-badge-definitions
-                :admin-nostr-requests
-                :admin-nostr-connections
-                :admin-nostr-filter-items
-                :admin-nostr-runs
-                :admin-nostr-witnesses]}
+(defmenu
+  :admin-core-nodes
+  {::parent   :admin-core
+   ::router   :dinsro.ui.admin.core.nodes/Router
+   ::children [:admin-core-nodes-show-peers
+               :admin-core-nodes-show-blocks]})
 
-   :admin-nostr-connections
-   {::parent   :admin-nostr
-    ::router   :dinsro.ui.admin.nostr.connections/Router
-    ::children [:admin-nostr-connections-show-runs]}
+(defmenu
+  :admin-ln
+  {::parent   :admin
+   ::router   :dinsro.ui.admin.ln/Router
+   ::children [:admin-ln-dashboard
+               :admin-ln-accounts
+               :admin-ln-channels
+               :admin-ln-invoices
+               :admin-ln-nodes
+               :admin-ln-payreqs
+               :admin-ln-peers
+               :admin-ln-remote-nodes]})
 
-   :admin-nostr-pubkeys
-   {::parent   :admin-nostr
-    ::router   :dinsro.ui.admin.nostr.pubkeys/Router
-    ::children [:admin-nostr-pubkeys-show-relays]}
+(defmenu
+  :admin-nostr
+  {::parent   :admin
+   ::router   :dinsro.ui.admin.nostr/Router
+   ::children [:admin-nostr-dashboard
+               :admin-nostr-relays
+               :admin-nostr-pubkeys
+               :admin-nostr-events
+               :admin-nostr-filters
+               :admin-nostr-badge-acceptances
+               :admin-nostr-badge-awards
+               :admin-nostr-badge-definitions
+               :admin-nostr-requests
+               :admin-nostr-connections
+               :admin-nostr-filter-items
+               :admin-nostr-runs
+               :admin-nostr-witnesses]})
 
-   :admin-nostr-relays
-   {::parent   :admin-nostr
-    ::router   :dinsro.ui.admin.nostr.relays/Router
-    ::children [:admin-nostr-relays-show-connections
-                :admin-nostr-relays-show-requests
-                :admin-nostr-relays-show-events
-                :admin-nostr-relays-show-pubkeys
-                :admin-nostr-relays-show-runs
-                :admin-nostr-relays-show-witnesses]}
+(defmenu
+  :admin-nostr-connections
+  {::parent   :admin-nostr
+   ::router   :dinsro.ui.admin.nostr.connections/Router
+   ::children [:admin-nostr-connections-show-runs]})
 
-   :admin-nostr-requests
-   {::parent   :admin-nostr
-    ::router   :dinsro.ui.admin.nostr.requests/Router
-    ::children [:admin-nostr-requests-show-filters
-                :admin-nostr-requests-show-items
-                :admin-nostr-requests-show-runs
-                :admin-nostr-requests-show-connections]}
+(defmenu
+  :admin-nostr-pubkeys
+  {::parent   :admin-nostr
+   ::router   :dinsro.ui.admin.nostr.pubkeys/Router
+   ::children [:admin-nostr-pubkeys-show-relays]})
 
-   :admin-users
-   {::parent   :admin
-    ::router   :dinsro.ui.admin.users/Router
-    ::children [:admin-users-show-accounts
-                :admin-users-show-categories
-                :admin-users-show-debits
-                :admin-users-show-ln-nodes
-                :admin-users-show-pubkeys
-                :admin-users-show-transactions
-                :admin-users-show-user-pubkeys
-                :admin-users-show-wallets]}
+(defmenu
+  :admin-nostr-relays
+  {::parent   :admin-nostr
+   ::router   :dinsro.ui.admin.nostr.relays/Router
+   ::children [:admin-nostr-relays-show-connections
+               :admin-nostr-relays-show-requests
+               :admin-nostr-relays-show-events
+               :admin-nostr-relays-show-pubkeys
+               :admin-nostr-relays-show-runs
+               :admin-nostr-relays-show-witnesses]})
 
-   :core-chains
-   {::parent   :core
-    ::router   :dinsro.ui.core.chains/Router
-    ::children [:core-chains-show-networks]}
+(defmenu
+  :admin-nostr-requests
+  {::parent   :admin-nostr
+   ::router   :dinsro.ui.admin.nostr.requests/Router
+   ::children [:admin-nostr-requests-show-filters
+               :admin-nostr-requests-show-items
+               :admin-nostr-requests-show-runs
+               :admin-nostr-requests-show-connections]})
 
-   :core-networks
-   {::parent   :core
-    ::router   :dinsro.ui.core.networks/Router
-    ::children [:core-networks-show-addresses
-                :core-networks-show-blocks
-                :core-networks-show-ln-nodes
-                :core-networks-show-core-nodes
-                :core-networks-show-wallets]}
+(defmenu
+  :admin-users
+  {::parent   :admin
+   ::router   :dinsro.ui.admin.users/Router
+   ::children [:admin-users-show-accounts
+               :admin-users-show-categories
+               :admin-users-show-debits
+               :admin-users-show-ln-nodes
+               :admin-users-show-pubkeys
+               :admin-users-show-transactions
+               :admin-users-show-user-pubkeys
+               :admin-users-show-wallets]})
 
-   :core-nodes
-   {::parent   :core
-    ::router   :dinsro.ui.core.nodes/Router
-    ::children [:core-nodes-show-peers
-                :core-nodes-show-blocks]}
+(defmenu
+  :core-chains
+  {::parent   :core
+   ::router   :dinsro.ui.core.chains/Router
+   ::children [:core-chains-show-networks]})
 
-   :currencies
-   {::parent   :root
-    ::router   :dinsro.ui.currencies/Router
-    ::children [:currencies-show-rate-sources
-                :currencies-show-accounts
-                :currencies-show-rates]}
+(defmenu
+  :core-networks
+  {::parent   :core
+   ::router   :dinsro.ui.core.networks/Router
+   ::children [:core-networks-show-addresses
+               :core-networks-show-blocks
+               :core-networks-show-ln-nodes
+               :core-networks-show-core-nodes
+               :core-networks-show-wallets]})
 
-   :ln-nodes
-   {::parent   :ln
-    ::router   :dinsro.ui.ln.nodes/Router
-    ::children [:ln-nodes-show-accounts
-                :ln-nodes-show-addresses
-                :ln-nodes-show-channels
-                :ln-nodes-show-peers
-                :ln-nodes-show-remote-nodes
-                :ln-nodes-show-wallet-addresses]}
+(defmenu
+  :core-nodes
+  {::parent   :core
+   ::router   :dinsro.ui.core.nodes/Router
+   ::children [:core-nodes-show-peers
+               :core-nodes-show-blocks]})
 
-   ;; Main top bar
-   :main
-   {::parent   :root
-    ::children [:accounts
-                :transactions
-                :contacts
-                :nostr-events
-                :settings
-                :admin]}
+(defmenu
+  :currencies
+  {::parent   :root
+   ::router   :dinsro.ui.currencies/Router
+   ::children [:currencies-show-rate-sources
+               :currencies-show-accounts
+               :currencies-show-rates]})
 
-   :nostr-connections
-   {::parent   :nostr
-    ::children [:nostr-connections-show-runs]}
+(defmenu
+  :ln-nodes
+  {::parent   :ln
+   ::router   :dinsro.ui.ln.nodes/Router
+   ::children [:ln-nodes-show-accounts
+               :ln-nodes-show-addresses
+               :ln-nodes-show-channels
+               :ln-nodes-show-peers
+               :ln-nodes-show-remote-nodes
+               :ln-nodes-show-wallet-addresses]})
 
-   :nostr-event-tags
-   {::parent   :nostr
-    ::children [:nostr-event-tags-show-relays]}
+(defmenu
+;; Main top bar
+  :main
+  {::parent   :root
+   ::children [:accounts
+               :transactions
+               :contacts
+               :nostr-events
+               :settings
+               :admin]})
 
-   :nostr-events
-   {::parent   :nostr
-    ::children [:nostr-events-show-tags
-                :nostr-events-show-witnesses
-                :nostr-events-show-relays]}
+(defmenu
+  :nostr-connections
+  {::parent   :nostr
+   ::children [:nostr-connections-show-runs]})
 
-   :nostr-filters
-   {::parent   :nostr
-    ::children [:nostr-filters-show-items]}
+(defmenu
+  :nostr-event-tags
+  {::parent   :nostr
+   ::children [:nostr-event-tags-show-relays]})
 
-   :nostr-relays
-   {::parent   :nostr
-    ::children [:nostr-relays-show-connections
-                :nostr-relays-show-requests
-                :nostr-relays-show-events
-                :nostr-relays-show-pubkeys
-                :nostr-relays-show-runs
-                :nostr-relays-show-witnesses]}
+(defmenu
+  :nostr-events
+  {::parent   :nostr
+   ::children [:nostr-events-show-tags
+               :nostr-events-show-witnesses
+               :nostr-events-show-relays]})
 
-   :nostr-requests
-   {::parent   :nostr
-    ::children [:nostr-requests-show-filters
-                :nostr-requests-show-items
-                :nostr-requests-show-runs
-                :nostr-requests-show-connections]}
+(defmenu
+  :nostr-filters
+  {::parent   :nostr
+   ::children [:nostr-filters-show-items]})
 
-   :nostr-pubkeys
-   {::parent   :nostr
-    ::children [:nostr-pubkeys-show-events
-                :nostr-pubkeys-show-relays
-                :nostr-pubkeys-show-items]}
+(defmenu
+  :nostr-relays
+  {::parent   :nostr
+   ::children [:nostr-relays-show-connections
+               :nostr-relays-show-requests
+               :nostr-relays-show-events
+               :nostr-relays-show-pubkeys
+               :nostr-relays-show-runs
+               :nostr-relays-show-witnesses]})
 
-   :nostr-runs
-   {::parent   :nostr
-    ::children [:nostr-runs-show-witnesses]}
+(defmenu
+  :nostr-requests
+  {::parent   :nostr
+   ::children [:nostr-requests-show-filters
+               :nostr-requests-show-items
+               :nostr-requests-show-runs
+               :nostr-requests-show-connections]})
 
-   :nostr-subscriptions
-   {::parent   :nostr
-    ::children [:nostr-subscriptions-show-pubkeys]}
+(defmenu
+  :nostr-pubkeys
+  {::parent   :nostr
+   ::children [:nostr-pubkeys-show-events
+               :nostr-pubkeys-show-relays
+               :nostr-pubkeys-show-items]})
 
-   :root
-   {::parent   nil
-    ::router   :dinsro.ui/RootRouter
-    ::children [:accounts
-                :admin
-                :contacts
-                :currencies
-                :home
-                :login
-                :navbars
-                :navlinks
-                :nostr
-                :nodes
-                :registration
-                :settings
-                :transactions]}
+(defmenu
+  :nostr-runs
+  {::parent   :nostr
+   ::children [:nostr-runs-show-witnesses]})
 
-   :settings-ln
-   {::parent   :settings
-    ::children [:settings-ln-dashboard
-                :settings-ln-nodes
+(defmenu
+  :nostr-subscriptions
+  {::parent   :nostr
+   ::children [:nostr-subscriptions-show-pubkeys]})
+
+(defmenu
+  :root
+  {::parent   nil
+   ::router   :dinsro.ui/RootRouter
+   ::children [:accounts
+               :admin
+               :contacts
+               :currencies
+               :home
+               :login
+               :navbars
+               :navlinks
+               :nostr
+               :nodes
+               :registration
+               :settings
+               :transactions]})
+
+(defmenu
+  :settings-ln
+  {::parent   :settings
+   ::children [:settings-ln-dashboard
+               :settings-ln-nodes
                 ;; :settings-ln-channels
-                :settings-ln-payments
-                :settings-ln-payreqs
-                :settings-ln-remote-nodes]}
+               :settings-ln-payments
+               :settings-ln-payreqs
+               :settings-ln-remote-nodes]})
 
-   :settings-ln-nodes
-   {::parent   :settings-ln
-    ::children [:settings-ln-nodes-show-accounts
-                :settings-ln-nodes-show-addresses
-                :settings-ln-nodes-show-channels
-                :settings-ln-nodes-show-peers
-                :settings-ln-nodes-show-remote-nodes
-                :settings-ln-nodes-show-wallet-addresses]}
+(defmenu
+  :settings-ln-nodes
+  {::parent   :settings-ln
+   ::children [:settings-ln-nodes-show-accounts
+               :settings-ln-nodes-show-addresses
+               :settings-ln-nodes-show-channels
+               :settings-ln-nodes-show-peers
+               :settings-ln-nodes-show-remote-nodes
+               :settings-ln-nodes-show-wallet-addresses]})
 
-   :settings
-   {::parent   :root
-    ::children [:settings-dashboard
-                :settings-core
-                :settings-ln
-                :settings-rate-sources
-                :settings-categories]}
+(defmenu
+  :settings
+  {::parent   :root
+   ::children [:settings-dashboard
+               :settings-core
+               :settings-ln
+               :settings-rate-sources
+               :settings-categories]})
 
-   :settings-rate-sources
-   {::parent   :settings
-    ::children [:settings-rate-sources-show-accounts]}
+(defmenu
+  :settings-rate-sources
+  {::parent   :settings
+   ::children [:settings-rate-sources-show-accounts]})
 
-   :sidebar
-   {::parent   :root
-    ::children [:home
-                :accounts
-                :transactions
-                :contacts
-                :nostr-events
-                :settings
-                :admin]}
+(defmenu
+  :sidebar
+  {::parent   :root
+   ::children [:home
+               :accounts
+               :transactions
+               :contacts
+               :nostr-events
+               :settings
+               :admin]})
 
-   :unauth
-   {::parent   :root
-    ::children [:login
-                :registration]}})
+(defmenu
+  :unauth
+  {::parent   :root
+   ::children [:login
+               :registration]})
+
+(def menus
+  {})
 
 (defattr id ::id :uuid
   {ao/identity? true})
@@ -297,7 +336,7 @@
    ao/pc-input   #{::id}
    ao/pc-output  [{::children [::m.navlinks/id]}]
    ao/pc-resolve (fn [_env {::keys [id]}]
-                   (if-let [navbar (get menus id)]
+                   (if-let [navbar (get @menus-atom id)]
                      {::children (m.navlinks/idents (::children navbar []))}
                      {}))})
 
@@ -321,7 +360,7 @@
    (fn [_env props]
      (log/info :parent/starting {:props props})
      (let [{::keys [id]} props]
-       (if-let [navbar (get menus id)]
+       (if-let [navbar (get @menus-atom id)]
          (let [{::keys [parent]} navbar]
            {::parent (when parent (ident parent))})
          {})))})

@@ -14,14 +14,17 @@
    ao/pc-output   [{::parent-navbar [::m.navbars/id]}]
    ao/pc-resolve  (fn [_env props]
                     (let [navbar-id (::m.navbars/id props)
-                          navbar    (get m.navbars/menus navbar-id)
+                          navbar    (get @m.navbars/menus-atom navbar-id)
                           parent-id (::m.navbars/parent navbar)]
                       {::parent-navbar (when parent-id (m.navbars/ident parent-id))}))
    ao/target      ::m.navbars/id})
 
 (defattr index ::index :ref
   {ao/pc-output  [{::index [::m.navbars/id]}]
-   ao/pc-resolve (fn [_env _props] {::index (m.navbars/idents (keys m.navbars/menus))})
+   ao/pc-resolve (fn [_env _props]
+
+                   (let [ids (keys @m.navbars/menus-atom)]
+                     {::index (m.navbars/idents ids)}))
    ao/target     ::m.navbars/id})
 
 (def attributes [index parent-navbar])

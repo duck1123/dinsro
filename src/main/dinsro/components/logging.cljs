@@ -20,7 +20,7 @@
    'dinsro.ui.errors                              :info
    #_#_'dinsro.ui.links                           :debug
    'dinsro.ui.links                               :info
-   #_#_'dinsro.ui.loader                          :debug
+   'dinsro.ui.loader                              :info
    'dinsro.ui.menus                               :info
    'dinsro.ui.navbars                             :info
    'goog.net.XhrIo                                :info})

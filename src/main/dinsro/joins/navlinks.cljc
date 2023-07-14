@@ -17,7 +17,7 @@
    (if router
      (do
        (log/trace :find-path/current {:path path :router router})
-       (let [next-router (get-in m.navlinks/routes [router ::m.navlinks/router])]
+       (let [next-router (get-in @m.navlinks/routes-atom [router ::m.navlinks/router])]
          (log/trace :find-path/next {:next-router next-router})
          (recur next-router (vec (concat [router] path)))))
      ;; no more items
@@ -32,7 +32,7 @@
    ao/pc-resolve
    (fn [_env {::m.navlinks/keys [id]}]
      (log/trace :path/starting {:id id})
-     (let [router (get-in m.navlinks/routes [id ::m.navlinks/router])
+     (let [router (get-in @m.navlinks/routes-atom [id ::m.navlinks/router])
            path   (find-path router)]
        (log/trace :path/path-found {:path path})
        (let [homed-path (if (#{:home} id) [] path)
@@ -43,7 +43,7 @@
 (defattr index ::index :ref
   {ao/pc-output  [{::index [::m.navlinks/id]}]
    ao/pc-resolve (fn [_env _props]
-                   (let [ids    (sort (keys m.navlinks/routes))
+                   (let [ids    (sort (keys @m.navlinks/routes-atom))
                          idents (m.navlinks/idents ids)]
                      {::index idents}))
    ao/target     ::m.navlinks/id})

@@ -12,7 +12,7 @@
    [dinsro.ui.core.networks :as u.c.networks]
    [dinsro.ui.core.networks.addresses :as u.c.n.addresses]
    [dinsro.ui.home :as u.home]
-   [lambdaisland.glogi :as log]))
+   [lambdaisland.glogc :as log]))
 
 (defn restore-route-ensuring-leaf!
   "Attempt to restore the route given in the URL. If that fails, simply route to the default given (a class and map).

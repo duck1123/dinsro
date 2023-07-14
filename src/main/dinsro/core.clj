@@ -7,6 +7,7 @@
    [dinsro.components.seed :as c.seed]
    [dinsro.components.server]
    [dinsro.components.xtdb]
+   [dinsro.ui]
    [lambdaisland.glogc :as log]
    [mount.core :as mount])
   (:gen-class))

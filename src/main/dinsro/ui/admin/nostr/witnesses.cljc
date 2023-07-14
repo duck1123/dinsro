@@ -1,0 +1,109 @@
+(ns dinsro.ui.admin.nostr.witnesses
+  (:require
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
+   #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
+   [dinsro.joins.nostr.witnesses :as j.n.witnesses]
+   [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.model.nostr.runs :as m.n.runs]
+   [dinsro.model.nostr.witnesses :as m.n.witnesses]
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
+
+;; [[../../../actions/nostr/witnesses.clj]]
+;; [[../../../joins/nostr/witnesses.cljc]]
+;; [[../../../model/nostr/witnesses.cljc]]
+
+(def index-page-key :admin-nostr-witnesses)
+(def model-key ::m.n.witnesses/id)
+(def show-page-key :admin-nostr-witnesses-show)
+
+(report/defsc-report Report
+  [_this _props]
+  {ro/column-formatters {::m.n.witnesses/event #(u.links/ui-event-link %2)
+                         ::m.n.witnesses/run   #(u.links/ui-run-link %2)
+                         ::j.n.witnesses/relay #(u.links/ui-relay-link %2)}
+   ro/columns           [m.n.witnesses/event
+                         m.n.witnesses/run
+                         j.n.witnesses/relay]
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
+   ro/row-pk            m.n.witnesses/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.witnesses/index
+   ro/title             "Witnesses"})
+
+(def ui-report (comp/factory Report))
+
+(defsc Show
+  [_this {::m.n.witnesses/keys [id]
+          :as                  props}]
+  {:ident         ::m.n.witnesses/id
+   :initial-state (fn [props]
+                    (let [id (model-key props)]
+                      {model-key id}))
+   :query         [::m.n.witnesses/id]}
+  (log/info :Show/starting {:props props})
+  (if id
+    (ui-segment {} "TODO: Show witness")
+    (ui-segment {:color "red" :inverted true}
+      "Failed to load record")))
+
+(def ui-show (comp/factory Show))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["witnesses"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.n.witnesses/keys [id]
+          ::m.navlinks/keys    [target]
+          :as                  props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.n.witnesses/id  nil
+                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.n.witnesses/id
+                   ::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}]
+   :route-segment ["event" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (u.debug/load-error props "admin show witness")))
+
+(m.navlinks/defroute   :admin-nostr-witnesses
+  {::m.navlinks/control       ::IndexPage
+   ::m.navlinks/label         "Witnesses"
+   ::m.navlinks/model-key     ::m.n.runs/id
+   ::m.navlinks/parent-key    :admin-nostr
+   ::m.navlinks/router        :admin-nostr
+   ::m.navlinks/required-role :admin})
+
+(m.navlinks/defroute   :admin-nostr-witnesses-show
+  {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/label         "Show Witness"
+   ::m.navlinks/input-key     ::m.n.witnesses/id
+   ::m.navlinks/model-key     ::m.n.witnesses/id
+   ::m.navlinks/parent-key    :admin-nostr-witnesses
+   ::m.navlinks/router        :admin-nostr
+   ::m.navlinks/required-role :admin})

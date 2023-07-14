@@ -1,0 +1,235 @@
+(ns dinsro.ui.admin.ln.nodes
+  (:require
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
+   #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.rad.form :as form]
+   [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.picker-options :as picker-options]
+   [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.rad.report-options :as ro]
+   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
+   [dinsro.joins.ln.nodes :as j.ln.nodes]
+   [dinsro.model.core.nodes :as m.c.nodes]
+   [dinsro.model.ln.info :as m.ln.info]
+   [dinsro.model.ln.nodes :as m.ln.nodes]
+   ;; [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.model.users :as m.users]
+   [dinsro.mutations.ln.nodes :as mu.ln]
+   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.links :as u.links]
+   [dinsro.ui.ln.nodes :as u.ln.nodes]
+   [dinsro.ui.loader :as u.loader]
+   ;; [dinsro.ui.menus :as u.menus]
+   [lambdaisland.glogc :as log]))
+
+;; [[../../../joins/ln/nodes.cljc]]
+;; [[../../../model/ln/nodes.cljc]]
+
+(def index-page-key :admin-ln-nodes)
+(def model-key ::m.ln.nodes/id)
+(def override-create-form false)
+(def show-page-key :admin-ln-nodes-show)
+
+(form/defsc-form NewForm
+  [this props]
+  {fo/attributes    [m.ln.nodes/name
+                     m.ln.nodes/host
+                     m.ln.nodes/port
+                     m.ln.nodes/core-node
+                     m.ln.nodes/user]
+   fo/cancel-route  ["nodes"]
+   fo/field-options {::m.ln.nodes/core-node
+                     {::picker-options/query-key       ::m.c.nodes/index
+                      ::picker-options/query-component u.links/CoreNodeLinkForm
+                      ::picker-options/options-xform
+                      (fn [_ options]
+                        (mapv
+                         (fn [{::m.c.nodes/keys [id name]}]
+                           {:text  (str name)
+                            :value [::m.c.nodes/id id]})
+                         (sort-by ::m.c.nodes/name options)))}
+                     ::m.ln.nodes/user
+                     {::picker-options/query-key       ::m.users/index
+                      ::picker-options/query-component u.links/UserLinkForm
+                      ::picker-options/options-xform
+                      (fn [_ options]
+                        (mapv
+                         (fn [{::m.users/keys [id name]}]
+                           {:text  (str name)
+                            :value [::m.users/id id]})
+                         (sort-by ::m.users/name options)))}}
+   fo/field-styles  {::m.ln.nodes/core-node :pick-one
+                     ::m.ln.nodes/user      :pick-one}
+   fo/id            m.ln.nodes/id
+   fo/route-prefix  "create-node"
+   fo/title         "Create Lightning Node"}
+  (if override-create-form
+    (form/render-layout this props)
+    (dom/div :.ui.grid
+      (dom/div :.row
+        (dom/div :.sixteen.wide.column
+          (dom/div {}
+            (form/render-layout this props)))))))
+
+(def new-node-button
+  {:type   :button
+   :local? true
+   :label  "New Node"
+   :action (fn [this _] (form/create! this NewForm))})
+
+(report/defsc-report Report
+  [_this _props]
+  {ro/column-formatters {::m.ln.nodes/name      #(u.links/ui-admin-ln-node-link %3)
+                         ::m.ln.nodes/user      #(u.links/ui-admin-user-link %2)
+                         ::m.ln.nodes/core-node #(u.links/ui-admin-core-node-link %2)}
+   ro/columns           [m.ln.nodes/name
+                         m.ln.info/alias-attr
+                         m.ln.nodes/core-node
+                         m.ln.info/color
+                         m.ln.nodes/user]
+   ro/control-layout    {:action-buttons [::new-node]}
+   ro/controls          {::new-node new-node-button}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
+   ro/route             "nodes"
+   ro/row-pk            m.ln.nodes/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.nodes/admin-index
+   ro/title             "Lightning Node Report"})
+
+(def ui-report (comp/factory Report))
+
+(defsc Show
+  "Show a ln node"
+  [this {;; :ui/keys          [nav-menu router]
+         ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon? network]
+         :as               props}]
+  {:ident         ::m.ln.nodes/id
+   :initial-state (fn [props]
+                    (log/trace :Show/initial-state {:props props})
+                    (let [_id (::m.ln.nodes/id props)]
+                      {::m.ln.nodes/id           nil
+                       ::m.ln.nodes/user         {}
+                       ::m.ln.nodes/network      {}
+                       ::m.ln.nodes/core-node    {}
+                       ::m.ln.nodes/host         ""
+                       ::m.ln.nodes/port         0
+                       ::m.ln.nodes/hasCert?     false
+                       ::m.ln.nodes/hasMacaroon? false
+                       ;; :ui/router                (comp/get-initial-state Router)
+                       ;; :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :ln-nodes
+                       ;;                                                                    :id            id})
+                       }))
+;; :pre-merge     (u.loader/page-merger ::m.ln.nodes/id
+   ;;                  {:ui/router   [Router {}]
+   ;;                   :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :ln-nodes}]})
+   :query         [::m.ln.nodes/id
+                   ::m.ln.nodes/host
+                   ::m.ln.nodes/port
+                   ::m.ln.nodes/hasCert?
+                   ::m.ln.nodes/hasMacaroon?
+                   {::m.ln.nodes/network (comp/get-query u.links/NetworkLinkForm)}
+                   {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
+                   {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}
+                   ;; {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
+                   ;; {:ui/router (comp/get-query Router)}
+                   ]}
+  (log/info :Show/starting {:props props})
+  (dom/div {}
+    (if id
+      (ui-segment {}
+        (u.ln.nodes/ui-actions-menu
+         {::m.ln.nodes/id           id
+          ::m.ln.nodes/hasCert?     hasCert?
+          ::m.ln.nodes/hasMacaroon? hasMacaroon?})
+        (dom/div :.ui.list
+          (dom/div :.item
+            (dom/div :.header "User")
+            (u.links/ui-user-link user))
+          (dom/div :.item
+            (dom/div :.header "Core Node")
+            (u.links/ui-core-node-link core-node))
+          (dom/div :.item
+            (dom/div :.header "Address")
+            host ":" (str port))
+          (dom/div :.item
+            (dom/div :.header "Network")
+            (u.links/ui-network-link network))
+          (dom/div :.item
+            (dom/div :.header "Has Cert?")
+            (str hasCert?)
+            (when-not hasCert?
+              (dom/div {}
+                (dom/p {} "Cert not found")
+                (dom/button {:classes [:.ui.button]
+                             :onClick #(comp/transact! this [`(mu.ln/download-cert! {::m.ln.nodes/id ~id})])}
+                  "Fetch"))))
+          (dom/div :.item
+            (dom/div :.header "Has Macaroon?")
+            (if hasMacaroon?
+              (str hasMacaroon?)
+              (dom/a {:onClick #(comp/transact! this [`(mu.ln/download-macaroon! {::m.ln.nodes/id ~id})])}
+                (str hasMacaroon?))))))
+      (ui-segment {} "Failed to load record"))
+    #_(when nav-menu (u.menus/ui-nav-menu nav-menu))
+    #_(if router
+        (ui-router router)
+        (dom/div :.ui.segment
+          (dom/h3 {} "Network Router not loaded")
+          (u.debug/ui-props-logger props)))))
+
+(def ui-show (comp/factory Show))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:componentDidMount #(report/start-report! % Report {})
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["nodes"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (log/info :IndexPage/starting {:props props})
+  (dom/div {}
+    (ui-report report)))
+
+(defsc ShowPage
+  [_this {::m.ln.nodes/keys [id]
+          ::m.navlinks/keys [target]
+          :as               props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state {::m.ln.nodes/id     nil
+                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
+   :query         [::m.navlinks/id
+                   {::m.navlinks/target (comp/get-query Show)}
+                   ::m.ln.nodes/id]
+   :route-segment ["node" :id]
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (if (and target id)
+    (ui-show target)
+    (u.debug/load-error props "admin show ln node")))
+
+(m.navlinks/defroute :admin-ln-nodes
+  {::m.navlinks/control       ::IndexPage
+   ::m.navlinks/label         "Nodes"
+   ::m.navlinks/model-key     ::m.ln.nodes/id
+   ::m.navlinks/parent-key    :admin-ln
+   ::m.navlinks/router        :admin-ln
+   ::m.navlinks/required-role :admin})
+
+(m.navlinks/defroute :admin-ln-nodes-show
+  {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/input-key     ::m.ln.nodes/id
+   ::m.navlinks/label         "Show Node"
+   ::m.navlinks/model-key     ::m.ln.nodes/id
+   ::m.navlinks/parent-key    :admin-ln-nodes
+   ::m.navlinks/router        :admin-ln
+   ::m.navlinks/required-role :admin})

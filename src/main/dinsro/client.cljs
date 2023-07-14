@@ -19,7 +19,7 @@
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.errors :as u.errors]
    [dinsro.ui.login :as u.login]
-   [lambdaisland.glogi :as log]))
+   [lambdaisland.glogc :as log]))
 
 (def secured-request-middleware
   ;; The CSRF token is embedded via server_components/html.clj

@@ -20,15 +20,20 @@
    (defmutation navigate! [props]
      (action [{:keys [app state] :as env}]
        (log/info :navigate!/starting {:props props :env env})
-       (let [{::m.navlinks/keys [auth-link? id route]} props]
-         (when-let [ident (get-in props [:ui/router ::dr/current-route ::fs/config ::fs/id])]
-           (swap! state #(assoc-in % [::uism/asm-id ident ::uism/local-storage :abandoned?] true)))
+       (let [{::m.navlinks/keys [auth-link? id navigate]} props
+             {::m.navlinks/keys [control]} navigate]
+
+         ;; This tells any forms that we can navigate away
+         (when-let [form-ident (get-in props [:ui/router ::dr/current-route ::fs/config ::fs/id])]
+           (swap! state #(assoc-in % [::uism/asm-id form-ident ::uism/local-storage :abandoned?] true)))
+
          (uism/trigger! app ::navbarsm :event/hide {})
          (uism/trigger! app auth/machine-id :event/cancel {})
+
          (if auth-link?
            (auth/authenticate! app :local nil)
-           (if-let [component (comp/registry-key->class route)]
+           (if-let [component (comp/registry-key->class control)]
              (do
                (log/info :navigate!/component-found {:id id :component component :props props})
                (rroute/route-to! app component {}))
-             (log/info :navigate!/component-not-found {:route route})))))))
+             (log/info :navigate!/component-not-found {:id id :control control :props props})))))))
