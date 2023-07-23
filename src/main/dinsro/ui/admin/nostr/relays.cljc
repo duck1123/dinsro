@@ -102,6 +102,17 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :admin-nostr-relays
+  {::m.navbars/parent :admin-nostr
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [:admin-nostr-relays-show-connections
+    :admin-nostr-relays-show-requests
+    :admin-nostr-relays-show-events
+    :admin-nostr-relays-show-pubkeys
+    :admin-nostr-relays-show-runs
+    :admin-nostr-relays-show-witnesses]})
+
 (defsc Show
   [_this {::m.n.relays/keys [address id]
           ::j.n.relays/keys [connection-count]

@@ -41,6 +41,16 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :core-networks
+  {::m.navbars/parent :core
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [:core-networks-show-addresses
+    :core-networks-show-blocks
+    :core-networks-show-ln-nodes
+    :core-networks-show-core-nodes
+    :core-networks-show-wallets]})
+
 (defsc Show
   [_this {::m.c.networks/keys [id chain name]
           :ui/keys            [nav-menu router]

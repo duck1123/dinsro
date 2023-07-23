@@ -99,7 +99,8 @@
   (let [page-ident [::m.navlinks/id page-id]]
     (fn [app props]
       (if-let [id (get props :id)]
-        (let [record-id      (when id (new-uuid id))
+        (let [{::app/keys [state-atom]} app
+              record-id      (when id (new-uuid id))
               parent-control (comp/registry-key->class control-key)
               current-state  (app/current-state app)
               state          (get-in current-state page-ident)]
@@ -111,29 +112,33 @@
              :parent-control parent-control
              :state          state})
           (if parent-control
-            (if (and skip-loaded (:ui/page-merged state))
-              (do
-                (log/debug :targeted-page-loader/routing-immediate
-                  {:page-id        page-id
-                   :record-id      record-id
-                   :model-key      model-key
-                   :parent-control parent-control})
-                (dr/route-immediate page-ident))
-              (do
-                (log/debug :targeted-page-loader/deferring
-                  {:page-id        page-id
-                   :record-id      record-id
-                   :model-key      model-key
-                   :parent-control parent-control})
-                (dr/route-deferred page-ident
-                  (fn []
-                    (df/load!
-                     app page-ident parent-control
-                     {:params               {model-key record-id}
-                      :post-mutation        `mu.navlinks/target-ready
-                      :post-mutation-params {:model-key model-key
-                                             :page-id   page-id
-                                             :record-id record-id}})))))
+            (do
+              ;; Set the bmodel key on the page
+              (swap! state-atom assoc-in (conj page-ident model-key) record-id)
+
+              (if (and skip-loaded (:ui/page-merged state))
+                (do
+                  (log/debug :targeted-page-loader/routing-immediate
+                    {:page-id        page-id
+                     :record-id      record-id
+                     :model-key      model-key
+                     :parent-control parent-control})
+                  (dr/route-immediate page-ident))
+                (do
+                  (log/debug :targeted-page-loader/deferring
+                    {:page-id        page-id
+                     :record-id      record-id
+                     :model-key      model-key
+                     :parent-control parent-control})
+                  (dr/route-deferred page-ident
+                    (fn []
+                      (df/load!
+                       app page-ident parent-control
+                       {:params               {model-key record-id}
+                        :post-mutation        `mu.navlinks/target-ready
+                        :post-mutation-params {:model-key model-key
+                                               :page-id   page-id
+                                               :record-id record-id}}))))))
             (throw (ex-info "Failed to determine parent control" {}))))
         (throw (ex-info "No id" {}))))))
 
@@ -144,7 +149,7 @@
     (let [{::app/keys [state-atom]} app
           {:keys [id]}              props
           record-id                 (new-uuid id)
-          ident                     [::m.navlinks/id page-id]
+          page-ident                [::m.navlinks/id page-id]
           control                   (comp/registry-key->class control-key)]
       (log/info :targeted-router-loader/starting
         {:page-id    page-id
@@ -153,18 +158,18 @@
          :app        app
          :props      props
          :state-atom state-atom
-         :page       (get-in @state-atom ident)})
+         :page       (get-in @state-atom page-ident)})
 
       ;; Set the model key on the page
-      (swap! state-atom assoc-in (conj ident model-key) record-id)
+      (swap! state-atom assoc-in (conj page-ident model-key) record-id)
 
       (log/info :targeted-router-loader/merged
         {:page-id     page-id
          :control-key control-key
-         :page        (get-in @state-atom ident)})
-      (dr/route-deferred ident
+         :page        (get-in @state-atom page-ident)})
+      (dr/route-deferred page-ident
         (fn []
-          (df/load! app ident control
+          (df/load! app page-ident control
                     {:params               {model-key record-id}
                      :post-mutation        `mu.navlinks/routing-target-ready
                      :post-mutation-params {:model-key model-key

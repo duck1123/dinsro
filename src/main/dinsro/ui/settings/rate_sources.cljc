@@ -72,6 +72,11 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :settings-rate-sources
+  {::m.navbars/parent :settings
+   ::m.navbars/children
+   [u.s.rs.accounts/index-page-key]})
+
 (def new-action-button
   {:type   :button
    :local? true
@@ -180,10 +185,14 @@
   [_this {::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [_props]
+                    {model-key           nil
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target {}})
+   :query         (fn [_props]
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["rate-sources" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
@@ -191,19 +200,19 @@
     (ui-show target)
     (u.debug/load-error props "settings show rate source")))
 
-(m.navlinks/defroute   :settings-rate-sources
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Rate Sources"
-   ::m.navlinks/model-key     ::m.rate-sources/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :settings
    ::m.navlinks/router        :settings
    ::m.navlinks/required-role :user})
 
-(m.navlinks/defroute   :settings-rate-sources-show
-  {::m.navlinks/control       ::IndexPage
+(m.navlinks/defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Rate Sources"
-   ::m.navlinks/input-key     ::m.rate-sources/id
-   ::m.navlinks/model-key     ::m.rate-sources/id
-   ::m.navlinks/parent-key    :settings-rate-sources
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :settings
    ::m.navlinks/required-role :user})

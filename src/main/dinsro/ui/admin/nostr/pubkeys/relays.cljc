@@ -20,7 +20,7 @@
 (def index-page-key :admin-nostr-pubkeys-show-relays)
 (def model-key ::m.n.relays/id)
 (def parent-model-key ::m.n.pubkeys/id)
-(def router-key :dinsro.ui.nostr.pubkeys.relays/Router)
+(def router-key :dinsro.ui.admin.nostr.pubkeys.relays/Router)
 
 (report/defsc-report Report
   [_this _props]
@@ -64,11 +64,11 @@
       (u.debug/load-error props "admin pubkeys relays report"))
     (u.debug/load-error props "admin pubkeys relays page")))
 
-(m.navlinks/defroute
-  :admin-nostr-pubkeys-show-relays
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Relays"
-   ::m.navlinks/model-key     ::m.n.relays/id
-   ::m.navlinks/parent-key    :nostr-pubkeys-show
-   ::m.navlinks/router        :nostr-pubkeys
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    :admin-nostr-pubkeys-show
+   ::m.navlinks/router        :admin-nostr-pubkeys
+   ::m.navlinks/required-role :admin})

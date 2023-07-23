@@ -72,11 +72,11 @@
     (ui-report report)
     (u.debug/load-error props "admin request connections")))
 
-(m.navlinks/defroute   :admin-nostr-requests-show-connections
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
-   ::m.navlinks/input-key     ::m.n.requests/id
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Connections"
-   ::m.navlinks/model-key     ::m.n.connections/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr-requests-show
    ::m.navlinks/router        :admin-nostr-requests
    ::m.navlinks/required-role :admin})

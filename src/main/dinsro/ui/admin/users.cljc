@@ -39,6 +39,8 @@
 (def model-key
   "The model key for these pages"
   ::m.users/id)
+(def show-menu-key
+  :admin-users)
 (def show-page-key
   "The navlink id of the show page"
   :admin-users-show)
@@ -63,6 +65,19 @@
     u.a.u.user-pubkeys/SubPage]})
 
 (def ui-router (comp/factory Router))
+
+(m.navbars/defmenu show-menu-key
+  {::m.navbars/parent :admin
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [u.a.u.accounts/index-page-key
+    u.a.u.categories/index-page-key
+    :admin-users-show-debits
+    :admin-users-show-ln-nodes
+    :admin-users-show-pubkeys
+    :admin-users-show-transactions
+    :admin-users-show-user-pubkeys
+    :admin-users-show-wallets]})
 
 (defsc Show
   [_this {::m.users/keys [id name role]

@@ -161,6 +161,16 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :settings-ln-nodes
+  {::m.navbars/parent :settings-ln
+   ::m.navbars/children
+   [:settings-ln-nodes-show-accounts
+    :settings-ln-nodes-show-addresses
+    :settings-ln-nodes-show-channels
+    :settings-ln-nodes-show-peers
+    :settings-ln-nodes-show-remote-nodes
+    :settings-ln-nodes-show-wallet-addresses]})
+
 (defsc Show
   "Show a ln node"
   [this {:ui/keys          [nav-menu router]

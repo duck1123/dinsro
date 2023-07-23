@@ -27,6 +27,11 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :nostr-filters
+  {::m.navbars/parent   :nostr
+   ::m.navbars/children
+   [u.n.f.filter-items/index-page-key]})
+
 (defsc Show
   [_this {::m.n.filters/keys [id index request]
           :ui/keys           [nav-menu router]

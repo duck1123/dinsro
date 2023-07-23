@@ -43,6 +43,17 @@
 (def ui-router (comp/factory Router))
 (def debug-load-errors false)
 
+(m.navbars/defmenu
+  :admin-core-networks
+  {::m.navbars/parent :admin-core
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [:admin-core-networks-show-addresses
+    :admin-core-networks-show-blocks
+    :admin-core-networks-show-ln-nodes
+    :admin-core-networks-show-core-nodes
+    :admin-core-networks-show-wallets]})
+
 (defsc Show
   [_this {::m.c.networks/keys [id chain name]
           :ui/keys            [nav-menu router]

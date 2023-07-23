@@ -34,6 +34,14 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :nostr-requests
+  {::m.navbars/parent :nostr
+   ::m.navbars/children
+   [:nostr-requests-show-filters
+    :nostr-requests-show-items
+    :nostr-requests-show-runs
+    :nostr-requests-show-connections]})
+
 (defsc Show
   [_this {::m.n.requests/keys [code id relay]
           ::j.n.requests/keys [query-string]
@@ -87,11 +95,11 @@
   (log/info :ShowPage/starting {:props props})
   (ui-show target))
 
-(m.navlinks/defroute   :nostr-requests-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Requests"
-   ::m.navlinks/input-key     ::m.n.requests/id
-   ::m.navlinks/model-key     ::m.n.requests/id
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-requests
    ::m.navlinks/router        :nostr
    ::m.navlinks/required-role :user})

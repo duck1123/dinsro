@@ -17,15 +17,18 @@
    [dinsro.ui.admin.nostr.requests.filter-items :as u.a.n.rq.filter-items]
    [dinsro.ui.admin.nostr.requests.filters :as u.a.n.rq.filters]
    [dinsro.ui.admin.nostr.requests.runs :as u.a.n.rq.runs]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]))
+   [dinsro.ui.menus :as u.menus]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/nostr/requests.cljc]]
 ;; [[../../../model/nostr/requests.cljc]]
 
 (def index-page-key :admin-nostr-requests)
 (def model-key ::m.n.requests/id)
+(def parent-router-key :admin-nostr)
 (def show-page-key :admin-nostr-requests-show)
 (def show-menu-key :admin-nostr-requests)
 
@@ -38,6 +41,15 @@
     u.a.n.rq.runs/SubPage]})
 
 (def ui-router (comp/factory Router))
+
+(m.navbars/defmenu show-menu-key
+  {::m.navbars/parent parent-router-key
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [u.a.n.rq.filters/index-page-key
+    u.a.n.rq.filter-items/index-page-key
+    u.a.n.rq.runs/index-page-key
+    u.a.n.rq.connections/index-page-key]})
 
 (defsc Show
   [_this {::m.n.requests/keys [code relay]
@@ -77,7 +89,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns           [m.n.requests/id
+  {ro/column-formatters {::m.n.requests/id #(u.links/ui-admin-request-link %3)}
+   ro/columns           [m.n.requests/id
                          m.n.requests/code]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
@@ -105,29 +118,38 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]}]
+  [_this {::m.navlinks/keys [target]
+          :as props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [_props]
+                    {::m.navlinks/id     show-page-key
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn [_props]
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["request" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (ui-show target))
+  (log/debug :ShowPage/starting {:props props})
+  (if (get props model-key)
+    (if (seq target)
+      (ui-show target)
+      (u.debug/load-error props "Admin show request target"))
+    (u.debug/load-error props "Admin show request")))
 
-(m.navlinks/defroute   :admin-nostr-requests
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Requests"
-   ::m.navlinks/model-key     ::m.n.requests/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr
-   ::m.navlinks/router        :admin-nostr
+   ::m.navlinks/router        parent-router-key
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute   :admin-nostr-requests-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Request"
-   ::m.navlinks/input-key     ::m.n.requests/id
-   ::m.navlinks/model-key     ::m.n.requests/id
-   ::m.navlinks/parent-key    :admin-nostr-requests
-   ::m.navlinks/router        :admin-nostr
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/router        parent-router-key
    ::m.navlinks/required-role :admin})

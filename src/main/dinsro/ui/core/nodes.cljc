@@ -73,6 +73,13 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :core-nodes
+  {::m.navbars/parent :core
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [:core-nodes-show-peers
+    :core-nodes-show-blocks]})
+
 (defsc Show
   "Show a core node"
   [_this {::m.c.nodes/keys [id name network]

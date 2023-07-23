@@ -54,6 +54,14 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :currencies
+  {::m.navbars/parent :root
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [:currencies-show-rate-sources
+    :currencies-show-accounts
+    :currencies-show-rates]})
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.currencies/name #(u.links/ui-currency-link %3)}

@@ -56,6 +56,13 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :nostr-pubkeys
+  {::m.navbars/parent :nostr
+   ::m.navbars/children
+   [:nostr-pubkeys-show-events
+    :nostr-pubkeys-show-relays
+    :nostr-pubkeys-show-items]})
+
 (defsc PubkeyInfo
   [_this {::j.n.pubkeys/keys [npub]
           ::m.n.pubkeys/keys [about display-name hex lud06 name nip05 picture website]}]
@@ -101,6 +108,43 @@
               (dom/div {} (str lud06)))))))))
 
 (def ui-pubkey-info (comp/factory PubkeyInfo))
+
+(form/defsc-form CreateForm
+  [_this _props]
+  {fo/attributes   [m.n.pubkeys/hex]
+   fo/cancel-route ["pubkeys"]
+   fo/id           m.n.pubkeys/id
+   fo/route-prefix "create-pubkey"
+   fo/title        "Create A Pubkey"})
+
+(def new-button
+  {:type   :button
+   :local? true
+   :label  "New"
+   :action (fn [this _] (form/create! this CreateForm))})
+
+(report/defsc-report Report
+  [_this _props]
+  {ro/column-formatters {::m.n.pubkeys/name    #(u.links/ui-pubkey-name-link %3)
+                         ::m.n.pubkeys/picture #(u.links/img-formatter %3)}
+   ro/columns           [m.n.pubkeys/picture
+                         m.n.pubkeys/name
+                         m.n.pubkeys/hex
+                         j.n.pubkeys/contact-count
+                         j.n.pubkeys/event-count]
+   ro/control-layout    {:action-buttons [::new ::refresh]}
+   ro/controls          {::new     new-button
+                         ::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
+   ro/row-actions       [(u.buttons/row-action-button "Add to contacts" model-key mu.n.pubkeys/add-contact!)]
+   ro/row-pk            m.n.pubkeys/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.pubkeys/index
+   ro/title             "Pubkeys"})
+
+(def ui-report (comp/factory Report))
 
 (defsc Show
   "Show a core node"
@@ -150,43 +194,6 @@
 
 (def ui-show (comp/factory Show))
 
-(form/defsc-form CreateForm
-  [_this _props]
-  {fo/attributes   [m.n.pubkeys/hex]
-   fo/cancel-route ["pubkeys"]
-   fo/id           m.n.pubkeys/id
-   fo/route-prefix "create-pubkey"
-   fo/title        "Create A Pubkey"})
-
-(def new-button
-  {:type   :button
-   :local? true
-   :label  "New"
-   :action (fn [this _] (form/create! this CreateForm))})
-
-(report/defsc-report Report
-  [_this _props]
-  {ro/column-formatters {::m.n.pubkeys/name    #(u.links/ui-pubkey-name-link %3)
-                         ::m.n.pubkeys/picture #(u.links/img-formatter %3)}
-   ro/columns           [m.n.pubkeys/picture
-                         m.n.pubkeys/name
-                         m.n.pubkeys/hex
-                         j.n.pubkeys/contact-count
-                         j.n.pubkeys/event-count]
-   ro/control-layout    {:action-buttons [::new ::refresh]}
-   ro/controls          {::new     new-button
-                         ::refresh u.links/refresh-control}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Add to contacts" model-key mu.n.pubkeys/add-contact!)]
-   ro/row-pk            m.n.pubkeys/id
-   ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.pubkeys/index
-   ro/title             "Pubkeys"})
-
-(def ui-report (comp/factory Report))
-
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as      props}]
@@ -209,11 +216,11 @@
    :initial-state (fn [_props]
                     {model-key           nil
                      ::m.navlinks/id     show-page-key
-                     ::m.navlinks/target {}})
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn [_props]
                     [model-key
                      ::m.navlinks/id
-                     {::m.navlinks/target (comp/get-query Show)}])
+                     {::m.navlinks/target (comp/get-query Show {})}])
    :route-segment ["pubkey" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
@@ -221,10 +228,10 @@
     (ui-show target)
     (u.debug/load-error props "show pubkeys page")))
 
-(m.navlinks/defroute   :nostr-pubkeys
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Pubkeys"
-   ::m.navlinks/model-key     ::m.n.pubkeys/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr
    ::m.navlinks/router        :nostr
    ::m.navlinks/required-role :user})
@@ -232,8 +239,8 @@
 (m.navlinks/defroute   :nostr-pubkeys-show
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Pubkey"
-   ::m.navlinks/input-key     ::m.n.pubkeys/id
-   ::m.navlinks/model-key     ::m.n.pubkeys/id
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-pubkeys
    ::m.navlinks/router        :nostr
    ::m.navlinks/required-role :user})

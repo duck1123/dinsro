@@ -28,6 +28,11 @@
 (def show-page-key :admin-nostr-connections-show)
 (def show-menu-key :admin-nostr-connections)
 
+(m.navbars/defmenu :admin-nostr-connections
+  {::m.navbars/parent   :admin-nostr
+   ::m.navbars/router   ::Router
+   ::m.navbars/children [:admin-nostr-connections-show-runs]})
+
 (defsc Show
   [_this {::m.n.connections/keys [id status relay start-time end-time]
           :ui/keys               [nav-menu]

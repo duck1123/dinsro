@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.subscriptions :as j.n.subscriptions]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
@@ -23,13 +24,16 @@
 
 (def index-page-key :nostr-subscriptions)
 (def model-key ::m.n.subscriptions/id)
+(def show-menu-key :nostr-subscriptions)
 (def show-page-key :nostr-subscriptions-show)
 
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.subscriptions/code  #(u.links/ui-subscription-link %3)
                          ::m.n.subscriptions/relay #(u.links/ui-relay-link %2)}
-   ro/columns           [m.n.subscriptions/code m.n.subscriptions/relay j.n.subscriptions/pubkey-count]
+   ro/columns           [m.n.subscriptions/code
+                         m.n.subscriptions/relay
+                         j.n.subscriptions/pubkey-count]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/machine           spr/machine
@@ -49,6 +53,11 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu show-menu-key
+  {::m.navbars/parent :nostr
+   ::m.navbars/children
+   [u.n.subscription-pubkeys/index-page-key]})
+
 (defsc Show
   [_this {::m.n.subscriptions/keys [code relay]
           :ui/keys                 [nav-menu router]}]
@@ -58,10 +67,12 @@
                       {::m.n.subscriptions/id    nil
                        ::m.n.subscriptions/code  ""
                        ::m.n.subscriptions/relay {}
-                       :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :nostr-subscriptions :id id})
+                       :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
+                                                   {::m.navbars/id show-menu-key
+                                                    :id id})
                        :ui/router                {}}))
    :pre-merge     (u.loader/page-merger ::m.n.subscriptions/id
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-subscriptions}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
                      :ui/router   [Router {}]})
    :query         [::m.n.subscriptions/id
                    ::m.n.subscriptions/code
@@ -70,7 +81,7 @@
                    {:ui/router (comp/get-query Router)}]}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
-      (dom/div :.ui.segment
+      (ui-segment {}
         (dom/dl {}
           (dom/dt {} "code")
           (dom/dd {} code)

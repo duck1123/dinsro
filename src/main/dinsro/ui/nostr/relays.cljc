@@ -33,9 +33,11 @@
 ;; [[../../model/nostr/relays.cljc]]
 ;; [[../../mutations/nostr/relays.cljc]]
 ;; [[../../queries/nostr/relays.clj]]
+;; [[../../ui/admin/nostr/relays.cljc]]
 
 (def index-page-key :nostr-relays)
 (def model-key ::m.n.relays/id)
+(def show-menu-key :nostr-relays)
 (def show-page-key :nostr-relays-show)
 
 (def submit-button
@@ -75,7 +77,7 @@
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.n.relays/id mu.n.relays/delete!)]
+   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.n.relays/delete!)]
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -98,19 +100,32 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu show-menu-key
+  {::m.navbars/parent :nostr
+   ::m.navbars/children
+   [u.n.r.connections/index-page-key
+    u.n.r.pubkeys/index-page-key
+    u.n.r.events/index-page-key
+    u.n.r.pubkeys/index-page-key
+    u.n.r.runs/index-page-key
+    u.n.r.witnesses/index-page-key]})
+
 (defsc Show
   [_this {::m.n.relays/keys [address id]
           ::j.n.relays/keys [connection-count]
-          :ui/keys          [nav-menu router]}]
+          :ui/keys          [nav-menu router]
+          :as               props}]
   {:ident         ::m.n.relays/id
    :initial-state (fn [{::m.n.relays/keys [id] :as props}]
                     (log/trace :Show/starting {:props props})
                     {::m.n.relays/id               nil
                      ::m.n.relays/address          ""
                      ::j.n.relays/connection-count 0
-                     :ui/nav-menu                  (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :nostr-relays :id id})
+                     :ui/nav-menu                  (comp/get-initial-state u.menus/NavMenu {::m.navbars/id show-menu-key :id id})
                      :ui/router                    (comp/get-initial-state Router)})
-   :pre-merge     (u.loader/page-merger ::m.n.relays/id {:ui/router [Router {}]})
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
+                     :ui/router   [Router {}]})
    :query         [::m.n.relays/id
                    ::m.n.relays/address
                    ::j.n.relays/connection-count
@@ -125,10 +140,11 @@
             (dom/dd {} (str address))
             (dom/dt {} "Connections")
             (dom/dd {} (str connection-count))))
-        (u.menus/ui-nav-menu nav-menu)
+        (if nav-menu
+          (u.menus/ui-nav-menu nav-menu)
+          (u.debug/load-error props "relay show menu"))
         (ui-router router)))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+    (u.debug/load-error props "show relay")))
 
 (def ui-show (comp/factory Show))
 
@@ -154,7 +170,7 @@
    :initial-state (fn [_props]
                     {model-key           nil
                      ::m.navlinks/id     show-page-key
-                     ::m.navlinks/target {}})
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn [_props]
                     [model-key
                      ::m.navlinks/id
@@ -166,11 +182,11 @@
     (ui-show target)
     (u.debug/load-error props "show relay")))
 
-(m.navlinks/defroute   :nostr-relays-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Relay"
-   ::m.navlinks/input-key     ::m.n.relays/id
-   ::m.navlinks/model-key     ::m.n.relays/id
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr
    ::m.navlinks/router        :nostr
    ::m.navlinks/required-role :user})

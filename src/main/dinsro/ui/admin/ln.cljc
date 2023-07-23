@@ -34,6 +34,19 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :admin-ln
+  {::m.navbars/parent :admin
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [:admin-ln-dashboard
+    :admin-ln-accounts
+    :admin-ln-channels
+    :admin-ln-invoices
+    :admin-ln-nodes
+    :admin-ln-payreqs
+    :admin-ln-peers
+    :admin-ln-remote-nodes]})
+
 (defsc Page
   [_this {:ui/keys [router vertical-menu] :as props}]
   {:ident         (fn [] [::m.navlinks/id :admin-ln])

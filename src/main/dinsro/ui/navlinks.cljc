@@ -98,10 +98,10 @@
     (ui-show target)
     (u.debug/load-error props "show navlink page")))
 
-(m.navlinks/defroute   :navlinks
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Navlinks"
-   ::m.navlinks/model-key     ::m.navlinks/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :root
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :user})

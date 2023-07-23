@@ -56,10 +56,11 @@
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
 
-(m.navlinks/defroute   :nostr-pubkeys-show-relays
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Relays"
-   ::m.navlinks/model-key     ::m.n.relays/id
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-pubkeys-show
    ::m.navlinks/router        :nostr-pubkeys
    ::m.navlinks/required-role :user})

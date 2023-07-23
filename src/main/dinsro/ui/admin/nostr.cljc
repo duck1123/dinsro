@@ -56,6 +56,24 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :admin-nostr
+  {::m.navbars/parent :admin
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [:admin-nostr-dashboard
+    :admin-nostr-relays
+    :admin-nostr-pubkeys
+    :admin-nostr-events
+    :admin-nostr-filters
+    :admin-nostr-badge-acceptances
+    :admin-nostr-badge-awards
+    :admin-nostr-badge-definitions
+    :admin-nostr-requests
+    :admin-nostr-connections
+    :admin-nostr-filter-items
+    :admin-nostr-runs
+    :admin-nostr-witnesses]})
+
 (defsc Page
   [_this {:ui/keys [nav-menu router vertical-menu] :as props}]
   {:ident         (fn [] [::m.navlinks/id :admin-nostr])

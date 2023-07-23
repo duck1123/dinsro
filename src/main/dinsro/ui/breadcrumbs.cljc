@@ -61,13 +61,13 @@
   [_this {::j.navlinks/keys [path]
           :as               props}]
   {:ident         ::m.navlinks/id
-   :initial-state {::m.navlinks/id    nil
-                   ::m.navlinks/label ""
-                   ::m.navlinks/target {}
-                   ::j.navlinks/path  []}
+   :initial-state {::m.navlinks/id       nil
+                   ::m.navlinks/label    ""
+                   ::m.navlinks/navigate {}
+                   ::j.navlinks/path     []}
    :query         [::m.navlinks/id
                    ::m.navlinks/label
-                   {::m.navlinks/target (comp/get-query NavTarget)}
+                   {::m.navlinks/navigate (comp/get-query NavTarget)}
                    {::j.navlinks/path (comp/get-query BreadcrumbLink)}]}
   (log/trace :BreadcrumbsInner/starting {:props props})
   (dom/div {}

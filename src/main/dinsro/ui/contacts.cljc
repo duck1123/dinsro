@@ -45,7 +45,6 @@
 (form/defsc-form NewContactForm
   [_this _props]
   {fo/action-buttons [::create]
-   #_(concat [::create] form/standard-action-buttons)
    fo/attributes     [m.contacts/name
                       m.contacts/pubkey]
    fo/cancel-route   ["contacts"]
@@ -139,10 +138,10 @@
       (u.debug/load-error props "contacts page target"))
     (u.debug/load-error props "contacts page")))
 
-(m.navlinks/defroute   :contacts
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Contacts"
-   ::m.navlinks/model-key     ::m.contacts/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :root
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :user})
@@ -150,8 +149,8 @@
 (m.navlinks/defroute   :contacts-show
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Contact"
-   ::m.navlinks/input-key     ::m.contacts/id
-   ::m.navlinks/model-key     ::m.contacts/id
-   ::m.navlinks/parent-key    :contacts
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :user})

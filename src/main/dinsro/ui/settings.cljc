@@ -46,6 +46,15 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :settings
+  {::m.navbars/parent :root
+   ::m.navbars/children
+   [:settings-dashboard
+    :settings-core
+    :settings-ln
+    :settings-rate-sources
+    :settings-categories]})
+
 (defsc Page
   [_this {:ui/keys [nav-menu router vertical-menu]
           :as props}]

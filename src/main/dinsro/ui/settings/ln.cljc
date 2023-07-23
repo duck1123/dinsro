@@ -34,6 +34,16 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :settings-ln
+  {::m.navbars/parent :settings
+   ::m.navbars/children
+   [:settings-ln-dashboard
+    :settings-ln-nodes
+    ;; :settings-ln-channels
+    :settings-ln-payments
+    :settings-ln-payreqs
+    :settings-ln-remote-nodes]})
+
 (defsc Page
   [_this {:ui/keys [nav-menu router]
           :as props}]

@@ -103,6 +103,24 @@
 
 (def ui-root-router (comp/factory RootRouter))
 
+(m.navbars/defmenu :root
+  {::m.navbars/parent nil
+   ::m.navbars/router ::RootRouter
+   ::m.navbars/children
+   [:accounts
+    :admin
+    :contacts
+    :currencies
+    :home
+    :login
+    :navbars
+    :navlinks
+    :nostr
+    :nodes
+    :registration
+    :settings
+    :transactions]})
+
 (defsc Menus
   [_this _props]
   {:query

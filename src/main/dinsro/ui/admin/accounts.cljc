@@ -168,21 +168,21 @@
     (ui-show target)
     (u.debug/load-error props "show page")))
 
-(m.navlinks/defroute :admin-accounts
-  {::m.navlinks/label         "Accounts"
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
+   ::m.navlinks/label         "Accounts"
    ::m.navlinks/description   "Admin page of all accounts"
-   ::m.navlinks/control       ::IndexPage
-   ::m.navlinks/model-key     ::m.accounts/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-accounts-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Admin page for account"
    ::m.navlinks/label         "Accounts"
-   ::m.navlinks/input-key     ::m.accounts/id
-   ::m.navlinks/model-key     ::m.accounts/id
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-accounts
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})

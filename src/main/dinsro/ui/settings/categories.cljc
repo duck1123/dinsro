@@ -68,8 +68,7 @@
     (dom/div :.ui.container
       (ui-segment {}
         (str name)))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+    (u.debug/load-error props "settings show category")))
 
 (def ui-show (comp/factory Show))
 
@@ -125,19 +124,19 @@
     (ui-show target)
     (u.debug/load-error props "settings show category")))
 
-(m.navlinks/defroute   :settings-categories
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Categories"
-   ::m.navlinks/model-key     ::m.categories/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :settings
    ::m.navlinks/router        :settings
    ::m.navlinks/required-role :user})
 
-(m.navlinks/defroute   :settings-categories-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Category"
-   ::m.navlinks/input-key     ::m.categories/id
-   ::m.navlinks/model-key     ::m.categories/id
-   ::m.navlinks/parent-key    :settings-categories
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :settings
    ::m.navlinks/required-role :user})

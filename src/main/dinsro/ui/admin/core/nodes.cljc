@@ -76,6 +76,13 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :admin-core-nodes
+  {::m.navbars/parent :admin-core
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [:admin-core-nodes-show-peers
+    :admin-core-nodes-show-blocks]})
+
 (form/defsc-form EditForm
   [this props]
   {fo/attributes    [m.c.nodes/name

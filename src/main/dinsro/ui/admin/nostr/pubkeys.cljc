@@ -9,7 +9,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
-   [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navbars :as m.navbars :refer [defmenu]]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.ui.admin.nostr.pubkeys.relays :as u.a.n.p.relays]
@@ -18,7 +18,6 @@
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
    [dinsro.ui.nostr.pubkeys :as u.n.pubkeys]
-
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/nostr/pubkeys.cljc]]
@@ -26,6 +25,7 @@
 
 (def index-page-key :admin-nostr-pubkeys)
 (def model-key ::m.n.pubkeys/id)
+(def parent-router-key :admin-nostr)
 (def show-menu-key :admin-nostr-pubkeys)
 (def show-page-key :admin-nostr-pubkeys-show)
 
@@ -61,10 +61,15 @@
     ;; u.a.n.r.events/SubPage
     ;; u.a.n.r.witnesses/SubPage
     ]})
+
 (def ui-router (comp/factory Router))
 
+(defmenu show-menu-key
+  {::parent   parent-router-key
+   ::router   ::Router
+   ::children [u.a.n.p.relays/index-page-key]})
+
 (defsc Show
-  "Show a core node"
   [_this {::m.n.pubkeys/keys [id]
           :ui/keys           [nav-menu router]
           :as                props}]
@@ -82,8 +87,9 @@
                        ::j.n.pubkeys/npub         ""
                        ::m.n.pubkeys/picture      ""
                        ::m.n.pubkeys/website      ""
-                       :ui/nav-menu (comp/get-initial-state u.menus/NavMenu {::m.navbars/id show-menu-key :id id})
-                       :ui/router (comp/get-initial-state Router {})}))
+                       :ui/nav-menu               (comp/get-initial-state u.menus/NavMenu
+                                                    {::m.navbars/id show-menu-key :id id})
+                       :ui/router                 (comp/get-initial-state Router {})}))
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
                      :ui/router   [Router {}]})
@@ -103,13 +109,10 @@
   (let [{:keys [main]} (css/get-classnames Show)]
     (if id
       (dom/div {:classes [main]}
-        #_(ui-segment {}
-            (dom/div {} "TODO: Admin pubkey")
-            (u.debug/log-props props))
         (u.n.pubkeys/ui-pubkey-info props)
         (u.menus/ui-nav-menu nav-menu)
         (ui-router router))
-      (u.debug/load-error props "admin pubkey record"))))
+      (u.debug/load-error props "admin show pubkey record"))))
 
 (def ui-show (comp/factory Show))
 
@@ -148,22 +151,20 @@
     (ui-show target)
     (u.debug/load-error props "admin show pubkey page")))
 
-(m.navlinks/defroute
-  :admin-nostr-pubkeys
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Pubkeys"
-   ::m.navlinks/model-key     ::m.n.pubkeys/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr
-   ::m.navlinks/router        :admin-nostr
+   ::m.navlinks/router        parent-router-key
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute
-  :admin-nostr-pubkeys-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.n.pubkeys/id
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Pubkey"
-   ::m.navlinks/model-key     ::m.n.pubkeys/id
-   ::m.navlinks/parent-key    :admin-nostr-pubkeys
-   ::m.navlinks/navigate-key  :admin-nostr-pubkeys-show-relays
-   ::m.navlinks/router        :admin-nostr
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/navigate-key  u.a.n.p.relays/index-page-key
+   ::m.navlinks/router        parent-router-key
    ::m.navlinks/required-role :admin})

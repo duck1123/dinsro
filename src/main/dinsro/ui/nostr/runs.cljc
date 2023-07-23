@@ -38,6 +38,11 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :nostr-runs
+  {::m.navbars/parent :nostr
+   ::m.navbars/children
+   [:nostr-runs-show-witnesses]})
+
 (defsc Show
   [_this {::m.n.runs/keys [id]
           :ui/keys        [nav-menu router]}]

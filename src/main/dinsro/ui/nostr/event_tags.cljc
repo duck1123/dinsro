@@ -108,6 +108,11 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :nostr-event-tags
+  {::m.navbars/parent :nostr
+   ::m.navbars/children
+   [:nostr-event-tags-show-relays]})
+
 (defsc Show
   [_this {::m.n.event-tags/keys [id index type raw-value pubkey]
           :ui/keys              [nav-menu router]

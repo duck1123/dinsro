@@ -235,6 +235,13 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :nostr-events
+  {::m.navbars/parent :nostr
+   ::m.navbars/children
+   [u.n.e.event-tags/index-page-key
+    u.n.e.witnesses/index-page-key
+    u.n.e.relays/index-page-key]})
+
 (defsc Show
   [_this {::m.n.events/keys [content id pubkey kind sig created-at note-id]
           :ui/keys          [nav-menu router]

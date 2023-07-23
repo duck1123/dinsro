@@ -46,6 +46,11 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :nostr-connections
+  {::m.navbars/parent :nostr
+   ::m.navbars/children
+   [:nostr-connections-show-runs]})
+
 (defsc Show
   [_this {::m.n.connections/keys [id status relay start-time end-time]
           :ui/keys               [nav-menu router]}]

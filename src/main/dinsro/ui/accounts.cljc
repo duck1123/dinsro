@@ -44,6 +44,9 @@
 (def show-transactions true)
 (def show-page-key :accounts-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.accounts/delete!))
+
 (form/defsc-form NewForm
   [this {::m.accounts/keys [currency name initial-value user]
          :as               props}]
@@ -149,7 +152,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.accounts/id mu.accounts/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.accounts/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.accounts/index
@@ -175,7 +178,7 @@
 (def ui-report (comp/factory Report))
 
 (defsc Show
-  [_this {::m.accounts/keys [name currency source wallet]
+  [_this {::m.accounts/keys [id name currency source wallet]
           :ui/keys          [transactions]
           :as               props}]
   {:componentDidMount #(report/start-report! % u.a.transactions/Report {:route-params (comp/props %)})
@@ -194,28 +197,30 @@
                        {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
                        {:ui/transactions (comp/get-query u.a.transactions/Report)}]}
   (log/info :Show/starting {:props props})
-  (dom/div {}
-    (ui-segment {}
-      (dom/h1 {} (str name))
-      (dom/dl {}
-        (dom/dt {} "Currency")
-        (dom/dd {}
-          (when currency
-            (u.links/ui-currency-link currency)))
-        (dom/dt {} "Source")
-        (dom/dd {}
-          (when source
-            (u.links/ui-rate-source-link source)))
-        (dom/dt {} "Wallet")
-        (dom/dd {}
-          (when wallet
-            (u.links/ui-wallet-link wallet)))))
-    (when show-transactions
+  (if id
+    (dom/div {}
       (ui-segment {}
-        (if transactions
-          (u.a.transactions/ui-report transactions)
-          (dom/div {}
-            (dom/p {} "No Transactions")))))))
+        (dom/h1 {} (str name))
+        (dom/dl {}
+          (dom/dt {} "Currency")
+          (dom/dd {}
+            (when currency
+              (u.links/ui-currency-link currency)))
+          (dom/dt {} "Source")
+          (dom/dd {}
+            (when source
+              (u.links/ui-rate-source-link source)))
+          (dom/dt {} "Wallet")
+          (dom/dd {}
+            (when wallet
+              (u.links/ui-wallet-link wallet)))))
+      (when show-transactions
+        (ui-segment {}
+          (if transactions
+            (u.a.transactions/ui-report transactions)
+            (dom/div {}
+              (dom/p {} "No Transactions"))))))
+    (u.debug/load-error props "show account record")))
 
 (def ui-show (comp/factory Show))
 
@@ -226,9 +231,9 @@
                         (let [props (comp/props this)]
                           (log/info :ShowPage/mounted {:this this :props props})))
    :ident             (fn [] [::m.navlinks/id show-page-key])
-   :initial-state     {::m.accounts/id nil
-                       ::m.navlinks/id show-page-key
-                       ::m.navlinks/target      {}}
+   :initial-state     {::m.accounts/id     nil
+                       ::m.navlinks/id     show-page-key
+                       ::m.navlinks/target {}}
    :query             [::m.accounts/id
                        ::m.navlinks/id
                        {::m.navlinks/target (comp/get-query Show)}]
@@ -253,21 +258,21 @@
   (dom/div {}
     (ui-report report)))
 
-(defroute :accounts
-  {::m.navlinks/label         "Accounts"
+(defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
+   ::m.navlinks/label         "Accounts"
    ::m.navlinks/description   "An index of all accounts for a user"
-   ::m.navlinks/control       ::IndexPage
-   ::m.navlinks/model-key     ::m.accounts/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :root
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :user})
 
-(defroute :accounts-show
-  {::m.navlinks/label         "Show Accounts"
+(defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Show page for an account"
-   ::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.accounts/id
-   ::m.navlinks/model-key     ::m.accounts/id
-   ::m.navlinks/parent-key    :accounts
+   ::m.navlinks/label         "Show Accounts"
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :user})

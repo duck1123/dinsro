@@ -362,19 +362,19 @@
     (ui-show target)
     (u.debug/load-error props "show transaction page")))
 
-(defroute   :transactions
+(defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Transactions"
-   ::m.navlinks/model-key     ::m.transactions/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :root
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :user})
 
-(defroute   :transactions-show
+(defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Transaction"
-   ::m.navlinks/input-key     ::m.transactions/id
-   ::m.navlinks/model-key     ::m.transactions/id
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :transactions
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :user})

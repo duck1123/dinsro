@@ -58,6 +58,22 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu :admin-core
+  {::m.navbars/parent :admin
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [:admin-core-dashboard
+    :admin-core-addresses
+    :admin-core-blocks
+    :admin-core-chains
+    :admin-core-mnemonics
+    :admin-core-networks
+    :admin-core-nodes
+    :admin-core-peers
+    :admin-core-transactions
+    :admin-core-wallets
+    :admin-core-wallet-addresses]})
+
 (defsc Page
   [_this {:ui/keys [nav-menu router]
           :as      props}]

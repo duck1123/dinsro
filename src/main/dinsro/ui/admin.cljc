@@ -72,6 +72,26 @@
 
 (def ui-router (comp/factory Router))
 
+;; The top sub menu on admin pages
+(m.navbars/defmenu :admin
+  {::m.navbars/parent :root
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [:admin-users
+    :admin-core
+    :admin-ln
+    :admin-nostr
+    :admin-categories
+    :admin-accounts
+    :admin-currencies
+    :admin-transactions
+    :admin-debits
+    :admin-rate-sources
+    :admin-rates
+    :admin-models
+    :navbars
+    :navlinks]})
+
 (def debug-props false)
 
 (defsc Page
