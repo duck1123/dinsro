@@ -184,7 +184,7 @@
   {fo/id           m.n.events/id
    fo/route-prefix "admin-event-link"
    fo/attributes   [m.n.events/note-id]}
-  (form-link this id note-id :dinsro.ui.nostr.events/AdminShowPage))
+  (form-link this id note-id :dinsro.ui.admin.nostr.events/ShowPage))
 
 (def ui-admin-event-link (comp/factory AdminEventLinkForm {:keyfn ::m.n.events/note-id}))
 
@@ -255,7 +255,7 @@
   {fo/id           m.n.requests/id
    fo/route-prefix "admin-request-link"
    fo/attributes   [m.n.requests/code]}
-  (form-link this id (str code) :dinsro.ui.admin.nostr.requests/ShowPage))
+  (form-link this id (str code) :dinsro.ui.admin.nostr.requests.filters/SubPage))
 
 (def ui-admin-request-link (comp/factory AdminRequestLinkForm {:keyfn ::m.n.requests/id}))
 

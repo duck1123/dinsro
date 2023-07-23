@@ -77,7 +77,7 @@
   {::m.navbars/parent :root
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [:admin-users
+   [u.a.users/index-page-key
     :admin-core
     :admin-ln
     :admin-nostr
@@ -88,7 +88,7 @@
     :admin-debits
     :admin-rate-sources
     :admin-rates
-    :admin-models
+    ;; :admin-models
     :navbars
     :navlinks]})
 

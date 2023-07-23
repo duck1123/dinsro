@@ -54,19 +54,22 @@
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_]
+                        {::m.navlinks/id index-page-key
+                         :ui/report      {}})
+   :query             (fn [_]
+                        [[::dr/id router-key]
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["accounts"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
 
-(m.navlinks/defroute   :ln-nodes-show-accounts
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Accounts"
-   ::m.navlinks/model-key     ::m.ln.accounts/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :ln-nodes-show
    ::m.navlinks/router        :ln-nodes
    ::m.navlinks/required-role :user})

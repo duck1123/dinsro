@@ -61,18 +61,18 @@
    ::m.navbars/router ::Router
    ::m.navbars/children
    [:admin-nostr-dashboard
-    :admin-nostr-relays
+    u.a.n.relays/index-page-key
     :admin-nostr-pubkeys
     :admin-nostr-events
     :admin-nostr-filters
-    :admin-nostr-badge-acceptances
-    :admin-nostr-badge-awards
-    :admin-nostr-badge-definitions
-    :admin-nostr-requests
-    :admin-nostr-connections
-    :admin-nostr-filter-items
-    :admin-nostr-runs
-    :admin-nostr-witnesses]})
+    u.a.n.badge-acceptances/index-page-key
+    u.a.n.badge-awards/index-page-key
+    u.a.n.badge-definitions/index-page-key
+    u.a.n.requests/index-page-key
+    u.a.n.connections/index-page-key
+    u.a.n.filter-items/index-page-key
+    u.a.n.runs/index-page-key
+    u.a.n.witnesses/index-page-key]})
 
 (defsc Page
   [_this {:ui/keys [nav-menu router vertical-menu] :as props}]

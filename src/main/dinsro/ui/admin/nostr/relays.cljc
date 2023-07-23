@@ -35,7 +35,7 @@
 
 (def index-page-key :admin-nostr-relays)
 (def model-key ::m.n.relays/id)
-(def show-navbar-id :admin-nostr-relays)
+(def show-menu-id :admin-nostr-relays)
 (def show-page-key :admin-nostr-relays-show)
 
 (def delete-action
@@ -94,24 +94,24 @@
   [_this _props]
   {:router-targets
    [u.a.n.r.connections/SubPage
-    u.a.n.r.pubkeys/SubPage
     u.a.n.r.requests/SubPage
-    u.a.n.r.runs/SubPage
     u.a.n.r.events/SubPage
+    u.a.n.r.pubkeys/SubPage
+    u.a.n.r.runs/SubPage
     u.a.n.r.witnesses/SubPage]})
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :admin-nostr-relays
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :admin-nostr
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [:admin-nostr-relays-show-connections
-    :admin-nostr-relays-show-requests
-    :admin-nostr-relays-show-events
-    :admin-nostr-relays-show-pubkeys
-    :admin-nostr-relays-show-runs
-    :admin-nostr-relays-show-witnesses]})
+   [u.a.n.r.connections/index-page-key
+    u.a.n.r.requests/index-page-key
+    u.a.n.r.events/index-page-key
+    u.a.n.r.pubkeys/index-page-key
+    u.a.n.r.runs/index-page-key
+    u.a.n.r.witnesses/index-page-key]})
 
 (defsc Show
   [_this {::m.n.relays/keys [address id]
@@ -120,20 +120,23 @@
           :as               props}]
   {:ident         ::m.n.relays/id
    :initial-state (fn [props]
-                    (let [id (::m.n.relays/id props)]
+                    (let [id (get props model-key)]
                       {::m.n.relays/id               nil
                        ::m.n.relays/address          ""
                        ::j.n.relays/connection-count 0
-                       :ui/nav-menu                  (comp/get-initial-state u.menus/NavMenu {::m.navbars/id show-navbar-id :id id})
+                       :ui/nav-menu                  (comp/get-initial-state u.menus/NavMenu
+                                                       {::m.navbars/id show-menu-id
+                                                        :id            id})
                        :ui/router                    (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-navbar-id}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/router   [Router {}]})
    :query         [::m.n.relays/id
                    ::m.n.relays/address
                    ::j.n.relays/connection-count
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]}
+                   {:ui/router (comp/get-query Router)}]
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/debug :Show/starting {:props props})
   (if id
     (let [{:keys [main _sub]} (css/get-classnames Show)]
@@ -170,39 +173,40 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.n.relays/keys [id]
-          ::m.navlinks/keys [target]
+  [_this {::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.n.relays/id     nil
-                   ::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.n.relays/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [_]
+                    {model-key           nil
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn [_]
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["relay" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
+  (if (get props model-key)
+    (if target
+      (ui-show target)
+      (u.debug/load-error props "admin relays target"))
     (u.debug/load-error props "admin relays page")))
 
-(m.navlinks/defroute
-  :admin-nostr-relays
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Relays"
    ::m.navlinks/description   "Admin index of relays"
-   ::m.navlinks/model-key     ::m.n.relays/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute
-  :admin-nostr-relays-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Relay"
-   ::m.navlinks/input-key     ::m.n.relays/id
-   ::m.navlinks/model-key     ::m.n.relays/id
-   ::m.navlinks/parent-key    :admin-nostr-relays
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})

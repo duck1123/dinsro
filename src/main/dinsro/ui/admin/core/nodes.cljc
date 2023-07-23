@@ -20,9 +20,9 @@
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
+   [dinsro.ui.admin.core.nodes.blocks :as u.a.c.n.blocks]
+   [dinsro.ui.admin.core.nodes.peers :as u.a.c.n.peers]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.core.nodes.blocks :as u.c.n.blocks]
-   [dinsro.ui.core.nodes.peers :as u.c.n.peers]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -71,8 +71,8 @@
 
 (defrouter Router
   [_this _props]
-  {:router-targets [u.c.n.blocks/SubPage
-                    u.c.n.peers/SubPage]})
+  {:router-targets [u.a.c.n.blocks/SubPage
+                    u.a.c.n.peers/SubPage]})
 
 (def ui-router (comp/factory Router))
 
@@ -80,8 +80,8 @@
   {::m.navbars/parent :admin-core
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [:admin-core-nodes-show-peers
-    :admin-core-nodes-show-blocks]})
+   [u.a.c.n.peers/index-page-key
+    u.a.c.n.blocks/index-page-key]})
 
 (form/defsc-form EditForm
   [this props]

@@ -12,11 +12,11 @@
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.ui.core.networks.addresses :as u.c.n.addresses]
-   [dinsro.ui.core.networks.blocks :as u.c.n.blocks]
-   [dinsro.ui.core.networks.ln-nodes :as u.c.n.ln-nodes]
-   [dinsro.ui.core.networks.nodes :as u.c.n.nodes]
-   [dinsro.ui.core.networks.wallets :as u.c.n.wallets]
+   [dinsro.ui.admin.core.networks.addresses :as u.a.c.n.addresses]
+   [dinsro.ui.admin.core.networks.blocks :as u.a.c.n.blocks]
+   [dinsro.ui.admin.core.networks.ln-nodes :as u.a.c.n.ln-nodes]
+   [dinsro.ui.admin.core.networks.nodes :as u.a.c.n.nodes]
+   [dinsro.ui.admin.core.networks.wallets :as u.a.c.n.wallets]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -28,31 +28,29 @@
 
 (def index-page-key :admin-core-networks)
 (def model-key ::m.c.networks/id)
+(def show-menu-id :admin-core-networks)
 (def show-page-key :admin-core-networks-show)
-(def show-router-id :admin-core-networks)
 
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.c.n.addresses/SubPage
-    u.c.n.blocks/SubPage
-    u.c.n.nodes/SubPage
-    u.c.n.ln-nodes/SubPage
-    u.c.n.wallets/SubPage]})
+   [u.a.c.n.addresses/SubPage
+    u.a.c.n.blocks/SubPage
+    u.a.c.n.nodes/SubPage
+    u.a.c.n.ln-nodes/SubPage
+    u.a.c.n.wallets/SubPage]})
 
 (def ui-router (comp/factory Router))
-(def debug-load-errors false)
 
-(m.navbars/defmenu
-  :admin-core-networks
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :admin-core
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [:admin-core-networks-show-addresses
-    :admin-core-networks-show-blocks
-    :admin-core-networks-show-ln-nodes
-    :admin-core-networks-show-core-nodes
-    :admin-core-networks-show-wallets]})
+   [u.a.c.n.addresses/index-page-key
+    u.a.c.n.blocks/index-page-key
+    u.a.c.n.ln-nodes/index-page-key
+    u.a.c.n.nodes/index-page-key
+    u.a.c.n.wallets/index-page-key]})
 
 (defsc Show
   [_this {::m.c.networks/keys [id chain name]
@@ -64,11 +62,13 @@
                       {model-key            nil
                        ::m.c.networks/name  ""
                        ::m.c.networks/chain {}
-                       :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-networks :id id})
+                       :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu
+                                              {::m.navbars/id show-menu-id
+                                               :id            id})
                        :ui/router           (comp/get-initial-state Router)
-                       :ui/editing? false}))
+                       :ui/editing?         false}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-router-id}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/router   [Router {}]})
    :query         [::m.c.networks/id
                    ::m.c.networks/name
@@ -88,16 +88,11 @@
           (dom/dd {} (if chain (u.links/ui-chain-link chain) "None"))))
       (if nav-menu
         (u.menus/ui-nav-menu nav-menu)
-        (ui-segment {:color "red" :inverted true}
-          "Failed to load menu"))
+        (u.debug/load-error props "admin networks show menu"))
       (if router
         (ui-router router)
-        (ui-segment {:color "red" :inverted true}
-          "Failed to load router")))
-    (ui-segment {:color "red" :inverted true}
-      (dom/h3 {} "Network Not loaded")
-      (when debug-load-errors
-        (u.debug/ui-props-logger props)))))
+        (u.debug/load-error props "admin networks show router")))
+    (u.debug/load-error props "admin network show")))
 
 (def ui-show (comp/factory Show))
 
@@ -150,21 +145,21 @@
     (ui-show target)
     (u.debug/load-error props)))
 
-(m.navlinks/defroute :admin-core-networks
+(m.navlinks/defroute index-page-key
   {::m.navlinks/label         "Networks"
    ::m.navlinks/description   "Admin index networks"
    ::m.navlinks/control       ::IndexPage
-   ::m.navlinks/model-key     ::m.c.networks/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core
    ::m.navlinks/router        :admin-core
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-core-networks-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/label         "Show Network"
    ::m.navlinks/description   "Admin Show Network"
    ::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.c.networks/id
-   ::m.navlinks/model-key     ::m.c.networks/id
-   ::m.navlinks/parent-key    :admin-core-networks
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-core
    ::m.navlinks/required-role :admin})

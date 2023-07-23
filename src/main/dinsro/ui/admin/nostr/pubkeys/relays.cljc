@@ -42,20 +42,18 @@
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props}]
-  {;; :componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     (fn [_]
                         {::m.navlinks/id  index-page-key
                          parent-model-key nil
                          :ui/report       {}})
-   ;; :pre-merge     (u.loader/page-merger model-key
-   ;;                  {:ui/report [Report {}]})
    :query             (fn [_]
                         [[::dr/id router-key]
                          ::m.navlinks/id
                          parent-model-key
                          {:ui/report (comp/get-query Report)}])
-   :route-segment     ["connections"]
+   :route-segment     ["relays"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
   (if (get props parent-model-key)
@@ -66,8 +64,8 @@
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
-   ::m.navlinks/label         "Relays"
    ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Relays"
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr-pubkeys-show
    ::m.navlinks/router        :admin-nostr-pubkeys

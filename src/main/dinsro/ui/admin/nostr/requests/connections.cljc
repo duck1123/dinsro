@@ -53,23 +53,26 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.n.requests/keys [id]
-          :ui/keys            [report]
-          :as                 props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id   index-page-key
-                       ::m.n.requests/id nil
-                       :ui/report        {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       ::m.n.requests/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_]
+                        {::m.navlinks/id  index-page-key
+                         parent-model-key nil
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [[::dr/id router-key]
+                         ::m.navlinks/id
+                         parent-model-key
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["connections"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin request connections report"))
     (u.debug/load-error props "admin request connections")))
 
 (m.navlinks/defroute index-page-key

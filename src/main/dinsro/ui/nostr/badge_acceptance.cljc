@@ -17,7 +17,7 @@
 ;; [[../../model/nostr/badge_acceptances.cljc]]
 
 (def index-page-key :nostr-badge-acceptances)
-(def model-link ::m.n.badge-acceptances/id)
+(def model-key ::m.n.badge-acceptances/id)
 
 (report/defsc-report Report
   [_this _props]
@@ -49,3 +49,11 @@
     (if report
       (ui-report report)
       (dom/div :.ui.segment "Failed to load report"))))
+
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/label         "Badge Acceptances"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    :nostr
+   ::m.navlinks/router        :nostr
+   ::m.navlinks/required-role :user})

@@ -102,6 +102,7 @@
 
 (m.navbars/defmenu show-menu-key
   {::m.navbars/parent :nostr
+   ::m.navbars/router ::Router
    ::m.navbars/children
    [u.n.r.connections/index-page-key
     u.n.r.pubkeys/index-page-key
@@ -121,7 +122,9 @@
                     {::m.n.relays/id               nil
                      ::m.n.relays/address          ""
                      ::j.n.relays/connection-count 0
-                     :ui/nav-menu                  (comp/get-initial-state u.menus/NavMenu {::m.navbars/id show-menu-key :id id})
+                     :ui/nav-menu                  (comp/get-initial-state u.menus/NavMenu
+                                                     {::m.navbars/id show-menu-key
+                                                      :id            id})
                      :ui/router                    (comp/get-initial-state Router)})
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
@@ -163,8 +166,7 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {id                model-key
-          ::m.navlinks/keys [target]
+  [_this {::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
    :initial-state (fn [_props]
@@ -178,8 +180,10 @@
    :route-segment ["relay" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
+  (if (get props model-key)
+    (if target
+      (ui-show target)
+      (u.debug/load-error props "show relay target"))
     (u.debug/load-error props "show relay")))
 
 (m.navlinks/defroute show-page-key

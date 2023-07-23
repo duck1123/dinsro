@@ -12,6 +12,7 @@
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.connections :as m.n.connections]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
@@ -124,36 +125,39 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.n.connections/keys [id]
-          ::m.navlinks/keys      [target]
-          :as                    props}]
+  [_this {::m.navlinks/keys [target]
+          :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.n.connections/id nil
-                   ::m.navlinks/id      show-page-key
-                   ::m.navlinks/target  {}}
-   :query         [::m.n.connections/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [_]
+                    {model-key           nil
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target {}})
+   :query         (fn [_]
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["connection" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (ui-segment {} "Failed to load record")))
+  (if (get props model-key)
+    (if target
+      (ui-show target)
+      (u.debug/load-error props "show nostr connection record"))
+    (u.debug/load-error props "show nostr connection")))
 
-(m.navlinks/defroute   :nostr-connections
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Connections"
-   ::m.navlinks/model-key     ::m.n.connections/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr
    ::m.navlinks/router        :nostr
    ::m.navlinks/required-role :user})
 
-(m.navlinks/defroute   :nostr-connections-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Connection"
-   ::m.navlinks/input-key     ::m.n.connections/id
-   ::m.navlinks/model-key     ::m.n.connections/id
-   ::m.navlinks/parent-key    :nostr-connections
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :nostr
    ::m.navlinks/required-role :user})

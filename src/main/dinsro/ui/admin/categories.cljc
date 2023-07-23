@@ -82,17 +82,20 @@
 (def ui-report (comp/factory Report))
 
 (defsc Show
-  [_this {::m.categories/keys [name]}]
+  [_this {::m.categories/keys [id name]
+          :as                 props}]
   {:ident          ::m.categories/id
    :initial-state  {::m.categories/id   nil
                     ::m.categories/name ""}
    ::m.navlinks/id :show-category
-   :pre-merge      (u.loader/page-merger ::m.categories/id {})
+   ;; :pre-merge      (u.loader/page-merger ::m.categories/id {})
    :query          [::m.categories/id
                     ::m.categories/name]}
-  (dom/div :.ui.container
-    (ui-segment {}
-      (str name))))
+  (if id
+    (dom/div :.ui.container
+      (ui-segment {}
+        (str name)))
+    (u.debug/load-error props "admin show category")))
 
 (def ui-show (comp/factory Show))
 
@@ -113,20 +116,23 @@
       (u.debug/load-error props "admin index categories page"))))
 
 (defsc ShowPage
-  [_this {::m.categories/keys [id]
-          ::m.navlinks/keys [target]
-          :as props}]
+  [_this {::m.navlinks/keys [target]
+          :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.categories/id nil
-                   ::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.categories/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
-   :route-segment ["node" :id]
+   :initial-state (fn [_]
+                    {model-key           nil
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn [_]
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
+   :route-segment ["category" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (if (and target id)
-    (ui-show target)
+  (if (get props model-key)
+    (if target
+      (ui-show target)
+      (u.debug/load-error props "admin show category"))
     (u.debug/load-error props "admin show category")))
 
 (m.navlinks/defroute :admin-categories

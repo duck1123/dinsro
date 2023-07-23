@@ -46,13 +46,13 @@
 
 (defsc SubPage
   [_this {::m.c.networks/keys [id]
-          :ui/keys [report]
-          :as props}]
+          :ui/keys            [report]
+          :as                 props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.c.networks/id nil
-                       ::m.navlinks/id index-page-key
-                       :ui/report      {}}
+                       ::m.navlinks/id   index-page-key
+                       :ui/report        {}}
    :query             [[::dr/id router-key]
                        ::m.c.networks/id
                        ::m.navlinks/id
@@ -67,8 +67,9 @@
 
 (m.navlinks/defroute :admin-core-networks-show-addresses
   {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Addresses"
-   ::m.navlinks/model-key     ::m.c.addresses/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core-networks-show
    ::m.navlinks/router        :admin-core-networks
    ::m.navlinks/required-role :admin})

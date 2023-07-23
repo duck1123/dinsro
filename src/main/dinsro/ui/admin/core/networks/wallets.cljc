@@ -5,11 +5,11 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -30,8 +30,8 @@
                          m.c.wallets/user
                          m.c.wallets/derivation]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::refresh         u.links/refresh-control
-                         ::m.c.networks/id {:type :uuid :label "Network"}}
+   ro/controls          {::refresh        u.links/refresh-control
+                         parent-model-key {:type :uuid :label "Network"}}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -43,30 +43,33 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.c.networks/keys [id]
-          :ui/keys            [report]
-          :as                 props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.c.networks/id nil
-                       ::m.navlinks/id   index-page-key
-                       :ui/report        {}}
-   :query             [[::dr/id router-key]
-                       ::m.c.networks/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_]
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       {}})
+   :query             (fn [_]
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["wallets"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/debug :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin network show wallets report"))
+    (u.debug/load-error props "admin network show wallets")))
 
-(m.navlinks/defroute :admin-core-networks-show-wallets
+(m.navlinks/defroute parent-model-key
   {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Wallets"
-   ::m.navlinks/model-key     ::m.c.wallets/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core-networks-show
    ::m.navlinks/router        :admin-core-networks
    ::m.navlinks/required-role :admin})

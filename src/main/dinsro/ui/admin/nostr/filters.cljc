@@ -92,21 +92,19 @@
     (ui-show target)
     (u.debug/load-error props "admin show nostr filter")))
 
-(m.navlinks/defroute
-  :admin-nostr-filters
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Filters"
-   ::m.navlinks/model-key     ::m.n.filters/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute
-  :admin-nostr-filters-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.n.filters/id
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Filter"
-   ::m.navlinks/model-key     ::m.n.filters/id
-   ::m.navlinks/parent-key    :admin-nostr-filters
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})

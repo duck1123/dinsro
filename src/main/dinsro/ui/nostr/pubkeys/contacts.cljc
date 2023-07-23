@@ -8,15 +8,17 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
+   [dinsro.model.contacts :as m.contacts]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-;; [[../../joins/nostr/pubkey_contacts.cljc][Pubkey Contacts Joins]]
-;; [[../../model/nostr/pubkey_contacts.cljc][Pubkey Contacts Model]]
+;; [[../../joins/nostr/pubkey_contacts.cljc]]
+;; [[../../model/nostr/pubkey_contacts.cljc]]
 
 (def index-page-key :nostr-pubkeys-show-contacts)
+(def model-key ::m.contacts/id)
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
@@ -59,3 +61,12 @@
    :route-segment     ["contacts"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
+
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Contacts"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    :nostr-pubkeys-show
+   ::m.navlinks/router        :nostr-pubkeys
+   ::m.navlinks/required-role :user})

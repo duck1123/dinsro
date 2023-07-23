@@ -17,15 +17,19 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-;; [../../../joins/nostr/relays.cljc]
-;; [../../../model/nostr/relays.cljc]
-;; [../../../mutations/nostr/event_tags.cljc]
-;; [../../../mutations/nostr/relays.cljc]
-;; [../../../ui/nostr.cljs]
+;; [[../../../joins/nostr/relays.cljc]]
+;; [[../../../model/nostr/relays.cljc]]
+;; [[../../../mutations/nostr/event_tags.cljc]]
+;; [[../../../mutations/nostr/relays.cljc]]
+;; [[../../../ui/nostr.cljs]]
 
 (def index-page-key :nostr-event-tags-show-relays)
+(def model-key ::m.n.relays/id)
 (def parent-model-key ::m.n.event-tags/id)
 (def router-key :dinsro.ui.nostr.event-tags/Router)
+
+(def fetch-pubkey-action
+  (u.buttons/subrow-action-button "Fetch Pubkey" ::m.n.event-tags/id parent-model-key  mu.n.event-tags/fetch!))
 
 (form/defsc-form NewForm
   [_this _props]
@@ -43,19 +47,19 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.relays/address      #(u.links/ui-relay-link %3)}
+  {ro/column-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
    ro/columns           [m.n.relays/connected
                          m.n.relays/address
                          j.n.relays/connection-count
                          j.n.relays/request-count]
    ro/control-layout    {:action-buttons [::add ::refresh]}
-   ro/controls          {::m.n.event-tags/id {:type :uuid :label "id"}
-                         ::add               new-item-button
-                         ::refresh           u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::add            new-item-button
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/subrow-action-button "Fetch Pubkey" ::m.n.event-tags/id parent-model-key  mu.n.event-tags/fetch!)]
+   ro/row-actions       [fetch-pubkey-action]
    ro/row-pk            m.n.relays/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.relays/index
@@ -67,20 +71,23 @@
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_]
+                        {::m.navlinks/id index-page-key
+                         :ui/report      {}})
+   :query             (fn [_]
+                        [[::dr/id router-key]
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["items"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
   (ui-report report))
 
-(m.navlinks/defroute   :nostr-event-tags-relays
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Relays"
-   ::m.navlinks/model-key     ::m.n.relays/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-event-tags-show
    ::m.navlinks/router        :nostr-event-tags
    ::m.navlinks/required-role :user})

@@ -52,33 +52,33 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.n.relays/keys [id]
-          :ui/keys          [report]
-          :as               props}]
-  {:componentDidMount
-   ;; #(report/start-report! % Report {:route-params (comp/props %)})
-   (partial u.loader/subpage-loader parent-model-key router-key Report)
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       ::m.n.relays/id nil
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       ::m.n.relays/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_]
+                        {::m.navlinks/id  index-page-key
+                         parent-model-key nil
+                         :ui/report       {}})
+   :query             (fn [_]
+                        [[::dr/id router-key]
+                         ::m.navlinks/id
+                         parent-model-key
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["connections"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
-    (u.debug/load-error props "admin relay connection page")))
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin relay connection report"))
+    (u.debug/load-error (dissoc props [::dr/id router-key]) "admin relay connection page")))
 
-(m.navlinks/defroute
-  :admin-nostr-relays-show-connections
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
-   ::m.navlinks/input-key     ::m.n.relays/id
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Connections"
-   ::m.navlinks/model-key     ::m.n.connections/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr-relays-show
    ::m.navlinks/router        :admin-nostr-relays
    ::m.navlinks/required-role :admin})

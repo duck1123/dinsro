@@ -18,7 +18,8 @@
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]))
+   [dinsro.ui.menus :as u.menus]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/chains.cljc]]
 ;; [[../../../model/core/chains.cljc]]
@@ -52,28 +53,33 @@
           :as               props}]
   {:ident         ::m.c.chains/id
    :initial-state (fn [props]
-                    (let [id (::m.c.chains/id props)]
-                      {model-key         nil
+                    (let [id (model-key props)]
+                      {model-key         id
                        ::m.c.chains/name ""
-                       :ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-chains
-                                                                                  :id            id})
+                       :ui/nav-menu      (comp/get-initial-state u.menus/NavMenu
+                                           {::m.navbars/id :core-chains
+                                            :id            id})
                        :ui/router        (comp/get-initial-state Router)}))
    :query         [::m.c.chains/id
                    ::m.c.chains/name
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]}
-  (dom/div {}
-    (ui-segment {}
-      (dom/h1 {} "Show Chain")
-      (dom/dl {}
-        (dom/dt {} "Name")
-        (dom/dd {} (str name))))
-    (u.menus/ui-nav-menu nav-menu)
-    (if router
-      (ui-router router)
+                   {:ui/router (comp/get-query Router)}]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
+  (if (get props model-key)
+    (dom/div {}
       (ui-segment {}
-        (dom/h3 {} "Chain Router not loaded")
-        (u.debug/ui-props-logger props)))))
+        (dom/h1 {} "Show Chain")
+        (dom/dl {}
+          (dom/dt {} "Name")
+          (dom/dd {} (str name))))
+      (if nav-menu
+        (u.menus/ui-nav-menu nav-menu)
+        (u.debug/load-error props "admin show chain menu"))
+      (if router
+        (ui-router router)
+        (u.debug/load-error props "admin show chain router")))
+    (u.debug/load-error props "admin show chain")))
 
 (def ui-show (comp/factory Show))
 
@@ -107,7 +113,8 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]}]
+  [_this {::m.navlinks/keys [target]
+          :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
    :initial-state {::m.navlinks/id     show-page-key
                    ::m.navlinks/target {}}
@@ -115,23 +122,24 @@
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["chain" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (log/info :ShowPage/starting {:props props})
   (ui-show target))
 
-(m.navlinks/defroute    :admin-core-chains
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin index chains"
    ::m.navlinks/label         "Chains"
-   ::m.navlinks/model-key     ::m.c.chains/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core
    ::m.navlinks/router        :admin-core
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-core-chains-show
-  {::m.navlinks/label         "Show Chain"
+(m.navlinks/defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Admin show chain"
-   ::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.c.chains/id
-   ::m.navlinks/model-key     ::m.c.chains/id
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/label         "Show Chain"
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core-chains
    ::m.navlinks/router        :admin-core
    ::m.navlinks/required-role :admin})

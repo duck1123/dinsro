@@ -9,7 +9,7 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
-   [dinsro.model.navbars :as m.navbars :refer [defmenu]]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.ui.admin.nostr.pubkeys.relays :as u.a.n.p.relays]
@@ -64,10 +64,10 @@
 
 (def ui-router (comp/factory Router))
 
-(defmenu show-menu-key
-  {::parent   parent-router-key
-   ::router   ::Router
-   ::children [u.a.n.p.relays/index-page-key]})
+(m.navbars/defmenu show-menu-key
+  {::m.navbars/parent   parent-router-key
+   ::m.navbars/router   ::Router
+   ::m.navbars/children [u.a.n.p.relays/index-page-key]})
 
 (defsc Show
   [_this {::m.n.pubkeys/keys [id]

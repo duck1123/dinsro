@@ -54,7 +54,7 @@
   (log/info :Show/starting {:props props})
   (if id
     (ui-segment {} "TODO: Show event")
-    (ui-segment {} "Failed to load record")))
+    (u.debug/load-error props "admin show event")))
 
 (def ui-show (comp/factory Show))
 
@@ -72,40 +72,41 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.n.events/keys [id]
-          ::m.navlinks/keys [target]
+  [_this {::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.n.events/id     nil
-                   ::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.n.events/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [_]
+                    {model-key           nil
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn [_]
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["event" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
+  (if (get props model-key)
+    (if target
+      (ui-show target)
+      (u.debug/load-error props "admin show event"))
     (u.debug/load-error props "admin show event")))
 
-(m.navlinks/defroute
-  :admin-nostr-events
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Events"
    ::m.navlinks/description   "Admin index of events"
-   ::m.navlinks/model-key     ::m.n.events/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute
-  :admin-nostr-events-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/label         "Show Event"
-   ::m.navlinks/input-key     ::m.n.events/id
    ::m.navlinks/description   "Admin page for an event"
-   ::m.navlinks/model-key     ::m.n.events/id
-   ::m.navlinks/parent-key    :admin-nostr-events
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/label         "Show Event"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})

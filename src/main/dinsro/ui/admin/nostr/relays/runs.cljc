@@ -70,12 +70,11 @@
     (ui-report report)
     (u.debug/load-error props "admin relays runs")))
 
-(m.navlinks/defroute
-  :admin-nostr-relays-show-runs
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
-   ::m.navlinks/input-key     ::m.n.relays/id
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Runs"
-   ::m.navlinks/model-key     ::m.n.runs/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr-relays-show
    ::m.navlinks/router        :admin-nostr-relays
    ::m.navlinks/required-role :admin})

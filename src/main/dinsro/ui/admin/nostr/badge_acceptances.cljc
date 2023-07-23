@@ -18,9 +18,9 @@
 ;; [[../../../joins/nostr/badge_acceptances.cljc]]
 ;; [[../../../model/nostr/badge_acceptances.cljc]]
 
-(def index-page-key :nostr-badge-acceptances)
+(def index-page-key :admin-nostr-badge-acceptances)
 (def model-key ::m.n.badge-acceptances/id)
-(def show-page-key :nostr-badge-acceptances-show)
+(def show-page-key :admin-nostr-badge-acceptances-show)
 
 (report/defsc-report Report
   [_this _props]
@@ -86,19 +86,19 @@
     (ui-show target)
     (u.debug/load-error props "admin show badge acceptance")))
 
-(m.navlinks/defroute :admin-nostr-badge-acceptances
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Acceptances"
-   ::m.navlinks/model-key     ::m.n.badge-acceptances/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-nostr-badge-acceptances-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.n.badge-acceptances/id
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Acceptances"
-   ::m.navlinks/model-key     ::m.n.badge-acceptances/id
-   ::m.navlinks/parent-key    :admin-nostr-badge-acceptances
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})

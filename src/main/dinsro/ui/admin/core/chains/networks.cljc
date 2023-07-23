@@ -43,16 +43,31 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]
-          :as props}]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_]
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       {}})
+   :query             (fn [_]
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["networks"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (if report
-    (ui-report report)
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin chain networks page"))
     (u.debug/load-error props "admin chain networks page")))
+
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Networks"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    :admin-core-chains-show
+   ::m.navlinks/router        :admin-core-chains
+   ::m.navlinks/required-role :admin})

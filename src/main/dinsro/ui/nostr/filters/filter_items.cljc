@@ -15,12 +15,13 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-;; [../../../actions/nostr/filter_items.clj]
-;; [../../../model/nostr/filter_items.cljc]
-;; [../../../queries/nostr/filter_items.clj]
-;; [../../../ui/nostr/requests/filter_items.cljs]
+;; [[../../../actions/nostr/filter_items.clj]]
+;; [[../../../model/nostr/filter_items.cljc]]
+;; [[../../../queries/nostr/filter_items.clj]]
+;; [[../../../ui/nostr/requests/filter_items.cljs]]
 
 (def index-page-key :nostr-filters-show-filter-items)
+(def model-key ::m.n.filter-items/id)
 (def parent-model-key ::m.n.filters/id)
 (def router-key :dinsro.ui.nostr.filters/Router)
 
@@ -81,20 +82,11 @@
   (log/info :SubPage/starting {:props props})
   (ui-report report))
 
-(m.navlinks/defroute   :nostr-filters-show-filter-items
+(m.navlinks/defroute   index-page-key
   {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Items"
-   ::m.navlinks/input-key     ::m.n.filters/id
-   ::m.navlinks/model-key     ::m.n.filter-items/id
-   ::m.navlinks/parent-key    :nostr-filters-show
-   ::m.navlinks/router        :nostr-filters
-   ::m.navlinks/required-role :user})
-
-(m.navlinks/defroute   :nostr-filters-show-items
-  {::m.navlinks/control       ::SubPage
-   ::m.navlinks/label         "Items"
-   ::m.navlinks/input-key     ::m.n.filters/id
-   ::m.navlinks/model-key     ::m.n.filter-items/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-filters-show
    ::m.navlinks/router        :nostr-filters
    ::m.navlinks/required-role :user})

@@ -11,12 +11,18 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.connections :as mu.n.connections]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
-(def ident-key ::m.n.relays/id)
 (def index-page-key :nostr-relays-show-connections)
+(def model-key ::m.n.connections/id)
+(def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.nostr.relays/Router)
+
+(def disconnect-action
+  (u.buttons/row-action-button "Disconnect" model-key mu.n.connections/disconnect!))
 
 (report/defsc-report Report
   [_this _props]
@@ -29,23 +35,23 @@
                          m.n.connections/end-time
                          j.n.connections/run-count]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::m.n.relays/id {:type :uuid :label "id"}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh       u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Disconnect" ::m.n.connections/id mu.n.connections/disconnect!)]
-
-   ro/row-pk           m.n.connections/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.connections/index
-   ro/title            "Connections"})
+   ro/row-actions       [disconnect-action]
+   ro/row-pk            m.n.connections/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.connections/index
+   ro/title             "Connections"})
 
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}
@@ -53,12 +59,15 @@
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["connections"]}
-  (ui-report report))
+  (log/info :SubPage/starting {:props props})
+  (if (get props parent-model-key)
+    (ui-report report)
+    (u.debug/load-error props "relay show connections")))
 
-(m.navlinks/defroute   :nostr-relays-show-connections
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Connections"
-   ::m.navlinks/model-key     ::m.n.connections/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-pubkeys-show
    ::m.navlinks/router        :nostr-relays
    ::m.navlinks/required-role :user})

@@ -2,6 +2,8 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.data-fetch :as df]
+   #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
+   #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.routing :as rroute]
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [dinsro.model.navbars :as m.navbars]
@@ -55,24 +57,25 @@
        :children        children
        :converted-items converted-items})
     (if (seq converted-items)
-      (comp/fragment
-       (ui-menu
-         {:items       converted-items
-          :onItemClick (fn [_e d]
-                         (log/info :NavMenu/onItemClick {:d d})
-                         (if-let [route-name #?(:clj nil :cljs (get (js->clj d) "route"))]
-                           (let [route-kw (keyword route-name)
-                                 route    (comp/registry-key->class route-kw)]
-                             (log/info :NavMenu/clicked {:route-kw route-kw :route route :id id})
-                             (if id
-                               (do
-                                 (log/debug :NavMenu/click-with-id {:id id})
-                                 (rroute/route-to! this route {:id (str id)}))
-                               (do
-                                 (log/debug :NavMenu/click-no-id {})
-                                 (rroute/route-to! this route {}))))
-                           (throw (ex-info "no route" {}))))})
-       (when log-props? (u.debug/log-props props)))
+      (dom/div {}
+        (comment (dom/p {} (str "ID: " id)))
+        (ui-menu
+          {:items       converted-items
+           :onItemClick (fn [_e d]
+                          (log/info :NavMenu/onItemClick {:d d})
+                          (if-let [route-name #?(:clj nil :cljs (get (js->clj d) "route"))]
+                            (let [route-kw (keyword route-name)
+                                  route    (comp/registry-key->class route-kw)]
+                              (log/info :NavMenu/clicked {:route-kw route-kw :route route :id id})
+                              (if id
+                                (do
+                                  (log/debug :NavMenu/click-with-id {:id id})
+                                  (rroute/route-to! this route {:id (str id)}))
+                                (do
+                                  (log/debug :NavMenu/click-no-id {})
+                                  (rroute/route-to! this route {}))))
+                            (throw (ex-info "no route" {}))))})
+        (when log-props? (u.debug/log-props props)))
       (u.debug/load-error props "Nav menu children"))))
 
 (def ui-nav-menu

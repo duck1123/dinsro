@@ -13,6 +13,7 @@
    [dinsro.ui.loader :as u.loader]))
 
 (def index-page-key :nostr-pubkeys-show-badge-awards)
+(def model-key ::m.n.badge-awards/id)
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
@@ -20,7 +21,7 @@
   [_this _props]
   {ro/columns          [m.n.badge-awards/badge]
    ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
+   ro/controls         {parent-model-key {:type :uuid :label "id"}
                         ::refresh        u.links/refresh-control}
    ro/machine          spr/machine
    ro/page-size        10
@@ -44,3 +45,12 @@
    :route-segment     ["badge-awards"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
+
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Badge Awards"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    :nostr-pubkeys-show
+   ::m.navlinks/router        :nostr-pubkeys
+   ::m.navlinks/required-role :user})

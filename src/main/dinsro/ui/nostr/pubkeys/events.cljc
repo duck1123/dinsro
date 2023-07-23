@@ -23,6 +23,7 @@
 ;; [[../../../ui/nostr/event_tags.cljs]]
 
 (def index-page-key :nostr-pubkeys-show-events)
+(def model-key ::m.n.events/id)
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
@@ -92,10 +93,11 @@
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
 
-(m.navlinks/defroute   :nostr-pubkeys-show-events
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Events"
-   ::m.navlinks/model-key     :dinsro.model.nostr.events/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-pubkeys-show
    ::m.navlinks/router        :nostr-pubkeys
    ::m.navlinks/required-role :user})

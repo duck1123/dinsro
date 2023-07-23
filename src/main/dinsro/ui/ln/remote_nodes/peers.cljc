@@ -46,11 +46,22 @@
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_]
+                        {::m.navlinks/id index-page-key
+                         :ui/report      {}})
+   :query             (fn [_]
+                        [::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
 
 (def ui-sub-page (comp/factory SubPage))
+
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/label         "Peers"
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    :ln-remote-nodes-show
+   ::m.navlinks/router        :ln-remote-nodes
+   ::m.navlinks/required-role :user})

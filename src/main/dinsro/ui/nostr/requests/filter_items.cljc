@@ -11,14 +11,20 @@
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations.nostr.filter-items :as mu.n.filter-items]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
-;; [../filters/filter_items.cljs]
+;; [[../filters/filter_items.cljs]]
 
-(def ident-key ::m.n.requests/id)
 (def index-page-key :nostr-requests-show-filter-items)
+(def model-key ::m.n.filter-items/id)
+(def parent-model-key ::m.n.requests/id)
 (def router-key :dinsro.ui.nostr.requests/Router)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.filter-items/delete!))
 
 (report/defsc-report Report
   [_this _props]
@@ -31,9 +37,9 @@
                          m.n.filter-items/event
                          m.n.filter-items/pubkey]
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
-   ro/controls          {::m.n.requests/id {:type :uuid :label "id"}
-                         ::refresh         u.links/refresh-control}
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.n.filter-items/id mu.n.filter-items/delete!)]
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
+   ro/row-actions       [delete-action]
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -45,8 +51,9 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}
@@ -54,12 +61,15 @@
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["filter-items"]}
-  (ui-report report))
+  (log/info :SubPage/starting {:props props})
+  (if (get props parent-model-key)
+    (ui-report report)
+    (u.debug/load-error props "requests show filter items")))
 
-(m.navlinks/defroute   :nostr-requests-show-items
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Items"
-   ::m.navlinks/model-key     ::m.n.filter-items/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-requests-show
    ::m.navlinks/router        :nostr-requests
    ::m.navlinks/required-role :user})

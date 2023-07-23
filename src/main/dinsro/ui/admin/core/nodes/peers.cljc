@@ -7,7 +7,6 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.peers :as j.c.peers]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.peers :as m.c.peers]
@@ -16,6 +15,7 @@
    [dinsro.mutations.core.peers :as mu.c.peers]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.peers :as u.c.peers]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -27,6 +27,9 @@
 (def model-key ::m.c.peers/id)
 (def parent-model-key ::m.c.nodes/id)
 (def router-key :dinsro.ui.core.nodes/Router)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!))
 
 (def fetch-button
   {:type   :button
@@ -72,7 +75,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.c.peers/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.peers/index
@@ -81,31 +84,33 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.c.nodes/keys [id]
-          :ui/keys         [report]
-          :as              props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.c.nodes/id  nil
-                       ::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.c.nodes/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_]
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       {}})
+   :query             (fn [_]
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["peers"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin nodes show peers report"))
+    (u.debug/load-error props "admin nodes show peers")))
 
-(m.navlinks/defroute :admin-core-nodes-show-peers
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Peers"
-   ::m.navlinks/input-key     ::m.c.nodes/id
-   ::m.navlinks/model-key     ::m.c.peers/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core-nodes-show
    ::m.navlinks/router        :admin-core
    ::m.navlinks/required-role :admin})

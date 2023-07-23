@@ -15,12 +15,18 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-;; [[../../model/nostr/relays.cljc][Relays Model]]
+;; [[../../model/nostr/relays.cljc]]
 
 (def index-page-key :nostr-pubkeys-show-relays)
 (def model-key ::m.n.relays/id)
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
+
+(def fetch-action
+  (u.buttons/subrow-action-button "Fetch" model-key parent-model-key  mu.n.pubkeys/fetch!))
+
+(def fetch-events-action
+  (u.buttons/subrow-action-button "Fetch Events" model-key parent-model-key mu.n.events/fetch-events!))
 
 (report/defsc-report Report
   [_this _props]
@@ -28,11 +34,11 @@
                          ::j.n.relays/connection-count #(u.links/ui-relay-connection-count-link %3)}
    ro/columns           [m.n.relays/address
                          j.n.relays/connection-count]
-   ro/controls          {::m.n.pubkeys/id {:type :uuid :label "id"}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh        u.links/refresh-control}
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/row-actions       [(u.buttons/subrow-action-button "Fetch" model-key parent-model-key  mu.n.pubkeys/fetch!)
-                         (u.buttons/subrow-action-button "Fetch Events" model-key parent-model-key mu.n.events/fetch-events!)]
+   ro/row-actions       [fetch-action
+                         fetch-events-action]
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -58,8 +64,8 @@
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
-   ::m.navlinks/label         "Relays"
    ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Relays"
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-pubkeys-show
    ::m.navlinks/router        :nostr-pubkeys

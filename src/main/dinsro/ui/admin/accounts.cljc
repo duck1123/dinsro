@@ -161,12 +161,12 @@
                    ::m.navlinks/target {}}
    :query         [::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
-   :route-segment ["node" :id]
+   :route-segment ["account" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if target
     (ui-show target)
-    (u.debug/load-error props "show page")))
+    (u.debug/load-error props "admin show account")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
@@ -183,6 +183,6 @@
    ::m.navlinks/label         "Accounts"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-accounts
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})

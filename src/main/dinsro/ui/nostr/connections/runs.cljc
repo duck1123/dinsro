@@ -17,8 +17,8 @@
 ;; [[../../../joins/nostr/runs.cljc]]
 ;; [[../../../model/nostr/runs.cljc]]
 
-(def ident-key ::m.n.connections/id)
 (def index-page-key :nostr-connections-show-runs)
+(def model-key ::m.n.runs/id)
 (def parent-model-key ::m.n.connections/id)
 (def router-key :dinsro.ui.nostr.connections/Router)
 
@@ -51,19 +51,22 @@
   [_this {:ui/keys [report]}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_]
+                        {::m.navlinks/id index-page-key
+                         :ui/report      {}})
+   :query             (fn [_]
+                        [[::dr/id router-key]
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["runs"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
 
-(m.navlinks/defroute   :nostr-connections-show-runs
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Runs"
-   ::m.navlinks/model-key     ::m.n.runs/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-connections-show
    ::m.navlinks/router        :nostr-connections
    ::m.navlinks/required-role :user})

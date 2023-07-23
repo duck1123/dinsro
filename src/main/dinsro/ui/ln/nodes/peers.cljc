@@ -67,10 +67,11 @@
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
 
-(m.navlinks/defroute   :ln-nodes-show-peers
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Peers"
-   ::m.navlinks/model-key     ::m.ln.peers/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :ln-nodes-show
    ::m.navlinks/router        :ln-nodes
    ::m.navlinks/required-role :user})

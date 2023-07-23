@@ -14,6 +14,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.currencies :as mu.currencies]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -42,7 +43,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.currencies/name #(u.links/ui-currency-link %3)}
+  {ro/column-formatters {::m.currencies/name #(u.links/ui-admin-currency-link %3)}
    ro/columns           [m.currencies/name
                          m.currencies/code
                          j.currencies/source-count
@@ -91,29 +92,36 @@
   [_this {::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [_]
+                    {model-key           nil
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target {}})
+   :query         (fn [_]
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["currency" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
-  (if target
-    (ui-show target)
-    (ui-segment {} "Failed to load page")))
+  (if (get props model-key)
+    (if target
+      (ui-show target)
+      (u.debug/load-error props "admin show currency target"))
+    (u.debug/load-error props "admin show currency")))
 
-(m.navlinks/defroute :admin-currencies
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Currencies"
-   ::m.navlinks/model-key     ::m.currencies/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-currencies-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Currency"
-   ::m.navlinks/model-key     ::m.currencies/id
-   ::m.navlinks/parent-key    :admin-currencies
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})

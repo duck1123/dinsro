@@ -39,30 +39,33 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.n.relays/keys [id]
-          :ui/keys          [report]
-          :as               props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       ::m.n.relays/id nil
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       ::m.n.relays/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_]
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn [_]
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["witnesses"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin relay witnesses report"))
     (u.debug/load-error props "admin relay witnesses")))
 
-(m.navlinks/defroute :admin-nostr-relays-show-witnesses
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
-   ::m.navlinks/input-key     ::m.n.relays/id
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Witnesses"
-   ::m.navlinks/model-key     ::m.n.witnesses/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr-relays-show
    ::m.navlinks/router        :admin-nostr-relays
    ::m.navlinks/required-role :admin})

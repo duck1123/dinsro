@@ -13,6 +13,7 @@
    [dinsro.ui.loader :as u.loader]))
 
 (def index-page-key :nostr-pubkeys-show-items)
+(def model-key ::m.n.filter-items/id)
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
@@ -57,10 +58,11 @@
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
 
-(m.navlinks/defroute   :nostr-pubkeys-show-items
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Filter Items"
-   ::m.navlinks/model-key     ::m.n.filter-items/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-pubkeys-show
    ::m.navlinks/router        :nostr-pubkeys
    ::m.navlinks/required-role :user})

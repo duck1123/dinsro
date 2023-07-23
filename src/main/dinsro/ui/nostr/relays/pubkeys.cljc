@@ -17,7 +17,8 @@
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/nostr/pubkeys.cljc]]
 ;; [[../../model/nostr/pubkeys.cljc]]
@@ -26,9 +27,19 @@
 ;; [[../../mutations/nostr/pubkeys.cljc]]
 ;; [[../../ui/nostr/relays.cljs]]
 
-(def ident-key ::m.n.relays/id)
 (def index-page-key :nostr-relays-show-pubkeys)
+(def model-key ::m.n.pubkeys/id)
+(def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.nostr.relays/Router)
+
+(def fetch-action
+  (u.buttons/subrow-action-button "Fetch" model-key parent-model-key mu.n.pubkeys/fetch!))
+
+(def fetch-contacts-action
+  (u.buttons/subrow-action-button "Fetch Contacts" model-key parent-model-key mu.n.pubkeys/fetch-contacts!))
+
+(def fetch-events-action
+  (u.buttons/subrow-action-button "Fetch Events" model-key parent-model-key mu.n.events/fetch-events!))
 
 (form/defsc-form AddForm
   [_this _props]
@@ -60,9 +71,9 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/subrow-action-button "Fetch" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/fetch!)
-                         (u.buttons/subrow-action-button "Fetch Events" ::m.n.pubkeys/id ident-key  mu.n.events/fetch-events!)
-                         (u.buttons/subrow-action-button "Fetch Contacts" ::m.n.pubkeys/id ident-key  mu.n.pubkeys/fetch-contacts!)]
+   ro/row-actions       [fetch-action
+                         fetch-events-action
+                         fetch-contacts-action]
    ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.pubkeys/index
@@ -71,8 +82,9 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}
@@ -80,12 +92,13 @@
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["pubkeys"]}
+  (log/info :SubPage/starting {:props props})
   (ui-report report))
 
-(m.navlinks/defroute   :nostr-relays-show-pubkeys
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Pubkeys"
-   ::m.navlinks/model-key     ::m.n.pubkeys/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-relays-show
    ::m.navlinks/router        :nostr-relays
    ::m.navlinks/required-role :user})

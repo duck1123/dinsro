@@ -36,8 +36,8 @@
                          m.n.filter-items/event
                          m.n.filter-items/pubkey]
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
-   ro/controls          {::m.n.requests/id {:type :uuid :label "id"}
-                         ::refresh         u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
    ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.n.filter-items/delete!)]
    ro/machine           spr/machine
    ro/page-size         10
@@ -50,29 +50,32 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.n.requests/keys [id]
-          :ui/keys            [report]
-          :as                 props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id   index-page-key
-                       ::m.n.requests/id nil
-                       :ui/report        {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       ::m.n.requests/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_]
+                        {::m.navlinks/id  index-page-key
+                         parent-model-key nil
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn [_]
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["filter-items"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin request filter items report"))
     (u.debug/load-error props "admin request filter items")))
 
-(m.navlinks/defroute   :admin-nostr-requests-show-filter-items
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
-   ::m.navlinks/input-key     ::m.n.requests/id
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Items"
-   ::m.navlinks/model-key     ::m.n.filter-items/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr-requests-show
    ::m.navlinks/required-role :admin})

@@ -15,18 +15,19 @@
 ;; [[../../../model/users.cljc]]
 
 (def index-page-key :nostr-pubkeys-show-users)
+(def model-key ::m.users/id)
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
 (report/defsc-report Report
   [_this _props]
   {ro/columns          [m.users/name]
-   ro/controls         {::m.n.pubkeys/id {:type :uuid :label "id"}
-                        ::refresh      u.links/refresh-control}
+   ro/controls         {parent-model-key {:type :uuid :label "id"}
+                        ::refresh        u.links/refresh-control}
    ro/control-layout   {:action-buttons [::refresh]}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/source-attribute ::j.users/index-by-pubkey
    ro/title            "Users"
    ro/row-pk           m.users/id
@@ -46,3 +47,12 @@
    :route-segment     ["users"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (ui-report report))
+
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Users"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    :nostr-pubkeys-show
+   ::m.navlinks/router        :nostr-pubkeys
+   ::m.navlinks/required-role :user})

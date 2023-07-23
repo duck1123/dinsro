@@ -5,13 +5,13 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.transactions :as mu.c.transactions]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -70,7 +70,17 @@
    :route-segment     ["transactions"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+  (if (get props parent-model-key)
+    (if (and report id)
+      (ui-report report)
+      (u.debug/load-error props "admin nodes show transactions"))
+    (u.debug/load-error props "admin nodes show transactions")))
+
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Transactions"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    :admin-core-nodes-show
+   ::m.navlinks/router        :admin-core-nodes
+   ::m.navlinks/required-role :admin})
