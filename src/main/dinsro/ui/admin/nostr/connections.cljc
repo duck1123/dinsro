@@ -25,8 +25,8 @@
 
 (def index-page-key :admin-nostr-connections)
 (def model-key ::m.n.connections/id)
+(def show-menu-id :admin-nostr-connections)
 (def show-page-key :admin-nostr-connections-show)
-(def show-menu-key :admin-nostr-connections)
 
 (m.navbars/defmenu :admin-nostr-connections
   {::m.navbars/parent   :admin-nostr
@@ -46,7 +46,7 @@
                        ::m.n.connections/start-time nil
                        ::m.n.connections/end-time   nil
                        :ui/nav-menu                 (comp/get-initial-state u.menus/NavMenu
-                                                      {::m.navbars/id show-menu-key
+                                                      {::m.navbars/id show-menu-id
                                                        :id            id})}))
    :query         [::m.n.connections/id
                    ::m.n.connections/status

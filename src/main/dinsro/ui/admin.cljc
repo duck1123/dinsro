@@ -23,6 +23,7 @@
    [lambdaisland.glogc :as log]))
 
 (def debug-route false)
+(def index-page-key :admin)
 
 (defrouter Router
   [_this {:keys [current-state route-factory route-props router-state] :as props}]
@@ -50,17 +51,17 @@
                          u.a.users/IndexPage
                          u.a.users/ShowPage]}
   (log/info :Router/starting {:props props})
-  (dom/div :.admin-router-outer
+  (dom/div :.admin-router-outer {}
     (case current-state
       :pending
       (dom/div {} "Loading...")
 
       :failed
-      (dom/div {}
-        (dom/div :.ui.segment "Failed!")
-        (u.debug/log-props props))
+      (u.debug/load-error props "Admin router")
 
-      :routed  (route-factory route-props)
+      :routed
+      (route-factory route-props)
+
       ;; default will be used when the current state isn't yet set
       (dom/div :.admin-router
         (dom/div "No route selected.")
@@ -78,13 +79,13 @@
    ::m.navbars/router ::Router
    ::m.navbars/children
    [u.a.users/index-page-key
-    :admin-core
-    :admin-ln
-    :admin-nostr
-    :admin-categories
-    :admin-accounts
-    :admin-currencies
-    :admin-transactions
+    u.a.core/index-page-key
+    u.a.ln/index-page-key
+    u.a.nostr/index-page-key
+    u.a.categories/index-page-key
+    u.a.accounts/index-page-key
+    u.a.currencies/index-page-key
+    u.a.transactions/index-page-key
     :admin-debits
     :admin-rate-sources
     :admin-rates
@@ -110,18 +111,18 @@
   (dom/div :.admin-page
     (if nav-menu
       (u.menus/ui-nav-menu nav-menu)
-      (dom/div "Failed to load nav menu"))
+      (u.debug/load-error props "admin nav menu"))
     (if router
       (ui-router router)
-      (dom/div "Failed to load admin router"))
+      (u.debug/load-error props "admin router"))
     (when debug-props
       (u.debug/log-props props))))
 
-(m.navlinks/defroute :admin
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::Page
    ::m.navlinks/description   "Admin root page"
    ::m.navlinks/label         "Admin"
-   ::m.navlinks/navigate-key  :admin-users
+   ::m.navlinks/navigate-key  u.a.users/index-page-key
    ::m.navlinks/parent-key    :root
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :admin})

@@ -69,7 +69,7 @@
   [parent-ident-key mappings]
   (fn [ctx]
     (let [merged (merge-pages ctx parent-ident-key mappings)]
-      (log/debug :page-merger/finished
+      (log/trace :page-merger/finished
         {:parent-ident-key parent-ident-key
          :merged           merged
          :mappings         mappings
@@ -150,18 +150,21 @@
           {:keys [id]}              props
           record-id                 (new-uuid id)
           page-ident                [::m.navlinks/id page-id]
-          control                   (comp/registry-key->class control-key)]
+          control                   (comp/registry-key->class control-key)
+          model-ident               (conj page-ident model-key)]
       (log/info :targeted-router-loader/starting
-        {:page-id    page-id
-         :model-key  model-key
-         :record-id  record-id
-         :app        app
-         :props      props
-         :state-atom state-atom
-         :page       (get-in @state-atom page-ident)})
+        {:page-id     page-id
+         :model-key   model-key
+         :record-id   record-id
+         :page-ident  page-ident
+         :model-ident model-ident
+         :app         app
+         :props       props
+         :state-atom  state-atom
+         :page        (get-in @state-atom page-ident)})
 
       ;; Set the model key on the page
-      (swap! state-atom assoc-in (conj page-ident model-key) record-id)
+      (swap! state-atom assoc-in model-ident record-id)
 
       (log/info :targeted-router-loader/merged
         {:page-id     page-id

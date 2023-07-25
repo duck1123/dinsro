@@ -20,6 +20,8 @@
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
+(def index-page-key :admin-ln)
+
 (defrouter Router
   [_this _props]
   {:router-targets [u.a.ln.dashboard/Page

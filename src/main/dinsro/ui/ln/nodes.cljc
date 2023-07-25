@@ -168,12 +168,12 @@
   {::m.navbars/parent :ln
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [:ln-nodes-show-accounts
-    :ln-nodes-show-addresses
-    :ln-nodes-show-channels
-    :ln-nodes-show-peers
-    :ln-nodes-show-remote-nodes
-    :ln-nodes-show-wallet-addresses]})
+   [u.ln.n.accounts/index-page-key
+    u.ln.n.addresses/index-page-key
+    u.ln.n.channels/index-page-key
+    u.ln.n.peers/index-page-key
+    u.ln.n.remote-nodes/index-page-key
+    u.ln.n.wallet-addresses/index-page-key]})
 
 (defsc Show
   "Show a ln node"
@@ -193,8 +193,9 @@
                        ::m.ln.nodes/hasCert?     false
                        ::m.ln.nodes/hasMacaroon? false
                        :ui/router                (comp/get-initial-state Router)
-                       :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :ln-nodes
-                                                                                          :id            id})}))
+                       :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
+                                                   {::m.navbars/id :ln-nodes
+                                                    :id            id})}))
    :pre-merge     (u.loader/page-merger ::m.ln.nodes/id
                     {:ui/router   [Router {}]
                      :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :ln-nodes}]})

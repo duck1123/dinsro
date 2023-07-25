@@ -24,7 +24,7 @@
 
 (def index-page-key :nostr-subscriptions)
 (def model-key ::m.n.subscriptions/id)
-(def show-menu-key :nostr-subscriptions)
+(def show-menu-id :nostr-subscriptions)
 (def show-page-key :nostr-subscriptions-show)
 
 (report/defsc-report Report
@@ -53,7 +53,7 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-key
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :nostr
    ::m.navbars/children
    [u.n.subscription-pubkeys/index-page-key]})
@@ -68,11 +68,11 @@
                        ::m.n.subscriptions/code  ""
                        ::m.n.subscriptions/relay {}
                        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
-                                                   {::m.navbars/id show-menu-key
-                                                    :id id})
+                                                   {::m.navbars/id show-menu-id
+                                                    :id            id})
                        :ui/router                {}}))
    :pre-merge     (u.loader/page-merger ::m.n.subscriptions/id
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/router   [Router {}]})
    :query         [::m.n.subscriptions/id
                    ::m.n.subscriptions/code

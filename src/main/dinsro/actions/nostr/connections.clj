@@ -218,13 +218,13 @@
   ([relay-id]
    [::m.n.relays/id => (? ::m.n.connections/id)]
    (register-connection!* relay-id true))
-  ([relay-id register]
+  ([relay-id register-if-not-found?]
    [::m.n.relays/id boolean? => (? ::m.n.connections/id)]
    (do
      (log/info :register-connection!/starting {:relay-id relay-id})
      (if-let [connection-id (q.n.connections/find-connected-by-relay relay-id)]
        connection-id
-       (when register
+       (when register-if-not-found?
          (let [connection-id (create-connection! relay-id)]
            (start! connection-id)
            connection-id))))))
@@ -233,9 +233,9 @@
   ([relay-id]
    [::m.n.relays/id => ::m.n.connections/id]
    (register-connection! relay-id true))
-  ([relay-id register]
+  ([relay-id register-if-not-found?]
    [::m.n.relays/id boolean? => ::m.n.connections/id]
-   (or (register-connection!* relay-id register)
+   (or (register-connection!* relay-id register-if-not-found?)
        (throw (ex-info "Not Registered" {})))))
 
 (>defn send!

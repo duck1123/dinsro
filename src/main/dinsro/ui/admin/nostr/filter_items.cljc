@@ -57,8 +57,7 @@
   (log/info :Show/starting {:props props})
   (if id
     (ui-segment {} "TODO: Show filter item")
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+    (u.debug/load-error props "admin filter items record")))
 
 (def ui-show (comp/factory Show))
 
@@ -93,21 +92,19 @@
     (ui-show target)
     (u.debug/load-error props "admin filter items")))
 
-(m.navlinks/defroute
-  :admin-nostr-filter-items
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Items"
-   ::m.navlinks/model-key     ::m.n.filter-items/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute
-  :admin-nostr-filter-items-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.n.filter-items/id
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Items"
-   ::m.navlinks/model-key     ::m.n.filter-items/id
-   ::m.navlinks/parent-key    :admin-nostr-filter-items
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})

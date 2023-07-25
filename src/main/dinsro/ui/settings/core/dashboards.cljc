@@ -25,7 +25,7 @@
       "Core Settings Dashboard")
     (dom/p {} "TODO: Put stuff here")))
 
-(m.navlinks/defroute   :settings-core-dashboard
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::Page
    ::m.navlinks/label         "Dashboard"
    ::m.navlinks/parent-key    :settings-core

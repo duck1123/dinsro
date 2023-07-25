@@ -31,8 +31,8 @@
 
 (def index-page-key :settings-rate-sources)
 (def model-key ::m.rate-sources/id)
+(def show-menu-id :settings-rate-sources)
 (def show-page-key :settings-rate-sources-show)
-(def show-menu-key :settings-rate-sources)
 
 (def create-button
   {:type   :button
@@ -123,13 +123,13 @@
                            ::m.rate-sources/currency {}
                            ::m.rate-sources/url      ""
                            :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
-                                                       {::m.navbars/id show-menu-key
+                                                       {::m.navbars/id show-menu-id
                                                         :id            id})
                            :ui/rates                 (comp/get-initial-state u.s.rs.rates/Report)
                            :ui/router                (comp/get-initial-state Router)}))
    :pre-merge         (u.loader/page-merger
                         ::m.rate-sources/id
-                        {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
+                        {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                          :ui/router   [Router {}]
                          :ui/rates    [u.s.rs.rates/Report {}]})
    :query             [::m.rate-sources/name

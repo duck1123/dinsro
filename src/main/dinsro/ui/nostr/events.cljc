@@ -44,8 +44,8 @@
 
 (def index-page-key :nostr-events)
 (def model-key ::m.n.events/id)
+(def show-menu-id :nostr-events)
 (def show-page-key :nostr-events-show)
-(def show-menu-key :nostr-events)
 
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.n.events/id]
@@ -257,7 +257,7 @@
                        ::m.n.events/created-at 0
                        ::m.n.events/sig        ""
                        :ui/nav-menu            (comp/get-initial-state u.menus/NavMenu
-                                                 {::m.navbars/id show-menu-key
+                                                 {::m.navbars/id show-menu-id
                                                   :id            id})
                        :ui/router              (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger ::m.n.events/id {:ui/router [Router {}]})

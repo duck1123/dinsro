@@ -39,7 +39,7 @@
 (def model-key
   "The model key for these pages"
   ::m.users/id)
-(def show-menu-key
+(def show-menu-id
   :admin-users)
 (def show-page-key
   "The navlink id of the show page"
@@ -66,7 +66,7 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-key
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :admin
    ::m.navbars/router ::Router
    ::m.navbars/children

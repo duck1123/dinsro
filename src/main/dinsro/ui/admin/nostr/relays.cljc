@@ -116,26 +116,27 @@
 (defsc Show
   [_this {::m.n.relays/keys [address id]
           ::j.n.relays/keys [connection-count]
-          :ui/keys          [nav-menu router]
+          :ui/keys          [admin-nav-menu admin-router]
           :as               props}]
   {:ident         ::m.n.relays/id
    :initial-state (fn [props]
                     (let [id (get props model-key)]
-                      {::m.n.relays/id               nil
+                      {model-key                     id
+                       ::m.n.relays/id               nil
                        ::m.n.relays/address          ""
                        ::j.n.relays/connection-count 0
-                       :ui/nav-menu                  (comp/get-initial-state u.menus/NavMenu
+                       :ui/admin-nav-menu            (comp/get-initial-state u.menus/NavMenu
                                                        {::m.navbars/id show-menu-id
                                                         :id            id})
-                       :ui/router                    (comp/get-initial-state Router)}))
+                       :ui/admin-router              (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
-                     :ui/router   [Router {}]})
+                    {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                     :ui/admin-router   [Router {}]})
    :query         [::m.n.relays/id
                    ::m.n.relays/address
                    ::j.n.relays/connection-count
-                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
+                   {:ui/admin-nav-menu (comp/get-query u.menus/NavMenu)}
+                   {:ui/admin-router (comp/get-query Router)}]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/debug :Show/starting {:props props})
   (if id
@@ -147,11 +148,11 @@
             (dom/dd {} (str address))
             (dom/dt {} "Connections")
             (dom/dd {} (str connection-count))))
-        (if nav-menu
-          (u.menus/ui-nav-menu nav-menu)
+        (if admin-nav-menu
+          (u.menus/ui-nav-menu admin-nav-menu)
           (u.debug/load-error props "admin show relay nav menu"))
-        (if router
-          (ui-router router)
+        (if admin-router
+          (ui-router admin-router)
           (u.debug/load-error props "admin show relay router"))))
     (u.debug/load-error props "admin show relay")))
 

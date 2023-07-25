@@ -13,7 +13,7 @@
 ;; [[../../ui/nostr/event_tags.cljs]]
 
 (>defn register-tag!
-  [event-id tag idx]
+  [event-id tag tag-index]
   [::m.n.events/id any? number? => any?]
   (log/info :register-tag!/start {:event-id event-id :tag tag})
   (let [[type value extra] tag]
@@ -21,14 +21,14 @@
       "p"
       (if-let [pubkey-id (a.n.pubkeys/register-pubkey! value)]
         (q.n.event-tags/create-record
-         {::m.n.event-tags/index     idx
+         {::m.n.event-tags/index     tag-index
           ::m.n.event-tags/parent    event-id
           ::m.n.event-tags/type      type
           ::m.n.event-tags/pubkey    pubkey-id
           ::m.n.event-tags/raw-value value
           ::m.n.event-tags/extra     extra})
         (q.n.event-tags/create-record
-         {::m.n.event-tags/index     idx
+         {::m.n.event-tags/index     tag-index
           ::m.n.event-tags/parent    event-id
           ::m.n.event-tags/type      type
           ::m.n.event-tags/raw-value value
@@ -36,20 +36,20 @@
       "e"
       (if-let [target-id (q.n.events/find-by-note-id value)]
         (q.n.event-tags/create-record
-         {::m.n.event-tags/index     idx
+         {::m.n.event-tags/index     tag-index
           ::m.n.event-tags/parent    event-id
           ::m.n.event-tags/type      type
           ::m.n.event-tags/raw-value value
           ::m.n.event-tags/event     target-id
           ::m.n.event-tags/extra     extra})
         (q.n.event-tags/create-record
-         {::m.n.event-tags/index     idx
+         {::m.n.event-tags/index     tag-index
           ::m.n.event-tags/parent    event-id
           ::m.n.event-tags/type      type
           ::m.n.event-tags/raw-value value
           ::m.n.event-tags/extra     extra}))
       (q.n.event-tags/create-record
-       {::m.n.event-tags/index     idx
+       {::m.n.event-tags/index     tag-index
         ::m.n.event-tags/parent    event-id
         ::m.n.event-tags/type      type
         ::m.n.event-tags/raw-value value
@@ -68,7 +68,6 @@
           (if (= type "p")
             (log/info :fetch!/pubkey {})
             (log/info :fetch!/other {})))
-
         nil)
       nil)))
 

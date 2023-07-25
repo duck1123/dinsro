@@ -16,8 +16,8 @@
    [lambdaisland.glogc :as log]))
 
 (def model-key ::m.n.filters/id)
+(def show-menu-id :nostr-filters)
 (def show-page-key :nostr-filters-show)
-(def show-menu-key :nostr-filters)
 
 (defrouter Router
   [_this _props]
@@ -43,11 +43,11 @@
                        ::m.n.filters/index   nil
                        ::m.n.filters/request {}
                        :ui/nav-menu          (comp/get-initial-state u.menus/NavMenu
-                                               {::m.navbars/id show-menu-key
+                                               {::m.navbars/id show-menu-id
                                                 :id            id})
                        :ui/router            (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/router   [Router {}]})
    :query         [::m.n.filters/id
                    ::m.n.filters/index

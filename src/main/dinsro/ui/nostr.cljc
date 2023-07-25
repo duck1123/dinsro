@@ -4,8 +4,8 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.nostr.events :as m.n.events]
    [dinsro.ui.nostr.badge-acceptance :as u.n.badge-acceptance]
    [dinsro.ui.nostr.badge-awards :as u.n.badge-awards]
    [dinsro.ui.nostr.badge-definitions :as u.n.badge-definitions]
@@ -22,8 +22,8 @@
    [dinsro.ui.nostr.witnesses :as u.n.witnesses]
    [lambdaisland.glogc :as log]))
 
-;; [../ui/nostr/connections.cljs]
-;; [../ui/nostr/events.cljs]
+;; [[../ui/nostr/connections.cljs]]
+;; [[../ui/nostr/events.cljs]]
 
 (def index-page-key :nostr)
 
@@ -53,9 +53,13 @@
     u.n.witnesses/IndexPage]}
   (log/debug :Router/starting {:props props})
   (case current-state
-    :pending (dom/div :.ui.segment  "Loading...")
-    :failed  (dom/div :.ui.segment  "Failed!")
-      ;; default will be used when the current state isn't yet set
+    :pending
+    (ui-segment {} "Loading...")
+
+    :failed
+    (ui-segment {} "Failed!")
+
+    ;; default will be used when the current state isn't yet set
     (dom/div {}
       (dom/div "No route selected.")
       (when route-factory
@@ -78,10 +82,9 @@
     (ui-router router)
     (dom/div :.ui.segment "Failed to load router")))
 
-(m.navlinks/defroute   :nostr
-  {::m.navlinks/control       ::IndexPage
+(m.navlinks/defroute :nostr
+  {::m.navlinks/control       ::Page
    ::m.navlinks/label         "Nostr"
-   ::m.navlinks/model-key     ::m.n.events/id
    ::m.navlinks/parent-key    :root
    ::m.navlinks/required-role :user
    ::m.navlinks/router        :root})

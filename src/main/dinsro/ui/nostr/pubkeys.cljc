@@ -39,8 +39,8 @@
 
 (def index-page-key :nostr-pubkeys)
 (def model-key ::m.n.pubkeys/id)
+(def show-menu-id :nostr-pubkeys)
 (def show-page-key :nostr-pubkeys-show)
-(def show-menu-key :nostr-pubkeys)
 
 (defrouter Router
   [_this _props]
@@ -165,12 +165,12 @@
                        ::m.n.pubkeys/picture      ""
                        ::m.n.pubkeys/website      ""
                        :ui/nav-menu               (comp/get-initial-state u.menus/NavMenu
-                                                    {::m.navbars/id show-menu-key
+                                                    {::m.navbars/id show-menu-id
                                                      :id            id})
                        :ui/router                 (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/router   [Router {}]
-                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]})
+                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]})
    :query         [::m.n.pubkeys/about
                    ::m.n.pubkeys/display-name
                    ::m.n.pubkeys/hex

@@ -26,7 +26,7 @@
 (def index-page-key :admin-nostr-pubkeys)
 (def model-key ::m.n.pubkeys/id)
 (def parent-router-key :admin-nostr)
-(def show-menu-key :admin-nostr-pubkeys)
+(def show-menu-id :admin-nostr-pubkeys)
 (def show-page-key :admin-nostr-pubkeys-show)
 
 (report/defsc-report Report
@@ -64,54 +64,58 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-key
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent   parent-router-key
    ::m.navbars/router   ::Router
    ::m.navbars/children [u.a.n.p.relays/index-page-key]})
 
 (defsc Show
-  [_this {::m.n.pubkeys/keys [id]
-          :ui/keys           [nav-menu router]
-          :as                props}]
+  [_this {:ui/keys [admin-nav-menu admin-router]
+          :as      props}]
   {:ident         ::m.n.pubkeys/id
    :initial-state (fn [props]
                     (log/info :Show/initial-state {:props props})
                     (let [id (get props model-key)]
-                      {::m.n.pubkeys/about        ""
+                      {model-key                  id
+                       ::m.n.pubkeys/about        ""
                        ::m.n.pubkeys/display-name ""
                        ::m.n.pubkeys/hex          ""
-                       ::m.n.pubkeys/id           id
+                       ::m.n.pubkeys/id           nil
                        ::m.n.pubkeys/lud06        ""
                        ::m.n.pubkeys/name         ""
                        ::m.n.pubkeys/nip05        ""
                        ::j.n.pubkeys/npub         ""
                        ::m.n.pubkeys/picture      ""
                        ::m.n.pubkeys/website      ""
-                       :ui/nav-menu               (comp/get-initial-state u.menus/NavMenu
-                                                    {::m.navbars/id show-menu-key :id id})
-                       :ui/router                 (comp/get-initial-state Router {})}))
+                       :ui/admin-nav-menu         (comp/get-initial-state u.menus/NavMenu
+                                                    {::m.navbars/id show-menu-id
+                                                     :id            id})
+                       :ui/admin-router           (comp/get-initial-state Router {})}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
-                     :ui/router   [Router {}]})
-   :query         [::m.n.pubkeys/about
-                   ::m.n.pubkeys/display-name
-                   ::m.n.pubkeys/hex
-                   ::m.n.pubkeys/id
-                   ::m.n.pubkeys/lud06
-                   ::m.n.pubkeys/name
-                   ::m.n.pubkeys/nip05
-                   ::j.n.pubkeys/npub
-                   ::m.n.pubkeys/picture
-                   ::m.n.pubkeys/website
-                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]}
+                    {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                     :ui/admin-router   [Router {}]})
+   :query         (fn [_props]
+                    [model-key
+                     ::m.n.pubkeys/about
+                     ::m.n.pubkeys/display-name
+                     ::m.n.pubkeys/hex
+                     ::m.n.pubkeys/id
+                     ::m.n.pubkeys/lud06
+                     ::m.n.pubkeys/name
+                     ::m.n.pubkeys/nip05
+                     ::j.n.pubkeys/npub
+                     ::m.n.pubkeys/picture
+                     ::m.n.pubkeys/website
+                     {:ui/admin-nav-menu (comp/get-query u.menus/NavMenu)}
+                     {:ui/admin-router (comp/get-query Router)}])
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/debug :Show/starting {:props props})
   (let [{:keys [main]} (css/get-classnames Show)]
-    (if id
+    (if (get props model-key)
       (dom/div {:classes [main]}
         (u.n.pubkeys/ui-pubkey-info props)
-        (u.menus/ui-nav-menu nav-menu)
-        (ui-router router))
+        (u.menus/ui-nav-menu admin-nav-menu)
+        (ui-router admin-router))
       (u.debug/load-error props "admin show pubkey record"))))
 
 (def ui-show (comp/factory Show))

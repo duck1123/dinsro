@@ -7,6 +7,7 @@
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.admin.nostr.badge-acceptances :as u.a.n.badge-acceptances]
@@ -22,12 +23,17 @@
    [dinsro.ui.admin.nostr.requests :as u.a.n.requests]
    [dinsro.ui.admin.nostr.runs :as u.a.n.runs]
    [dinsro.ui.admin.nostr.witnesses :as u.a.n.witnesses]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
+(def debug-route false)
+(def index-page-key :admin-nostr)
+
 (defrouter Router
-  [_this _props]
-  {:router-targets
+  [_this  {:keys [current-state route-factory route-props router-state] :as props}]
+  {:always-render-body? true
+   :router-targets
    [u.a.n.dashboard/Page
     u.a.n.badge-acceptances/IndexPage
     u.a.n.badge-acceptances/ShowPage
@@ -52,7 +58,28 @@
     u.a.n.runs/IndexPage
     u.a.n.runs/ShowPage
     u.a.n.witnesses/IndexPage
-    u.a.n.witnesses/ShowPage]})
+    u.a.n.witnesses/ShowPage]}
+  (log/info :Router/starting {:props props})
+  (dom/div :.admin-nostr-router-outer {}
+    (case current-state
+      :pending
+      (dom/div {} "Loading...")
+
+      :failed
+      (dom/div {}
+        (ui-segment {} "Failed!")
+        (u.debug/log-props props))
+
+      :routed  (route-factory route-props)
+
+      ;; default will be used when the current state isn't yet set
+      (dom/div :.admin-nostr-router
+        (dom/div "No route selected.")
+        (u.debug/log-props {:current-state current-state :router-state router-state})))
+    (when debug-route
+      (ui-segment {}
+        (dom/h3 {} "Admin Nostr Router")
+        (u.debug/log-props props)))))
 
 (def ui-router (comp/factory Router))
 
@@ -60,11 +87,11 @@
   {::m.navbars/parent :admin
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [:admin-nostr-dashboard
+   [u.a.n.dashboard/index-page-key
     u.a.n.relays/index-page-key
-    :admin-nostr-pubkeys
-    :admin-nostr-events
-    :admin-nostr-filters
+    u.a.n.pubkeys/index-page-key
+    u.a.n.events/index-page-key
+    u.a.n.filters/index-page-key
     u.a.n.badge-acceptances/index-page-key
     u.a.n.badge-awards/index-page-key
     u.a.n.badge-definitions/index-page-key
@@ -76,12 +103,14 @@
 
 (defsc Page
   [_this {:ui/keys [nav-menu router vertical-menu] :as props}]
-  {:ident         (fn [] [::m.navlinks/id :admin-nostr])
+  {:ident         (fn [] [::m.navlinks/id index-page-key])
    :initial-state (fn [props]
                     (log/debug :Page/initial-state {:props props})
                     (let [state {::m.navlinks/id   :admin-nostr
-                                 :ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin-nostr})
-                                 :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :admin-nostr})
+                                 :ui/nav-menu      (comp/get-initial-state u.menus/NavMenu
+                                                     {::m.navbars/id index-page-key})
+                                 :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu
+                                                     {::m.navbars/id index-page-key})
                                  :ui/router        (comp/get-initial-state Router)}]
                       (log/debug :Page/initial-state-generated {:props props :state state})
                       state))
@@ -90,30 +119,30 @@
                    {:ui/router (comp/get-query Router)}
                    {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}]
    :route-segment ["nostr"]}
-  (log/info :Page/starting {:props props})
+  (log/debug :Page/starting {:props props})
   (ui-grid {:centered true}
     (ui-grid-row {:only "tablet mobile"}
       (ui-grid-column {:width 16}
         (if nav-menu
           (u.menus/ui-nav-menu nav-menu)
-          (dom/div :.ui.segment "Failed to load nav menu"))))
+          (u.debug/load-error props "admin nostr nav menu"))))
     (ui-grid-row {}
       (ui-grid-column {:only "computer" :width 3}
         (if vertical-menu
           (u.menus/ui-vertical-menu vertical-menu)
-          (dom/div :.ui.segment "Failed to load nav menu")))
+          (u.debug/load-error props "admin nostr nav menu")))
       (ui-grid-column {:tablet 16 :computer 13 :stretched true}
         (ui-grid {:centered true}
           (ui-grid-row {}
             (ui-grid-column {:computer 16 :tablet 16 :mobile 16}
               (if router
                 (ui-router router)
-                (dom/div :.ui.segment "Failed to load router")))))))))
+                (u.debug/load-error props "admin nostr router")))))))))
 
 (m.navlinks/defroute :admin-nostr
   {::m.navlinks/control       ::Page
    ::m.navlinks/label         "Nostr"
-   ::m.navlinks/navigate-key  :admin-nostr-dashboard
+   ::m.navlinks/navigate-key  u.a.n.dashboard/index-page-key
    ::m.navlinks/parent-key    :admin
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})

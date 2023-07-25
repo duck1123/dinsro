@@ -57,9 +57,9 @@
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     (fn [_]
-                        {::m.navlinks/id  index-page-key
-                         parent-model-key nil
-                         :ui/report       {}})
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
    :query             (fn [_]
                         [[::dr/id router-key]
                          ::m.navlinks/id

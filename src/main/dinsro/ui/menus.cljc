@@ -58,7 +58,7 @@
        :converted-items converted-items})
     (if (seq converted-items)
       (dom/div {}
-        (comment (dom/p {} (str "ID: " id)))
+        (dom/p {} (str "ID: " id))
         (ui-menu
           {:items       converted-items
            :onItemClick (fn [_e d]

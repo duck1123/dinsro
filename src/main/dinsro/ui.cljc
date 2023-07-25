@@ -107,8 +107,8 @@
   {::m.navbars/parent nil
    ::m.navbars/router ::RootRouter
    ::m.navbars/children
-   [:accounts
-    :admin
+   [u.accounts/index-page-key
+    u.admin/index-page-key
     :contacts
     :currencies
     :home
@@ -228,13 +228,14 @@
                             (dom/div {:classes [router-wrapper]}
                               (if router
                                 (ui-root-router router)
-                                (dom/div :.ui.segment "Failed to load router")))))))))))))
+                                (ui-segment {}
+                                  "Failed to load router")))))))))))))
           (u.initialize/ui-init-form init-form))
-        (dom/div :.ui.segment
+        (ui-segment {}
           (dom/p "Not loaded")))
       (inj/style-element {:component Root}))))
 
-(m.navlinks/defroute   :root
+(m.navlinks/defroute :root
   {::m.navlinks/control       ::Page
    ::m.navlinks/label         "Home"
    ::m.navlinks/parent-key    nil

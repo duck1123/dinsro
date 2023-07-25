@@ -37,7 +37,7 @@
 
 (def index-page-key :nostr-relays)
 (def model-key ::m.n.relays/id)
-(def show-menu-key :nostr-relays)
+(def show-menu-id :nostr-relays)
 (def show-page-key :nostr-relays-show)
 
 (def submit-button
@@ -100,7 +100,7 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-key
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :nostr
    ::m.navbars/router ::Router
    ::m.navbars/children
@@ -123,11 +123,11 @@
                      ::m.n.relays/address          ""
                      ::j.n.relays/connection-count 0
                      :ui/nav-menu                  (comp/get-initial-state u.menus/NavMenu
-                                                     {::m.navbars/id show-menu-key
+                                                     {::m.navbars/id show-menu-id
                                                       :id            id})
                      :ui/router                    (comp/get-initial-state Router)})
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/router   [Router {}]})
    :query         [::m.n.relays/id
                    ::m.n.relays/address

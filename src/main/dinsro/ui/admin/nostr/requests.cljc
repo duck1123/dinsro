@@ -29,8 +29,8 @@
 (def index-page-key :admin-nostr-requests)
 (def model-key ::m.n.requests/id)
 (def parent-router-key :admin-nostr)
+(def show-menu-id :admin-nostr-requests)
 (def show-page-key :admin-nostr-requests-show)
-(def show-menu-key :admin-nostr-requests)
 
 (defrouter Router
   [_this _props]
@@ -42,7 +42,7 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-key
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent parent-router-key
    ::m.navbars/router ::Router
    ::m.navbars/children
@@ -63,18 +63,19 @@
                        ::m.n.requests/code         ""
                        ::m.n.requests/relay        (comp/get-initial-state u.links/RelayLinkForm)
                        :ui/nav-menu                (comp/get-initial-state u.menus/NavMenu
-                                                     {::m.navbars/id show-menu-key
+                                                     {::m.navbars/id show-menu-id
                                                       :id            id})
                        :ui/router                  (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-key}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/router   [Router {}]})
    :query         [::m.n.requests/code
                    ::m.n.requests/id
                    ::j.n.requests/query-string
                    {::m.n.requests/relay (comp/get-query u.links/RelayLinkForm)}
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]}
+                   {:ui/router (comp/get-query Router)}]
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
       (ui-segment {}
@@ -122,7 +123,8 @@
           :as props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
    :initial-state (fn [_props]
-                    {::m.navlinks/id     show-page-key
+                    {model-key           nil
+                     ::m.navlinks/id     show-page-key
                      ::m.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn [_props]
                     [model-key

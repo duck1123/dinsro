@@ -4,6 +4,7 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.loader :as u.loader]
@@ -14,15 +15,24 @@
 
 (defrouter Router
   [_this {:keys [current-state pending-path-segment]
-          :as props}]
-  {:router-targets [u.s.c.dashboards/Page]}
+          :as   props}]
+  {:router-targets
+   [u.s.c.dashboards/Page]}
   (case current-state
-    :pending (dom/div :.ui.segment "Loading... " (pr-str pending-path-segment))
-    :failed (dom/div :.ui.segment "Route Failed "  (pr-str pending-path-segment))
+    :pending
+    (ui-segment {}
+      "Loading... "
+      (pr-str pending-path-segment))
+
+    :failed
+    (ui-segment {}
+      "Route Failed "
+      (pr-str pending-path-segment))
+
     (dom/div {}
-      (dom/div :.ui.segment
+      (ui-segment {}
         (dom/p {} "Core router failed to match any target")
-        (dom/code {} (pr-str props))))))
+        (u.debug/log-props props)))))
 
 (def ui-router (comp/factory Router))
 

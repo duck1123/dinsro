@@ -22,6 +22,7 @@
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
+(def index-page-key :admin-core)
 (def menu-key :admin-core)
 (def router-key :dinsro.ui.admin/Router)
 

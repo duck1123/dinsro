@@ -88,18 +88,18 @@
     (ui-show target)
     (u.debug/load-error props "admin badge definition")))
 
-(m.navlinks/defroute :admin-nostr-badge-definitions
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Definitions"
-   ::m.navlinks/model-key     ::m.n.badge-definitions/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-nostr-badge-definitions-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Definitions"
-   ::m.navlinks/model-key     ::m.n.badge-definitions/id
-   ::m.navlinks/parent-key    :admin-nostr-badge-definitions
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})
