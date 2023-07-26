@@ -80,7 +80,8 @@
   (log/info :Page/starting {:props props})
   (if router
     (ui-router router)
-    (dom/div :.ui.segment "Failed to load router")))
+    (ui-segment {}
+      "Failed to load router")))
 
 (m.navlinks/defroute :nostr
   {::m.navlinks/control       ::Page

@@ -4,6 +4,7 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.admin.accounts :as u.a.accounts]
@@ -67,7 +68,7 @@
         (dom/div "No route selected.")
         (u.debug/log-props {:current-state current-state :router-state router-state})))
     (when debug-route
-      (dom/div :.ui.segment
+      (ui-segment {}
         (dom/h3 {} "Admin Router")
         (u.debug/log-props props)))))
 

@@ -57,7 +57,7 @@
                    [df/marker-table '_]]}
   (log/trace :Show/creating {:id id :props props :this this})
   (dom/div {}
-    (dom/div :.ui.segment
+    (ui-segment {}
       (dom/h1 {}
         "Block " height
         (when-not (and (not force-fetch-button) fetched?)

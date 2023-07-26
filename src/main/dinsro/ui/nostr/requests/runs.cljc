@@ -56,12 +56,17 @@
           :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
-   :route-segment     ["runs"]}
+   :initial-state     (fn [_props]
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       {}})
+   :query             (fn [_props]
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
+   :route-segment     ["runs"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (if (get props parent-model-key)
     (ui-report report)
     (u.debug/load-error props "request show runs")))

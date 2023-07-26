@@ -5,6 +5,7 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.report :as report]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.nodes.core :as u.no.core]
    [dinsro.ui.nodes.ln :as u.no.ln]))
@@ -26,11 +27,11 @@
     (dom/div :.two.column.row
       (dom/div :.ui.column
         (dom/div :.ui.container
-          (dom/div :.ui.segment
+          (ui-segment {}
             (u.no.core/ui-report core-report))))
       (dom/div :.ui.column
         (dom/div :.ui.container
-          (dom/div :.ui.segment
+          (ui-segment {}
             (u.no.ln/ui-report ln-report)))))))
 
 (defrouter Router

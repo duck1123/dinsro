@@ -170,6 +170,7 @@
                         (uism/begin! this machines/hideable ::mu.navbars/navbarsm
                                      {:actor/navbar (uism/with-actor-class [::m.navbars/id :main] u.navbars/Navbar)}))
    :css               [[:.primary-grid {:height "100%" :overflow "auto"}]
+                       [:.primary-row {:margin-bottom "100px"}]
                        [:.pushed {:height "100%" :margin-top "40px"}]
                        [:.pusher {:height "100%"}]
                        [:.root-container {:height "100%"}]
@@ -189,8 +190,9 @@
                        :ui/router               {}}}
   (log/trace :Root/starting {:props props})
   (let [navbar                                     (::m.settings/menu site-config)
-        {:keys [primary-grid pushed pusher
-                root-container router-wrapper]}    (css/get-classnames Root)
+        {:keys [primary-grid primary-row
+                pushed pusher root-container
+                router-wrapper]}                   (css/get-classnames Root)
         top-router-state                           (or (uism/get-active-state this ::RootRouter) :initial)
         {::m.settings/keys [loaded? initialized?]} site-config
         root                                       (uism/get-active-state this ::auth/auth-machine)
@@ -217,7 +219,8 @@
                (dom/div {:className (string/join " " [pushed])}
                  (when show-breadcrumbs (ui-breadcrumbs-link-grid breadcrumbs-grid))
                  (ui-grid {:className (string/join "" [primary-grid])}
-                   (ui-grid-row {:centered true}
+                   (ui-grid-row {:centered  true
+                                 :className primary-row}
                      (ui-grid-column {}
                        (if (= :initial top-router-state)
                          (dom/div :.loading "Loading...")

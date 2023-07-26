@@ -82,7 +82,7 @@
    :query          [::m.categories/id
                     ::m.categories/name]}
   (dom/div :.ui.container
-    (dom/div :.ui.segment
+    (ui-segment {}
       (str name))))
 
 (def ui-show (comp/factory Show))

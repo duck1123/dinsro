@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.subscription-pubkeys :as j.n.subscription-pubkeys]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
@@ -60,7 +61,7 @@
                    ::m.n.subscription-pubkeys/pubkey]}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
-      (dom/div :.ui.segment
+      (ui-segment {}
         (dom/dl {}
           (dom/dt {} "subscription")
           (dom/dd {} (u.links/ui-subscription-link subscription))

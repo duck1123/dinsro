@@ -8,6 +8,7 @@
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.debug :as u.debug]
@@ -35,9 +36,15 @@
     u.s.categories/NewForm]}
   (log/info :Router/starting {:props props})
   (case current-state
-    :pending (dom/div :.ui.segment  "Loading...")
-    :failed  (dom/div :.ui.segment  "Failed!")
-      ;; default will be used when the current state isn't yet set
+    :pending
+    (ui-segment {}
+      "Loading...")
+
+    :failed
+    (ui-segment {}
+      "Failed!")
+
+    ;; default will be used when the current state isn't yet set
     (dom/div {}
       (dom/div "No route selected.")
       (when route-factory

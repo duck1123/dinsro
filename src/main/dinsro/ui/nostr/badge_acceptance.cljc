@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.badge-acceptances :as j.n.badge-acceptances]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.badge-acceptances :as m.n.badge-acceptances]
@@ -48,7 +49,8 @@
   (dom/div {}
     (if report
       (ui-report report)
-      (dom/div :.ui.segment "Failed to load report"))))
+      (ui-segment {}
+        "Failed to load report"))))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage

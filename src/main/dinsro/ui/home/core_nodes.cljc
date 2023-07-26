@@ -12,6 +12,7 @@
    [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.nodes :as j.c.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.ui.links :as u.links]))
@@ -58,7 +59,7 @@
 (defsc ReportBody-List
   [_this props]
   (let [{:ui/keys [current-rows]} props]
-    (dom/div :.ui.segment
+    (ui-segment {}
       (dom/h2 {} "Core Nodes")
       (dom/div :.ui.items
         (map ui-body-item current-rows)))))
@@ -66,7 +67,7 @@
 (defsc ReportBody-Table
   [_this props]
   (let [{:ui/keys [current-rows]} props]
-    (dom/div :.ui.segment
+    (ui-segment {}
       (dom/h2 {} "Core Nodes")
       (ui-table {}
         (ui-table-header {}

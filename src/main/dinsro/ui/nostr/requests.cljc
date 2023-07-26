@@ -10,6 +10,7 @@
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.requests :as m.n.requests]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
@@ -37,10 +38,10 @@
 (m.navbars/defmenu :nostr-requests
   {::m.navbars/parent :nostr
    ::m.navbars/children
-   [:nostr-requests-show-filters
-    :nostr-requests-show-items
-    :nostr-requests-show-runs
-    :nostr-requests-show-connections]})
+   [u.n.rq.filters/index-page-key
+    u.n.rq.filter-items/index-page-key
+    u.n.rq.runs/index-page-key
+    u.n.rq.connections/index-page-key]})
 
 (defsc Show
   [_this {::m.n.requests/keys [code id relay]
@@ -77,8 +78,7 @@
           (dom/div {} (u.links/ui-relay-link relay)))
         (u.menus/ui-nav-menu nav-menu)
         (ui-router router)))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+    (u.debug/load-error props "requests show record")))
 
 (def ui-show (comp/factory Show))
 
@@ -86,14 +86,20 @@
   [_this {::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [_props]
+                    {model-key nil
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn [_props]
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["request" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
-  (ui-show target))
+  (if (get props model-key)
+    (ui-show target)
+    (u.debug/load-error props "request show")))
 
 (m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage

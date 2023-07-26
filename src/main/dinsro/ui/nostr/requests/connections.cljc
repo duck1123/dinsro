@@ -11,12 +11,18 @@
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations.nostr.connections :as mu.n.connections]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
 (def ident-key ::m.n.requests/id)
 (def index-page-key :nostr-requests-show-connections)
+(def model-key ::m.n.connections/id)
+(def parent-model-key ::m.n.requests/id)
 (def router-key :dinsro.ui.nostr.requests/Router)
+
+(def disconnect-action
+  (u.buttons/row-action-button "Disconnect" model-key mu.n.connections/disconnect!))
 
 (report/defsc-report Report
   [_this _props]
@@ -33,12 +39,12 @@
                          ::add-filter      (u.buttons/sub-page-action-button
                                             {:label      "Connect"
                                              :mutation   mu.n.connections/connect!
-                                             :parent-key ident-key})
+                                             :parent-key parent-model-key})
                          ::refresh         u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Disconnect" ::m.n.connections/id mu.n.connections/disconnect!)]
+   ro/row-actions       [disconnect-action]
    ro/row-pk            m.n.connections/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.connections/index
@@ -47,21 +53,29 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
-   :route-segment     ["connections"]}
-  (ui-report report))
+   :initial-state     (fn [_props]
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn [_props]
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
+   :route-segment     ["connections"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+  (if (get props parent-model-key)
+    (ui-report report)
+    (u.debug/load-error props "requests show connections")))
 
-(m.navlinks/defroute   :nostr-requests-show-connections
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Connections"
-   ::m.navlinks/model-key     ::m.n.connections/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-requests-show
    ::m.navlinks/router        :nostr-requests
    ::m.navlinks/required-role :user})

@@ -178,7 +178,7 @@
     #_(when nav-menu (u.menus/ui-nav-menu nav-menu))
     #_(if router
         (ui-router router)
-        (dom/div :.ui.segment
+        (ui-segment {}
           (dom/h3 {} "Network Router not loaded")
           (u.debug/ui-props-logger props)))))
 

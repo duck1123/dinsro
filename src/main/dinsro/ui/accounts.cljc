@@ -81,7 +81,7 @@
    fo/title          "Create Account"}
   (if override-form
     (form/render-layout this props)
-    (dom/div :.ui.segment
+    (ui-segment {}
       (dom/p {} (str "Account: " name))
       (dom/p {} (str "Initial Value: " initial-value))
       (dom/p {} "Currency: " (u.links/ui-currency-link currency))

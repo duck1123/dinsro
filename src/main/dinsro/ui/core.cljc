@@ -4,6 +4,7 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.core.addresses :as u.c.addresses]
    [dinsro.ui.core.blocks :as u.c.blocks]
@@ -47,10 +48,18 @@
                     u.c.w.addresses/WalletAddressForm
                     u.c.words/IndexPage]}
   (case current-state
-    :pending (dom/div :.ui.segment "Loading... " (pr-str pending-path-segment))
-    :failed (dom/div :.ui.segment "Route Failed "  (pr-str pending-path-segment))
+    :pending
+    (ui-segment {}
+      "Loading... "
+      (pr-str pending-path-segment))
+
+    :failed
+    (ui-segment {}
+      "Route Failed "
+      (pr-str pending-path-segment))
+
     (dom/div {}
-      (dom/div :.ui.segment
+      (ui-segment {}
         (dom/p {} "Core router failed to match any target")
         (dom/code {} (pr-str props))))))
 

@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -59,7 +60,7 @@
   (if override-ln-nodes-report
     (report/render-layout this)
     (let [{:ui/keys [current-rows]} props]
-      (dom/div :.ui.segment
+      (ui-segment {}
         (dom/h2 {} "Lightning Nodes")
         (dom/div :.ui.items
           (map ui-body-item current-rows))))))

@@ -5,6 +5,7 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.runs :as m.n.runs]
@@ -61,7 +62,7 @@
                    {:ui/router (comp/get-query Router)}]}
   (let [{:keys [main _sub]} (css/get-classnames Show)]
     (dom/div {:classes [main]}
-      (dom/div :.ui.segment
+      (ui-segment {}
         (dom/div "Run")
         (dom/div {} (str id)))
       (u.menus/ui-nav-menu nav-menu)
