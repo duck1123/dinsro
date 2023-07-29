@@ -4,11 +4,12 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
+   ;; [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.tx-in :as j.c.tx-in]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -19,6 +20,7 @@
 (def index-page-key :admin-core-transactions-show-inputs)
 (def model-key ::m.c.tx-in/id)
 (def parent-model-key ::m.c.transactions/id)
+(def router-key :dinsro.ui.admin.core.transactions/Router)
 
 (report/defsc-report Report
   [_this _props]
@@ -40,22 +42,24 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.c.transactions/keys [id]
-          :ui/keys                [report]
-          :as                     props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.c.transactions/id nil
-                       ::m.navlinks/id       index-page-key
-                       :ui/report            {}}
-   :query             [::m.c.transactions/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_props]
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       {}})
+   :query             (fn [_props]
+                        [parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin transactions show inputs report"))
+    (u.debug/load-error props "admin transactions show inputs")))
 
 (def ui-subpage (comp/factory SubPage))

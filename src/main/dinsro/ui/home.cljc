@@ -30,7 +30,7 @@
            :session/current-user
            ::m.users/name]))
 
-(defsc Page
+(defsc IndexPage
   [_this {:root/keys [authenticator]
           :ui/keys   [accounts ln-nodes nodes recent-transactions]
           :as        props}]
@@ -58,8 +58,8 @@
                        {:root/authenticator (comp/get-query u.authenticator/UserAuthenticator)}]
    :route-segment     [""]
    :will-enter        (u.loader/page-loader index-page-key)}
-  (log/info :Page/starting {:props props})
-  (let [{:keys [container title]} (css/get-classnames Page)
+  (log/info :IndexPage/starting {:props props})
+  (let [{:keys [container title]} (css/get-classnames IndexPage)
         username                  (get-username authenticator)]
     (dom/div {}
       (dom/div {:classes [:.ui :.inverted :.vertical :.masthead
@@ -85,8 +85,8 @@
                     (ui-grid-column {:width 8}
                       (u.h.ln-nodes/ui-report ln-nodes))))))))))))
 
-(m.navlinks/defroute   :home
-  {::m.navlinks/control       ::Page
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Home"
    ::m.navlinks/parent-key    :root
    ::m.navlinks/router        :root

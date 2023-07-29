@@ -115,21 +115,21 @@
     (ui-show target)
     (u.debug/load-error props "admin show address")))
 
-(m.navlinks/defroute    :admin-core-addresses
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin index for core addresses"
    ::m.navlinks/label         "Addresses"
-   ::m.navlinks/model-key     ::m.c.addresses/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core
    ::m.navlinks/router        :admin-core
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute    :admin-core-addresses-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Admin core address"
    ::m.navlinks/label         "Show Address"
-   ::m.navlinks/input-key     ::m.c.addresses/id
-   ::m.navlinks/model-key     ::m.c.addresses/id
-   ::m.navlinks/parent-key    :admin-core-addresses
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-core
    ::m.navlinks/required-role :admin})

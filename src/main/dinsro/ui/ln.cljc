@@ -32,7 +32,7 @@
 
 (def ui-router (comp/factory Router))
 
-(defsc Page
+(defsc IndexPage
   [_this {:ui/keys [router]}]
   {:ident         (fn [] [::m.navlinks/id index-page-key])
    :initial-state {::m.navlinks/id index-page-key
@@ -40,12 +40,12 @@
    :query         [::m.navlinks/id
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["ln"]}
-  (let [{:keys [router-wrapper]} (css/get-classnames Page)]
+  (let [{:keys [router-wrapper]} (css/get-classnames IndexPage)]
     (dom/div {:classes [:.nostr-page router-wrapper]}
       (ui-router router))))
 
-(m.navlinks/defroute   :ln
-  {::m.navlinks/control       ::Page
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "LN Router"
    ::m.navlinks/navigate-key  :ln-nodes
    ::m.navlinks/parent-key    :root

@@ -76,7 +76,7 @@
                               (println error)
                               (dom/div "Error")))
 
-    (auth/start! app [u.login/Page] {:after-session-check `c.routing/fix-route})
+    (auth/start! app [u.login/IndexPage] {:after-session-check `c.routing/fix-route})
     (log/debug :start/auth-started {:initial (comp/get-query ui/Root)
                                     :state   (comp/get-initial-state ui/Root)})
     (app/mount! app ui/Root "app" {:initialize-state? false})

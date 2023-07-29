@@ -12,7 +12,6 @@
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.categories :as j.categories]
    [dinsro.joins.users :as j.users]
-   [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
@@ -135,21 +134,21 @@
       (u.debug/load-error props "admin show category"))
     (u.debug/load-error props "admin show category")))
 
-(m.navlinks/defroute :admin-categories
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin page of all categories"
    ::m.navlinks/label         "Categories"
-   ::m.navlinks/model-key     ::m.accounts/categories
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute    :admin-categories-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Admin page for category"
-   ::m.navlinks/label         "Categories"
-   ::m.navlinks/input-key     ::m.accounts/categories
-   ::m.navlinks/model-key     ::m.accounts/categories
-   ::m.navlinks/parent-key    :admin-categories
+   ::m.navlinks/label         "Show Category"
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})

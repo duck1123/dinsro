@@ -18,6 +18,7 @@
 (def index-page-key :admin-core-wallets-show-accounts)
 (def model-key ::m.accounts/id)
 (def parent-model-key ::m.c.wallets/id)
+(def router-key :dinsro.ui.admin.core.wallets/Router)
 
 (report/defsc-report Report
   [_this _props]
@@ -40,20 +41,23 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.c.wallets/keys [id]
-          :ui/keys           [report]
-          :as                props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-key
-                       :ui/report       {}}
-   :query             [::m.c.wallets/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]}
+   :initial-state     (fn [_props]
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       {}})
+   :query             (fn [_props]
+                        [parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin show wallet accounts report"))
     (u.debug/load-error props "admin show wallet accounts page")))
 
 (def ui-sub-page (comp/factory SubPage))

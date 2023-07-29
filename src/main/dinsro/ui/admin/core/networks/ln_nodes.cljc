@@ -19,7 +19,7 @@
 (def index-page-key :admin-core-networks-show-ln-nodes)
 (def model-key ::m.ln.nodes/id)
 (def parent-model-key ::m.c.networks/id)
-(def router-key :dinsro.ui.core.networks/Router)
+(def router-key :dinsro.ui.admin.core.networks/Router)
 
 (report/defsc-report Report
   [_this _props]

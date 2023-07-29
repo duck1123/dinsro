@@ -11,7 +11,7 @@
 (def index-page-key :admin-ln-dashboard)
 (def router-key :dinsro.ui.admin/Router)
 
-(defsc Page
+(defsc IndexPage
   [_this _props]
   {:ident         (fn [] [::m.navlinks/id index-page-key])
    :initial-state {::m.navlinks/id index-page-key}
@@ -22,8 +22,8 @@
   (ui-segment {}
     (dom/h1 "Dashboard")))
 
-(m.navlinks/defroute :admin-ln-dashboard
-  {::m.navlinks/control       ::Page
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Dashboard"
    ::m.navlinks/parent-key    :admin-ln
    ::m.navlinks/router        :admin-ln

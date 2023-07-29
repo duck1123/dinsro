@@ -214,7 +214,7 @@
       {:classes [:.item site-button]
        :onClick (fn []
                   (uism/trigger! this auth/machine-id :event/cancel {})
-                  (rroute/route-to! this u.home/Page {}))}
+                  (rroute/route-to! this u.home/IndexPage {}))}
       "dinsro")))
 
 (def ui-site-button (comp/factory SiteButton))
@@ -316,7 +316,7 @@
   (log/trace :Page/starting {:props props})
   (ui-report report))
 
-(m.navlinks/defroute   :navbars
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Navbars"
    ::m.navlinks/model-key     ::m.navbars/id

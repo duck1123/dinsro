@@ -26,6 +26,7 @@
 
 (def index-page-key :admin-core-peers)
 (def model-key ::m.c.peers/id)
+(def parent-router-id :admin-core)
 (def show-page-key :admin-core-peers-show)
 
 (def delete-action
@@ -144,18 +145,18 @@
     (ui-show target)
     (u.debug/load-error props "show page")))
 
-(m.navlinks/defroute :admin-core-peers
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Peers"
-   ::m.navlinks/model-key     ::m.c.peers/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core
-   ::m.navlinks/router        :admin-core
+   ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-core-peers-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Peer"
-   ::m.navlinks/model-key     ::m.c.peers/id
-   ::m.navlinks/parent-key    :admin-core-peers
-   ::m.navlinks/router        :admin-core
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role :admin})

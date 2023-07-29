@@ -30,6 +30,9 @@
 (def model-key ::m.transactions/id)
 (def show-page-key :admin-transactions-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.transactions/delete!))
+
 (form/defsc-form NewDebit
   [_this _props]
   {fo/attributes    [m.debits/value
@@ -61,7 +64,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
+  {ro/column-formatters {::m.transactions/description #(u.links/ui-admin-transaction-link %3)}
    ro/columns           [m.transactions/description
                          m.transactions/date
                          j.transactions/debit-count]
@@ -71,7 +74,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.transactions/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.transactions/admin-index
@@ -147,10 +150,20 @@
     (ui-show target)
     (u.debug/load-error props "admin show transaction")))
 
-(m.navlinks/defroute   :admin-transactions
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Transactions"
-   ::m.navlinks/model-key     ::m.transactions/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin
+   ::m.navlinks/router        :admin
+   ::m.navlinks/required-role :admin})
+
+(m.navlinks/defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/description   "Admin show page for transaction"
+   ::m.navlinks/label         "Show Transaction"
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})

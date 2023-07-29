@@ -208,6 +208,7 @@
    ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Relay"
    ::m.navlinks/model-key     model-key
+   ::m.navlinks/navigate-key  u.a.n.r.connections/index-page-key
    ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})

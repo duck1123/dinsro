@@ -5,24 +5,32 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
+   ;; [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.addresses :as j.c.addresses]
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.addresses :as mu.c.addresses]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../../joins/core/addresses.cljc]]
 ;; [[../../../../model/core/addresses.cljc]]
+;; [[../../../../ui/core/addresses.cljc]]
 
 (def index-page-key :admin-core-networks-show-addresses)
 (def model-key ::m.c.addresses/id)
 (def parent-model-key ::m.c.networks/id)
-(def router-key :dinsro.ui.core.networks/Router)
+(def router-key :dinsro.ui.admin.core.networks/Router)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.addresses/delete!))
+
+(def fetch-action
+  (u.buttons/row-action-button "Fetch" model-key mu.c.addresses/fetch!))
 
 (report/defsc-report Report
   [_this _props]
@@ -35,8 +43,8 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.addresses/fetch!)
-                         (u.buttons/row-action-button "Delete" model-key mu.c.addresses/delete!)]
+   ro/row-actions       [fetch-action
+                         delete-action]
    ro/row-pk            m.c.addresses/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.addresses/index
@@ -45,27 +53,29 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.c.networks/keys [id]
-          :ui/keys            [report]
-          :as                 props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.c.networks/id nil
-                       ::m.navlinks/id   index-page-key
-                       :ui/report        {}}
-   :query             [[::dr/id router-key]
-                       ::m.c.networks/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             ::m.navlinks/id
+   :initial-state     (fn [_props]
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn [_props]
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["addresses"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin network show addresses report"))
+    (u.debug/load-error props "admin network show addresses")))
 
-(m.navlinks/defroute :admin-core-networks-show-addresses
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Addresses"

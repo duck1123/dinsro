@@ -50,9 +50,10 @@
     (ui-router router)
     (u.debug/load-error props "settings core page")))
 
-(m.navlinks/defroute   :settings-core
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::Page
    ::m.navlinks/label         "Core"
+   ::m.navlinks/navigate-key  u.s.c.dashboards/index-page-key
    ::m.navlinks/parent-key    :settings
    ::m.navlinks/router        :settings
    ::m.navlinks/required-role :user})

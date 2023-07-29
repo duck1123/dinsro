@@ -25,6 +25,7 @@
 (def index-page-key :admin-currencies)
 (def model-key ::m.currencies/id)
 (def show-page-key :admin-currencies-show)
+(def log-props? false)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.currencies/delete!))
@@ -62,12 +63,17 @@
 (def ui-report (comp/factory Report))
 
 (defsc Show
-  [_this _props]
+  [_this {::m.currencies/keys [name]
+          :as                 props}]
   {:ident         ::m.currencies/id
-   :initial-state {::m.currencies/id nil}
-   :query         [::m.currencies/id]}
+   :initial-state {::m.currencies/id   nil
+                   ::m.currencies/name ""}
+   :query         [::m.currencies/id
+                   ::m.currencies/name]}
   (ui-segment {}
-    "TODO: Show Currency"))
+    (dom/div {} (str name))
+    (when log-props?
+      (u.debug/log-props props))))
 
 (def ui-show (comp/factory Show))
 
@@ -86,7 +92,7 @@
   (dom/div {}
     (if report
       (ui-report report)
-      (dom/div :.ui-segment "Failed to load report"))))
+      (u.debug/load-error props "admin index currencies"))))
 
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]

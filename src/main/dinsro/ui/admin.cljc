@@ -14,6 +14,9 @@
    [dinsro.ui.admin.currencies :as u.a.currencies]
    [dinsro.ui.admin.debits :as u.a.debits]
    [dinsro.ui.admin.ln :as u.a.ln]
+   [dinsro.ui.admin.models :as u.a.models]
+   [dinsro.ui.admin.navbars :as u.a.navbars]
+   [dinsro.ui.admin.navlinks :as u.a.navlinks]
    [dinsro.ui.admin.nostr :as u.a.nostr]
    [dinsro.ui.admin.rate-sources :as u.a.rate-sources]
    [dinsro.ui.admin.rates :as u.a.rates]
@@ -35,13 +38,15 @@
                          u.a.categories/ShowPage
                          u.a.contacts/IndexPage
                          u.a.contacts/ShowPage
-                         u.a.core/Page
+                         u.a.core/IndexPage
                          u.a.currencies/IndexPage
                          u.a.currencies/ShowPage
                          u.a.debits/IndexPage
                          u.a.debits/ShowPage
-                         u.a.ln/Page
-                         u.a.nostr/Page
+                         u.a.ln/IndexPage
+                         u.a.navbars/IndexPage
+                         u.a.navlinks/IndexPage
+                         u.a.nostr/IndexPage
                          u.a.rates/IndexPage
                          u.a.rates/ShowPage
                          u.a.rate-sources/IndexPage
@@ -87,20 +92,20 @@
     u.a.accounts/index-page-key
     u.a.currencies/index-page-key
     u.a.transactions/index-page-key
-    :admin-debits
-    :admin-rate-sources
-    :admin-rates
-    ;; :admin-models
-    :navbars
-    :navlinks]})
+    u.a.debits/index-page-key
+    u.a.rate-sources/index-page-key
+    u.a.rates/index-page-key
+    u.a.models/index-page-key
+    u.a.navbars/index-page-key
+    u.a.navlinks/index-page-key]})
 
 (def debug-props false)
 
-(defsc Page
+(defsc IndexPage
   [_this {:ui/keys [nav-menu router] :as props}]
   {:ident         (fn [] [::m.navlinks/id :admin])
    :initial-state (fn [props]
-                    (log/trace :Page/initial-state {:props props})
+                    (log/trace :IndexPage/initial-state {:props props})
                     {::m.navlinks/id :admin
                      :ui/nav-menu    (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin})
                      :ui/router      (comp/get-initial-state Router)})
@@ -108,7 +113,7 @@
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["admin"]}
-  (log/debug :Page/starting {:props props})
+  (log/debug :IndexPage/starting {:props props})
   (dom/div :.admin-page
     (if nav-menu
       (u.menus/ui-nav-menu nav-menu)
@@ -120,7 +125,7 @@
       (u.debug/log-props props))))
 
 (m.navlinks/defroute index-page-key
-  {::m.navlinks/control       ::Page
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin root page"
    ::m.navlinks/label         "Admin"
    ::m.navlinks/navigate-key  u.a.users/index-page-key

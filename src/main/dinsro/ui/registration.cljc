@@ -8,7 +8,7 @@
 
 (def index-page-key :registration)
 
-(defsc Page
+(defsc IndexPage
   [_this {:ui/keys [allow-registration? form]}]
   {:ident          (fn [_] [::m.navlinks/id index-page-key])
    :initial-state  {:ui/allow-registration? true
@@ -27,8 +27,8 @@
     (dom/div {}
       (dom/p {} "Registrations are not enabled"))))
 
-(m.navlinks/defroute   :registration
-  {::m.navlinks/control       ::Page
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Registration"
    ::m.navlinks/parent-key    :root
    ::m.navlinks/router        :root

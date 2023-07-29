@@ -100,7 +100,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.blocks/hash (u.links/report-link ::m.c.blocks/hash u.links/ui-block-link)}
+  {ro/column-formatters {::m.c.blocks/hash #(u.links/ui-admin-block-link %3)}
+
    ro/columns           [m.c.blocks/hash
                          m.c.blocks/height
                          m.c.blocks/fetched?]
@@ -144,22 +145,22 @@
     (ui-segment {:color "red" :inverted true}
       "Failed to load page")))
 
-(m.navlinks/defroute    :admin-core-blocks
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin index blocks"
    ::m.navlinks/label         "Blocks"
-   ::m.navlinks/input-key     ::m.c.blocks/id
-   ::m.navlinks/model-key     ::m.c.blocks/id
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core
    ::m.navlinks/router        :admin-core
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute    :admin-core-blocks-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Admin show block"
    ::m.navlinks/label         "Show Block"
-   ::m.navlinks/input-key     ::m.c.blocks/id
-   ::m.navlinks/model-key     ::m.c.blocks/id
-   ::m.navlinks/parent-key    :admin-core-blocks
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-core
    ::m.navlinks/required-role :admin})

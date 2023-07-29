@@ -112,3 +112,21 @@
   (if (and target id)
     (ui-show target)
     (u.debug/load-error props "admin show category")))
+
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
+   ::m.navlinks/label         "Contacts"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    :admin
+   ::m.navlinks/router        :admin
+   ::m.navlinks/required-role :admin})
+
+(m.navlinks/defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/description   "Admin page for contacts"
+   ::m.navlinks/label         "Show Contact"
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/router        :admin
+   ::m.navlinks/required-role :admin})

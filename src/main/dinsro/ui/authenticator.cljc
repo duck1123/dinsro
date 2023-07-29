@@ -4,9 +4,9 @@
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    [com.fulcrologic.rad.authorization :as auth]
    [dinsro.mutations.session :as mu.session]
-   [dinsro.ui.login :refer [Page]]))
+   [dinsro.ui.login :as u.login]))
 
-(auth/defauthenticator Authenticator {:local Page})
+(auth/defauthenticator Authenticator {:local u.login/IndexPage})
 
 (def ui-authenticator (comp/factory Authenticator))
 

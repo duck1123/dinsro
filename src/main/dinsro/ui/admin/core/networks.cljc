@@ -28,6 +28,7 @@
 
 (def index-page-key :admin-core-networks)
 (def model-key ::m.c.networks/id)
+(def parent-router-id :admin-core)
 (def show-menu-id :admin-core-networks)
 (def show-page-key :admin-core-networks-show)
 
@@ -139,27 +140,28 @@
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["network" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (u.debug/load-error props)))
 
 (m.navlinks/defroute index-page-key
-  {::m.navlinks/label         "Networks"
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin index networks"
-   ::m.navlinks/control       ::IndexPage
+   ::m.navlinks/label         "Networks"
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core
-   ::m.navlinks/router        :admin-core
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/required-role :admin
+   ::m.navlinks/router        parent-router-id})
 
 (m.navlinks/defroute show-page-key
-  {::m.navlinks/label         "Show Network"
+  {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Admin Show Network"
-   ::m.navlinks/control       ::ShowPage
    ::m.navlinks/input-key     model-key
+   ::m.navlinks/label         "Show Network"
    ::m.navlinks/model-key     model-key
+   ::m.navlinks/navigate-key  u.a.c.n.addresses/index-page-key
    ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin-core
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/required-role :admin
+   ::m.navlinks/router        parent-router-id})

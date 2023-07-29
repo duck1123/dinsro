@@ -40,21 +40,24 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.c.transactions/keys [id]
-          :ui/keys                [report]
-          :as                     props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.c.transactions/id nil
-                       ::m.navlinks/id       index-page-key
-                       :ui/report            {}}
-   :query             [::m.c.transactions/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_props]
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn [_props]
+                        [parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin core transaction outputs report"))
     (u.debug/load-error props "admin core transaction outputs")))
 
 (def ui-subpage (comp/factory SubPage))

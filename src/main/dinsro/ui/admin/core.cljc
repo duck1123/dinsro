@@ -63,19 +63,19 @@
   {::m.navbars/parent :admin
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [:admin-core-dashboard
-    :admin-core-addresses
-    :admin-core-blocks
-    :admin-core-chains
-    :admin-core-mnemonics
-    :admin-core-networks
-    :admin-core-nodes
-    :admin-core-peers
-    :admin-core-transactions
-    :admin-core-wallets
-    :admin-core-wallet-addresses]})
+   [u.a.c.dashboard/index-page-key
+    u.a.c.addresses/index-page-key
+    u.a.c.blocks/index-page-key
+    u.a.c.chains/index-page-key
+    u.a.c.mnemonics/index-page-key
+    u.a.c.networks/index-page-key
+    u.a.c.nodes/index-page-key
+    u.a.c.peers/index-page-key
+    u.a.c.transactions/index-page-key
+    u.a.c.wallets/index-page-key
+    u.a.c.wallet-addresses/index-page-key]})
 
-(defsc Page
+(defsc IndexPage
   [_this {:ui/keys [nav-menu router]
           :as      props}]
   {:ident         (fn [] [::m.navlinks/id menu-key])
@@ -88,7 +88,7 @@
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["core"]}
-  (log/debug :Page/starting {:props props})
+  (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (if nav-menu
       (u.menus/ui-nav-menu nav-menu)
@@ -97,11 +97,11 @@
       (ui-router router)
       (u.debug/load-error props "admin core page router"))))
 
-(m.navlinks/defroute :admin-core
-  {::m.navlinks/control       ::Page
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Router page for core admin"
    ::m.navlinks/label         "Core"
-   ::m.navlinks/navigate-key  :admin-core-dashboard
+   ::m.navlinks/navigate-key  u.a.c.dashboard/index-page-key
    ::m.navlinks/parent-key    :admin
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})

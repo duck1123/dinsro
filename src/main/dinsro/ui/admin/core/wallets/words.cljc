@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -22,6 +23,7 @@
 (def index-page-key :admin-core-wallets-show-words)
 (def model-key ::m.c.words/id)
 (def parent-model-key ::m.c.wallets/id)
+(def router-key :dinsro.ui.admin.core.wallets/Router)
 
 (report/defsc-report Report
   [_this _props]
@@ -45,12 +47,15 @@
           :as                props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-key
-                       :ui/report       {}}
-   :query             [::m.c.wallets/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_props]
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       {}})
+   :query             (fn [_props]
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
   (if (and report id)

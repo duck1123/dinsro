@@ -24,6 +24,7 @@
 
 (def index-page-key :admin-core-transactions)
 (def model-key ::m.c.transactions/id)
+(def parent-router-id :admin-core)
 (def show-page-key :admin-core-transactions-show)
 
 (defsc Show
@@ -124,18 +125,18 @@
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (ui-show target))
 
-(m.navlinks/defroute :admin-core-transactions
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Transactions"
-   ::m.navlinks/model-key     ::m.c.transactions/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core
-   ::m.navlinks/router        :admin-core
+   ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-core-transactions-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Transaction"
-   ::m.navlinks/model-key     ::m.c.transactions/id
-   ::m.navlinks/parent-key    :admin-core-transactions
-   ::m.navlinks/router        :admin-core
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role :admin})

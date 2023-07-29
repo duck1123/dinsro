@@ -65,7 +65,7 @@
 
 (def ui-router (comp/factory Router))
 
-(defsc Page
+(defsc IndexPage
   [_this {:ui/keys [router]}]
   {:ident         (fn [] [::m.navlinks/id index-page-key])
    :initial-state {::m.navlinks/id index-page-key
@@ -75,11 +75,11 @@
    :route-segment ["core"]}
   (ui-router router))
 
-(m.navlinks/defroute    :core
-  {::m.navlinks/control       ::Page
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Router for core"
    ::m.navlinks/label         "Core"
-   ::m.navlinks/navigate-key  :core-dashboard
+   ::m.navlinks/navigate-key  u.c.nodes/index-page-key
    ::m.navlinks/parent-key    :root
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :guest})

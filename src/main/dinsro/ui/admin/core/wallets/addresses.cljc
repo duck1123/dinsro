@@ -26,6 +26,7 @@
 (def index-page-key :admin-core-wallets-show-addresses)
 (def model-key ::m.c.wallet-addresses/id)
 (def parent-model-key ::m.c.wallets/id)
+(def router-key :dinsro.ui.admin.core.wallets/Router)
 
 (def generate-action
   (u.buttons/row-action-button "Generate" model-key mu.c.wallet-addresses/generate!))

@@ -188,7 +188,7 @@
           record-id                 (new-uuid id)
           ident                     [::m.navlinks/id page-id]
           control                   (comp/registry-key->class control-key)]
-      (log/debug :targeted-subpage-loader/starting
+      (log/info :targeted-subpage-loader/starting
         {:page-id   page-id
          :props     props
          :record-id record-id

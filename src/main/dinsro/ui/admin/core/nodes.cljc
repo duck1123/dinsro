@@ -35,6 +35,7 @@
 
 (def index-page-key :admin-core-nodes)
 (def model-key ::m.c.nodes/id)
+(def parent-router-id :admin-core)
 (def show-menu-id :admin-core-nodes)
 (def show-page-key :admin-core-nodes-show)
 
@@ -77,7 +78,7 @@
 (def ui-router (comp/factory Router))
 
 (m.navbars/defmenu :admin-core-nodes
-  {::m.navbars/parent :admin-core
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
    [u.a.c.n.peers/index-page-key
@@ -173,14 +174,11 @@
           (ui-button {:onClick (fn [evt] (log/info :Show/edit-clicked {:id id :evt evt}))} "Edit"))
         (if nav-menu
           (u.menus/ui-nav-menu nav-menu)
-          (ui-segment {:color "red" :inverted true}
-            "Failed to load page"))
+          (u.debug/load-error props "admin core nodes show menu"))
         (if router
           (ui-router router)
-          (ui-segment {:color "red" :inverted true}
-            "Failed to load page"))))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+          (u.debug/load-error props "admin core nodes show router"))))
+    (u.debug/load-error props "admin core nodes show")))
 
 (def ui-show (comp/factory Show))
 
@@ -255,20 +253,20 @@
     (ui-segment {:color "red" :inverted true}
       "Failed to load page")))
 
-(m.navlinks/defroute :admin-core-nodes
-  {::m.navlinks/label         "Nodes"
-   ::m.navlinks/control       ::IndexPage
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
+   ::m.navlinks/label         "Nodes"
    ::m.navlinks/description   "Admin Index Core Nodes"
-   ::m.navlinks/model-key     ::m.c.nodes/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core
-   ::m.navlinks/router        :admin-core
+   ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-core-nodes-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Node"
-   ::m.navlinks/model-key     ::m.c.nodes/id
-   ::m.navlinks/navigate-key  :admin-core-nodes-show-blocks
-   ::m.navlinks/parent-key    :admin-core-nodes
-   ::m.navlinks/router        :admin-core
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/navigate-key  u.a.c.n.blocks/index-page-key
+   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role :admin})

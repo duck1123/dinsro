@@ -1,4 +1,4 @@
-(ns dinsro.ui.navlinks
+(ns dinsro.ui.admin.navlinks
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
@@ -13,23 +13,19 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-;; [[../joins/navlinks.cljc]]
-;; [[../model/navlinks.cljc]]
-;; [[../mutations/navlinks.cljc]]
-
-(def index-page-key :navlinks)
+(def index-page-key :admin-navlinks)
 (def model-key ::m.navlinks/id)
-(def show-page-key :navlinks-show)
+(def show-page-key :admin-navlinks-show)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters   {::m.navlinks/id           #(str %2)
-                           ::m.navlinks/control      #(str %2)
-                           ::m.navlinks/router       #(and %2 (u.links/ui-navbar-link %2))
-                           ::m.navlinks/model-key    #(str %2)
-                           ::m.navlinks/navigate-key #(str %2)
-                           ::m.navlinks/parent-key   #(str %2)
-                           ::m.navlinks/input-key    #(str %2)}
+  {ro/column-formatters   {::m.navlinks/id         #(str %2)
+                           ::m.navlinks/control    #(str %2)
+                           ::m.navlinks/router     #(and %2 (u.links/ui-navbar-link %2))
+                           ::m.navlinks/model-key  #(str %2)
+                           ::m.navlinks/navigate-key  #(str %2)
+                           ::m.navlinks/parent-key #(str %2)
+                           ::m.navlinks/input-key  #(str %2)}
    ro/columns             [m.navlinks/id
                            m.navlinks/parent-key
                            m.navlinks/control
@@ -60,7 +56,7 @@
                     (let [id (::m.navlinks/id props)]
                       {::m.navlinks/id id
                        ::m.navlinks/label ""}))
-   :pre-merge     (u.loader/page-merger model-key {})
+   :pre-merge     (u.loader/page-merger ::m.navlinks/id {})
    :query         [::m.navlinks/id
                    ::m.navlinks/label]}
   (if id
@@ -101,8 +97,19 @@
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
+   ::m.navlinks/description   "Admin index navlinks"
    ::m.navlinks/label         "Navlinks"
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :root
    ::m.navlinks/router        :root
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/required-role :admin})
+
+(m.navlinks/defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/description   "Admin show page for navlink"
+   ::m.navlinks/label         "Show Navlink"
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/router        :admin
+   ::m.navlinks/required-role :admin})

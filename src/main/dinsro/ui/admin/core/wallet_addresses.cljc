@@ -33,6 +33,8 @@
 
 (def index-page-key :admin-core-wallet-addresses)
 (def model-key ::m.c.wallet-addresses/id)
+(def parent-router-id :admin-core)
+(def show-page-key :admin-core-wallet-addresses-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.wallet-addresses/delete!))
@@ -74,11 +76,21 @@
   (dom/div {}
     (ui-report report)))
 
-(m.navlinks/defroute :admin-core-wallet-addresses
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Wallet Addresses"
    ::m.navlinks/description   "Admin index of wallet addresses"
-   ::m.navlinks/model-key     ::m.c.wallet-addresses/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core
-   ::m.navlinks/router        :admin-core
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role :admin})
+
+(m.navlinks/defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/description   "Admin show page for wallet address"
+   ::m.navlinks/label         "Show Wallet Address"
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role :admin})

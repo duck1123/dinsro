@@ -24,7 +24,7 @@
 
 (defrouter Router
   [_this _props]
-  {:router-targets [u.a.ln.dashboard/Page
+  {:router-targets [u.a.ln.dashboard/IndexPage
                     u.a.ln.accounts/IndexPage
                     u.a.ln.channels/IndexPage
                     u.a.ln.invoices/IndexPage
@@ -49,11 +49,11 @@
     :admin-ln-peers
     :admin-ln-remote-nodes]})
 
-(defsc Page
+(defsc IndexPage
   [_this {:ui/keys [router vertical-menu] :as props}]
   {:ident         (fn [] [::m.navlinks/id :admin-ln])
    :initial-state (fn [_]
-                    {::m.navlinks/id   :admin-ln
+                    {::m.navlinks/id   index-page-key
                      :ui/router        (comp/get-initial-state Router)
                      :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :admin-ln})})
    :pre-merge     (u.loader/page-merger nil
@@ -63,7 +63,7 @@
                    {:ui/router (comp/get-query Router)}
                    {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}]
    :route-segment ["ln"]}
-  (log/info :Page/starting {:props props})
+  (log/info :IndexPage/starting {:props props})
   (comp/fragment
    (dom/div :.ui.grid
      (dom/div :.ui.four.wide.column
@@ -75,8 +75,8 @@
          (ui-router router)
          (ui-segment {} "Failed to load router"))))))
 
-(m.navlinks/defroute :admin-ln
-  {::m.navlinks/control       ::Page
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "LN"
    ::m.navlinks/parent-key    :admin
    ::m.navlinks/router        :admin

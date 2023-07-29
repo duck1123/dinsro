@@ -19,11 +19,16 @@
 ;; [[../../../../joins/core/blocks.cljc]]
 ;; [[../../../../model/core/blocks.cljc]]
 
-(def ident-key ::m.c.networks/id)
 (def index-page-key :admin-core-networks-show-blocks)
 (def model-key ::m.c.blocks/id)
 (def parent-model-key ::m.c.networks/id)
-(def router-key :dinsro.ui.core.networks/Router)
+(def router-key :dinsro.ui.admin.core.networks/Router)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.blocks/delete!))
+
+(def fetch-action
+  (u.buttons/row-action-button "Fetch" model-key mu.c.blocks/fetch!))
 
 (report/defsc-report Report
   [_this _props]
@@ -38,8 +43,8 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.blocks/fetch!)
-                         (u.buttons/row-action-button "Delete" model-key mu.c.blocks/delete!)]
+   ro/row-actions       [fetch-action
+                         delete-action]
    ro/row-pk            m.c.blocks/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.blocks/index

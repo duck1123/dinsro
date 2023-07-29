@@ -20,7 +20,6 @@
 ;; [[../../../joins/accounts.cljc]]
 ;; [[../../../model/accounts.cljc]]
 
-(def ident-key ::m.users/id)
 (def index-page-key :admin-users-show-accounts)
 (def model-key ::m.accounts/id)
 (def parent-model-key ::m.users/id)
@@ -82,29 +81,32 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.users/keys [id]
-          :ui/keys       [report]
-          :as            props}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  [_this {:ui/keys [report]
+          :as      props}]
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       ::m.users/id    nil
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       ::m.users/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_props]
+                        {::m.navlinks/id  index-page-key
+                         parent-model-key nil
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn [_props]
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["accounts"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
+  (if (get props parent-model-key)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin user accounts report"))
     (u.debug/load-error props "admin user accounts page")))
 
-(m.navlinks/defroute   :admin-users-show-accounts
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Accounts"
-   ::m.navlinks/model-key     ::m.accounts/id
+   ::m.navlinks/model-key      model-key
    ::m.navlinks/parent-key    :admin-users
    ::m.navlinks/router        :admin-users
    ::m.navlinks/required-role :admin})

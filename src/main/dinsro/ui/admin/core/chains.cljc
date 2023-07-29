@@ -27,6 +27,8 @@
 (def index-page-key :admin-core-chains)
 (def model-key ::m.c.chains/id)
 (def override-form false)
+(def parent-router-id :admin-core)
+(def show-menu-id :admin-core-chains)
 (def show-page-key :admin-core-chains-show)
 
 (form/defsc-form NewForm
@@ -47,6 +49,12 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu show-menu-id
+  {::m.navbars/parent parent-router-id
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [u.a.c.c.networks/index-page-key]})
+
 (defsc Show
   [_this {::m.c.chains/keys [name]
           :ui/keys          [nav-menu router]
@@ -64,7 +72,8 @@
                    ::m.c.chains/name
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   ;; :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)
+   }
   (log/info :ShowPage/starting {:props props})
   (if (get props model-key)
     (dom/div {}
@@ -116,14 +125,20 @@
   [_this {::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [_props]
+                    {model-key           nil
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn [_props]
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["chain" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
-  (ui-show target))
+  (if (get props model-key)
+    (ui-show target)
+    (u.debug/load-error props "admin show chains")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
@@ -131,7 +146,7 @@
    ::m.navlinks/label         "Chains"
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core
-   ::m.navlinks/router        :admin-core
+   ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role :admin})
 
 (m.navlinks/defroute show-page-key
@@ -140,6 +155,6 @@
    ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Chain"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-core-chains
-   ::m.navlinks/router        :admin-core
+   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role :admin})

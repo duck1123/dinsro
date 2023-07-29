@@ -76,10 +76,20 @@
     (ui-show target)
     (u.debug/load-error props "admin show rate")))
 
-(m.navlinks/defroute   :admin-rates
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Rates"
-   ::m.navlinks/model-key     ::m.rates/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin
+   ::m.navlinks/router        :admin
+   ::m.navlinks/required-role :admin})
+
+(m.navlinks/defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/description   "Admin show page for rate"
+   ::m.navlinks/label         "Show Rate"
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})

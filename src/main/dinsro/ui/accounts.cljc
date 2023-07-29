@@ -227,10 +227,7 @@
 (defsc ShowPage
   [_this {::m.navlinks/keys [id target]
           :as               props}]
-  {:componentDidMount (fn [this]
-                        (let [props (comp/props this)]
-                          (log/info :ShowPage/mounted {:this this :props props})))
-   :ident             (fn [] [::m.navlinks/id show-page-key])
+  {:ident             (fn [] [::m.navlinks/id show-page-key])
    :initial-state     {::m.accounts/id     nil
                        ::m.navlinks/id     show-page-key
                        ::m.navlinks/target {}}

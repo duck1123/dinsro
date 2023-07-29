@@ -22,7 +22,7 @@
 (def index-page-key :admin-core-networks-show-nodes)
 (def model-key ::m.c.nodes/id)
 (def parent-model-key ::m.c.networks/id)
-(def router-key :dinsro.ui.core.networks/Router)
+(def router-key :dinsro.ui.admin.core.networks/Router)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!))

@@ -6,6 +6,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.debits :as m.debits]
+   [dinsro.model.models :as m.models :refer [defmodel]]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.transactions :as m.transactions]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
@@ -26,6 +27,9 @@
     :idents m.accounts/idents}
    #?(:clj {:indexer q.accounts/index-ids
             :counter q.accounts/count-ids})))
+
+(defmodel model-key
+  {::m.models/name "Accounts"})
 
 (defattr admin-index ::admin-index :ref
   {ao/target     model-key

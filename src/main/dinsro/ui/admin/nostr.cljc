@@ -34,7 +34,7 @@
   [_this  {:keys [current-state route-factory route-props router-state] :as props}]
   {:always-render-body? true
    :router-targets
-   [u.a.n.dashboard/Page
+   [u.a.n.dashboard/IndexPage
     u.a.n.badge-acceptances/IndexPage
     u.a.n.badge-acceptances/ShowPage
     u.a.n.badge-awards/IndexPage
@@ -101,25 +101,25 @@
     u.a.n.runs/index-page-key
     u.a.n.witnesses/index-page-key]})
 
-(defsc Page
+(defsc IndexPage
   [_this {:ui/keys [nav-menu router vertical-menu] :as props}]
   {:ident         (fn [] [::m.navlinks/id index-page-key])
    :initial-state (fn [props]
-                    (log/debug :Page/initial-state {:props props})
+                    (log/debug :IndexPage/initial-state {:props props})
                     (let [state {::m.navlinks/id   :admin-nostr
                                  :ui/nav-menu      (comp/get-initial-state u.menus/NavMenu
                                                      {::m.navbars/id index-page-key})
                                  :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu
                                                      {::m.navbars/id index-page-key})
                                  :ui/router        (comp/get-initial-state Router)}]
-                      (log/debug :Page/initial-state-generated {:props props :state state})
+                      (log/debug :IndexPage/initial-state-generated {:props props :state state})
                       state))
    :query         [::m.navlinks/id
                    {:ui/nav-menu (comp/get-query u.menus/VerticalMenu)}
                    {:ui/router (comp/get-query Router)}
                    {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}]
    :route-segment ["nostr"]}
-  (log/debug :Page/starting {:props props})
+  (log/debug :IndexPage/starting {:props props})
   (ui-grid {:centered true}
     (ui-grid-row {:only "tablet mobile"}
       (ui-grid-column {:width 16}
@@ -140,7 +140,7 @@
                 (u.debug/load-error props "admin nostr router")))))))))
 
 (m.navlinks/defroute :admin-nostr
-  {::m.navlinks/control       ::Page
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Nostr"
    ::m.navlinks/navigate-key  u.a.n.dashboard/index-page-key
    ::m.navlinks/parent-key    :admin

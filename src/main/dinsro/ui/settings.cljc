@@ -55,14 +55,15 @@
 
 (m.navbars/defmenu :settings
   {::m.navbars/parent :root
+   ::m.navbars/router ::Router
    ::m.navbars/children
-   [:settings-dashboard
-    :settings-core
-    :settings-ln
-    :settings-rate-sources
-    :settings-categories]})
+   [u.s.dashboard/index-page-key
+    u.s.core/index-page-key
+    u.s.ln/index-page-key
+    u.s.rate-sources/index-page-key
+    u.s.categories/index-page-key]})
 
-(defsc Page
+(defsc IndexPage
   [_this {:ui/keys [nav-menu router vertical-menu]
           :as props}]
   {:ident          (fn [_] [::m.navlinks/id index-page-key])
@@ -91,9 +92,10 @@
           (ui-router router)
           (u.debug/load-error props "settings router"))))))
 
-(m.navlinks/defroute   :settings
-  {::m.navlinks/control       ::Page
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Settings"
+   ::m.navlinks/navigate-key  u.s.dashboard/index-page-key
    ::m.navlinks/parent-key    :root
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :user})

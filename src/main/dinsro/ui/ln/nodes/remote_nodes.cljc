@@ -18,7 +18,6 @@
 ;; [[../../../joins/ln/remote_nodes.cljc]]
 ;; [[../../../model/ln/remote_nodes.cljc]]
 
-(def ident-key ::m.ln.nodes/id)
 (def index-page-key :ln-nodes-show-remote-nodes)
 (def model-key ::m.ln.remote-nodes/id)
 (def parent-model-key ::m.ln.nodes/id)
@@ -53,14 +52,16 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]
-          :as props}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+          :as      props}]
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     (fn [_]
-                        {::m.navlinks/id index-page-key
-                         :ui/report      {}})
+                        {parent-model-key nil
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
    :query             (fn [_]
                         [[::dr/id router-key]
+                         parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["remote-nodes"]

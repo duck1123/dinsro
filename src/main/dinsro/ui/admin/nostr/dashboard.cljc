@@ -12,7 +12,7 @@
 (def index-page-key :admin-nostr-dashboard)
 (def router-key :dinsro.ui.admin/Router)
 
-(defsc Page
+(defsc IndexPage
   [_this props]
   {:ident         (fn [] [::m.navlinks/id index-page-key])
    :initial-state {::m.navlinks/id index-page-key}
@@ -26,9 +26,8 @@
     (dom/div {}
       "Active Connections")))
 
-(m.navlinks/defroute
-  :admin-nostr-dashboard
-  {::m.navlinks/control       ::Page
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "dashboard"
    ::m.navlinks/parent-key    :admin-nostr
    ::m.navlinks/router        :admin-nostr

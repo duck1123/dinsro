@@ -72,12 +72,12 @@
    ::m.navbars/children
    [u.a.u.accounts/index-page-key
     u.a.u.categories/index-page-key
-    :admin-users-show-debits
-    :admin-users-show-ln-nodes
-    :admin-users-show-pubkeys
-    :admin-users-show-transactions
-    :admin-users-show-user-pubkeys
-    :admin-users-show-wallets]})
+    u.a.u.debits/index-page-key
+    u.a.u.ln-nodes/index-page-key
+    u.a.u.pubkeys/index-page-key
+    u.a.u.transactions/index-page-key
+    u.a.u.user-pubkeys/index-page-key
+    u.a.u.wallets/index-page-key]})
 
 (defsc Show
   [_this {::m.users/keys [id name role]
@@ -100,11 +100,12 @@
                           {::m.users/name ""
                            ::m.users/role nil
                            ::m.users/id   nil
-                           :ui/nav-menu   (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :admin-users :id id})
+                           :ui/nav-menu   (comp/get-initial-state u.menus/NavMenu
+                                            {::m.navbars/id show-menu-id :id id})
                            :ui/router     (comp/get-initial-state Router)}))
    :pre-merge         (u.loader/page-merger model-key
                         {:ui/router   [Router {}]
-                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :admin-users}]})
+                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]})
    :query             [::m.users/name
                        ::m.users/role
                        ::m.users/id
@@ -146,12 +147,12 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.users/name              #(u.links/ui-user-link %3)
-                         ::j.users/account-count     #(u.links/ui-user-accounts-count-link %3)
-                         ::j.users/category-count    #(u.links/ui-user-categories-count-link %3)
-                         ::j.users/ln-node-count     #(u.links/ui-user-ln-nodes-count-link %3)
-                         ::j.users/transaction-count #(u.links/ui-user-transactions-count-link %3)
-                         ::j.users/wallet-count      #(u.links/ui-user-wallets-count-link %3)}
+  {ro/column-formatters {::m.users/name              #(u.links/ui-admin-user-link %3)
+                         ::j.users/account-count     #(u.links/ui-admin-user-accounts-count-link %3)
+                         ::j.users/category-count    #(u.links/ui-admin-user-categories-count-link %3)
+                         ::j.users/ln-node-count     #(u.links/ui-admin-user-ln-nodes-count-link %3)
+                         ::j.users/transaction-count #(u.links/ui-admin-user-transactions-count-link %3)
+                         ::j.users/wallet-count      #(u.links/ui-admin-user-wallets-count-link %3)}
    ro/columns           [m.users/name
                          m.users/role
                          j.users/account-count
@@ -211,20 +212,20 @@
         (u.debug/load-error props "Admin Show User Page target")))
     (u.debug/load-error props "Admin Show User Page")))
 
-(m.navlinks/defroute   :admin-users
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Users"
-   ::m.navlinks/model-key     ::m.users/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute   :admin-users-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Admin Show User"
-   ::m.navlinks/input-key     ::m.users/id
-   ::m.navlinks/model-key     ::m.users/id
-   ::m.navlinks/navigate-key  :admin-users-show-accounts
-   ::m.navlinks/parent-key    :admin-users
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/navigate-key  u.a.u.accounts/index-page-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})

@@ -25,9 +25,9 @@
   (let [{:keys [route params]} (hist5/url->route)
         requested-target       (dr/resolve-target app route)
         resolved-target        (condp = requested-target
-                                 nil                   u.home/Page
-                                 u.admin/Page          u.a.users/IndexPage
-                                 u.a.nostr/Page        u.a.n.dashboard/Page
+                                 nil                   u.home/IndexPage
+                                 u.admin/IndexPage     u.a.users/IndexPage
+                                 u.a.nostr/IndexPage   u.a.n.dashboard/IndexPage
                                  u.c.networks/ShowPage u.c.n.addresses/SubPage
                                  requested-target)]
     (log/info :restore-route-ensuring-leaf!/routing
@@ -43,5 +43,5 @@
     (log/info :fix-route/starting {:env env})
     (let [logged-in (auth/verified-authorities app)]
       (if (empty? logged-in)
-        (hist5/restore-route! app u.home/Page {})
-        (hist5/restore-route! app u.home/Page {})))))
+        (hist5/restore-route! app u.home/IndexPage {})
+        (hist5/restore-route! app u.home/IndexPage {})))))

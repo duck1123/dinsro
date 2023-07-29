@@ -17,6 +17,7 @@
 
 ;; [[../../../joins/core/addresses.cljc]]
 ;; [[../../../model/core/addresses.cljc]]
+;; [[../../../ui/admin/core/networks/addresses.cljc]]
 
 (def index-page-key :core-networks-show-addresses)
 (def model-key ::m.c.addresses/id)

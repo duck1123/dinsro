@@ -26,7 +26,7 @@
 (def index-page-key :admin-core-nodes-show-peers)
 (def model-key ::m.c.peers/id)
 (def parent-model-key ::m.c.nodes/id)
-(def router-key :dinsro.ui.core.nodes/Router)
+(def router-key :dinsro.ui.admin.core.nodes/Router)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!))

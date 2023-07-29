@@ -21,6 +21,7 @@
 (def index-page-key :admin-debits)
 (def model-key ::m.debits/id)
 (def show-page-key :admin-debits-show)
+(def log-props? true)
 
 (report/defsc-report Report
   [_this _props]
@@ -42,12 +43,20 @@
 (def ui-report (comp/factory Report))
 
 (defsc Show
-  [_this _props]
+  [_this props]
   {:ident         ::m.debits/id
-   :initial-state {::m.debits/id nil}
-   :query         [::m.debits/id]}
+   :initial-state {::m.debits/id          nil
+                   ::m.debits/account     {}
+                   ::m.debits/transaction {}
+                   ::m.debits/value       0}
+   :query         [::m.debits/id
+                   ::m.debits/account
+                   ::m.debits/transaction
+                   ::m.debits/value]}
   (ui-segment {}
-    "TODO: Show Debit"))
+    "TODO: Show Debit"
+    (when log-props?
+      (u.debug/log-props props))))
 
 (def ui-show (comp/factory Show))
 
@@ -84,18 +93,18 @@
     (ui-show target)
     (u.debug/load-error props "admin show debit")))
 
-(m.navlinks/defroute :admin-debits
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Debits"
-   ::m.navlinks/model-key     ::m.debits/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-debits-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Debit"
-   ::m.navlinks/model-key     ::m.debits/id
-   ::m.navlinks/parent-key    :admin-debits
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})

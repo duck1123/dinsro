@@ -40,7 +40,6 @@
    [dinsro.ui.login :as u.login]
    [dinsro.ui.navbars :as u.navbars]
    [dinsro.ui.navlinks :as u.navlinks]
-   [dinsro.ui.nodes :as u.nodes]
    [dinsro.ui.nostr :as u.nostr]
    [dinsro.ui.registration :as u.registration]
    [dinsro.ui.settings :as u.settings]
@@ -67,26 +66,25 @@
    :router-targets [u.accounts/IndexPage
                     u.accounts/NewForm
                     u.accounts/ShowPage
-                    u.admin/Page
+                    u.admin/IndexPage
                     u.categories/IndexPage
                     u.categories/NewForm
                     u.contacts/NewContactForm
                     u.contacts/ShowPage
                     u.contacts/IndexPage
-                    u.core/Page
+                    u.core/IndexPage
                     u.currencies/IndexPage
                     u.currencies/NewForm
                     u.currencies/ShowPage
                     u.debits/ShowPage
-                    u.home/Page
-                    u.login/Page
-                    u.ln/Page
+                    u.home/IndexPage
+                    u.login/IndexPage
+                    u.ln/IndexPage
                     u.navbars/IndexPage
                     u.navlinks/IndexPage
-                    u.nodes/Page
-                    u.nostr/Page
-                    u.registration/Page
-                    u.settings/Page
+                    u.nostr/IndexPage
+                    u.registration/IndexPage
+                    u.settings/IndexPage
                     u.transactions/NewTransaction
                     u.transactions/ShowPage
                     u.transactions/IndexPage]}

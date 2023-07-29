@@ -6,11 +6,11 @@
    [nubank.workspaces.model :as wsm]))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard Page
+(ws/defcard IndexPage
   {::wsm/card-height 12
    ::wsm/card-width  4}
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.registration/Page
+   {::ct.fulcro3/root u.registration/IndexPage
     ::ct.fulcro3/initial-state
     (fn []
       {::u.registration/allow-registration true

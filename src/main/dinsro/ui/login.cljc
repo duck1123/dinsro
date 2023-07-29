@@ -15,7 +15,9 @@
    [dinsro.mutations]
    [dinsro.mutations.session :as mu.session]))
 
-(defsc Page
+(def index-page-key :login)
+
+(defsc IndexPage
   [this {:user/keys [message password username]} {:keys [visible?]}]
   {:ident               (fn [_] [::m.navlinks/id :login])
    :initial-state       {::m.navlinks/id :login
@@ -62,8 +64,8 @@
             (fn [_ev]
               (uism/trigger! this ::auth/auth-machine :event/cancel))}))))))
 
-(m.navlinks/defroute   :login
-  {::m.navlinks/control       ::Page
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/auth-link?    true
    ::m.navlinks/label         "Login"
    ::m.navlinks/parent-key    :root

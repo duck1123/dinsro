@@ -6,6 +6,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.nostr.badge-acceptance :as u.n.badge-acceptance]
    [dinsro.ui.nostr.badge-awards :as u.n.badge-awards]
    [dinsro.ui.nostr.badge-definitions :as u.n.badge-definitions]
@@ -68,7 +69,7 @@
 
 (def ui-router (comp/factory Router))
 
-(defsc Page
+(defsc IndexPage
   [_this {:ui/keys [router] :as props}]
   {:ident          (fn [] [::m.navlinks/id index-page-key])
    :initial-state  (fn [_props]
@@ -77,13 +78,12 @@
    :query          [::m.navlinks/id
                     {:ui/router (comp/get-query Router)}]
    :route-segment  ["nostr"]}
-  (log/info :Page/starting {:props props})
+  (log/info :IndexPage/starting {:props props})
   (if router
     (ui-router router)
-    (ui-segment {}
-      "Failed to load router")))
+    (u.debug/load-error "Nostr router")))
 
-(m.navlinks/defroute :nostr
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::Page
    ::m.navlinks/label         "Nostr"
    ::m.navlinks/parent-key    :root

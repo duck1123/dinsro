@@ -1,6 +1,7 @@
 (ns dinsro.ui.admin.core.blocks.transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -22,6 +23,7 @@
 (def index-page-key :admin-core-blocks-show-transactions)
 (def model-key ::m.c.transactions/id)
 (def parent-model-key ::m.c.blocks/id)
+(def router-key :dinsro.ui.admin.core.blocks/Router)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.transactions/delete!))
@@ -57,12 +59,15 @@
           :as               props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.c.blocks/id nil
-                       ::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [::m.c.blocks/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [_props]
+                        {parent-model-key nil
+                         ::m.navlinks/id index-page-key
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn [_props]
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
   (if (and report id)

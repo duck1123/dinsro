@@ -37,18 +37,19 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.rate-sources/name
-                        j.rate-sources/rate-count]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::refresh u.links/refresh-control}
-   ro/machine          spr/machine
-   ro/page-size        10
-   ro/paginate?        true
-   ro/row-actions      [delete-action]
-   ro/row-pk           m.rate-sources/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.rate-sources/admin-index
-   ro/title            "Rate Sources"})
+  {ro/column-formatters {::m.rate-sources/name #(u.links/ui-admin-rate-source-link %3)}
+   ro/columns           [m.rate-sources/name
+                         j.rate-sources/rate-count]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
+   ro/row-actions       [delete-action]
+   ro/row-pk            m.rate-sources/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.rate-sources/admin-index
+   ro/title             "Rate Sources"})
 
 (def ui-report (comp/factory Report))
 
@@ -135,10 +136,20 @@
     (ui-show target)
     (u.debug/load-error props "admin show rate source page")))
 
-(m.navlinks/defroute   :admin-rate-sources
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Rate Sources"
-   ::m.navlinks/model-key     ::m.rate-sources/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin
+   ::m.navlinks/router        :admin
+   ::m.navlinks/required-role :admin})
+
+(m.navlinks/defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/description   "Admin show page for rate sources"
+   ::m.navlinks/label         "Show Rate Source"
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin
    ::m.navlinks/required-role :admin})

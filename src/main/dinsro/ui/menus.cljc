@@ -11,6 +11,7 @@
    [dinsro.ui.debug :as u.debug]
    [lambdaisland.glogc :as log]))
 
+(def log-id? false)
 (def log-props? false)
 
 (defn convert-item
@@ -58,7 +59,8 @@
        :converted-items converted-items})
     (if (seq converted-items)
       (dom/div {}
-        (dom/p {} (str "ID: " id))
+        (when log-id?
+          (dom/p {} (str "ID: " id)))
         (ui-menu
           {:items       converted-items
            :onItemClick (fn [_e d]

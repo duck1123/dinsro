@@ -94,21 +94,21 @@
     (ui-show target)
     (u.debug/load-error props "admin show mnemonic")))
 
-(m.navlinks/defroute :admin-core-mnemonics
-  {::m.navlinks/label         "Mnemonics"
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin Index Mnemonics"
-   ::m.navlinks/control       ::IndexPage
-   ::m.navlinks/model-key     ::m.c.mnemonics/id
+   ::m.navlinks/label         "Mnemonics"
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-core
    ::m.navlinks/router        :admin-core
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-core-mnemonics-show
-  {::m.navlinks/label         "Mnemonics"
+(m.navlinks/defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Admin show mnemonic"
-   ::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.c.mnemonics/id
-   ::m.navlinks/model-key     ::m.c.mnemonics/id
-   ::m.navlinks/parent-key    :admin-core-mnemonics
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/label         "Mnemonics"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-core
    ::m.navlinks/required-role :admin})
