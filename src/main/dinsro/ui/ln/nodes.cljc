@@ -196,7 +196,7 @@
                        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
                                                    {::m.navbars/id :ln-nodes
                                                     :id            id})}))
-   :pre-merge     (u.loader/page-merger ::m.ln.nodes/id
+   :pre-merge     (u.loader/page-merger model-key
                     {:ui/router   [Router {}]
                      :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :ln-nodes}]})
    :query         [::m.ln.nodes/id

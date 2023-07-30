@@ -29,9 +29,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.connections/relay     #(u.links/ui-relay-link %2)
-                         ::m.n.connections/status    #(u.links/ui-connection-link %3)
-                         ::j.n.connections/run-count #(u.links/ui-connection-run-count-link %3)}
+  {ro/column-formatters {::m.n.connections/relay     #(u.links/ui-admin-relay-link %2)
+                         ::m.n.connections/status    #(u.links/ui-admin-connection-link %3)
+                         ::j.n.connections/run-count #(u.links/ui-admin-connection-run-count-link %3)}
    ro/columns           [m.n.connections/status
                          m.n.connections/relay
                          m.n.connections/start-time
@@ -54,25 +54,25 @@
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props}]
-  {;; :componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_]
-                        {parent-model-key nil
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
                          ::m.navlinks/id  index-page-key
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn [_]
                         [[::dr/id router-key]
-                         ::m.navlinks/id
                          parent-model-key
+                         ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["connections"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (get props parent-model-key)
+  (if (parent-model-key props)
     (if report
       (ui-report report)
       (u.debug/load-error props "admin relay connection report"))
-    (u.debug/load-error (dissoc props [::dr/id router-key]) "admin relay connection page")))
+    (u.debug/load-error props "admin relay connection page")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage

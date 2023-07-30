@@ -4,14 +4,12 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   ;; [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.tx-in :as j.c.tx-in]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.tx-in :as m.c.tx-in]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../../joins/core/tx_in.cljc]]
@@ -41,7 +39,7 @@
 
 (def ui-report (comp/factory Report))
 
-(defsc SubPage
+(defsc SubSection
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
@@ -53,13 +51,12 @@
    :query             (fn [_props]
                         [parent-model-key
                          ::m.navlinks/id
-                         {:ui/report (comp/get-query Report)}])
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (log/info :SubPage/starting {:props props})
+                         {:ui/report (comp/get-query Report)}])}
+  (log/info :SubSection/starting {:props props})
   (if (get props parent-model-key)
     (if report
       (ui-report report)
       (u.debug/load-error props "admin transactions show inputs report"))
     (u.debug/load-error props "admin transactions show inputs")))
 
-(def ui-subpage (comp/factory SubPage))
+(def ui-subsection (comp/factory SubSection))

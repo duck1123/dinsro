@@ -48,8 +48,8 @@
                    ::m.c.transactions/id
                    ::m.c.transactions/size
                    ::m.c.transactions/tx-id
-                   {:ui/admin-inputs (comp/get-query u.a.c.t.inputs/SubPage)}
-                   {:ui/admin-outputs (comp/get-query u.a.c.t.outputs/SubPage)}]}
+                   {:ui/admin-inputs (comp/get-query u.a.c.t.inputs/SubSection)}
+                   {:ui/admin-outputs (comp/get-query u.a.c.t.outputs/SubSection)}]}
   (if id
     (dom/div {}
       (ui-segment {}
@@ -70,11 +70,11 @@
       (dom/div {}
         (if admin-inputs
           (ui-segment {}
-            (u.a.c.t.inputs/ui-subpage admin-inputs))
+            (u.a.c.t.inputs/ui-subsection admin-inputs))
           (u.debug/load-error props "Admin show core transaction inputs"))
         (if admin-outputs
           (ui-segment {}
-            (u.a.c.t.outputs/ui-subpage admin-outputs))
+            (u.a.c.t.outputs/ui-subsection admin-outputs))
           (u.debug/load-error props "Admin show core transaction outputs"))))
     (u.debug/load-error props "Admin show core transaction record")))
 

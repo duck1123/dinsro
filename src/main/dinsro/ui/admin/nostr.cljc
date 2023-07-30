@@ -59,7 +59,7 @@
     u.a.n.runs/ShowPage
     u.a.n.witnesses/IndexPage
     u.a.n.witnesses/ShowPage]}
-  (log/info :Router/starting {:props props})
+  (log/debug :Router/starting {:props props})
   (dom/div :.admin-nostr-router-outer {}
     (case current-state
       :pending

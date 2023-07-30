@@ -14,21 +14,25 @@
 (def skip-loaded false)
 
 (defn process-state
-  [id-key id [key [component args]]]
+  "Creates the initial state for component passing the id and args and returns a map"
+  [model-key id [state-key [component args]]]
   (log/trace :process-state/starting
-    {:id-key    id-key
+    {:model-key model-key
      :id        id
-     :key       key
+     :state-key state-key
      :component component
      :args      args})
-  (let [data    (if id {id-key id :id id} {})
-        initial (comp/get-initial-state component (merge data args))
-        state   (merge initial data)]
-    (log/trace :process-state/finished
-      {:key       key
+  (let [data         (if id {model-key id :id id} {})
+        updated-data (merge data args)
+        initial      (comp/get-initial-state component updated-data)
+        state        (merge initial data)]
+    (log/debug :process-state/finished
+      {:state-key state-key
+       :id        id
+       :model-key model-key
        :component component
        :state     state})
-    {key state}))
+    {state-key state}))
 
 (defn subpage-loader
   "componentDidMount handler for SubPage components that load a report"
@@ -152,13 +156,10 @@
           page-ident                [::m.navlinks/id page-id]
           control                   (comp/registry-key->class control-key)
           model-ident               (conj page-ident model-key)]
-      (log/info :targeted-router-loader/starting
+      (log/debug :targeted-router-loader/starting
         {:page-id     page-id
          :model-key   model-key
          :record-id   record-id
-         :page-ident  page-ident
-         :model-ident model-ident
-         :app         app
          :props       props
          :state-atom  state-atom
          :page        (get-in @state-atom page-ident)})
@@ -166,7 +167,7 @@
       ;; Set the model key on the page
       (swap! state-atom assoc-in model-ident record-id)
 
-      (log/info :targeted-router-loader/merged
+      (log/debug :targeted-router-loader/merged
         {:page-id     page-id
          :control-key control-key
          :page        (get-in @state-atom page-ident)})
@@ -182,21 +183,33 @@
 (defn targeted-subpage-loader
   "will enter handler for sub-pages of a targeted router"
   [page-id model-key control-key]
+  (log/trace :target-subpage-loader/initializing
+    {:page-id     page-id
+     :model-key   model-key
+     :control-key control-key})
   (fn [app props]
-    (let [{::app/keys [state-atom]} app
+    (let [{::app/keys [data-tree
+                       state-atom]} app
           {:keys [id]}              props
           record-id                 (new-uuid id)
-          ident                     [::m.navlinks/id page-id]
-          control                   (comp/registry-key->class control-key)]
-      (log/info :targeted-subpage-loader/starting
+          page-ident                [::m.navlinks/id page-id]
+          control                   (comp/registry-key->class control-key)
+          model-ident               (conj page-ident model-key)]
+      (log/debug :targeted-subpage-loader/starting
         {:page-id   page-id
          :props     props
          :record-id record-id
          :model-key model-key})
-      (swap! state-atom assoc-in [::m.navlinks/id page-id model-key] record-id)
-      (dr/route-deferred ident
+
+      ;; Set the model key on the page
+      (swap! state-atom assoc-in model-ident record-id)
+
+      (log/debug :targeted-subpage-loader/merged {:data-tree data-tree
+                                                  :state-atom state-atom})
+
+      (dr/route-deferred page-ident
         (fn []
-          (df/load! app ident control
+          (df/load! app page-ident control
                     {:params               {model-key record-id}
                      :post-mutation        `mu.navlinks/target-ready
                      :post-mutation-params {:model-key model-key

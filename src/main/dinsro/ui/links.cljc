@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
+   [com.fulcrologic.rad.routing :as rroute]
    [dinsro.joins.nostr.connections :as j.n.connections]
    [dinsro.joins.nostr.filters :as j.n.filters]
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
@@ -55,27 +56,19 @@
 
 (defn form-link
   [this id name form-kw]
-  (log/debug :form-link/starting {:id id :name name :form-kw form-kw})
   (dom/a {:href      "#"
           :data-form (str form-kw)
           :onClick
           (fn [e]
             (.preventDefault e)
             (if-let [component (comp/registry-key->class form-kw)]
-              (form/view! this component id)
-              (log/error :form-link/no-component {:form-kw form-kw})))}
-    name))
-
-(defn form-link2
-  [this id name form-kw]
-  (log/debug :form-link2/starting {:id id :name name :form-kw form-kw})
-  (dom/a {:href      "#"
-          :data-form (str form-kw)
-          :onClick
-          (fn [e]
-            (.preventDefault e)
-            (if-let [component (comp/registry-key->class form-kw)]
-              (form/view! this component id)
+              (do
+                (log/debug :form-link/clicked
+                  {:id        id
+                   :name      name
+                   :form-kw   form-kw
+                   :component component})
+                (rroute/route-to! this component {:id (str id)}))
               (log/error :form-link/no-component {:form-kw form-kw})))}
     name))
 
@@ -157,6 +150,26 @@
   (form-link this id name :dinsro.ui.admin.core.chains/ShowPage))
 
 (def ui-admin-chain-link (comp/factory AdminChainLinkForm {:keyfn ::m.c.chains/id}))
+
+(form/defsc-form AdminConnectionLinkForm
+  [this {::m.n.connections/keys [id status]}]
+  {fo/id           m.n.connections/id
+   fo/route-prefix "admin-nostr-connection-link"
+   fo/attributes   [m.n.connections/id m.n.connections/status]}
+  (form-link this id (name status) :dinsro.ui.admin.nostr.connections/ShowPage))
+
+(def ui-admin-connection-link (comp/factory AdminConnectionLinkForm {:keyfn ::m.n.connections/id}))
+
+(form/defsc-form AdminConnectionRunCountLinkForm
+  [this {::m.n.connections/keys [id]
+         ::j.n.connections/keys [run-count]}]
+  {fo/id           m.n.connections/id
+   fo/route-prefix "admin-nostr-connection-run-count-link"
+   fo/attributes   [m.n.connections/id j.n.connections/run-count]}
+  (form-link this id run-count :dinsro.ui.admin.nostr.connections.runs/SubPage))
+
+(def ui-admin-connection-run-count-link
+  (comp/factory AdminConnectionRunCountLinkForm {:keyfn ::m.n.connections/id}))
 
 (form/defsc-form AdminCoreNodeLinkForm
   [this {::m.c.nodes/keys [id name] :as props}]
@@ -271,6 +284,14 @@
   (form-link this id (str code) :dinsro.ui.admin.nostr.requests.filters/SubPage))
 
 (def ui-admin-request-link (comp/factory AdminRequestLinkForm {:keyfn ::m.n.requests/id}))
+
+(form/defsc-form AdminRunLinkForm [this {::m.n.runs/keys [id status]}]
+  {fo/id           m.n.runs/id
+   fo/route-prefix "admin-run-link"
+   fo/attributes   [m.n.runs/status]}
+  (form-link this id (name status) :dinsro.ui.admin.nostr.runs/ShowPage))
+
+(def ui-run-link (comp/factory AdminRunLinkForm {:keyfn ::m.n.runs/id}))
 
 (form/defsc-form AdminUserLinkForm [this {::m.users/keys [id name]}]
   {fo/id           m.users/id
@@ -691,14 +712,6 @@
 
 (def ui-request-run-count-link
   (comp/factory RequestRunCountLinkForm {:keyfn ::m.n.requests/id}))
-
-(form/defsc-form RunLinkForm [this {::m.n.runs/keys [id status]}]
-  {fo/id           m.n.runs/id
-   fo/route-prefix "run-link"
-   fo/attributes   [m.n.runs/status]}
-  (form-link this id (name status) :dinsro.ui.nostr.runs/ShowPage))
-
-(def ui-run-link (comp/factory RunLinkForm {:keyfn ::m.n.runs/id}))
 
 (form/defsc-form SubscriptionLinkForm [this {::m.n.subscriptions/keys [id code]}]
   {fo/id           m.n.subscriptions/id

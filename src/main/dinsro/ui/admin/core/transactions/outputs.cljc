@@ -10,7 +10,6 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../../joins/core/tx_out.cljc]]
@@ -39,7 +38,7 @@
 
 (def ui-report (comp/factory Report))
 
-(defsc SubPage
+(defsc SubSection
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
@@ -51,13 +50,12 @@
    :query             (fn [_props]
                         [parent-model-key
                          ::m.navlinks/id
-                         {:ui/report (comp/get-query Report)}])
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+                         {:ui/report (comp/get-query Report)}])}
   (log/info :SubPage/starting {:props props})
-  (if (get props parent-model-key)
+  (if (parent-model-key props)
     (if report
       (ui-report report)
       (u.debug/load-error props "admin core transaction outputs report"))
     (u.debug/load-error props "admin core transaction outputs")))
 
-(def ui-subpage (comp/factory SubPage))
+(def ui-subsection (comp/factory SubSection))

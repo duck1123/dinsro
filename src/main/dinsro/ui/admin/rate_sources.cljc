@@ -77,8 +77,7 @@
                                                        {::m.navbars/id show-menu-id
                                                         :id            id})
                            :ui/router                (comp/get-initial-state Router)}))
-   :pre-merge         (u.loader/page-merger
-                        ::m.rate-sources/id
+   :pre-merge         (u.loader/page-merger model-key
                         {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                          :ui/router   [Router {}]})
    :query             [::m.rate-sources/name
@@ -106,6 +105,7 @@
     (u.debug/load-error props "admin rate sources")))
 
 (def ui-show (comp/factory Show))
+
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as      props}]

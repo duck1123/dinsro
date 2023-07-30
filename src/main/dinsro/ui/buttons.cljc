@@ -1,7 +1,8 @@
 (ns dinsro.ui.buttons
   (:require
    [com.fulcrologic.fulcro.components :as comp]
-   [com.fulcrologic.rad.control :as control]))
+   [com.fulcrologic.rad.control :as control]
+   [lambdaisland.glogc :as log]))
 
 (defn get-control-value
   [report-instance id-key]
@@ -49,6 +50,11 @@
              (let [record-id (get p model-key)
                    parent-id (get-control-value report-instance parent-model-key)
                    props     {model-key record-id parent-model-key parent-id}]
+               (log/debug :subrow-action-button/clicked
+                 {:record-id        record-id
+                  :model-key        model-key
+                  :parent-id        parent-id
+                  :parent-model-key parent-model-key})
                (comp/transact! report-instance [(mutation props)])))})
 
 (defn sub-page-action-button

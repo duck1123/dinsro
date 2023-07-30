@@ -260,7 +260,9 @@
                                                  {::m.navbars/id show-menu-id
                                                   :id            id})
                        :ui/router              (comp/get-initial-state Router)}))
-   :pre-merge     (u.loader/page-merger ::m.n.events/id {:ui/router [Router {}]})
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/router   [Router {}]
+                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]})
    :query         [::m.n.events/id
                    ::m.n.events/content
                    {::m.n.events/pubkey (comp/get-query EventAuthorImage)}

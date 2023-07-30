@@ -58,7 +58,7 @@
                        ::m.n.requests/code         ""
                        ::m.n.requests/relay        (comp/get-initial-state u.links/RelayLinkForm)
                        ::j.n.requests/query-string ""}))
-   :pre-merge     (u.loader/page-merger ::m.n.requests/id
+   :pre-merge     (u.loader/page-merger model-key
                     {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-requests}]
                      :ui/router   [Router {}]})
    :query         [::m.n.requests/id

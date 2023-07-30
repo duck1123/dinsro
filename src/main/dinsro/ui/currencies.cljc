@@ -31,6 +31,7 @@
 
 (def index-page-key :currencies)
 (def model-key ::m.currencies/id)
+(def show-menu-id :currencies)
 (def show-page-key :currencies-show)
 
 (form/defsc-form NewForm [_this _props]
@@ -92,11 +93,12 @@
                       {::m.currencies/name ""
                        ::m.currencies/code ""
                        ::m.currencies/id   nil
-                       :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :currencies
-                                                                                    :id            id})
+                       :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu
+                                             {::m.navbars/id show-menu-id
+                                              :id            id})
                        :ui/router          (comp/get-initial-state Router)}))
-   :pre-merge     (u.loader/page-merger ::m.currencies/id
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :currencies}]
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/router   [Router {}]})
    :query         [::m.currencies/name
                    ::m.currencies/code
@@ -112,6 +114,19 @@
     (u.debug/load-error props "Show currency record")))
 
 (def ui-show (comp/factory Show))
+
+(defsc IndexPage
+  [_this {:ui/keys [report]}]
+  {:componentDidMount #(report/start-report! % Report)
+   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :initial-state     {::m.navlinks/id index-page-key
+                       :ui/report      {}}
+   :query             [::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["currencies"]
+   :will-enter        (u.loader/page-loader index-page-key)}
+  (dom/div {}
+    (ui-report report)))
 
 (defsc ShowPage
   [_this {::m.currencies/keys [id]
@@ -131,32 +146,19 @@
     (ui-show target)
     (u.debug/load-error props "show currency page")))
 
-(defsc IndexPage
-  [_this {:ui/keys [report]}]
-  {:componentDidMount #(report/start-report! % Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
-   :route-segment     ["currencies"]
-   :will-enter        (u.loader/page-loader index-page-key)}
-  (dom/div {}
-    (ui-report report)))
-
-(m.navlinks/defroute   :currencies
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Currencies"
-   ::m.navlinks/model-key     ::m.currencies/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :root
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :user})
 
-(m.navlinks/defroute   :currencies-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Currency"
-   ::m.navlinks/input-key     ::m.currencies/id
-   ::m.navlinks/model-key     ::m.currencies/id
-   ::m.navlinks/parent-key    :currencies
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :root
    ::m.navlinks/required-role :user})

@@ -56,7 +56,7 @@
                          u.a.transactions/ShowPage
                          u.a.users/IndexPage
                          u.a.users/ShowPage]}
-  (log/info :Router/starting {:props props})
+  (log/debug :Router/starting {:props props})
   (dom/div :.admin-router-outer {}
     (case current-state
       :pending

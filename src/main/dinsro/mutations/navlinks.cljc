@@ -28,11 +28,14 @@
      (action [{:keys [app state]}]
        (let [{:keys [model-key record-id page-id]} props
              target [::m.navlinks/id page-id]]
-         (log/debug :target-ready/starting
+         (log/trace :target-ready/starting
            {:page-id   page-id
             :record-id record-id
             :props     props})
+
+         ;; Store the current page to :root/current-page
          (swap! state #(dt/integrate-ident* % target :replace [:root/current-page]))
+
          (if (and model-key record-id)
            (do
              (log/debug :target-ready/id-found

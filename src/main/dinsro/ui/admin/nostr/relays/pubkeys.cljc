@@ -33,6 +33,8 @@
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
+(def log-props? true)
+
 (def fetch-action
   (u.buttons/subrow-action-button "Fetch" model-key parent-model-key  mu.n.pubkeys/fetch!))
 
@@ -87,10 +89,10 @@
           :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_]
-                        {parent-model-key nil
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
                          ::m.navlinks/id  index-page-key
-                         :ui/report       {}})
+                         :ui/report       (comp/get-initial-state Report {})})
    :query             (fn [_]
                         [[::dr/id router-key]
                          parent-model-key
@@ -99,10 +101,13 @@
    :route-segment     ["pubkeys"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (get props parent-model-key)
-    (if report
-      (ui-report report)
-      (u.debug/load-error props "admin relay pubkeys report"))
+  (if (parent-model-key props)
+    (dom/div {}
+      (if report
+        (ui-report report)
+        (u.debug/load-error props "admin relay pubkeys report"))
+      (when log-props?
+        (u.debug/log-props props)))
     (u.debug/load-error props "admin relay pubkeys page")))
 
 (m.navlinks/defroute index-page-key

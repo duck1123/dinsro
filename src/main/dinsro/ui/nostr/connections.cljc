@@ -24,6 +24,7 @@
 
 (def index-page-key :nostr-connections)
 (def model-key ::m.n.connections/id)
+(def show-menu-id :nostr-connections)
 (def show-page-key :nostr-connections-show)
 
 (defsc ConnectionDisplay
@@ -47,10 +48,11 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :nostr-connections
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :nostr
+   ::m.navbars/router ::Router
    ::m.navbars/children
-   [:nostr-connections-show-runs]})
+   [u.n.c.runs/index-page-key]})
 
 (defsc Show
   [_this {::m.n.connections/keys [id status relay start-time end-time]
@@ -65,7 +67,7 @@
                        ::m.n.connections/end-time   nil
                        :ui/nav-menu                 (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :nostr-connections :id id})
                        :ui/router                   (comp/get-initial-state Router {})}))
-   :pre-merge     (u.loader/page-merger ::m.n.connections/id
+   :pre-merge     (u.loader/page-merger model-key
                     {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-connections}]
                      :ui/router   [Router          {}]})
    :query         [::m.n.connections/id

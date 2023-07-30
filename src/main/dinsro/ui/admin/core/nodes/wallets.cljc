@@ -61,11 +61,11 @@
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_props]
-                        {parent-model-key nil
+   :initial-state     (fn [props]
+                        {parent-model-key props
                          ::m.navlinks/id  index-page-key
-                         :ui/report       {}})
-   :query             (fn [_props]
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id
@@ -77,3 +77,12 @@
       (ui-report report)
       (u.debug/load-error props "admin nodes show wallets report"))
     (u.debug/load-error props "admin nodes show wallets")))
+
+(m.navlinks/defroute index-page-key
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Wallets"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    :admin-core-nodes-show
+   ::m.navlinks/router        :admin-core-nodes
+   ::m.navlinks/required-role :admin})

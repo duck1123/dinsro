@@ -95,7 +95,6 @@
                                 (df/load! this ident  Show {:target ident})))))
    :ident             ::m.users/id
    :initial-state     (fn [props]
-                        (log/info :Show/intial-state-starting {:props props})
                         (let [id (get props model-key)]
                           {::m.users/name ""
                            ::m.users/role nil

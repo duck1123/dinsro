@@ -14,6 +14,7 @@
    [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.ui.admin.core.blocks.transactions :as u.a.c.b.transactions]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -132,18 +133,18 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]}]
+  [_this {::m.navlinks/keys [target]
+          :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id show-page-key
-                   ::m.navlinks/target      {}}
+   :initial-state {::m.navlinks/id     show-page-key
+                   ::m.navlinks/target {}}
    :query         [::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["block" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (if target
     (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+    (u.debug/load-error props "admin show block")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage

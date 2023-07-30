@@ -67,21 +67,26 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_]
-                        {::m.navlinks/id  index-page-key
-                         parent-model-key nil
-                         :ui/report       {}})
-   :query             (fn [_]
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["witnesses"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (ui-report report))
+  (if (parent-model-key props)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "event show witnesses report"))
+    (u.debug/load-error props "event show witnesses page")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage

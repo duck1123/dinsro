@@ -17,6 +17,7 @@
 
 ;; [[../../../joins/core/blocks.cljc]]
 ;; [[../../../model/core/blocks.cljc]]
+;; [[../../../ui/admin/core/blocks.cljc]]
 
 (def index-page-key :core-networks-show-blocks)
 (def model-key ::m.c.blocks/id)

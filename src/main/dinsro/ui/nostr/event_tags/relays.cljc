@@ -13,6 +13,7 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.event-tags :as mu.n.event-tags]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -68,20 +69,25 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report] :as props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_]
-                        {::m.navlinks/id index-page-key
-                         :ui/report      {}})
-   :query             (fn [_]
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
                         [[::dr/id router-key]
+                         parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["items"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (ui-report report))
+  (if (parent-model-key props)
+    (ui-report report)
+    (u.debug/load-error props "event tags show relays")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage

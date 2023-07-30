@@ -56,7 +56,7 @@
                     (let [id (::m.navlinks/id props)]
                       {::m.navlinks/id id
                        ::m.navlinks/label ""}))
-   :pre-merge     (u.loader/page-merger ::m.navlinks/id {})
+   :pre-merge     (u.loader/page-merger model-key {})
    :query         [::m.navlinks/id
                    ::m.navlinks/label]}
   (if id

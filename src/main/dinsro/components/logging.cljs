@@ -18,9 +18,8 @@
    #_#_'dinsro.ui.ln                              :debug
    'dinsro.ui.nostr                               :info
    'dinsro.ui.errors                              :info
-   #_#_'dinsro.ui.links                           :debug
    'dinsro.ui.links                               :info
-   #_#_'dinsro.ui.loader                              :info
+   'dinsro.ui.loader                              :info
    'dinsro.ui.menus                               :info
    'dinsro.ui.navbars                             :info
    'goog.net.XhrIo                                :info})

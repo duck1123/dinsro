@@ -105,7 +105,7 @@
 (defsc Show
   "Show a core node"
   [_this {::m.c.nodes/keys [id name network host port rpcuser rpcpass pruned?]
-          :ui/keys         [edit-form editing?  nav-menu router]
+          :ui/keys         [admin-edit-form admin-editing? admin-nav-menu admin-router]
           :as              props}]
   {:ident         ::m.c.nodes/id
    :initial-state (fn [props]
@@ -121,16 +121,16 @@
                        ::m.c.nodes/size-on-disk            0
                        ::m.c.nodes/initial-block-download? true
                        ::m.c.nodes/network                 (comp/get-initial-state u.links/NetworkLinkForm)
-                       :ui/edit-form                       (comp/get-initial-state EditForm)
-                       :ui/editing?                        false
-                       :ui/nav-menu                        (comp/get-initial-state u.menus/NavMenu
+                       :ui/admin-edit-form                 (comp/get-initial-state EditForm)
+                       :ui/admin-editing?                  false
+                       :ui/admin-nav-menu                  (comp/get-initial-state u.menus/NavMenu
                                                              {::m.navbars/id show-menu-id
                                                               :id            id})
-                       :ui/router                          (comp/get-initial-state Router)}))
+                       :ui/admin-router                    (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/edit-form [EditForm {}]
-                     :ui/nav-menu  [u.menus/NavMenu {::m.navbars/id show-menu-id}]
-                     :ui/router    [Router {}]})
+                    {:ui/admin-edit-form [EditForm {}]
+                     :ui/admin-nav-menu  [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                     :ui/admin-router    [Router {}]})
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
                    ::m.c.nodes/host
@@ -142,18 +142,18 @@
                    ::m.c.nodes/size-on-disk
                    ::m.c.nodes/initial-block-download?
                    {::m.c.nodes/network (comp/get-query u.links/NetworkLinkForm)}
-                   {:ui/edit-form (comp/get-query EditForm)}
-                   :ui/editing?
-                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]}
+                   {:ui/admin-edit-form (comp/get-query EditForm)}
+                   :ui/admin-editing?
+                   {:ui/admin-nav-menu (comp/get-query u.menus/NavMenu)}
+                   {:ui/admin-router (comp/get-query Router)}]}
   (log/info :Show/starting {:props props})
   (if id
     (let [{:keys [main _sub]} (css/get-classnames Show)]
       (dom/div {:classes [main]}
         (ui-segment {}
           (ui-actions-menu {model-key id})
-          (if editing?
-            (ui-edit-form edit-form)
+          (if admin-editing?
+            (ui-edit-form admin-edit-form)
             (dom/dl {}
               (dom/dt {} "Name")
               (dom/dd {} (str name))
@@ -172,11 +172,11 @@
           (when debug-props
             (u.debug/log-props (dissoc props :ui/nav-menu)))
           (ui-button {:onClick (fn [evt] (log/info :Show/edit-clicked {:id id :evt evt}))} "Edit"))
-        (if nav-menu
-          (u.menus/ui-nav-menu nav-menu)
+        (if admin-nav-menu
+          (u.menus/ui-nav-menu admin-nav-menu)
           (u.debug/load-error props "admin core nodes show menu"))
-        (if router
-          (ui-router router)
+        (if admin-router
+          (ui-router admin-router)
           (u.debug/load-error props "admin core nodes show router"))))
     (u.debug/load-error props "admin core nodes show")))
 

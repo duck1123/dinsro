@@ -5,13 +5,13 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.blocks :as j.c.blocks]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -53,25 +53,27 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.c.networks/keys [id]
-          :ui/keys            [report]
-          :as                 props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_props]
-                        {::m.navlinks/id index-page-key
-                         :ui/report      {}})
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
+                         parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["blocks"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+  (if (parent-model-key props)
+    (if report
+      (ui-report report)
+      (u.debug/load-error "admin network show blocks page"))
+    (u.debug/load-error "admin network show blocks page")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage

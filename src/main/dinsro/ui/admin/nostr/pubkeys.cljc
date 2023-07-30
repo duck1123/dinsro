@@ -74,8 +74,7 @@
           :as      props}]
   {:ident         ::m.n.pubkeys/id
    :initial-state (fn [props]
-                    (log/info :Show/initial-state {:props props})
-                    (let [id (get props model-key)]
+                    (let [id (model-key props)]
                       {model-key                  id
                        ::m.n.pubkeys/about        ""
                        ::m.n.pubkeys/display-name ""
@@ -111,7 +110,7 @@
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/debug :Show/starting {:props props})
   (let [{:keys [main]} (css/get-classnames Show)]
-    (if (get props model-key)
+    (if (model-key props)
       (dom/div {:classes [main]}
         (u.n.pubkeys/ui-pubkey-info props)
         (u.menus/ui-nav-menu admin-nav-menu)

@@ -41,7 +41,7 @@
                    ::m.ln.remote-nodes/pubkey ""
                    :ui/peers                  {}
                    :ui/router                 {}}
-   :pre-merge     (u.loader/page-merger ::m.ln.remote-nodes/id
+   :pre-merge     (u.loader/page-merger model-key
                     {:ui/peers  [u.ln.rn.peers/SubPage {}]
                      :ui/router [Router {}]})
    :query         [::m.ln.remote-nodes/id

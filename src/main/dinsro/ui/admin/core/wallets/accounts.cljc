@@ -1,6 +1,7 @@
 (ns dinsro.ui.admin.core.wallets.accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -45,12 +46,13 @@
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_props]
-                        {parent-model-key nil
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
                          ::m.navlinks/id  index-page-key
-                         :ui/report       {}})
+                         :ui/report       (comp/get-initial-state Report {})})
    :query             (fn [_props]
-                        [parent-model-key
+                        [[::dr/id router-key]
+                         parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])}
   (log/info :SubPage/starting {:props props})

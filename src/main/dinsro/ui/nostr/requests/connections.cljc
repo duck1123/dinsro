@@ -13,9 +13,9 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [lambdaisland.glogc :as log]))
 
-(def ident-key ::m.n.requests/id)
 (def index-page-key :nostr-requests-show-connections)
 (def model-key ::m.n.connections/id)
 (def parent-model-key ::m.n.requests/id)
@@ -55,20 +55,21 @@
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_props]
-                        {parent-model-key nil
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
                          ::m.navlinks/id  index-page-key
                          :ui/report       (comp/get-initial-state Report {})})
-   :query             (fn [_props]
+   :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["connections"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (if (get props parent-model-key)
+  (log/info :SubPage/starting {:props props})
+  (if (parent-model-key props)
     (ui-report report)
     (u.debug/load-error props "requests show connections")))
 

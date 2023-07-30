@@ -78,7 +78,7 @@
    :initial-state  {::m.categories/id   nil
                     ::m.categories/name ""}
    ::m.navlinks/id :show-category
-   :pre-merge      (u.loader/page-merger ::m.categories/id {})
+   :pre-merge      (u.loader/page-merger model-key {})
    :query          [::m.categories/id
                     ::m.categories/name]}
   (dom/div :.ui.container

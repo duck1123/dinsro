@@ -44,11 +44,11 @@
           :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_]
-                        {parent-model-key nil
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
                          ::m.navlinks/id  index-page-key
-                         :ui/report       {}})
-   :query             (fn [_]
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id
@@ -56,9 +56,11 @@
    :route-segment     ["relays"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (get props parent-model-key)
-    (ui-report report)
-    (u.debug/load-error props "event show relay")))
+  (if (parent-model-key props)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "event show relay report"))
+    (u.debug/load-error props "event show relay page")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage

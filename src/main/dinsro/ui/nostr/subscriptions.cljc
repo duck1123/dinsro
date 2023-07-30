@@ -71,7 +71,7 @@
                                                    {::m.navbars/id show-menu-id
                                                     :id            id})
                        :ui/router                {}}))
-   :pre-merge     (u.loader/page-merger ::m.n.subscriptions/id
+   :pre-merge     (u.loader/page-merger model-key
                     {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/router   [Router {}]})
    :query         [::m.n.subscriptions/id

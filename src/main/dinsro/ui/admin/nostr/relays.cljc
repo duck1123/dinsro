@@ -38,6 +38,8 @@
 (def show-menu-id :admin-nostr-relays)
 (def show-page-key :admin-nostr-relays-show)
 
+(def log-props? false)
+
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.n.relays/delete!))
 
@@ -147,7 +149,9 @@
             (dom/dt {} "Address")
             (dom/dd {} (str address))
             (dom/dt {} "Connections")
-            (dom/dd {} (str connection-count))))
+            (dom/dd {} (str connection-count)))
+          (when log-props?
+            (u.debug/log-props props)))
         (if admin-nav-menu
           (u.menus/ui-nav-menu admin-nav-menu)
           (u.debug/load-error props "admin show relay nav menu"))
@@ -184,7 +188,7 @@
    :query         (fn [_]
                     [model-key
                      ::m.navlinks/id
-                     {::m.navlinks/target (comp/get-query Show)}])
+                     {::m.navlinks/target (comp/get-query Show {})}])
    :route-segment ["relay" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})

@@ -189,7 +189,8 @@
                        ::m.accounts/source   {}
                        ::m.accounts/wallet   {}
                        :ui/transactions      {}}
-   :pre-merge         (u.loader/page-merger ::m.accounts/id {:ui/transactions [u.a.transactions/Report {}]})
+   :pre-merge         (u.loader/page-merger model-key
+                        {:ui/transactions [u.a.transactions/Report {}]})
    :query             [::m.accounts/name
                        ::m.accounts/id
                        {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}

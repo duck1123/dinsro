@@ -55,23 +55,24 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.c.nodes/keys [id]
-          :ui/keys         [report]
-          :as              props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.c.nodes/id  nil
-                       ::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.c.nodes/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["transactions"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (get props parent-model-key)
-    (if (and report id)
+  (if (parent-model-key props)
+    (if report
       (ui-report report)
       (u.debug/load-error props "admin nodes show transactions"))
     (u.debug/load-error props "admin nodes show transactions")))
