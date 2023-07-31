@@ -217,19 +217,19 @@
     (ui-show target)
     (u.debug/load-error props "admin show ln node")))
 
-(m.navlinks/defroute :admin-ln-nodes
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Nodes"
-   ::m.navlinks/model-key     ::m.ln.nodes/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-ln
    ::m.navlinks/router        :admin-ln
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-ln-nodes-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.ln.nodes/id
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Node"
-   ::m.navlinks/model-key     ::m.ln.nodes/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-ln-nodes
    ::m.navlinks/router        :admin-ln
    ::m.navlinks/required-role :admin})

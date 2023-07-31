@@ -120,20 +120,21 @@
 
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]
-          :as props}]
+          :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state (fn [_props]
+   :initial-state (fn [props]
+                    (log/info :ShowPage/initial-state {:props props})
                     {model-key           nil
                      ::m.navlinks/id     show-page-key
                      ::m.navlinks/target (comp/get-initial-state Show {})})
-   :query         (fn [_props]
+   :query         (fn []
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["request" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
-  (if (get props model-key)
+  (if (model-key props)
     (if (seq target)
       (ui-show target)
       (u.debug/load-error props "Admin show request target"))

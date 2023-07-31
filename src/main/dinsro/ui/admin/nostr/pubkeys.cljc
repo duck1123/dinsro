@@ -74,6 +74,7 @@
           :as      props}]
   {:ident         ::m.n.pubkeys/id
    :initial-state (fn [props]
+                    (log/info :ShowPage/initial-state {:props props})
                     (let [id (model-key props)]
                       {model-key                  id
                        ::m.n.pubkeys/about        ""
@@ -93,12 +94,11 @@
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/admin-router   [Router {}]})
-   :query         (fn [_props]
+   :query         (fn []
                     [model-key
                      ::m.n.pubkeys/about
                      ::m.n.pubkeys/display-name
                      ::m.n.pubkeys/hex
-                     ::m.n.pubkeys/id
                      ::m.n.pubkeys/lud06
                      ::m.n.pubkeys/name
                      ::m.n.pubkeys/nip05
@@ -135,23 +135,25 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {id                model-key
-          ::m.navlinks/keys [target]
+  [_this {::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state (fn [_props]
+   :initial-state (fn [props]
+                    (log/info :ShowPage/initial-state {:props props})
                     {model-key           nil
                      ::m.navlinks/id     show-page-key
                      ::m.navlinks/target (comp/get-initial-state Show {})})
-   :query         (fn [_props]
+   :query         (fn []
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show {})}])
    :route-segment ["pubkey" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
+  (if (model-key props)
+    (if target
+      (ui-show target)
+      (u.debug/load-error props "admin show pubkey target"))
     (u.debug/load-error props "admin show pubkey page")))
 
 (m.navlinks/defroute index-page-key

@@ -22,7 +22,7 @@
 (def index-page-key :admin-nostr-requests-show-runs)
 (def model-key ::m.n.runs/id)
 (def parent-model-key ::m.n.requests/id)
-(def router-key :dinsro.ui.nostr.requests/Router)
+(def router-key :dinsro.ui.admin.nostr.requests/Router)
 
 (report/defsc-report Report
   [_this _props]
@@ -58,7 +58,7 @@
                         {parent-model-key (parent-model-key props)
                          ::m.navlinks/id  index-page-key
                          :ui/report       (comp/get-initial-state Report {})})
-   :query             (fn [_props]
+   :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id

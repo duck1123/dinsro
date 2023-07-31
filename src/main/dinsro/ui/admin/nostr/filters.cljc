@@ -54,7 +54,8 @@
   (log/info :Show/starting {:props props})
   (if id
     (ui-segment {:color "yellow" :inverted true}
-      "TODO: Show filter")
+      "TODO: Show filter"
+      (u.debug/log-props props))
     (u.debug/load-error props "admin filters record")))
 
 (def ui-show (comp/factory Show))

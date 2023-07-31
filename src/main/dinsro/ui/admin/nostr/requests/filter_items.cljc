@@ -23,7 +23,7 @@
 (def index-page-key :admin-nostr-requests-show-filter-items)
 (def model-key ::m.n.filter-items/id)
 (def parent-model-key ::m.n.requests/id)
-(def router-key :dinsro.ui.nostr.requests/Router)
+(def router-key :dinsro.ui.admin.nostr.requests/Router)
 
 (report/defsc-report Report
   [_this _props]
