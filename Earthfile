@@ -113,8 +113,8 @@ INSTALL_TILT_LATEST:
 
 main-pipeline:
   PIPELINE
-  TRIGGER push main
-  TRIGGER pr main
+  TRIGGER push master
+  TRIGGER pr master
   BUILD +ci
 
 all-images:
