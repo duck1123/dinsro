@@ -27,9 +27,9 @@
   {ro/columns          [m.n.badge-awards/id]
    ro/control-layout   {:action-buttons [::new ::fetch ::refresh]}
    ro/controls         {::refresh u.links/refresh-control}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/row-pk           m.n.badge-awards/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.n.badge-awards/index
@@ -86,19 +86,19 @@
     (ui-show target)
     (u.debug/load-error props "admin show badge awards")))
 
-(m.navlinks/defroute :admin-nostr-badge-awards
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Awards"
-   ::m.navlinks/model-key     ::m.n.badge-awards/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-nostr-badge-awards-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.n.badge-awards/id
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Awards"
-   ::m.navlinks/model-key     ::m.n.badge-awards/id
-   ::m.navlinks/parent-key    :admin-nostr-badge-awards
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})

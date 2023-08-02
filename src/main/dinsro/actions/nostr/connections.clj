@@ -18,6 +18,9 @@
   (:import
    java.nio.HeapCharBuffer))
 
+;; [[../../../../notebooks/dinsro/notebooks/nostr/connections_notebook.clj]]
+
+;; "a atom holding a map from connection ids to a map holding client and connection"
 (defonce connections (atom {}))
 (s/def ::client any?)
 
@@ -65,32 +68,46 @@
   (partial handle-message result-atom chan))
 
 (>defn on-close
+  "on-close handler for channels"
   [chan]
   [ds/channel? => any?]
-  (fn [_ws _status _reason]
+  (fn [_ws status reason]
+    (log/info :on-close/starting {:status status :reason reason})
     (async/close! chan)))
 
+(defn create-client
+  "Create and associate client for connection"
+  [connection-id]
+  (if-let [relay-id (q.n.relays/find-by-connection connection-id)]
+    (if-let [relay (q.n.relays/read-record relay-id)]
+      (let [address     (::m.n.relays/address relay)
+            chan        (async/chan)
+            result-atom (atom "")
+            params      {:on-message (on-message result-atom chan)
+                         :on-close   (on-close chan)}
+            client      @(ws/websocket address params)]
+        (log/info :create-client/associating {:connection-id connection-id :client client :chan chan})
+        (swap! connections assoc connection-id {:client client :chan chan})
+        client)
+      (throw (ex-info "No relay" {:relay-id relay-id})))
+    (throw (ex-info "No relay id" {:connection-id connection-id}))))
+
+(>defn get-client*
+  "Read client from connections information"
+  [connection-id]
+  [::m.n.connections/id => (? ::client)]
+  (when-let [existing-connection (get @connections connection-id)]
+    (log/info :get-client/cached {:connection-id connection-id})
+    (let [client (:client existing-connection)]
+      client)))
+
 (>defn get-client
+  "Get the websocket client for the given connection id or create if missing"
   [connection-id]
   [::m.n.connections/id => ::client]
   (log/info :get-client/starting {:connection-id connection-id})
-  (if-let [existing-connection (get @connections connection-id)]
-    (do
-      (log/info :get-client/cached {:connection-id connection-id})
-      (:client existing-connection))
-    (if-let [relay-id (q.n.relays/find-by-connection connection-id)]
-      (if-let [relay (q.n.relays/read-record relay-id)]
-        (let [address     (::m.n.relays/address relay)
-              chan        (async/chan)
-              result-atom (atom "")
-              params      {:on-message (on-message result-atom chan)
-                           :on-close   (on-close chan)}
-              client      @(ws/websocket address params)]
-          (log/info :get-client/associating {:connection-id connection-id :client client :chan chan})
-          (swap! connections assoc connection-id {:client client :chan chan})
-          client)
-        (throw (ex-info "No relay" {:relay-id relay-id})))
-      (throw (ex-info "No relay id" {:connection-id connection-id})))))
+  (or (get-client* connection-id)
+      (create-client connection-id)))
 
 (>defn get-connection-channel
   [connection-id]
@@ -104,6 +121,7 @@
       (throw (ex-info "No channel" {})))))
 
 (>defn get-topic-channel*
+  "Get the topic channel for the current run"
   [run-id]
   [::m.n.runs/id => (? ds/channel?)]
   (log/info :get-topic-channel*/starting {:run-id run-id})
@@ -114,14 +132,17 @@
       nil)))
 
 (>defn get-topic-channel
+  "Get the topic channel for the current run. Throw if missing"
   [run-id]
   [::m.n.runs/id => ds/channel?]
   (log/info :get-topic-channel/starting {:run-id run-id})
   (or (get-topic-channel* run-id)
       (throw (ex-info "No channel" {}))))
 
-(defn set-topic-channel
+(>defn set-topic-channel
+  "Set topic channel for run"
   [run-id ch]
+  [::m.n.runs/id ds/channel? => any?]
   (log/info :set-topic-channel/starting {:run-id run-id :ch ch})
   (swap! topics assoc run-id ch))
 
@@ -183,6 +204,7 @@
       (log/info :close-all-topics!/run {:run run}))))
 
 (defn start!
+  "Open a websocket for the provided connection"
   [connection-id]
   (log/info :start!/starting {:connection-id connection-id})
   (q.n.connections/set-connecting! connection-id)
@@ -246,11 +268,21 @@
     (log/info :send!/sending {:client client})
     (ws/send! client message)
     nil))
+
 (defn disconnect!
   [connection-id]
   (log/info :disconnect!/starting {:connection-id connection-id})
-  (let [client (get-client connection-id)]
-    (ws/close! client)))
+  (if-let [client (get-client connection-id)]
+    (do
+      (log/debug :disconnect!/closing {:client client})
+      (let [response (ws/close! client)]
+        (log/debug :disconnect!/closed {:response response
+                                        :client client})
+        response))
+
+    (do
+      (log/error :disconnect!/no-client {:connection-id connection-id})
+      nil)))
 
 (comment
 
@@ -263,6 +295,8 @@
   (q.n.connections/index-ids)
 
   (register-connection! relay-id)
+
+  (map q.n.connections/read-record (q.n.connections/find-connected))
 
   (def connection-id (first (q.n.connections/find-connected)))
   connection-id

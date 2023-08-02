@@ -10,14 +10,12 @@
    [dinsro.ui.nostr.badge-acceptance :as u.n.badge-acceptance]
    [dinsro.ui.nostr.badge-awards :as u.n.badge-awards]
    [dinsro.ui.nostr.badge-definitions :as u.n.badge-definitions]
-   [dinsro.ui.nostr.connections :as u.n.connections]
    [dinsro.ui.nostr.event-tags :as u.n.event-tags]
    [dinsro.ui.nostr.events :as u.n.events]
    [dinsro.ui.nostr.filters :as u.n.filters]
    [dinsro.ui.nostr.pubkeys :as u.n.pubkeys]
    [dinsro.ui.nostr.relays :as u.n.relays]
    [dinsro.ui.nostr.requests :as u.n.requests]
-   [dinsro.ui.nostr.runs :as u.n.runs]
    [dinsro.ui.nostr.subscription-pubkeys :as u.n.subscription-pubkeys]
    [dinsro.ui.nostr.subscriptions :as u.n.subscriptions]
    [dinsro.ui.nostr.witnesses :as u.n.witnesses]
@@ -34,8 +32,6 @@
    [u.n.badge-acceptance/IndexPage
     u.n.badge-awards/IndexPage
     u.n.badge-definitions/IndexPage
-    u.n.connections/IndexPage
-    u.n.connections/ShowPage
     u.n.event-tags/ShowPage
     u.n.events/IndexPage
     u.n.events/ShowPage
@@ -46,7 +42,6 @@
     u.n.relays/IndexPage
     u.n.relays/ShowPage
     u.n.requests/ShowPage
-    u.n.runs/ShowPage
     u.n.subscription-pubkeys/IndexPage
     u.n.subscription-pubkeys/ShowPage
     u.n.subscriptions/IndexPage

@@ -79,7 +79,7 @@
                     {model-key           nil
                      ::m.navlinks/id     show-page-key
                      ::m.navlinks/target (comp/get-initial-state Show {})})
-   :query         (fn [_]
+   :query         (fn []
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show)}])

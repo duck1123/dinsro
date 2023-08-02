@@ -21,19 +21,20 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-;; [[../../joins/nostr/pubkeys.cljc]]
-;; [[../../model/nostr/pubkeys.cljc]]
-;; [[../../model/nostr/relays.cljc]]
-;; [[../../model/nostr/relay_pubkeys.cljc]]
-;; [[../../mutations/nostr/pubkeys.cljc]]
-;; [[../../ui/nostr/relays.cljs]]
+;; [[../../../../actions/nostr/pubkeys.clj]]
+;; [[../../../../joins/nostr/pubkeys.cljc]]
+;; [[../../../../model/nostr/pubkeys.cljc]]
+;; [[../../../../model/nostr/relays.cljc]]
+;; [[../../../../model/nostr/relay_pubkeys.cljc]]
+;; [[../../../../mutations/nostr/pubkeys.cljc]]
+;; [[../../../../ui/nostr/relays.cljs]]
 
 (def index-page-key :admin-nostr-relays-show-pubkeys)
 (def model-key ::m.n.pubkeys/id)
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
-(def log-props? true)
+(def log-props? false)
 
 (def fetch-action
   (u.buttons/subrow-action-button "Fetch" model-key parent-model-key  mu.n.pubkeys/fetch!))
@@ -57,13 +58,16 @@
    :label  "New"
    :action (fn [this _] (form/create! this AddForm))})
 
+(defn picture-formatter
+  [_ picture]
+  (if picture
+    (dom/img {:src picture :width 100 :height 100})
+    ""))
+
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.pubkeys/name #(u.links/ui-pubkey-name-link %3)
-                         ::m.n.pubkeys/picture
-                         (fn [_ picture] (if picture
-                                           (dom/img {:src picture :width 100 :height 100})
-                                           ""))}
+  {ro/column-formatters {::m.n.pubkeys/name    #(u.links/ui-admin-pubkey-name-link %3)
+                         ::m.n.pubkeys/picture picture-formatter}
    ro/columns           [m.n.pubkeys/picture
                          m.n.pubkeys/name]
    ro/control-layout    {:action-buttons [::new ::refresh]

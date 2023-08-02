@@ -24,27 +24,32 @@
 (def parent-model-key ::m.n.requests/id)
 (def router-key :dinsro.ui.admin.nostr.requests/Router)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.runs/delete!))
+
+(def stop-action
+  (u.buttons/row-action-button "Stop" model-key mu.n.runs/stop!))
+
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.runs/status     #(u.links/ui-run-link %3)
-                         ::m.n.runs/connection #(u.links/ui-connection-link %2)
-                         ::m.n.runs/request    #(u.links/ui-request-link %2)}
+  {ro/column-formatters {::m.n.runs/status     #(u.links/ui-admin-run-link %3)
+                         ::m.n.runs/connection #(u.links/ui-admin-connection-link %2)
+                         ::m.n.runs/request    #(u.links/ui-admin-request-link %2)}
    ro/columns           [m.n.runs/status
                          m.n.runs/request
                          m.n.runs/connection
                          m.n.runs/start-time
                          m.n.runs/end-time]
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
-   ro/controls          {::m.n.requests/id {:type :uuid :label "id"}
-                         ::refresh         u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Stop" model-key mu.n.runs/stop!)
-                         (u.buttons/row-action-button "Delete" model-key mu.n.runs/delete!)]
+   ro/row-actions       [delete-action stop-action]
    ro/row-pk            m.n.runs/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.runs/index
+   ro/source-attribute  ::j.n.runs/admin-index
    ro/title             "Runs"})
 
 (def ui-report (comp/factory Report))

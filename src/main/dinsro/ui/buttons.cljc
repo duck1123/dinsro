@@ -54,7 +54,8 @@
                  {:record-id        record-id
                   :model-key        model-key
                   :parent-id        parent-id
-                  :parent-model-key parent-model-key})
+                  :parent-model-key parent-model-key
+                  :props            props})
                (comp/transact! report-instance [(mutation props)])))})
 
 (defn sub-page-action-button

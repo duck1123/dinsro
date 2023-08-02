@@ -25,9 +25,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.events/pubkey  #(u.links/ui-pubkey-link %2)
-                         ::m.n.events/note-id #(u.links/ui-event-link %3)
-                         ::m.n.pubkeys/hex    #(u.links/ui-pubkey-link %3)}
+  {ro/column-formatters {::m.n.events/pubkey  #(u.links/ui-admin-pubkey-link %2)
+                         ::m.n.events/note-id #(u.links/ui-admin-event-link %3)
+                         ::m.n.pubkeys/hex    #(u.links/ui-admin-pubkey-link %3)}
    ro/columns           [m.n.events/content]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::m.n.relays/id {:type :uuid :label "id"}

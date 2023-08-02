@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -12,6 +13,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.mutations.nostr.connections :as mu.n.connections]
+   [dinsro.ui.admin.nostr.connections.runs :as u.a.n.c.runs]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -28,32 +30,47 @@
 (def show-menu-id :admin-nostr-connections)
 (def show-page-key :admin-nostr-connections-show)
 
-(m.navbars/defmenu :admin-nostr-connections
+(def disconnect-action
+  (u.buttons/row-action-button "Disconnect" model-key mu.n.connections/disconnect!))
+
+(defrouter Router
+  [_this _props]
+  {:router-targets
+   [u.a.n.c.runs/SubPage]})
+
+(def ui-router (comp/factory Router))
+
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent   :admin-nostr
    ::m.navbars/router   ::Router
-   ::m.navbars/children [:admin-nostr-connections-show-runs]})
+   ::m.navbars/children [u.a.n.c.runs/index-page-key]})
 
 (defsc Show
   [_this {::m.n.connections/keys [id status relay start-time end-time]
-          :ui/keys               [nav-menu]
+          :ui/keys               [nav-menu router]
           :as                    props}]
   {:ident         ::m.n.connections/id
    :initial-state (fn [props]
-                    (let [id (::m.n.connections/id props)]
-                      {::m.n.connections/id         nil
+                    (let [id (model-key props)]
+                      {::m.n.connections/id         id
                        ::m.n.connections/status     :unknown
                        ::m.n.connections/relay      {}
                        ::m.n.connections/start-time nil
                        ::m.n.connections/end-time   nil
                        :ui/nav-menu                 (comp/get-initial-state u.menus/NavMenu
                                                       {::m.navbars/id show-menu-id
-                                                       :id            id})}))
+                                                       :id            id})
+                       :ui/router                   (comp/get-initial-state Router {})}))
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                     :ui/router   [Router {}]})
    :query         [::m.n.connections/id
                    ::m.n.connections/status
                    {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}
                    ::m.n.connections/start-time
                    ::m.n.connections/end-time
-                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}]}
+                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
+                   {:ui/router (comp/get-query Router)}]}
   (if id
     (dom/div {}
       (ui-segment {}
@@ -62,15 +79,16 @@
         (dom/div {} (u.links/ui-relay-link relay))
         (dom/div {} (str start-time))
         (dom/div {} (str end-time)))
-      (u.menus/ui-nav-menu nav-menu))
+      (u.menus/ui-nav-menu nav-menu)
+      (ui-router router))
     (u.debug/load-error props "admin show connection record")))
 
 (def ui-show (comp/factory Show))
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.connections/status #(u.links/ui-connection-link %3)
-                         ::m.n.connections/relay  #(u.links/ui-relay-link %2)}
+  {ro/column-formatters {::m.n.connections/status #(u.links/ui-admin-connection-link %3)
+                         ::m.n.connections/relay  #(u.links/ui-admin-relay-link %2)}
    ro/columns           [m.n.connections/status
                          m.n.connections/relay
                          m.n.connections/start-time
@@ -81,7 +99,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Disconnect" model-key mu.n.connections/disconnect!)]
+   ro/row-actions       [disconnect-action]
    ro/row-pk            m.n.connections/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.connections/index
@@ -122,18 +140,19 @@
     (ui-show target)
     (u.debug/load-error props "Admin show nostr connection page")))
 
-(m.navlinks/defroute :admin-nostr-connections
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Connections"
-   ::m.navlinks/model-key     ::m.n.connections/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute :admin-nostr-connections-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/label         "Connections"
-   ::m.navlinks/model-key     ::m.n.connections/id
-   ::m.navlinks/parent-key    :admin-nostr-connections
+   ::m.navlinks/label         "Show Connection"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/navigate-key  u.a.n.c.runs/index-page-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})

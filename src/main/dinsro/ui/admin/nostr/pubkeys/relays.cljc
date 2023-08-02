@@ -24,18 +24,19 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.relays/id
-                        m.n.relays/address]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {parent-model-key {:type :uuid :label "id"}
-                        ::refresh        u.links/refresh-control}
-   ro/machine          spr/machine
-   ro/page-size        10
-   ro/paginate?        true
-   ro/row-pk           m.n.relays/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.relays/admin-index
-   ro/title            "Relays"})
+  {ro/column-formatters {::m.n.relays/address #(u.links/ui-admin-relay-link %3)}
+   ro/columns           [m.n.relays/id
+                         m.n.relays/address]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
+   ro/row-pk            m.n.relays/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.relays/admin-index
+   ro/title             "Relays"})
 
 (def ui-report (comp/factory Report))
 
@@ -48,7 +49,7 @@
                         {parent-model-key (parent-model-key props)
                          ::m.navlinks/id  index-page-key
                          :ui/report       (comp/get-initial-state Report {})})
-   :query             (fn [_]
+   :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id

@@ -21,11 +21,11 @@
   (:import org.bitcoins.core.util.Bech32$
            org.bitcoins.core.util.Bech32Encoding$Bech32$))
 
-;; [[../../joins/nostr/pubkeys.cljc][Pubkey Joins]]
-;; [[../../model/nostr/pubkeys.cljc][Pubkey Model]]
-;; [[../../mutations/nostr/pubkeys.cljc][Pubkey Mutations]]
-;; [[../../queries/nostr/pubkeys.clj][Pubkey Queries]]
-;; [[../../ui/nostr/pubkeys.cljs][Pubkey UI]]
+;; [[../../joins/nostr/pubkeys.cljc]]
+;; [[../../model/nostr/pubkeys.cljc]]
+;; [[../../mutations/nostr/pubkeys.cljc]]
+;; [[../../queries/nostr/pubkeys.clj]]
+;; [[../../ui/nostr/pubkeys.cljs]]
 
 (>defn parse-content-parsed
   [data]

@@ -8,7 +8,6 @@
    [dinsro.joins.nostr.runs :as j.n.runs]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.relays :as m.n.relays]
-   [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.mutations.nostr.runs :as mu.n.runs]
    [dinsro.ui.buttons :as u.buttons]
@@ -21,24 +20,29 @@
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.nostr.relays/Router)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.runs/delete!))
+
+(def stop-action
+  (u.buttons/row-action-button "Stop" model-key mu.n.runs/stop!))
+
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.runs/connection #(u.links/ui-connection-link %2)
+  {ro/column-formatters {::m.n.runs/connection #(u.links/ui-admin-connection-link %2)
                          ::m.n.runs/request    #(u.links/ui-request-link %2)
-                         ::m.n.runs/status     #(u.links/ui-run-link %3)}
+                         ::m.n.runs/status     #(u.links/ui-admin-run-link %3)}
    ro/columns           [m.n.runs/status
                          m.n.runs/request
                          m.n.runs/connection
                          m.n.runs/start-time
                          m.n.runs/end-time]
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
-   ro/controls          {::m.n.requests/id {:type :uuid :label "id"}
-                         ::refresh         u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Stop" ::m.n.runs/id mu.n.runs/stop!)
-                         (u.buttons/row-action-button "Delete" ::m.n.runs/id mu.n.runs/delete!)]
+   ro/row-actions       [stop-action delete-action]
    ro/row-pk            m.n.runs/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.runs/index

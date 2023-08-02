@@ -25,10 +25,13 @@
 (def parent-model-key ::m.n.requests/id)
 (def router-key :dinsro.ui.admin.nostr.requests/Router)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.filter-items/delete!))
+
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.filter-items/filter #(u.links/ui-filter-link %2)
-                         ::m.n.filter-items/pubkey #(u.links/ui-pubkey-link %2)}
+  {ro/column-formatters {::m.n.filter-items/filter #(u.links/ui-admin-filter-link %2)
+                         ::m.n.filter-items/pubkey #(u.links/ui-admin-pubkey-link %2)}
    ro/columns           [m.n.filter-items/id
                          m.n.filter-items/filter
                          m.n.filter-items/type
@@ -38,13 +41,13 @@
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh        u.links/refresh-control}
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.n.filter-items/delete!)]
+   ro/row-actions       [delete-action]
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
    ro/row-pk            m.n.filter-items/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.filter-items/index
+   ro/source-attribute  ::j.n.filter-items/admin-index
    ro/title             "Filter Items"})
 
 (def ui-report (comp/factory Report))
@@ -54,11 +57,11 @@
           :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_]
-                        {::m.navlinks/id  index-page-key
-                         parent-model-key nil
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-key
                          :ui/report       (comp/get-initial-state Report {})})
-   :query             (fn [_]
+   :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id
@@ -66,11 +69,11 @@
    :route-segment     ["filter-items"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (get props parent-model-key)
+  (if (parent-model-key props)
     (if report
       (ui-report report)
       (u.debug/load-error props "admin request filter items report"))
-    (u.debug/load-error props "admin request filter items")))
+    (u.debug/load-error props "admin request filter items page")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage

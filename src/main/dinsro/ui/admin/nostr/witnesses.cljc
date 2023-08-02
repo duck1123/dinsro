@@ -9,7 +9,6 @@
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.witnesses :as j.n.witnesses]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -26,9 +25,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.witnesses/event #(u.links/ui-event-link %2)
-                         ::m.n.witnesses/run   #(u.links/ui-run-link %2)
-                         ::j.n.witnesses/relay #(u.links/ui-relay-link %2)}
+  {ro/column-formatters {::m.n.witnesses/event #(u.links/ui-admin-event-link %2)
+                         ::m.n.witnesses/run   #(u.links/ui-admin-run-link %2)
+                         ::j.n.witnesses/relay #(u.links/ui-admin-relay-link %2)}
    ro/columns           [m.n.witnesses/event
                          m.n.witnesses/run
                          j.n.witnesses/relay]
@@ -39,7 +38,7 @@
    ro/paginate?         true
    ro/row-pk            m.n.witnesses/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.witnesses/index
+   ro/source-attribute  ::j.n.witnesses/admin-index
    ro/title             "Witnesses"})
 
 (def ui-report (comp/factory Report))
@@ -74,36 +73,39 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.n.witnesses/keys [id]
-          ::m.navlinks/keys    [target]
-          :as                  props}]
+  [_this {::m.navlinks/keys [target]
+          :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.n.witnesses/id  nil
-                   ::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.n.witnesses/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [props]
+                    {model-key           (model-key props)
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["event" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "admin show witness")))
+  (if (model-key props)
+    (if target
+      (ui-show target)
+      (u.debug/load-error props "admin show witness target"))
+    (u.debug/load-error props "admin show witness page")))
 
-(m.navlinks/defroute   :admin-nostr-witnesses
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Witnesses"
-   ::m.navlinks/model-key     ::m.n.runs/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-nostr
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})
 
-(m.navlinks/defroute   :admin-nostr-witnesses-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Witness"
-   ::m.navlinks/input-key     ::m.n.witnesses/id
-   ::m.navlinks/model-key     ::m.n.witnesses/id
-   ::m.navlinks/parent-key    :admin-nostr-witnesses
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr
    ::m.navlinks/required-role :admin})

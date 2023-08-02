@@ -46,10 +46,10 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.requests/code         #(u.links/ui-request-link %3)
-                         ::m.n.requests/relay        #(u.links/ui-relay-link %2)
-                         ::j.n.requests/filter-count #(u.links/ui-request-filter-count-link %3)
-                         ::j.n.requests/run-count    #(u.links/ui-request-run-count-link %3)}
+  {ro/column-formatters {::m.n.requests/code         #(u.links/ui-admin-request-link %3)
+                         ::m.n.requests/relay        #(u.links/ui-admin-relay-link %2)
+                         ::j.n.requests/filter-count #(u.links/ui-admin-request-filter-count-link %3)
+                         ::j.n.requests/run-count    #(u.links/ui-admin-request-run-count-link %3)}
    ro/columns           [m.n.requests/code
                          m.n.requests/relay
                          j.n.requests/filter-count

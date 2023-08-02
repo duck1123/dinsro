@@ -31,7 +31,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.pubkeys/hex     #(u.links/ui-pubkey-link %3)
+  {ro/column-formatters {::m.n.pubkeys/hex     #(u.links/ui-admin-pubkey-link %3)
                          ::m.n.pubkeys/name    #(u.links/ui-admin-pubkey-name-link %3)
                          ::m.n.pubkeys/picture #(u.links/img-formatter %3)}
    ro/columns           [m.n.pubkeys/picture
@@ -53,21 +53,15 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.a.n.p.relays/SubPage
-    ;; u.a.n.r.connections/SubPage
-    ;; u.a.n.r.pubkeys/SubPage
-    ;; u.a.n.r.requests/SubPage
-    ;; u.a.n.r.runs/SubPage
-    ;; u.a.n.r.events/SubPage
-    ;; u.a.n.r.witnesses/SubPage
-    ]})
+   [u.a.n.p.relays/SubPage]})
 
 (def ui-router (comp/factory Router))
 
 (m.navbars/defmenu show-menu-id
   {::m.navbars/parent   parent-router-key
    ::m.navbars/router   ::Router
-   ::m.navbars/children [u.a.n.p.relays/index-page-key]})
+   ::m.navbars/children
+   [u.a.n.p.relays/index-page-key]})
 
 (defsc Show
   [_this {:ui/keys [admin-nav-menu admin-router]
@@ -106,22 +100,21 @@
                      ::m.n.pubkeys/picture
                      ::m.n.pubkeys/website
                      {:ui/admin-nav-menu (comp/get-query u.menus/NavMenu)}
-                     {:ui/admin-router (comp/get-query Router)}])
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+                     {:ui/admin-router (comp/get-query Router)}])}
   (log/debug :Show/starting {:props props})
-  (let [{:keys [main]} (css/get-classnames Show)]
-    (if (model-key props)
+  (if (model-key props)
+    (let [{:keys [main]} (css/get-classnames Show)]
       (dom/div {:classes [main]}
         (u.n.pubkeys/ui-pubkey-info props)
         (u.menus/ui-nav-menu admin-nav-menu)
-        (ui-router admin-router))
-      (u.debug/load-error props "admin show pubkey record"))))
+        (ui-router admin-router)))
+    (u.debug/load-error props "admin show pubkey record")))
 
 (def ui-show (comp/factory Show))
 
 (defsc IndexPage
   [_this {:ui/keys [report]
-          :as props}]
+          :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
@@ -140,7 +133,7 @@
   {:ident         (fn [] [::m.navlinks/id show-page-key])
    :initial-state (fn [props]
                     (log/info :ShowPage/initial-state {:props props})
-                    {model-key           nil
+                    {model-key           (model-key props)
                      ::m.navlinks/id     show-page-key
                      ::m.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []

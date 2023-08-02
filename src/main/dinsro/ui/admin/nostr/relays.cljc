@@ -72,8 +72,8 @@
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.relays/address          #(u.links/ui-admin-relay-link %3)
-                         ::j.n.relays/connection-count #(u.links/ui-relay-connection-count-link %3)
-                         ::j.n.relays/request-count    #(u.links/ui-relay-request-count-link %3)}
+                         ::j.n.relays/connection-count #(u.links/ui-admin-relay-connection-count-link %3)
+                         ::j.n.relays/request-count    #(u.links/ui-admin-relay-request-count-link %3)}
    ro/columns           [m.n.relays/address
                          m.n.relays/connected
                          j.n.relays/request-count

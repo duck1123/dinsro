@@ -7,6 +7,8 @@
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.nostr.relays :as m.n.relays]))
 
+;; [[../../joins/nostr/requests.cljc]]
+
 (>def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

@@ -13,6 +13,8 @@
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
+;; [[../../model/nostr/requests.cljc]]
+
 (def join-info
   (merge
    {:idents m.n.requests/idents}

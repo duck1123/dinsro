@@ -28,8 +28,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.runs/status     #(u.links/ui-run-link %3)
-                         ::m.n.runs/connection #(u.links/ui-connection-link %2)
+  {ro/column-formatters {::m.n.runs/status     #(u.links/ui-admin-run-link %3)
+                         ::m.n.runs/connection #(u.links/ui-admin-connection-link %2)
                          ::m.n.runs/request    #(u.links/ui-request-link %2)}
    ro/columns           [m.n.runs/status
                          m.n.runs/request

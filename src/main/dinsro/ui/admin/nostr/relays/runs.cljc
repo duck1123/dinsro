@@ -25,11 +25,17 @@
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.runs/delete!))
+
+(def stop-action
+  (u.buttons/row-action-button "Stop" model-key mu.n.runs/stop!))
+
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.runs/connection #(u.links/ui-connection-link %2)
-                         ::m.n.runs/request    #(u.links/ui-request-link %2)
-                         ::m.n.runs/status     #(u.links/ui-run-link %3)}
+  {ro/column-formatters {::m.n.runs/connection #(u.links/ui-admin-connection-link %2)
+                         ::m.n.runs/request    #(u.links/ui-admin-request-link %2)
+                         ::m.n.runs/status     #(u.links/ui-admin-run-link %3)}
    ro/columns           [m.n.runs/status
                          m.n.runs/request
                          m.n.runs/connection
@@ -41,34 +47,36 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Stop" model-key mu.n.runs/stop!)
-                         (u.buttons/row-action-button "Delete" model-key mu.n.runs/delete!)]
+   ro/row-actions       [stop-action delete-action]
    ro/row-pk            m.n.runs/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.runs/index
+   ro/source-attribute  ::j.n.runs/admin-index
    ro/title             "Runs"})
 
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.n.relays/keys [id]
-          :ui/keys          [report]
-          :as               props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       ::m.n.relays/id nil
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       ::m.n.relays/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["runs"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
-    (u.debug/load-error props "admin relays runs")))
+  (if (parent-model-key props)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin relays runs report"))
+    (u.debug/load-error props "admin relays runs page")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage

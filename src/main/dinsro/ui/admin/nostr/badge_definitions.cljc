@@ -36,7 +36,7 @@
    ro/paginate?        true
    ro/row-pk           m.n.badge-definitions/id
    ro/run-on-mount?    true
-   ro/source-attribute ::j.n.badge-definitions/index
+   ro/source-attribute ::j.n.badge-definitions/admin-index
    ro/title            "Definitions"})
 
 (def ui-report (comp/factory Report))
@@ -98,7 +98,7 @@
 
 (m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/label         "Definitions"
+   ::m.navlinks/label         "Show Definition"
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr

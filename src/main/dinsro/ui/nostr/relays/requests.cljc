@@ -17,10 +17,13 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-(def ident-key ::m.n.relays/id)
 (def index-page-key :nostr-relays-show-requests)
+(def model-key ::m.n.requests/id)
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.nostr.relays/Router)
+
+(def run-action
+  (u.buttons/row-action-button "Run" model-key mu.n.requests/run!))
 
 (form/defsc-form NewForm
   [_this _props]
@@ -39,22 +42,22 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.requests/code         #(u.links/ui-request-link %3)
-                         ::m.n.requests/relay        #(u.links/ui-relay-link %2)
-                         ::j.n.requests/filter-count #(u.links/ui-request-filter-count-link %3)
-                         ::j.n.requests/run-count    #(u.links/ui-request-run-count-link %3)}
+  {ro/column-formatters {::m.n.requests/code         #(u.links/ui-admin-request-link %3)
+                         ::m.n.requests/relay        #(u.links/ui-admin-relay-link %2)
+                         ::j.n.requests/filter-count #(u.links/ui-admin-request-filter-count-link %3)
+                         ::j.n.requests/run-count    #(u.links/ui-admin-request-run-count-link %3)}
    ro/columns           [m.n.requests/code
                          m.n.requests/relay
                          j.n.requests/filter-count
                          j.n.requests/run-count]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::m.n.relays/id {:type :uuid :label "id"}
-                         ::new           new-button
-                         ::refresh       u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::new            new-button
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Run" ::m.n.requests/id mu.n.requests/run!)]
+   ro/row-actions       [run-action]
    ro/row-pk            m.n.requests/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.requests/index
@@ -65,7 +68,7 @@
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
@@ -80,10 +83,10 @@
   (log/info :SubPage/starting {:props props})
   (ui-report report))
 
-(m.navlinks/defroute   :nostr-relays-show-requests
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Requests"
-   ::m.navlinks/model-key     ::m.n.requests/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-relays-show
    ::m.navlinks/router        :nostr-relays
    ::m.navlinks/required-role :user})

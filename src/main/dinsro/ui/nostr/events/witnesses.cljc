@@ -45,7 +45,7 @@
 (report/defsc-report Report
   [_this props]
   {ro/column-formatters {::m.n.witnesses/event #(u.links/ui-event-link %2)
-                         ::m.n.witnesses/run   #(u.links/ui-run-link %2)
+                         ::m.n.witnesses/run   #(u.links/ui-admin-run-link %2)
                          ::j.n.witnesses/relay #(u.links/ui-relay-link %2)}
    ro/columns           [j.n.witnesses/relay
                          m.n.witnesses/id

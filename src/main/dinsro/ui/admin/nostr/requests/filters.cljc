@@ -24,28 +24,31 @@
 (def parent-model-key ::m.n.requests/id)
 (def router-key :dinsro.ui.admin.nostr.requests/Router)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.filters/delete!))
+
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.filters/index      #(u.links/ui-filter-link %3)
-                         ::m.n.filters/request    #(u.links/ui-request-link %2)
-                         ::j.n.filters/item-count #(u.links/ui-filter-item-count-link %3)}
+  {ro/column-formatters {::m.n.filters/index      #(u.links/ui-admin-filter-link %3)
+                         ::m.n.filters/request    #(u.links/ui-admin-request-link %2)
+                         ::j.n.filters/item-count #(u.links/ui-admin-filter-item-count-link %3)}
    ro/columns           [m.n.filters/index
                          m.n.filters/request
                          j.n.filters/item-count]
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
-   ro/controls          {::m.n.requests/id {:type :uuid :label "id"}
-                         ::add-filter      (u.buttons/sub-page-action-button
-                                            {:label      "Add Filter"
-                                             :mutation   mu.n.filters/add-filter!
-                                             :parent-key parent-model-key})
-                         ::refresh         u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::add-filter     (u.buttons/sub-page-action-button
+                                           {:label      "Add Filter"
+                                            :mutation   mu.n.filters/add-filter!
+                                            :parent-key parent-model-key})
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.n.filters/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.n.filters/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.filters/index
+   ro/source-attribute  ::j.n.filters/admin-index
    ro/title             "Filters"})
 
 (def ui-report (comp/factory Report))
@@ -56,10 +59,10 @@
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     (fn [props]
-                        {::m.navlinks/id  index-page-key
-                         parent-model-key (parent-model-key props)
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-key
                          :ui/report       (comp/get-initial-state Report {})})
-   :query             (fn [_]
+   :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id

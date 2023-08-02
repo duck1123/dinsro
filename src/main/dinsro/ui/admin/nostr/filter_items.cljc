@@ -24,9 +24,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.filter-items/filter  #(u.links/ui-filter-link %2)
-                         ::m.n.filter-items/pubkey  #(and %2 (u.links/ui-pubkey-link %2))
-                         ::j.n.filter-items/request #(and %2 (u.links/ui-request-link %2))}
+  {ro/column-formatters {::m.n.filter-items/filter  #(u.links/ui-admin-filter-link %2)
+                         ::m.n.filter-items/pubkey  #(and %2 (u.links/ui-admin-pubkey-link %2))
+                         ::j.n.filter-items/request #(and %2 (u.links/ui-admin-request-link %2))}
    ro/columns           [m.n.filter-items/filter
                          m.n.filter-items/index
                          m.n.filter-items/kind
@@ -85,7 +85,7 @@
    :query         [::m.n.filter-items/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
-   :route-segment ["event" :id]
+   :route-segment ["filter-item" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)

@@ -1,4 +1,4 @@
-(ns dinsro.ui.nostr.connections.runs
+(ns dinsro.ui.admin.nostr.connections.runs
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -14,35 +14,42 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-;; [[../../../joins/nostr/runs.cljc]]
-;; [[../../../model/nostr/runs.cljc]]
+;; [[../../../../joins/nostr/runs.cljc]]
+;; [[../../../../model/nostr/runs.cljc]]
 
 (def index-page-key :nostr-connections-show-runs)
 (def model-key ::m.n.runs/id)
 (def parent-model-key ::m.n.connections/id)
 (def router-key :dinsro.ui.nostr.connections/Router)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.runs/delete!))
+
+(def stop-action
+  (u.buttons/row-action-button "Stop" model-key mu.n.runs/stop!))
+
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.runs/connection #(u.links/ui-connection-link %2)
-                         ::m.n.runs/request    #(u.links/ui-request-link %2)}
-   ro/columns           [m.n.runs/id
+  {ro/column-formatters {::j.n.runs/relay      #(u.links/ui-admin-relay-link %2)
+                         ::m.n.runs/connection #(u.links/ui-admin-connection-link %2)
+                         ::m.n.runs/request    #(u.links/ui-admin-request-link %2)
+                         ::m.n.runs/status     #(u.links/ui-admin-run-link %3)}
+   ro/columns           [m.n.runs/status
                          m.n.runs/request
                          m.n.runs/connection
-                         m.n.runs/status
+                         j.n.runs/relay
                          m.n.runs/start-time
                          m.n.runs/end-time]
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
-   ro/controls          {::m.n.connections/id {:type :uuid :label "id"}
-                         ::refresh            u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Stop" ::m.n.runs/id mu.n.runs/stop!)
-                         (u.buttons/row-action-button "Delete" ::m.n.runs/id mu.n.runs/delete!)]
+   ro/row-actions       [stop-action delete-action]
    ro/row-pk            m.n.runs/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.runs/index
+   ro/source-attribute  ::j.n.runs/admin-index
    ro/title             "Runs"})
 
 (def ui-report (comp/factory Report))
@@ -69,6 +76,6 @@
    ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Runs"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :nostr-connections-show
-   ::m.navlinks/router        :nostr-connections
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    :admin-nostr-connections-show
+   ::m.navlinks/router        :admin-nostr-connections
+   ::m.navlinks/required-role :admin})
