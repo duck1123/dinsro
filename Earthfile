@@ -115,7 +115,7 @@ main-pipeline:
   PIPELINE
   TRIGGER push master
   TRIGGER pr master
-  BUILD +ci
+  BUILD +test
 
 all-images:
   BUILD +cert-downloader
