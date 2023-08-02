@@ -1,25 +1,26 @@
 # Earthfile
 VERSION 0.7
-FROM srghma/docker-dind-nixos:latest@sha256:d6b11f39ac5a4fcd11166f5830ee3a903a8d812404b3d6bbc99a92c5af4a0e6b
+# FROM srghma/docker-dind-nixos:latest@sha256:d6b11f39ac5a4fcd11166f5830ee3a903a8d812404b3d6bbc99a92c5af4a0e6b
+FROM alpine:3.15
 # ARG base_image=circleci/clojure:openjdk-11-tools-deps-node-browsers-legacy
-ARG base_image=cimg/clojure:1.10-node
-ARG clojure_version=1.10.1.727
+ARG --global base_image=cimg/clojure:1.10-node
+ARG --global clojure_version=1.10.1.727
 # https://github.com/clj-kondo/clj-kondo/releases
-ARG kondo_version=2023.01.20
-ARG node_version=18.13.0
+ARG --global kondo_version=2023.01.20
+ARG --global node_version=18.13.0
 # https://www.npmjs.com/package/npm?activeTab=versions
-ARG npm_version=9.7.2
-ARG tilt_version=0.33.1
+ARG --global npm_version=9.7.2
+ARG --global tilt_version=0.33.1
 
 # ARG repo=duck1123
 # ARG project=dinsro
-ARG version=latest
-ARG dev_group=circleci
-ARG dev_user=circleci
-ARG src_home=/usr/src/app
-ARG data_dir=/var/lib/dinsro/data
-ARG uid=3434
-ARG gid=3434
+ARG --global version=latest
+ARG --global dev_group=circleci
+ARG --global dev_user=circleci
+ARG --global src_home=/usr/src/app
+ARG --global data_dir=/var/lib/dinsro/data
+ARG --global uid=3434
+ARG --global gid=3434
 
 WORKDIR /usr/src/app
 
