@@ -28,6 +28,29 @@
 (def show-page-key :admin-core-blocks-show)
 (def debug-page false)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.blocks/delete!))
+
+(report/defsc-report Report
+  [_this _props]
+  {ro/column-formatters {::m.c.blocks/hash #(u.links/ui-admin-block-link %3)}
+
+   ro/columns           [m.c.blocks/hash
+                         m.c.blocks/height
+                         m.c.blocks/fetched?]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {::refresh u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
+   ro/row-actions       [delete-action]
+   ro/row-pk            m.c.blocks/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.c.blocks/admin-index
+   ro/title             "Admin Core Blocks"})
+
+(def ui-report (comp/factory Report))
+
 (defsc Show
   "Show a core block"
   [this {::m.c.blocks/keys [id height hash previous-block next-block nonce fetched? weight network]
@@ -44,7 +67,8 @@
                    ::m.c.blocks/fetched?       false
                    ::m.c.blocks/network        {}
                    :ui/transactions            {}}
-   ;; :pre-merge     (u.loader/page-merger model-key {:ui/transactions [u.a.c.b.transactions/SubPage {}]})
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/transactions [u.a.c.b.transactions/SubPage {}]})
    :query         [::m.c.blocks/id
                    ::m.c.blocks/height
                    ::m.c.blocks/hash
@@ -98,26 +122,6 @@
         (dom/p {} "No id")))))
 
 (def ui-show (comp/factory Show))
-
-(report/defsc-report Report
-  [_this _props]
-  {ro/column-formatters {::m.c.blocks/hash #(u.links/ui-admin-block-link %3)}
-
-   ro/columns           [m.c.blocks/hash
-                         m.c.blocks/height
-                         m.c.blocks/fetched?]
-   ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::refresh u.links/refresh-control}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.blocks/delete!)]
-   ro/row-pk            m.c.blocks/id
-   ro/run-on-mount?     true
-   ro/source-attribute  ::j.c.blocks/admin-index
-   ro/title             "Admin Core Blocks"})
-
-(def ui-report (comp/factory Report))
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]

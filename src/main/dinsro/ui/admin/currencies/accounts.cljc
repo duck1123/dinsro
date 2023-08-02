@@ -1,40 +1,43 @@
-(ns dinsro.ui.admin.nostr.runs.witnesses
+(ns dinsro.ui.admin.currencies.accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [dinsro.joins.nostr.witnesses :as j.n.witnesses]
+   [dinsro.joins.accounts :as j.accounts]
+   [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.nostr.runs :as m.n.runs]
-   [dinsro.model.nostr.witnesses :as m.n.witnesses]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :admin.nostr-runs-show-witnesses)
-(def model-key ::m.n.witnesses/id)
-(def parent-model-key ::m.n.runs/id)
-(def router-key :dinsro.ui.admin.nostr.runs/Router)
+;; [[../../joins/accounts.cljc]]
+;; [[../../model/accounts.cljc]]
+
+(def index-page-key :currencies-show-accounts)
+(def model-key ::m.accounts/id)
+(def parent-model-key ::m.currencies/id)
+(def router-key :dinsro.ui.currencies/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.witnesses/event #(u.links/ui-admin-event-link %2)
-                         ::m.n.witnesses/run   #(u.links/ui-admin-run-link %2)}
-   ro/columns           [m.n.witnesses/id
-                         m.n.witnesses/event
-                         m.n.witnesses/run]
+  {ro/column-formatters {::m.accounts/name     #(u.links/ui-admin-account-link %3)
+                         ::m.accounts/currency #(u.links/ui-admin-currency-link %2)}
+   ro/columns           [m.accounts/name
+                         m.accounts/currency
+                         j.accounts/transaction-count]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
-                         ::refresh     u.links/refresh-control}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-pk            m.n.witnesses/id
+   ro/row-pk            m.accounts/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.witnesses/index
-   ro/title             "Witnesses"})
+   ro/source-attribute  ::j.accounts/admin-index
+   ro/title             "Accounts"})
 
 (def ui-report (comp/factory Report))
 
@@ -48,19 +51,21 @@
                          ::m.navlinks/id  index-page-key
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
-                        [[::dr/id router-key]
-                         parent-model-key
+                        [parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
-   :route-segment     ["witnesses"]
+   :route-segment     ["accounts"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (log/info :SubPage/starting {:props props})
-  (ui-report report))
+  (log/debug :SubPage/starting {:props props})
+  (if report
+    (ui-report report)
+    (u.debug/load-error props "currencies accounts page")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
-   ::m.navlinks/label         "Witnesses"
+   ::m.navlinks/label         "Accounts"
+   ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-nostr-runs-show
-   ::m.navlinks/router        :admin-nostr-runs
-   ::m.navlinks/required-role :admin-user})
+   ::m.navlinks/parent-key    :currencies-show
+   ::m.navlinks/router        :currencies
+   ::m.navlinks/required-role :user})

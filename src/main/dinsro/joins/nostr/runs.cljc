@@ -12,6 +12,7 @@
 
 ;; [[../../model/nostr/runs.cljc]]
 ;; [[../../queries/nostr/runs.clj]]
+;; [[../../../../notebooks/dinsro/notebooks/nostr/runs_notebook.clj]]
 
 (def join-info
   (merge
@@ -39,9 +40,9 @@
    ao/pc-output        [{::relay [::m.n.relays/id]}]
    ao/pc-resolve
    (fn [_env props]
-     (let [run-id (::m.n.runs/id props)
-           relay-id   #?(:clj (q.n.relays/find-by-run run-id)
-                         :cljs (do (comment run-id) nil))]
+     (let [run-id   (::m.n.runs/id props)
+           relay-id #?(:clj (q.n.relays/find-by-run run-id)
+                       :cljs (do (comment run-id) nil))]
        {::relay (when relay-id (m.n.relays/ident relay-id))}))
    ::report/column-EQL {::relay [::m.n.relays/id ::m.n.relays/address]}})
 

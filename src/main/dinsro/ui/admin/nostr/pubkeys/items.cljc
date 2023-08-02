@@ -1,4 +1,4 @@
-(ns dinsro.ui.admin.nostr.requests.filter-items
+(ns dinsro.ui.admin.nostr.pubkeys.items
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -8,41 +8,34 @@
    [dinsro.joins.nostr.filter-items :as j.n.filter-items]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
-   [dinsro.model.nostr.requests :as m.n.requests]
-   [dinsro.mutations.nostr.filter-items :as mu.n.filter-items]
-   [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.debug :as u.debug]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-;; [[../../../../joins/nostr/filter_items.cljc]]
-;; [[../../../../model/nostr/filter_items.cljc]]
-;; [[../../../../ui/nostr/filters/filter_items.cljs]]
-
-(def index-page-key :admin-nostr-requests-show-filter-items)
+(def index-page-key :admin-nostr-pubkeys-show-items)
 (def model-key ::m.n.filter-items/id)
-(def parent-model-key ::m.n.requests/id)
-(def router-key :dinsro.ui.admin.nostr.requests/Router)
-
-(def delete-action
-  (u.buttons/row-action-button "Delete" model-key mu.n.filter-items/delete!))
+(def parent-model-key ::m.n.pubkeys/id)
+(def router-key :dinsro.ui.admin.nostr.pubkeys/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.filter-items/id     #(u.links/ui-admin-filter-item-link %2)
-                         ::m.n.filter-items/filter #(u.links/ui-admin-filter-link %2)
-                         ::m.n.filter-items/pubkey #(u.links/ui-admin-pubkey-link %2)}
-   ro/columns           [m.n.filter-items/id
+  {ro/column-formatters {::m.n.filter-items/filter  #(when %2 (u.links/ui-admin-filter-link %2))
+                         ::m.n.filter-items/event   #(when %2 (u.links/ui-admin-event-link %2))
+                         ::m.n.filter-items/pubkey  #(when %2 (u.links/ui-admin-pubkey-link %2))
+                         ::j.n.filter-items/request #(when %2 (u.links/ui-admin-request-link %2))
+                         ::j.n.filter-items/relay   #(when %2 (u.links/ui-admin-relay-link %2))}
+   ro/columns           [j.n.filter-items/request
                          m.n.filter-items/filter
                          m.n.filter-items/type
+                         m.n.filter-items/index
                          m.n.filter-items/kind
                          m.n.filter-items/event
-                         m.n.filter-items/pubkey]
-   ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
+                         m.n.filter-items/pubkey
+                         j.n.filter-items/relay]
+   ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh        u.links/refresh-control}
-   ro/row-actions       [delete-action]
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -67,19 +60,16 @@
                          parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
-   :route-segment     ["filter-items"]
+   :route-segment     ["items"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (parent-model-key props)
-    (if report
-      (ui-report report)
-      (u.debug/load-error props "admin request filter items report"))
-    (u.debug/load-error props "admin request filter items page")))
+  (ui-report report))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/input-key     parent-model-key
-   ::m.navlinks/label         "Items"
+   ::m.navlinks/label         "Filter Items"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-nostr-requests-show
+   ::m.navlinks/parent-key    :admin-nostr-pubkeys-show
+   ::m.navlinks/router        :admin-nostr-pubkeys
    ::m.navlinks/required-role :admin})

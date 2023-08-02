@@ -16,8 +16,8 @@
 
 ;; [[../../joins/rates.cljc]]
 ;; [[../../model/rates.cljc]]
+;; [[../../ui/admin/rates.cljc]]
 
-(def ident-key ::m.currencies/id)
 (def index-page-key :currencies-show-rates)
 (def model-key ::m.rates/id)
 (def parent-model-key ::m.currencies/id)
@@ -43,15 +43,17 @@
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :parent-router     router-key
-   :parent-ident      ident-key
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["rates"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/debug :SubPage/starting {:props props})
@@ -59,11 +61,11 @@
     (ui-report report)
     (u.debug/load-error props "currencies rates page")))
 
-(m.navlinks/defroute   :currencies-show-rates
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Rates"
-   ::m.navlinks/input-key     ::m.currencies/id
-   ::m.navlinks/model-key     ::m.rates/id
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :currencies-show
    ::m.navlinks/router        :currencies
    ::m.navlinks/required-role :user})

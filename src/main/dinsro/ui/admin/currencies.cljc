@@ -3,6 +3,7 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
@@ -11,8 +12,12 @@
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.currencies :as j.currencies]
    [dinsro.model.currencies :as m.currencies]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.currencies :as mu.currencies]
+   [dinsro.ui.admin.currencies.accounts :as u.a.c.accounts]
+   [dinsro.ui.admin.currencies.rate-sources :as u.a.c.rate-sources]
+   [dinsro.ui.admin.currencies.rates :as u.a.c.rates]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -24,6 +29,7 @@
 
 (def index-page-key :admin-currencies)
 (def model-key ::m.currencies/id)
+(def show-menu-id :admin-currencies)
 (def show-page-key :admin-currencies-show)
 (def log-props? false)
 
@@ -41,6 +47,23 @@
   {:label  "New Currency"
    :type   :button
    :action #(form/create! % NewForm)})
+
+(defrouter Router
+  [_this _props]
+  {:router-targets
+   [u.a.c.accounts/SubPage
+    u.a.c.rate-sources/SubPage
+    u.a.c.rates/SubPage]})
+
+(def ui-router (comp/factory Router))
+
+(m.navbars/defmenu show-menu-id
+  {::m.navbars/parent :admin
+   ::m.navbars/router ::Router
+   ::m.navbars/children
+   [u.a.c.rate-sources/index-page-key
+    u.a.c.accounts/index-page-key
+    u.a.c.rates/index-page-key]})
 
 (report/defsc-report Report
   [_this _props]

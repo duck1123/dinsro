@@ -16,7 +16,6 @@
 ;; [[../../joins/accounts.cljc]]
 ;; [[../../model/accounts.cljc]]
 
-(def ident-key ::m.currencies/id)
 (def index-page-key :currencies-show-accounts)
 (def model-key ::m.accounts/id)
 (def parent-model-key ::m.currencies/id)
@@ -30,8 +29,8 @@
                          m.accounts/currency
                          j.accounts/transaction-count]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::m.currencies/id {:type :uuid :label "id"}
-                         ::refresh         u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -45,7 +44,7 @@
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}
@@ -59,11 +58,11 @@
     (ui-report report)
     (u.debug/load-error props "currencies accounts page")))
 
-(m.navlinks/defroute   :currencies-show-accounts
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Accounts"
-   ::m.navlinks/input-key     ::m.currencies/id
-   ::m.navlinks/model-key     ::m.accounts/id
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :currencies-show
    ::m.navlinks/router        :currencies
    ::m.navlinks/required-role :user})

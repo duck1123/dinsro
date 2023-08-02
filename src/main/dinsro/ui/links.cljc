@@ -40,6 +40,7 @@
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
+   [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
@@ -222,6 +223,14 @@
 
 (def ui-admin-event-tag-link (comp/factory AdminEventTagLinkForm {:keyfn ::m.n.event-tags/id}))
 
+(form/defsc-form AdminFilterItemLinkForm [this {::m.n.filter-items/keys [id]}]
+  {fo/id           m.n.filter-items/id
+   fo/route-prefix "admin-filter-item-link"
+   fo/attributes   [m.n.filter-items/id]}
+  (form-link this id (str id) :dinsro.ui.admin.nostr.filter-items/ShowPage))
+
+(def ui-admin-filter-item-link (comp/factory AdminFilterItemLinkForm {:keyfn ::m.n.filters/id}))
+
 (form/defsc-form AdminFilterItemCountLinkForm [this {::m.n.filters/keys [id] ::j.n.filters/keys [item-count]}]
   {fo/id           m.n.filters/id
    fo/route-prefix "admin-filter-item-count-link"
@@ -289,7 +298,7 @@
   {fo/id         m.rate-sources/id
    fo/route-prefix "admin-rate-source-link"
    fo/attributes [m.rate-sources/name]}
-  (form-link this id name :dinsro.ui.admin.settings.rate-sources/ShowPage))
+  (form-link this id name :dinsro.ui.admin.rate-sources/ShowPage))
 
 (def ui-admin-rate-source-link (comp/factory AdminRateSourceLinkForm {:keyfn ::m.rate-sources/id}))
 
@@ -422,6 +431,14 @@
   (form-link this id name :dinsro.ui.admin.core.wallets/ShowPage))
 
 (def ui-admin-wallet-link (comp/factory AdminWalletLinkForm {:keyfn ::m.c.wallets/id}))
+
+(form/defsc-form AdminWitnessLinkForm [this {::m.n.witnesses/keys [id]}]
+  {fo/id           m.n.witnesses/id
+   fo/route-prefix "admin-witnesses-link"
+   fo/attributes   [m.n.witnesses/id]}
+  (form-link this id (str id) :dinsro.ui.admin.nostr.witnesses/ShowPage))
+
+(def ui-admin-witness-link (comp/factory AdminWitnessLinkForm {:keyfn ::m.n.witnesses/id}))
 
 (form/defsc-form BlockLinkForm
   [this {::m.c.blocks/keys [id hash]}]
@@ -561,26 +578,26 @@
 (def ui-filter-link (comp/factory FilterLinkForm {:keyfn ::m.n.filters/id}))
 
 (form/defsc-form InvoiceLinkForm [this {::m.ln.invoices/keys [id r-preimage]}]
-  {fo/id         m.ln.invoices/id
+  {fo/id           m.ln.invoices/id
    fo/route-prefix "invoice-link"
-   fo/attributes [m.ln.invoices/r-preimage]}
+   fo/attributes   [m.ln.invoices/r-preimage]}
   (form-link this id r-preimage :dinsro.ui.ln.invoices/ShowPage))
 
 (def ui-invoice-link (comp/factory InvoiceLinkForm {:keyfn ::m.ln.invoices/id}))
 
 (form/defsc-form LNPeerLinkForm [this {::m.ln.peers/keys [id remote-node]}]
-  {fo/id         m.ln.peers/id
+  {fo/id           m.ln.peers/id
    fo/route-prefix "ln-peer-link"
-   fo/attributes [m.ln.peers/remote-node]}
+   fo/attributes   [m.ln.peers/remote-node]}
   (form-link this id remote-node :dinsro.ui.ln.peers/ShowPage))
 
 (def ui-ln-peer-link (comp/factory LNPeerLinkForm {:keyfn ::m.ln.peers/id}))
 
 (form/defsc-form NetworkLinkForm
   [this {::m.c.networks/keys [id name] :as props}]
-  {fo/id         m.c.networks/id
+  {fo/id           m.c.networks/id
    fo/route-prefix "network-link"
-   fo/attributes [m.c.networks/name]}
+   fo/attributes   [m.c.networks/name]}
   (log/trace :NetworkLinkForm/starting {:id id :name name :props props})
   (form-link this id name :dinsro.ui.core.networks/ShowPage))
 
@@ -607,18 +624,18 @@
 
 (form/defsc-form NodeLinkForm
   [this {::m.ln.nodes/keys [id name] :as props}]
-  {fo/id         m.ln.nodes/id
+  {fo/id           m.ln.nodes/id
    fo/route-prefix "ln-node-link"
-   fo/attributes [m.ln.nodes/name]}
+   fo/attributes   [m.ln.nodes/name]}
   (log/trace :NodeLinkForm/starting {:id id :name name :props props})
   (form-link this id name :dinsro.ui.ln.nodes/ShowPage))
 
 (def ui-node-link (comp/factory NodeLinkForm {:keyfn ::m.ln.nodes/id}))
 
 (form/defsc-form RemoteNodeLinkForm [this {::m.ln.remote-nodes/keys [id pubkey]}]
-  {fo/id         m.ln.remote-nodes/id
+  {fo/id           m.ln.remote-nodes/id
    fo/route-prefix "remote-node-link"
-   fo/attributes [m.ln.remote-nodes/pubkey]}
+   fo/attributes   [m.ln.remote-nodes/pubkey]}
   (log/trace :RemoteNodeLinkForm/starting {:id id :pubkey pubkey})
   (form-link this id pubkey :dinsro.ui.ln.remote-nodes/ShowPage))
 
@@ -633,17 +650,17 @@
 (def ui-request-link (comp/factory RequestLinkForm {:keyfn ::m.n.requests/id}))
 
 (form/defsc-form PaymentsLinkForm [this {::m.ln.payments/keys [id payment-hash]}]
-  {fo/id         m.ln.payments/id
+  {fo/id           m.ln.payments/id
    fo/route-prefix "payment-link"
-   fo/attributes [m.ln.payments/payment-hash]}
+   fo/attributes   [m.ln.payments/payment-hash]}
   (form-link this id payment-hash :dinsro.ui.ln.payments/ShowPage))
 
 (def ui-payment-link (comp/factory PaymentsLinkForm {:keyfn ::m.ln.payments/id}))
 
 (form/defsc-form PayReqLinkForm [this {::m.ln.payreqs/keys [id description]}]
-  {fo/id         m.ln.payreqs/id
+  {fo/id           m.ln.payreqs/id
    fo/route-prefix "payreq-link"
-   fo/attributes [m.ln.payreqs/description]}
+   fo/attributes   [m.ln.payreqs/description]}
   (form-link this id description :dinsro.ui.ln.payreqs/ShowPage))
 
 (def ui-payreq-link (comp/factory PayReqLinkForm {:keyfn ::m.ln.payreqs/id}))
@@ -669,25 +686,25 @@
 (def ui-pubkey-name-link (comp/factory PubkeyNameLinkForm {:keyfn ::m.n.pubkeys/id}))
 
 (form/defsc-form RateLinkForm [this {::m.rates/keys [id date]}]
-  {fo/id         m.rates/id
+  {fo/id           m.rates/id
    fo/route-prefix "rate-link"
-   fo/attributes [m.rates/date]}
+   fo/attributes   [m.rates/date]}
   (form-link this id (str date) :dinsro.ui.admin.rates/ShowPage))
 
 (def ui-rate-link (comp/factory RateLinkForm {:keyfn ::m.rates/id}))
 
 (form/defsc-form RateSourceLinkForm [this {::m.rate-sources/keys [id name]}]
-  {fo/id         m.rate-sources/id
+  {fo/id           m.rate-sources/id
    fo/route-prefix "rate-source-link"
-   fo/attributes [m.rate-sources/name]}
+   fo/attributes   [m.rate-sources/name]}
   (form-link this id name :dinsro.ui.settings.rate-sources/ShowPage))
 
 (def ui-rate-source-link (comp/factory RateSourceLinkForm {:keyfn ::m.rate-sources/id}))
 
 (form/defsc-form RateValueLinkForm [this {::m.rates/keys [id rate]}]
-  {fo/id         m.rates/id
+  {fo/id           m.rates/id
    fo/route-prefix "rate-value-link"
-   fo/attributes [m.rates/rate]}
+   fo/attributes   [m.rates/rate]}
   (form-link this id (str rate) :dinsro.ui.admin.rates/ShowPage))
 
 (def ui-rate-value-link (comp/factory RateValueLinkForm {:keyfn ::m.rates/id}))
@@ -729,26 +746,26 @@
   (comp/factory SubscriptionPubkeyLinkForm {:keyfn ::m.n.subscription-pubkeys/id}))
 
 (form/defsc-form TransactionLinkForm [this {::m.transactions/keys [id description]}]
-  {fo/id         m.transactions/id
+  {fo/id           m.transactions/id
    fo/route-prefix "transaction-link"
-   fo/attributes [m.transactions/id m.transactions/description]}
+   fo/attributes   [m.transactions/id m.transactions/description]}
   (form-link this id description :dinsro.ui.transactions/ShowPage))
 
 (def ui-transaction-link (comp/factory TransactionLinkForm {:keyfn ::m.transactions/id}))
 
 (form/defsc-form AdminTransactionLinkForm [this {::m.transactions/keys [id description]}]
-  {fo/id         m.transactions/id
+  {fo/id           m.transactions/id
    fo/route-prefix "admin-transaction-link"
-   fo/attributes [m.transactions/id m.transactions/description]}
+   fo/attributes   [m.transactions/id m.transactions/description]}
   (form-link this id description :dinsro.ui.admin.transactions/ShowPage))
 
 (def ui-admin-transaction-link (comp/factory AdminTransactionLinkForm {:keyfn ::m.transactions/id}))
 
 (form/defsc-form UserLinkForm [this {::m.users/keys [id name]}]
-  {fo/id         m.users/id
+  {fo/id           m.users/id
    fo/route-prefix "user-link"
-   fo/attributes [m.users/name]}
-  (form-link this id name :dinsro.ui.admin.users/ShowPage))
+   fo/attributes   [m.users/name]}
+  (form-link this id name :dinsro.ui.admin.users.accounts/SubPage))
 
 (def ui-user-link (comp/factory UserLinkForm {:keyfn ::m.users/id}))
 

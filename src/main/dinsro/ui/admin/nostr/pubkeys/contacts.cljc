@@ -1,40 +1,53 @@
-(ns dinsro.ui.admin.nostr.runs.witnesses
+(ns dinsro.ui.admin.nostr.pubkeys.contacts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
+   #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [dinsro.joins.nostr.witnesses :as j.n.witnesses]
+   [dinsro.joins.contacts :as j.contacts]
+   [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
+   [dinsro.model.contacts :as m.contacts]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.nostr.runs :as m.n.runs]
-   [dinsro.model.nostr.witnesses :as m.n.witnesses]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :admin.nostr-runs-show-witnesses)
-(def model-key ::m.n.witnesses/id)
-(def parent-model-key ::m.n.runs/id)
-(def router-key :dinsro.ui.admin.nostr.runs/Router)
+;; [[../../../joins/nostr/pubkey_contacts.cljc]]
+;; [[../../../model/nostr/pubkey_contacts.cljc]]
+
+(def index-page-key :admin-nostr-pubkeys-show-contacts)
+(def model-key ::m.contacts/id)
+(def parent-model-key ::m.n.pubkeys/id)
+(def router-key :dinsro.ui.admin-nostr.pubkeys/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.witnesses/event #(u.links/ui-admin-event-link %2)
-                         ::m.n.witnesses/run   #(u.links/ui-admin-run-link %2)}
-   ro/columns           [m.n.witnesses/id
-                         m.n.witnesses/event
-                         m.n.witnesses/run]
+  {ro/column-formatters {::m.n.pubkeys/hex  #(u.links/ui-admin-pubkey-link %3)
+                         ::m.n.pubkeys/name #(u.links/ui-admin-pubkey-name-link %3)
+                         ::m.n.pubkeys/picture
+                         (fn [_ picture]
+                           (when picture
+                             (dom/img {:src    (str picture)
+                                       :width  100
+                                       :height 100})))}
+   ro/columns           [m.n.pubkeys/picture
+                         m.n.pubkeys/name
+                         j.n.pubkeys/contact-count
+                         j.n.pubkeys/event-count]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
-                         ::refresh     u.links/refresh-control}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-pk            m.n.witnesses/id
+   ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.witnesses/index
-   ro/title             "Witnesses"})
+   ro/source-attribute  ::j.contacts/admin-index
+   ro/title             "Contacts"})
 
 (def ui-report (comp/factory Report))
 
@@ -52,15 +65,16 @@
                          parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
-   :route-segment     ["witnesses"]
+   :route-segment     ["contacts"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
   (ui-report report))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
-   ::m.navlinks/label         "Witnesses"
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Contacts"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-nostr-runs-show
-   ::m.navlinks/router        :admin-nostr-runs
-   ::m.navlinks/required-role :admin-user})
+   ::m.navlinks/parent-key    :admin-nostr-pubkeys-show
+   ::m.navlinks/router        :admin-nostr-pubkeys
+   ::m.navlinks/required-role :admin})

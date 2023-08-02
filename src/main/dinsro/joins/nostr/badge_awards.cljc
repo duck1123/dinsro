@@ -6,6 +6,9 @@
    [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
    #?(:clj [dinsro.queries.nostr.badge-awards :as q.n.badge-awards])))
 
+;; [[../../queries/nostr/badge_awards.clj]]
+;; [[../../../../notebooks/dinsro/notebooks/nostr/badge_awards_notebook.clj]]
+
 (def join-info
   (merge
    {:idents m.n.badge-awards/idents}

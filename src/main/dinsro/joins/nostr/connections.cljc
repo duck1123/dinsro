@@ -9,6 +9,8 @@
    #?(:clj [dinsro.queries.nostr.runs :as q.n.runs])
    [lambdaisland.glogc :as log]))
 
+;; [[../../queries/nostr/connections.clj]]
+
 (def join-info
   (merge
    {:idents m.n.connections/idents}

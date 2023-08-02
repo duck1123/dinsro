@@ -6,6 +6,8 @@
    [dinsro.joins :as j]
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]))
 
+;; [[../../queries/nostr/badge_definitions.clj]]
+
 (def join-info
   (merge
    {:idents m.n.badge-definitions/idents}

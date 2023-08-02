@@ -27,6 +27,9 @@
 (def model-key ::m.c.wallet-addresses/id)
 (def parent-model-key ::m.c.wallets/id)
 
+(def generate-action
+  (u.buttons/row-action-button "Generate" model-key mu.c.wallet-addresses/generate!))
+
 (form/defsc-form NewForm
   [_this _props]
   {fo/attributes    [m.c.wallet-addresses/address
@@ -75,7 +78,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
+  {ro/column-formatters {::m.c.wallet-addresses/address #(u.links/ui-admin-address-link %2)
+                         ::m.c.wallet-addresses/wallet  #(u.links/ui-wallet-link %2)}
    ro/columns           [m.c.wallet-addresses/path-index
                          m.c.wallet-addresses/address]
    ro/control-layout    {:inputs         [[::m.c.wallets/id]]
@@ -88,7 +92,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "wallets-addresses"
-   ro/row-actions       [(u.buttons/row-action-button "Generate" model-key mu.c.wallet-addresses/generate!)]
+   ro/row-actions       [generate-action]
    ro/row-pk            m.c.wallet-addresses/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.wallet-addresses/index

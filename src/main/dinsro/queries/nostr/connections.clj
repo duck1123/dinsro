@@ -9,8 +9,8 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-;; [../../model/nostr/connections.cljc]
-;; [../../processors/nostr/connections.clj]
+;; [[../../model/nostr/connections.cljc]]
+;; [[../../processors/nostr/connections.clj]]
 
 (def query-info
   {:ident   ::m.n.connections/id
@@ -23,7 +23,7 @@
           (concat-when request-id
             [['?request-id    ::m.n.requests/connection '?connection-id]])
           (concat-when relay-id
-            [['?connection-id ::m.n.connections/id      '?relay-id]])))})
+            [['?connection-id ::m.n.connections/relay   '?relay-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))

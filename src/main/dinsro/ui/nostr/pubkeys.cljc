@@ -56,12 +56,13 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :nostr-pubkeys
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :nostr
+   ::m.navbars/router ::Router
    ::m.navbars/children
-   [:nostr-pubkeys-show-events
-    :nostr-pubkeys-show-relays
-    :nostr-pubkeys-show-items]})
+   [u.n.p.events/index-page-key
+    u.n.p.relays/index-page-key
+    u.n.p.items/index-page-key]})
 
 (defsc PubkeyInfo
   [_this {::j.n.pubkeys/keys [npub]

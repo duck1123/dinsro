@@ -37,6 +37,7 @@
   [_this _props]
   {ro/column-formatters {::m.n.runs/connection #(u.links/ui-admin-connection-link %2)
                          ::m.n.runs/request    #(u.links/ui-admin-request-link %2)
+                         ::m.n.runs/status     #(u.links/ui-admin-run-link %3)
                          ::j.n.runs/relay      #(u.links/ui-admin-relay-link %2)}
    ro/columns           [m.n.runs/status
                          m.n.runs/request
@@ -54,7 +55,7 @@
    ro/row-actions       [stop-action]
    ro/row-pk            m.n.runs/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.runs/index
+   ro/source-attribute  ::j.n.runs/admin-index
    ro/title             "Runs"})
 
 (def ui-report (comp/factory Report))
@@ -148,8 +149,8 @@
 
 (m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/label         "Show Runs"
    ::m.navlinks/input-key     model-key
+   ::m.navlinks/label         "Show Runs"
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-nostr

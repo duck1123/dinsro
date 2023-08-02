@@ -15,6 +15,8 @@
    [dinsro.ui.nostr.filters.filter-items :as u.n.f.filter-items]
    [lambdaisland.glogc :as log]))
 
+;; [[../../ui/admin/nostr/filters.cljc]]
+
 (def model-key ::m.n.filters/id)
 (def show-menu-id :nostr-filters)
 (def show-page-key :nostr-filters-show)
@@ -92,19 +94,11 @@
     (ui-show target)
     (ui-segment {} "Failed to load record")))
 
-(m.navlinks/defroute   :nostr-filters
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Filters"
-   ::m.navlinks/model-key     ::m.n.filters/id
-   ::m.navlinks/parent-key    :nostr
-   ::m.navlinks/router        :nostr
-   ::m.navlinks/required-role :user})
-
-(m.navlinks/defroute   :nostr-filters-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Filter"
-   ::m.navlinks/input-key     ::m.n.filters/id
-   ::m.navlinks/model-key     ::m.n.filters/id
-   ::m.navlinks/parent-key    :nostr-filters
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    :nostr
    ::m.navlinks/router        :nostr
    ::m.navlinks/required-role :user})

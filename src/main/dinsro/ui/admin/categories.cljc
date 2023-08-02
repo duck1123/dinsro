@@ -128,7 +128,7 @@
                      {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["category" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (if (get props model-key)
+  (if (model-key props)
     (if target
       (ui-show target)
       (u.debug/load-error props "admin show category"))
@@ -146,8 +146,8 @@
 (m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Admin page for category"
-   ::m.navlinks/label         "Show Category"
    ::m.navlinks/input-key     model-key
+   ::m.navlinks/label         "Show Category"
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin

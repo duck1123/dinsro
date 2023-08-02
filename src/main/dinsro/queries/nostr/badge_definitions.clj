@@ -8,6 +8,9 @@
    [dinsro.specs]
    [xtdb.api :as xt]))
 
+;; [[../../actions/nostr/badge_definitions.clj]]
+;; [[../../joins/nostr/badge_definitions.cljc]]
+
 (def query-info
   {:ident   ::m.n.badge-definitions/id
    :pk      '?badge-definition-id
@@ -44,4 +47,3 @@
         record (xt/pull db '[*] id)]
     (when (get record ::m.n.badge-definitions/id)
       (dissoc record :xt/id))))
-

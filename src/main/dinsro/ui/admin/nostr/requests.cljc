@@ -77,7 +77,7 @@
 (defsc Show
   [_this {::m.n.requests/keys [code id relay]
           ::j.n.requests/keys [query-string]
-          :ui/keys            [nav-menu router]
+          :ui/keys            [admin-nav-menu admin-router]
           :as                 props}]
   {:ident         ::m.n.requests/id
    :initial-state (fn [props]
@@ -86,20 +86,20 @@
                        ::j.n.requests/query-string ""
                        ::m.n.requests/code         ""
                        ::m.n.requests/relay        (comp/get-initial-state u.links/AdminRelayLinkForm)
-                       :ui/nav-menu                (comp/get-initial-state u.menus/NavMenu
-                                                     {::m.navbars/id show-menu-id
-                                                      :id            id})
-                       :ui/router                  (comp/get-initial-state Router)}))
+                       :ui/admin-nav-menu                (comp/get-initial-state u.menus/NavMenu
+                                                           {::m.navbars/id show-menu-id
+                                                            :id            id})
+                       :ui/admin-router                  (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
-                     :ui/router   [Router {}]})
+                    {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                     :ui/admin-router   [Router {}]})
    :query         (fn []
                     [::m.n.requests/code
                      ::m.n.requests/id
                      ::j.n.requests/query-string
                      {::m.n.requests/relay (comp/get-query u.links/RelayLinkForm)}
-                     {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                     {:ui/router (comp/get-query Router)}])}
+                     {:ui/admin-nav-menu (comp/get-query u.menus/NavMenu)}
+                     {:ui/admin-router (comp/get-query Router)}])}
   (if id
     (let [{:keys [main _sub]} (css/get-classnames Show)]
       (dom/div {:classes [main]}
@@ -108,8 +108,8 @@
           (dom/div {} (str code))
           (dom/div {} (str "Query String: " query-string))
           (dom/div {} (u.links/ui-relay-link relay)))
-        (u.menus/ui-nav-menu nav-menu)
-        (ui-router router)))
+        (u.menus/ui-nav-menu admin-nav-menu)
+        (ui-router admin-router)))
     (u.debug/load-error props "admin show request")))
 
 (def ui-show (comp/factory Show))

@@ -8,6 +8,13 @@
 ;; [[../model/navbars.cljc]]
 ;; [[../ui/navbars.cljs]]
 
+(defattr admin-index ::admin-index :ref
+  {ao/pc-output  [{::admin-index [::m.navbars/id]}]
+   ao/pc-resolve (fn [_env _props]
+                   (let [ids (keys @m.navbars/menus-atom)]
+                     {::admin-index (m.navbars/idents ids)}))
+   ao/target     ::m.navbars/id})
+
 (defattr parent-navbar ::parent-navbar :ref
   {ao/cardinality :one
    ao/pc-input    #{::m.navbars/id}
@@ -27,4 +34,4 @@
                      {::index (m.navbars/idents ids)}))
    ao/target     ::m.navbars/id})
 
-(def attributes [index parent-navbar])
+(def attributes [admin-index index parent-navbar])

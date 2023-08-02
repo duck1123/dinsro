@@ -12,7 +12,14 @@
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.ui.admin.nostr.pubkeys.badge-acceptances :as u.a.n.p.badge-acceptances]
+   [dinsro.ui.admin.nostr.pubkeys.badge-awards :as u.a.n.p.badge-awards]
+   [dinsro.ui.admin.nostr.pubkeys.badge-definitions :as u.a.n.p.badge-definitions]
+   [dinsro.ui.admin.nostr.pubkeys.contacts :as u.a.n.p.contacts]
+   [dinsro.ui.admin.nostr.pubkeys.events :as u.a.n.p.events]
+   [dinsro.ui.admin.nostr.pubkeys.items :as u.a.n.p.items]
    [dinsro.ui.admin.nostr.pubkeys.relays :as u.a.n.p.relays]
+   [dinsro.ui.admin.nostr.pubkeys.users :as u.a.n.p.users]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -45,7 +52,7 @@
    ro/paginate?         true
    ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.pubkeys/index
+   ro/source-attribute  ::j.n.pubkeys/admin-index
    ro/title             "Pubkeys"})
 
 (def ui-report (comp/factory Report))
@@ -53,7 +60,14 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.a.n.p.relays/SubPage]})
+   [u.a.n.p.badge-acceptances/SubPage
+    u.a.n.p.badge-awards/SubPage
+    u.a.n.p.badge-definitions/SubPage
+    u.a.n.p.items/SubPage
+    u.a.n.p.relays/SubPage
+    u.a.n.p.contacts/SubPage
+    u.a.n.p.events/SubPage
+    u.a.n.p.users/SubPage]})
 
 (def ui-router (comp/factory Router))
 
@@ -61,7 +75,14 @@
   {::m.navbars/parent   parent-router-key
    ::m.navbars/router   ::Router
    ::m.navbars/children
-   [u.a.n.p.relays/index-page-key]})
+   [u.a.n.p.relays/index-page-key
+    u.a.n.p.badge-acceptances/index-page-key
+    u.a.n.p.badge-awards/index-page-key
+    u.a.n.p.badge-definitions/index-page-key
+    u.a.n.p.items/index-page-key
+    u.a.n.p.contacts/index-page-key
+    u.a.n.p.events/index-page-key
+    u.a.n.p.users/index-page-key]})
 
 (defsc Show
   [_this {:ui/keys [admin-nav-menu admin-router]

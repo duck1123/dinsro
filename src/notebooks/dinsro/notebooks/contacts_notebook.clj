@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.notebooks.contacts
+(ns dinsro.notebooks.contacts-notebook
   (:require
    [dinsro.model.contacts :as m.contacts]
    [dinsro.notebook-utils :as nu]

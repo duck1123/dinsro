@@ -44,6 +44,7 @@
                          u.a.debits/IndexPage
                          u.a.debits/ShowPage
                          u.a.ln/IndexPage
+                         u.a.models/IndexPage
                          u.a.navbars/IndexPage
                          u.a.navlinks/IndexPage
                          u.a.nostr/IndexPage
@@ -95,7 +96,7 @@
     u.a.debits/index-page-key
     u.a.rate-sources/index-page-key
     u.a.rates/index-page-key
-    u.a.models/index-page-key
+    ;; u.a.models/index-page-key
     u.a.navbars/index-page-key
     u.a.navlinks/index-page-key]})
 

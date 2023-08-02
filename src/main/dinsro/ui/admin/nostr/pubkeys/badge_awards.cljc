@@ -1,40 +1,36 @@
-(ns dinsro.ui.admin.nostr.runs.witnesses
+(ns dinsro.ui.admin.nostr.pubkeys.badge-awards
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [dinsro.joins.nostr.witnesses :as j.n.witnesses]
+   [dinsro.joins.nostr.badge-awards :as j.n.badge-awards]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.nostr.runs :as m.n.runs]
-   [dinsro.model.nostr.witnesses :as m.n.witnesses]
+   [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
+   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :admin.nostr-runs-show-witnesses)
-(def model-key ::m.n.witnesses/id)
-(def parent-model-key ::m.n.runs/id)
-(def router-key :dinsro.ui.admin.nostr.runs/Router)
+(def index-page-key :admin-nostr-pubkeys-show-badge-awards)
+(def model-key ::m.n.badge-awards/id)
+(def parent-model-key ::m.n.pubkeys/id)
+(def router-key :dinsro.ui.admin.nostr.pubkeys/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.witnesses/event #(u.links/ui-admin-event-link %2)
-                         ::m.n.witnesses/run   #(u.links/ui-admin-run-link %2)}
-   ro/columns           [m.n.witnesses/id
-                         m.n.witnesses/event
-                         m.n.witnesses/run]
-   ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {parent-model-key {:type :uuid :label "id"}
-                         ::refresh     u.links/refresh-control}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
-   ro/row-pk            m.n.witnesses/id
-   ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.witnesses/index
-   ro/title             "Witnesses"})
+  {ro/columns          [m.n.badge-awards/badge]
+   ro/control-layout   {:action-buttons [::refresh]}
+   ro/controls         {parent-model-key {:type :uuid :label "id"}
+                        ::refresh        u.links/refresh-control}
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
+   ro/row-pk           m.n.badge-awards/id
+   ro/run-on-mount?    true
+   ro/source-attribute ::j.n.badge-awards/admin-index
+   ro/title            "Badges Awarded"})
 
 (def ui-report (comp/factory Report))
 
@@ -52,15 +48,16 @@
                          parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
-   :route-segment     ["witnesses"]
+   :route-segment     ["badge-awards"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
   (ui-report report))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
-   ::m.navlinks/label         "Witnesses"
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Badge Awards"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-nostr-runs-show
-   ::m.navlinks/router        :admin-nostr-runs
-   ::m.navlinks/required-role :admin-user})
+   ::m.navlinks/parent-key    :admin-nostr-pubkeys-show
+   ::m.navlinks/router        :admin-nostr-pubkeys
+   ::m.navlinks/required-role :admin})

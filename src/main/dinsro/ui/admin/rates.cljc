@@ -13,9 +13,9 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-;; [[../actions/rates.clj]]
-;; [[../joins/rates.cljc]]
-;; [[../model/rates.cljc]]
+;; [[../../actions/rates.clj]]
+;; [[../../joins/rates.cljc]]
+;; [[../../model/rates.cljc]]
 
 (def index-page-key :admin-rates)
 (def model-key ::m.rates/id)

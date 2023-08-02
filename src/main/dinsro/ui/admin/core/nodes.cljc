@@ -22,6 +22,8 @@
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.ui.admin.core.nodes.blocks :as u.a.c.n.blocks]
    [dinsro.ui.admin.core.nodes.peers :as u.a.c.n.peers]
+   [dinsro.ui.admin.core.nodes.transactions :as u.a.c.n.transactions]
+   [dinsro.ui.admin.core.nodes.wallets :as u.a.c.n.wallets]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -40,6 +42,13 @@
 (def show-page-key :admin-core-nodes-show)
 
 (def debug-props false)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!))
+
+(def fetch-action
+  (u.buttons/row-action-button "Fetch" model-key mu.c.nodes/fetch!))
+
 (def button-info
   [{:label "fetch" :action mu.c.nodes/fetch!}
    {:label "fetch peers" :action mu.c.nodes/fetch-peers!}
@@ -77,12 +86,14 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :admin-core-nodes
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
    [u.a.c.n.peers/index-page-key
-    u.a.c.n.blocks/index-page-key]})
+    u.a.c.n.blocks/index-page-key
+    u.a.c.n.transactions/index-page-key
+    u.a.c.n.wallets/index-page-key]})
 
 (form/defsc-form EditForm
   [this props]
@@ -202,7 +213,7 @@
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.nodes/name    #(u.links/ui-admin-core-node-link %3)
-                         ::m.c.nodes/network #(u.links/ui-network-link %2)}
+                         ::m.c.nodes/network #(u.links/ui-admin-network-link %2)}
    ro/columns           [m.c.nodes/name
                          m.c.nodes/host
                          m.c.nodes/network]
@@ -212,11 +223,10 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.nodes/fetch!)
-                         (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!)]
+   ro/row-actions       [fetch-action delete-action]
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.c.nodes/index
+   ro/source-attribute  ::j.c.nodes/admin-index
    ro/title             "Core Node Report"})
 
 (def ui-report (comp/factory Report))
@@ -235,23 +245,25 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.c.nodes/keys  [id]
-          ::m.navlinks/keys [target]
+  [_this {::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.c.nodes/id      nil
-                   ::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.c.nodes/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [props]
+                    {model-key           (model-key props)
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["node" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load page")))
+  (if (model-key props)
+    (if target
+      (ui-show target)
+      (u.debug/load-error props "Admin show core nodes target"))
+    (u.debug/load-error props "Admin show core nodes page")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage

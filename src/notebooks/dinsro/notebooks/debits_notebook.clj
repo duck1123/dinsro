@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns dinsro.notebooks.debits
+(ns dinsro.notebooks.debits-notebook
   (:require
    [dinsro.model.debits :as m.debits]
    [dinsro.notebook-utils :as nu]

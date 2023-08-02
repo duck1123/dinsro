@@ -24,17 +24,18 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/columns          [m.n.witnesses/id]
-   ro/control-layout   {:action-buttons [::refresh]}
-   ro/controls         {::m.n.relays/id {:type :uuid :label "id"}
-                        ::refresh        u.links/refresh-control}
-   ro/machine          spr/machine
-   ro/page-size        10
-   ro/paginate?        true
-   ro/row-pk           m.n.witnesses/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.n.witnesses/index
-   ro/title            "Witnesses"})
+  {ro/column-formatters {::m.n.witnesses/id #(u.links/ui-admin-witness-link %3)}
+   ro/columns           [m.n.witnesses/id]
+   ro/control-layout    {:action-buttons [::refresh]}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
+   ro/machine           spr/machine
+   ro/page-size         10
+   ro/paginate?         true
+   ro/row-pk            m.n.witnesses/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.n.witnesses/admin-index
+   ro/title             "Witnesses"})
 
 (def ui-report (comp/factory Report))
 

@@ -32,6 +32,9 @@
 (def model-key ::m.c.wallets/id)
 (def show-page-key :core-wallets-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.wallets/delete!))
+
 (def create-button
   {:type   :button
    :local? true
@@ -140,9 +143,10 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
-                         ::m.c.wallets/name #(u.links/ui-wallet-link %3)
-                         ::m.c.wallets/user #(u.links/ui-user-link %2)}
+  {ro/column-formatters {::m.c.wallets/address #(u.links/ui-admin-address-link %2)
+                         ::m.c.wallets/node    #(u.links/ui-core-node-link %2)
+                         ::m.c.wallets/name    #(u.links/ui-wallet-link %3)
+                         ::m.c.wallets/user    #(u.links/ui-user-link %2)}
    ro/columns           [m.c.wallets/name
                          m.c.wallets/user
                          m.c.wallets/derivation
@@ -153,7 +157,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.wallets/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.c.wallets/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.wallets/index

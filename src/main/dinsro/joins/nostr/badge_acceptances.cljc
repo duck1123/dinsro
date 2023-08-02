@@ -6,6 +6,8 @@
    [dinsro.model.nostr.badge-acceptances :as m.n.badge-acceptances]
    #?(:clj [dinsro.queries.nostr.badge-acceptances :as q.n.badge-acceptances])))
 
+;; [[../../model/nostr/badge_acceptances.cljc]]
+
 (def join-info
   (merge
    {:idents m.n.badge-acceptances/idents}
