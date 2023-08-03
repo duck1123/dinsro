@@ -20,7 +20,7 @@
    :clauses []
    :sort-columns {}
    :rules (fn [[] rules]
-            (->> rules))})
+            rules)})
 
 (defn count-ids
   "Count instance records"
