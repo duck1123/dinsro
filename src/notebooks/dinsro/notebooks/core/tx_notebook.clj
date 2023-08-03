@@ -14,10 +14,12 @@
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
-;; # Core TX Actions
+;; # Core TX
 
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
+
+;; [[../../../../main/dinsro/model/core/tx_out.cljc]]
 
 (def transaction-id (first (q.c.tx/index-ids)))
 

@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.actions.nostr.pubkeys :as a.n.pubkeys]
+   [dinsro.actions.nostr.streams :as a.n.streams]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.queries.nostr.event-tags :as q.n.event-tags]
@@ -11,6 +12,7 @@
 ;; [[../../mutations/nostr/event_tags.cljc]]
 ;; [[../../queries/nostr/event_tags.clj]]
 ;; [[../../ui/nostr/event_tags.cljs]]
+;; [[../../../../notebooks/dinsro/notebooks/nostr/event_tags_notebook.clj]]
 
 (>defn register-tag!
   [event-id tag tag-index]
@@ -66,7 +68,10 @@
         (log/info :fetch!/read {:tag tag})
         (let [{::m.n.event-tags/keys [type]} tag]
           (if (= type "p")
-            (log/info :fetch!/pubkey {})
+            (let [pubkey-id (::m.n.event-tags/pubkey tag)]
+              (log/info :fetch!/pubkey {:pubkey-id pubkey-id
+                                        :tag       tag})
+              (a.n.streams/enqueue-pubkey-id! pubkey-id))
             (log/info :fetch!/other {})))
         nil)
       nil)))

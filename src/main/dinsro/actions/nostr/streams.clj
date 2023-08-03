@@ -4,7 +4,10 @@
    [manifold.deferred :as d]
    [manifold.stream :as st]))
 
+;; [[../../../../notebooks/dinsro/notebooks/nostr/streams_notebook.clj]]
+
 (defonce s (st/stream))
+(defonce pubkey-stream (st/stream))
 
 (defn start-consumer!
   ([] (start-consumer! "unset-id"))
@@ -16,6 +19,11 @@
      (log/info :start-consumer!/created {:r r :id id})
      r)))
 
+(defn enqueue-pubkey-id!
+  [pubkey-id]
+  (log/info :enqueue-pubkey-id!/starting {:pubkey-id pubkey-id})
+  (st/put! pubkey-stream pubkey-id))
+
 (comment
 
   s
@@ -26,6 +34,8 @@
   (st/put! s "bar")
 
   (st/stream->seq s)
+
+  (st/stream->seq pubkey-stream)
 
   (start-consumer! "A")
 

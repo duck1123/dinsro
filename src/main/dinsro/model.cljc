@@ -19,6 +19,7 @@
    [dinsro.joins.core.words :as j.c.words]
    [dinsro.joins.currencies :as j.currencies]
    [dinsro.joins.debits :as j.debits]
+   [dinsro.joins.instances :as j.instances]
    [dinsro.joins.ln.accounts :as j.ln.accounts]
    [dinsro.joins.ln.channels :as j.ln.channels]
    [dinsro.joins.ln.invoices :as j.ln.invoices]
@@ -70,6 +71,7 @@
    [dinsro.model.core.words :as m.c.words]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
+   [dinsro.model.instances :as m.instances]
    [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.info :as m.ln.info]
@@ -119,6 +121,7 @@
    #?(:clj [dinsro.mutations.core.words :as mu.c.words])
    #?(:clj [dinsro.mutations.currencies :as mu.currencies])
    #?(:clj [dinsro.mutations.debits :as mu.debits])
+   #?(:clj [dinsro.mutations.instances :as mu.instances])
    #?(:clj [dinsro.mutations.ln.accounts :as mu.ln.accounts])
    #?(:clj [dinsro.mutations.ln.invoices :as mu.ln.invoices])
    #?(:clj [dinsro.mutations.ln.nodes :as mu.ln.nodes])
@@ -171,6 +174,7 @@
         j.c.words/attributes
         j.currencies/attributes
         j.debits/attributes
+        j.instances/attributes
         j.ln.accounts/attributes
         j.ln.channels/attributes
         j.ln.invoices/attributes
@@ -222,6 +226,7 @@
         m.c.words/attributes
         m.currencies/attributes
         m.debits/attributes
+        m.instances/attributes
         m.ln.accounts/attributes
         m.ln.channels/attributes
         m.ln.info/attributes
@@ -275,6 +280,7 @@
            mu.c.words/resolvers
            mu.currencies/resolvers
            mu.debits/resolvers
+           mu.instances/resolvers
            mu.ln.accounts/resolvers
            mu.ln.invoices/resolvers
            mu.ln.payments/resolvers

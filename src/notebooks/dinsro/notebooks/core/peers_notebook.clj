@@ -9,10 +9,13 @@
    [dinsro.viewers :as dv]
    [nextjournal.clerk :as clerk]))
 
-;; # Core Peer Actions
+;; # Core Peers
 
 ^{::clerk/viewer dv/file-link-viewer ::clerk/visibility {:code :hide}}
 (nu/display-file-links)
+
+;; [[../../../../main/dinsro/actions/core/peers.clj]]
+;; [[../../../../main/dinsro/model/core/peers.cljc]]
 
 (def node1-id (first (q.c.nodes/index-ids)))
 (def node2-id (second (q.c.nodes/index-ids)))

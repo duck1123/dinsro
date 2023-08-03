@@ -10,6 +10,8 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../../notebooks/dinsro/notebooks/core/peers_notebook.clj]]
+
 (s/def ::id uuid?)
 (defattr id ::id :uuid
   {ao/identity? true

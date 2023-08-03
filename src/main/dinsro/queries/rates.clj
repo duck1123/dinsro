@@ -17,7 +17,8 @@
    [tick.alpha.api :as t]
    [xtdb.api :as xt]))
 
-;; [../joins/rates.cljc]
+;; [[../actions/rates.clj]]
+;; [[../joins/rates.cljc]]
 
 (def query-info
   "Query info for Debits"
