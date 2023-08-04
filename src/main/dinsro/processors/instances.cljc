@@ -6,7 +6,15 @@
    [dinsro.responses.instances :as r.instances]
    [lambdaisland.glogc :as log]))
 
+;; [[../actions/instances.clj]]
 ;; [[../../../notebooks/dinsro/notebooks/instances_notebook.clj]]
+
+(defn beat!
+  [_env props]
+  (log/info :beat!/starting {:props props})
+  (let [{::m.instances/keys [id]} props]
+    (a.instances/beat! id)
+    {::mu/status :ok ::r.instances/item (m.instances/ident id)}))
 
 (defn delete!
   [_env props]

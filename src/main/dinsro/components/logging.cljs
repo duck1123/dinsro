@@ -5,7 +5,7 @@
    [lambdaisland.glogi.console :as glogi-console]
    [taoensso.timbre :as timbre]))
 
-(def root-level :debug)
+(def root-level :trace)
 
 (def default-levels
   {:glogi/root                                    root-level
@@ -31,11 +31,11 @@
   (log/set-levels default-levels)
 
   (timbre/merge-config!
-   {:level     :debug
+   {:level     root-level
     :min-level [["com.fulcrologic.fulcro.inspect.*" :warn]
                 ["com.fulcrologic.fulcro.rad.authorization" :warn]
                 ["com.fulcrologic.*" :info]
-                ["*" :debug]]
+                ["*" root-level]]
     :output-fn prefix-output-fn
     :appenders {:console (console-appender)}})
   (log/debug :logging/initialized {}))

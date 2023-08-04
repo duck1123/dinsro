@@ -13,6 +13,7 @@
    [dinsro.ui.admin.core :as u.a.core]
    [dinsro.ui.admin.currencies :as u.a.currencies]
    [dinsro.ui.admin.debits :as u.a.debits]
+   [dinsro.ui.admin.instances :as u.a.instances]
    [dinsro.ui.admin.ln :as u.a.ln]
    [dinsro.ui.admin.models :as u.a.models]
    [dinsro.ui.admin.navbars :as u.a.navbars]
@@ -43,6 +44,7 @@
                          u.a.currencies/ShowPage
                          u.a.debits/IndexPage
                          u.a.debits/ShowPage
+                         u.a.instances/IndexPage
                          u.a.ln/IndexPage
                          u.a.models/IndexPage
                          u.a.navbars/IndexPage
@@ -98,7 +100,8 @@
     u.a.rates/index-page-key
     ;; u.a.models/index-page-key
     u.a.navbars/index-page-key
-    u.a.navlinks/index-page-key]})
+    u.a.navlinks/index-page-key
+    u.a.instances/index-page-key]})
 
 (def debug-props false)
 

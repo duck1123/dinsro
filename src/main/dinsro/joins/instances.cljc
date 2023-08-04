@@ -8,6 +8,7 @@
 
 ;; [[../actions/instances.clj]]
 ;; [[../model/instances.cljc]]
+;; [[../mutations/instances.cljc]]
 ;; [[../queries/instances.clj]]
 ;; [[../../../notebooks/dinsro/notebooks/instances_notebook.clj]]
 

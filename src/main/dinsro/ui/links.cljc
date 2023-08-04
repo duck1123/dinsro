@@ -28,6 +28,7 @@
    [dinsro.model.core.words :as m.c.words]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
+   [dinsro.model.instances :as m.instances]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.model.ln.nodes :as m.ln.nodes]
@@ -246,6 +247,16 @@
   (form-link this id (str index) :dinsro.ui.admin.nostr.filters/ShowPage))
 
 (def ui-admin-filter-link (comp/factory AdminFilterLinkForm {:keyfn ::m.n.filters/id}))
+
+(form/defsc-form AdminInstanceLinkForm
+  [this {::m.instances/keys [id] :as props}]
+  {fo/id           m.instances/id
+   fo/route-prefix "admin-instance-link"
+   fo/attributes   [m.instances/id]}
+  (log/trace :NodeLinkForm/starting {:id id :name name :props props})
+  (form-link this id (str id) :dinsro.ui.admin.instances/IndexPage))
+
+(def ui-admin-instance-link (comp/factory AdminInstanceLinkForm {:keyfn ::m.instances/id}))
 
 (form/defsc-form AdminLnNodeLinkForm
   [this {::m.ln.nodes/keys [id name] :as props}]

@@ -7,6 +7,11 @@
 ;; [[../queries/instances.clj]]
 ;; [[../../../notebooks/dinsro/notebooks/instances_notebook.clj]]
 
+(defn beat!
+  [id]
+  (log/info :beat!/starting {:id id})
+  (q.instances/beat! id))
+
 (defn create!
   [props]
   (log/info :create/starting {:props props})
@@ -16,3 +21,7 @@
   [id]
   (log/info :delete!/starting {:id id})
   (q.instances/delete! id))
+
+(defn register!
+  []
+  (create! {}))

@@ -174,18 +174,18 @@
 (defn make-index-query
   "Takes the definition of a query and the porvided params and returns a base query map."
   [query-info query-params]
-  (log/trace :make-index-query/starting {:query-info query-info :query-params query-params})
+  (log/debug :make-index-query/starting {:query-info query-info :query-params query-params})
   (let [{:keys [pk ident clauses rules additional-rules additional-clauses]
-         :or {additional-clauses []
-              additional-rules   []}} query-info
-        index-params                        (get-index-params query-info query-params)
-        query    {:find  (vec (concat [pk] additional-clauses))
-                  :in    [(mapv (fn [[_ s]] s) clauses)]
-                  :where (->> [[pk ident '_]]
-                              (concat additional-rules)
-                              (rules index-params)
-                              (filter identity)
-                              (into []))}]
+         :or   {additional-clauses []
+                additional-rules   []}} query-info
+        index-params                  (get-index-params query-info query-params)
+        query                         {:find  (vec (concat [pk] additional-clauses))
+                                       :in    [(mapv (fn [[_ s]] s) clauses)]
+                                       :where (->> [[pk ident '_]]
+                                                   (concat additional-rules)
+                                                   (rules index-params)
+                                                   (filter identity)
+                                                   (into []))}]
     (log/trace :make-index-query/finished {:query query})
     query))
 
@@ -228,8 +228,8 @@
   "Returns the ids of each record matching the query"
   [query-info query-params]
   [::query-info map? => (s/coll-of uuid?)]
-  (log/trace :index-ids/starting {:query-info query-info :query-params query-params})
-  (let [base-params  (make-index-query query-info  query-params)
+  (log/debug :index-ids/starting {:query-info query-info :query-params query-params})
+  (let [base-params  (make-index-query query-info query-params)
         limit-params (get-limit-options query-params)
         query        (merge base-params limit-params)
         query        (order-query query query-info query-params)

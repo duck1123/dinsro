@@ -9,6 +9,15 @@
 ;; [[../queries/instances.clj]]
 ;; [[../../../notebooks/dinsro/notebooks/instances_notebook.clj]]
 
+(defsc BeatResponse
+  [_this _props]
+  {:initial-state {::item []
+                   ::mu/status       :initial
+                   ::mu/errors       {}}
+   :query         [{::item [::m.instances/id]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status]})
+
 (defsc DeleteResponse
   [_this _props]
   {:initial-state {::deleted-records []
