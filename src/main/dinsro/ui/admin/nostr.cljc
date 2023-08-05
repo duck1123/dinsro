@@ -27,6 +27,8 @@
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
+;; [[../../ui/admin/nostr/relays.cljc]]
+
 (def debug-route false)
 (def index-page-key :admin-nostr)
 

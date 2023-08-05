@@ -6,7 +6,12 @@
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.processors.nostr.connections :as p.n.connections])))
 
+;; [[../../model/nostr/connections.cljc]]
+;; [[../../processors/nostr/connections.clj]]
+
 #?(:cljs (comment ::mu/_ ::pc/_ ::m.n.connections/_))
+
+;; Connect
 
 #?(:clj
    (pc/defmutation connect!
@@ -19,6 +24,8 @@
    (fm/defmutation connect! [_props]
      (action [_env] true)
      (remote [_env] true)))
+
+;; Disconnect
 
 #?(:clj
    (pc/defmutation disconnect!

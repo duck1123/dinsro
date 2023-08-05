@@ -11,11 +11,15 @@
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.mutations.nostr.runs :as mu.n.runs]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
+;; [[../../../../actions/nostr/runs.clj]]
 ;; [[../../../../joins/nostr/runs.cljc]]
 ;; [[../../../../model/nostr/runs.cljc]]
+;; [[../../../../mutations/nostr/runs.cljc]]
+;; [[../../../../ui/nostr/runs.cljc]]
 
 (def index-page-key :nostr-connections-show-runs)
 (def model-key ::m.n.runs/id)
@@ -33,7 +37,9 @@
   {ro/column-formatters {::j.n.runs/relay      #(u.links/ui-admin-relay-link %2)
                          ::m.n.runs/connection #(u.links/ui-admin-connection-link %2)
                          ::m.n.runs/request    #(u.links/ui-admin-request-link %2)
-                         ::m.n.runs/status     #(u.links/ui-admin-run-link %3)}
+                         ::m.n.runs/status     #(u.links/ui-admin-run-link %3)
+                         ::m.n.runs/start-time u.controls/date-formatter
+                         ::m.n.runs/end-time   u.controls/date-formatter}
    ro/columns           [m.n.runs/status
                          m.n.runs/request
                          m.n.runs/connection

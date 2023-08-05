@@ -12,11 +12,13 @@
    [dinsro.mutations.nostr.events :as mu.n.events]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-;; [[../../model/nostr/relays.cljc]]
+;; [[../../../model/nostr/relays.cljc]]
+;; [[../../../mutations/nostr/relays.cljc]]
 
 (def index-page-key :nostr-pubkeys-show-relays)
 (def model-key ::m.n.relays/id)
@@ -31,15 +33,12 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.relays/address          #(u.links/ui-relay-link %3)
-                         ::j.n.relays/connection-count #(u.links/ui-admin-relay-connection-count-link %3)}
-   ro/columns           [m.n.relays/address
-                         j.n.relays/connection-count]
+  {ro/column-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
+   ro/columns           [m.n.relays/address]
    ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh        u.links/refresh-control}
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/row-actions       [fetch-action
-                         fetch-events-action]
+   ro/row-actions       [fetch-action fetch-events-action]
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -58,16 +57,18 @@
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
                          ::m.navlinks/id  index-page-key
-                         :ui/report       {}})
+                         :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id
-                         {:ui/report (comp/get-query Report)}])
+                         {:ui/report (comp/get-query Report {})}])
    :route-segment     ["relays"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (ui-report report))
+  (if (parent-model-key props)
+    (ui-report report)
+    (u.debug/load-error props "pubkeys show relays")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage

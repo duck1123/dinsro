@@ -8,6 +8,7 @@
    [dinsro.ui.nostr.connections :as u.n.connections]))
 
 ;; [[../../actions/nostr/runs.clj]]
+;; [[../../ui/admin/nostr/relays/runs.cljc]]
 ;; [[../../ui/admin/nostr/runs.cljc]]
 
 (def model-key ::m.n.runs/id)

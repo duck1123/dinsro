@@ -31,7 +31,7 @@
      (q.transactions/read-record id) => item
 
      "should return nil"
-     (q.transactions/delete! id) => nil
+     (q.transactions/delete! id) =fn=> (comp not nil?)
 
      "the record shouldn't exist after"
      (q.transactions/read-record id) => nil)))

@@ -7,6 +7,7 @@
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.queries.nostr.events :as q.n.events]
    [dinsro.queries.nostr.filter-items :as q.n.filter-items]
@@ -18,6 +19,7 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../../model/nostr/requests.cljc]]
+;; [[../../ui/admin/nostr/requests.cljc]]
 
 (defonce request-counter (atom 0))
 
@@ -27,9 +29,10 @@
     (swap! request-counter inc)
     code))
 
-(defn create-request
+(>defn create-request
   "Create a request record for a relay with a code"
   [relay-id code]
+  [::m.n.relays/id ::m.n.requests/code => ::m.n.requests/id]
   (if-let [request-id (q.n.requests/find-by-relay-and-code relay-id code)]
     (throw (ex-info (str "request already exists - " request-id) {}))
     (let [request-id (q.n.requests/create-record
@@ -46,10 +49,12 @@
      request-id
      (create-request relay-id code))))
 
+(s/def ::item-data (s/keys))
+
 (>defn determine-item
   "Create a query map based on item's params"
   [item]
-  [::m.n.filter-items/item => (? (s/keys))]
+  [::m.n.filter-items/item => (? ::item-data)]
   (or
    (when-let [hex (some-> item ::m.n.filter-items/pubkey
                           q.n.pubkeys/read-record ::m.n.pubkeys/hex)]
@@ -62,7 +67,7 @@
 
 (>defn get-query-string-item
   [item-id]
-  [::m.n.filter-items/id => (s/coll-of (s/keys))]
+  [::m.n.filter-items/id => (? ::item-data)]
   (let [item (q.n.filter-items/read-record item-id)
         hex-maps (determine-item item)]
     (log/info :get-query-string/mapped {:item item :hex-maps hex-maps})
@@ -118,7 +123,6 @@
 
   (ds/gen-key ::m.n.requests/item)
 
-  (def request-id2 (register-request relay-id code))
   (def request-id (first (q.n.requests/index-ids)))
   request-id
   (q.n.requests/read-record request-id)

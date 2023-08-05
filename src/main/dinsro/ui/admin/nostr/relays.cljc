@@ -31,6 +31,7 @@
 
 ;; [[../../../joins/nostr/relays.cljc]]
 ;; [[../../../model/nostr/relays.cljc]]
+;; [[../../../ui/admin/nostr/relays/connections.cljc]]
 ;; [[../../../ui/nostr/relays.cljs]]
 
 (def index-page-key :admin-nostr-relays)

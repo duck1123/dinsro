@@ -14,8 +14,9 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-;; [[../../../joins/nostr/relays.cljc]]
-;; [[../../../model/nostr/relays.cljc]]
+;; [[../../../../joins/nostr/relays.cljc]]
+;; [[../../../../model/nostr/relays.cljc]]
+;; [[../../../../ui/nostr/pubkeys/relays.cljc]]
 
 (def index-page-key :admin-nostr-pubkeys-show-relays)
 (def model-key ::m.n.relays/id)

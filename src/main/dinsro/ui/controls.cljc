@@ -204,3 +204,9 @@
       (control-type :uuid :default          render-uuid)
       (control-type :date :default          render-date)
       (assoc-in [::control/type->style->control :uuid :default] uuid-control-render)))
+
+(defn date-formatter
+  [_ v _]
+  (when v
+    (ui-moment {:fromNow :true :withTitle true}
+      (str v))))

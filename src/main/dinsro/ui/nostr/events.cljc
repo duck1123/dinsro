@@ -333,7 +333,7 @@
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Events"
-   ::m.navlinks/model-key     ::m.n.events/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr
    ::m.navlinks/router        :nostr
    ::m.navlinks/required-role :user})

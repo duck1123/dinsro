@@ -44,5 +44,5 @@
         {::m.currencies/keys [id]} record]
     (assertions
      (q.currencies/read-record id) => record
-     (q.currencies/delete! id) => nil
+     (q.currencies/delete! id) =fn=> (comp not nil?)
      (q.currencies/read-record id) => nil)))

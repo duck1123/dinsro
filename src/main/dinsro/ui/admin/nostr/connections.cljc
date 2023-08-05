@@ -23,6 +23,7 @@
 
 ;; [[../../../joins/nostr/connections.cljc]]
 ;; [[../../../model/nostr/connections.cljc]]
+;; [[../../../ui/admin/nostr/connections/runs.cljc]]
 ;; [[../../../ui/nostr/connections.cljs]]
 
 (def index-page-key :admin-nostr-connections)

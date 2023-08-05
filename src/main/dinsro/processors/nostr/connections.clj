@@ -7,6 +7,8 @@
    [dinsro.queries.nostr.connections :as q.n.connections]
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/nostr/connections.clj]]
+
 (defn connect!
   [props]
   (log/info :connect!/starting {:props props})
@@ -30,4 +32,3 @@
       (let [connection-id (a.n.connections/register-connection! relay-id)]
         (a.n.connections/start! connection-id)
         {::mu/status :ok}))))
-

@@ -11,6 +11,7 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.connections :as mu.n.connections]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -18,6 +19,10 @@
 
 ;; [[../../../../joins/nostr/connections.cljc]]
 ;; [[../../../../model/nostr/connections.cljc]]
+;; [[../../../../mutations/nostr/connections.cljc]]
+;; [[../../../../ui/admin/nostr.cljc]]
+;; [[../../../../ui/admin/nostr/connections.cljc]]
+;; [[../../../../ui/admin/nostr/relays.cljc]]
 
 (def index-page-key :admin-nostr-relays-show-connections)
 (def model-key ::m.n.connections/id)
@@ -29,9 +34,11 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.connections/relay     #(u.links/ui-admin-relay-link %2)
-                         ::m.n.connections/status    #(u.links/ui-admin-connection-link %3)
-                         ::j.n.connections/run-count #(u.links/ui-admin-connection-run-count-link %3)}
+  {ro/column-formatters {::m.n.connections/relay      #(u.links/ui-admin-relay-link %2)
+                         ::m.n.connections/status     #(u.links/ui-admin-connection-link %3)
+                         ::m.n.connections/start-time u.controls/date-formatter
+                         ::m.n.connections/end-time   u.controls/date-formatter
+                         ::j.n.connections/run-count  #(u.links/ui-admin-connection-run-count-link %3)}
    ro/columns           [m.n.connections/status
                          m.n.connections/relay
                          m.n.connections/start-time
@@ -46,7 +53,7 @@
    ro/row-actions       [disconnect-action]
    ro/row-pk            m.n.connections/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.connections/index
+   ro/source-attribute  ::j.n.connections/admin-index
    ro/title             "Connections"})
 
 (def ui-report (comp/factory Report))

@@ -71,10 +71,10 @@
    ro/columns           [m.n.pubkeys/picture
                          m.n.pubkeys/name]
    ro/control-layout    {:action-buttons [::new ::refresh]
-                         :controls       [::m.n.relays/id]}
-   ro/controls          {::m.n.relays/id {:type :uuid :label "id"}
-                         ::new           new-button
-                         ::refresh       u.links/refresh-control}
+                         :controls       [parent-model-key]}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::new            new-button
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -83,7 +83,7 @@
                          fetch-contacts-action]
    ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.pubkeys/index
+   ro/source-attribute  ::j.n.pubkeys/admin-index
    ro/title             "Pubkeys"})
 
 (def ui-report (comp/factory Report))

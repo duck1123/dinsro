@@ -18,6 +18,8 @@
   (:import
    java.nio.HeapCharBuffer))
 
+;; [[../../model/nostr/connections.cljc]]
+;; [[../../mutations/nostr/connections.cljc]]
 ;; [[../../../../notebooks/dinsro/notebooks/nostr/connections_notebook.clj]]
 
 ;; "a atom holding a map from connection ids to a map holding client and connection"

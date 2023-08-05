@@ -14,6 +14,8 @@
    [dinsro.specs.nostr.pubkeys :as s.n.pubkeys]
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/nostr/pubkeys.clj]]
+
 (>defn update-pubkey!
   "Fetch the kind 0 information for a pubkey"
   [pubkey-id relay-id]

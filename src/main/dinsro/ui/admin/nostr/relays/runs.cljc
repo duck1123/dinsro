@@ -8,7 +8,6 @@
    [dinsro.joins.nostr.runs :as j.n.runs]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.relays :as m.n.relays]
-   [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.mutations.nostr.runs :as mu.n.runs]
    [dinsro.ui.buttons :as u.buttons]
@@ -19,6 +18,8 @@
 
 ;; [[../../../../joins/nostr/runs.cljc]]
 ;; [[../../../../model/nostr/runs.cljc]]
+;; [[../../../../ui/admin.cljc]]
+;; [[../../../../ui/admin/nostr/relays.cljc]]
 
 (def index-page-key :admin-nostr-relays-show-runs)
 (def model-key ::m.n.runs/id)
@@ -42,8 +43,8 @@
                          m.n.runs/start-time
                          m.n.runs/end-time]
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
-   ro/controls          {::m.n.requests/id {:type :uuid :label "id"}
-                         ::refresh         u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true

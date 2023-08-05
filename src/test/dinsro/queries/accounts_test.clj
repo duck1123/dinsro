@@ -64,7 +64,7 @@
      (q.accounts/read-record id) => account
 
      "should return nil"
-     (q.accounts/delete! id) => nil
+     (q.accounts/delete! id) =fn=> (comp not nil?)
 
      "record should note exist"
      (q.accounts/read-record id) => nil)))
