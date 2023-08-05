@@ -1,7 +1,6 @@
 (ns dinsro.queries.nostr.witnesses
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.events :as m.n.events]
@@ -9,16 +8,17 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
-   [lambdaisland.glogc :as log]
-   [xtdb.api :as xt]))
+   [lambdaisland.glogc :as log]))
 
-;; [../../actions/nostr/witnesses.clj]
-;; [../../joins/nostr/witnesses.cljc]
-;; [../../ui/nostr/events/witnesses.cljs]
-;; [../../ui/nostr/relays/witnesses.cljs]
+;; [[../../actions/nostr/witnesses.clj]]
+;; [[../../joins/nostr/witnesses.cljc]]
+;; [[../../ui/nostr/events/witnesses.cljs]]
+;; [[../../ui/nostr/relays/witnesses.cljs]]
+
+(def model-key ::m.n.witnesses/id)
 
 (def query-info
-  {:ident   ::m.n.witnesses/id
+  {:ident   model-key
    :pk      '?witness-id
    :clauses [[::m.n.connections/id '?connection-id]
              [::m.n.events/id      '?event-id]
@@ -55,31 +55,17 @@
   [params]
   [::m.n.witnesses/params => ::m.n.witnesses/id]
   (log/debug :create-record/starting {:params params})
-  (let [node            (c.xtdb/get-node)
-        id              (new-uuid)
-        prepared-params (merge
-                         {::m.n.witnesses/id id
-                          :xt/id             id}
-                         params)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
-    (log/info :create-record/finished {:id id})
-    id))
+  (c.xtdb/create! model-key params))
 
 (>defn read-record
   [id]
   [::m.n.witnesses/id => (? ::m.n.witnesses/item)]
-  (let [db     (c.xtdb/get-db)
-        record (xt/pull db '[*] id)]
-    (log/debug :read-record/starting {:record record})
-    (when (get record ::m.n.witnesses/id)
-      (dissoc record :xt/id))))
+  (c.xtdb/read model-key id))
 
 (>defn delete!
   [id]
   [::m.n.witnesses/id => nil?]
-  (let [node (c.xtdb/get-node)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
-    nil))
+  (c.xtdb/delete! id))
 
 (>defn find-by-event-and-run
   [event-id run-id]

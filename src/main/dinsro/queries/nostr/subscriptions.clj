@@ -12,10 +12,12 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-;; [[../../actions/nostr/subscriptions.clj][Subscription Actions]]
+;; [[../../actions/nostr/subscriptions.clj]]
+
+(def model-key ::m.n.subscriptions/id)
 
 (def query-info
-  {:ident   ::m.n.subscriptions/id
+  {:ident   model-key
    :pk      '?subscription-id
    :clauses [[::m.n.relays '?relay-id]]
    :rules
@@ -39,7 +41,7 @@
   (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
-                            (assoc ::m.n.subscriptions/id id)
+                            (assoc model-key id)
                             (assoc :xt/id id))]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     (log/info :create-record/finished {:id id})
@@ -74,7 +76,7 @@
   (log/debug :read-record/starting {:id id})
   (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
-    (when (get record ::m.n.subscriptions/id)
+    (when (model-key record)
       (let [read-record (dissoc record :xt/id)]
         (log/info :read-record/read {:read-record read-record})
         read-record))))

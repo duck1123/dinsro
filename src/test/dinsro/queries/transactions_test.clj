@@ -24,16 +24,6 @@
     (assertions
      (q.transactions/read-record id) => nil)))
 
-(deftest index-records-success
-  (q.transactions/delete-all)
-  (assertions
-   (q.transactions/index-records) => []))
-
-(deftest index-records-with-records
-  (let [transaction (mocks/mock-transaction)]
-    (assertions
-     (q.transactions/index-records) => [transaction])))
-
 (deftest delete!-success
   (let [{::m.transactions/keys [id] :as item} (mocks/mock-transaction)]
     (assertions
@@ -45,13 +35,3 @@
 
      "the record shouldn't exist after"
      (q.transactions/read-record id) => nil)))
-
-(comment
-
-  (mocks/mock-account)
-  (q.transactions/index-records)
-  (q.transactions/index-ids)
-
-  (q.transactions/delete! (first (q.transactions/index-ids)))
-
-  nil)

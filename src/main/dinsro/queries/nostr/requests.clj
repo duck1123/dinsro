@@ -4,7 +4,6 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
-   [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.relays :as m.n.relays]
@@ -13,15 +12,20 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../model/nostr/requests.cljc]]
+;; [[../../../../notebooks/dinsro/notebooks/nostr/requests_notebook.clj]]
+
+(def model-key ::m.n.requests/id)
+
 (def query-info
-  {:ident   ::m.n.requests/id
+  {:ident   model-key
    :pk      '?requests-id
    :clauses [[::m.n.relays/id '?relay-id]]
    :rules
    (fn [[relay-id] rules]
      (->> rules
           (concat-when relay-id
-            ['?request-id ::m.n.requests/relay '?relay-id])))})
+            [['?request-id ::m.n.requests/relay '?relay-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))
@@ -91,19 +95,6 @@
                       [?request-id ::m.n.requests/code ?code]]}
             [relay-id code])]
     (log/trace :find-by-relay-and-code/finished {:id id})
-    id))
-
-(defn find-by-connection-and-code
-  [connection-id code]
-  (log/debug :find-by-connection-and-code/starting {:connection-id connection-id :code code})
-  (let [id (c.xtdb/query-value
-            '{:find  [?request-id]
-              :in    [[?connection-id ?code]]
-              :where [[?request-id ::m.n.requests/relay ?relay-id]
-                      [?request-id ::m.n.requests/code ?code]
-                      [?connnection-id ::m.n.connections/relay ?relay-id]]}
-            [connection-id code])]
-    (log/trace :find-by-connection-and-code/finished {:id id})
     id))
 
 (>defn find-by-filter-item

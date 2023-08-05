@@ -2,25 +2,32 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [io.pedestal.log :as log]
-   [xtdb.api :as xt]))
+   [io.pedestal.log :as log]))
+
+(def model-key ::m.currencies/id)
+(def record-limit 1000)
 
 (def query-info
-  {:ident   ::m.currencies/id
+  {:ident   model-key
    :pk      '?currencies-id
-   :clauses [[::m.users/id '?user-id]]
+   :clauses [[::m.users/id '?user-id]
+             [::m.currencies/code '?code]
+             [::m.currencies/name '?name]]
    :rules
-   (fn [[user-id] rules]
+   (fn [[user-id code name] rules]
      (->> rules
           (concat-when user-id
-            [['?category-id ::m.currencies/user '?user-id]])))})
+            [['?category-id ::m.currencies/user '?user-id]])
+          (concat-when code
+            [['?category-id ::m.currencies/code '?code]])
+          (concat-when name
+            [['?category-id ::m.currencies/name '?name]])))})
 
 (defn count-ids
   ([] (count-ids {}))
@@ -29,8 +36,6 @@
 (defn index-ids
   ([] (index-ids {}))
   ([query-params] (c.xtdb/index-ids query-info query-params)))
-
-(def record-limit 1000)
 
 (>defn find-by-code
   [code]
@@ -51,37 +56,15 @@
              [?account-id ::m.accounts/currency ?currency-id]]}
    [debit-id]))
 
-(>defn find-by-user-and-name
-  [user-id name]
-  [::m.users/id ::m.currencies/name => (? ::m.currencies/id)]
-  (c.xtdb/query-values
-   '{:find  [?currency-id]
-     :in    [[?user-id ?name]]
-     :where [[?currency-id ::m.currencies/user ?user-id]
-             [?currency-id ::m.currencies/name ?name]]}
-   [user-id name]))
-
 (>defn create-record
   [params]
   [::m.currencies/params => (? ::m.currencies/id)]
-  (try
-    (let [node   (c.xtdb/get-node)
-          id     (new-uuid)
-          params (assoc params :xt/id id)
-          params (assoc params ::m.currencies/id id)]
-      (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-      id)
-    (catch Exception ex
-      (log/error :create/failed {:exception ex})
-      nil)))
+  (c.xtdb/create! model-key params))
 
 (>defn read-record
   [id]
   [::m.currencies/id => (? ::m.currencies/item)]
-  (let [db     (c.xtdb/get-db)
-        record (xt/pull db '[*] id)]
-    (when (get record ::m.currencies/id)
-      (dissoc record :xt/id))))
+  (c.xtdb/read model-key id))
 
 (>defn index-records
   []
@@ -93,10 +76,7 @@
   [id]
   [:xt/id => nil?]
   (log/info :delete!/starting {:id id})
-  (let [node (c.xtdb/get-node)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
-    (log/info :delete!/finished {:id id})
-    nil))
+  (c.xtdb/delete! id))
 
 (>defn delete-all
   []

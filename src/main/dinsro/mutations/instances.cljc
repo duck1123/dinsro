@@ -10,6 +10,7 @@
 
 ;; [[../model/instances.cljc]]
 ;; [[../processors/instances.cljc]]
+;; [[../queries/instances.clj]]
 ;; [[../responses/instances.cljc]]
 ;; [[../../../notebooks/dinsro/notebooks/instances_notebook.clj]]
 

@@ -7,7 +7,8 @@
    [dinsro.queries.instances :as q.instances]
    [dinsro.specs :as ds]
    [dinsro.viewers :as dv]
-   [nextjournal.clerk :as clerk]))
+   [nextjournal.clerk :as clerk]
+   [tick.alpha.api :as t]))
 
 ;; # Instances
 
@@ -29,7 +30,18 @@
 
   (a.instances/register!)
 
+  (def id (first (q.instances/index-ids)))
+
+  (t/>
+   (t/instant #inst "2023-08-05T01:15:40-04:00")
+   (t/<< (ds/->inst) (t/new-duration 16 :minutes)))
+
+  (t/minute 30)
+
   (a.instances/beat! id)
+  (q.instances/read-record id)
+
+  (q.instances/expired? #inst "2023-08-05T09:59:00-04:00")
 
   (doseq [id (q.instances/index-ids)]
     (q.instances/delete! id))

@@ -10,11 +10,13 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-;; [../../actions/nostr/runs.clj]
-;; [../../model/nostr/runs.cljc]
+;; [[../../actions/nostr/runs.clj]]
+;; [[../../model/nostr/runs.cljc]]
+
+(def model-key ::m.n.runs/id)
 
 (def query-info
-  {:ident   ::m.n.runs/id
+  {:ident   model-key
    :pk      '?run-id
    :clauses [[::m.n.requests/id '?request-id]]
    :rules
@@ -55,7 +57,7 @@
   (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
     (log/debug :read-record/starting {:record record})
-    (when (get record ::m.n.runs/id)
+    (when (get record model-key)
       (dissoc record :xt/id))))
 
 (>defn delete!

@@ -2,7 +2,6 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
@@ -10,11 +9,13 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
-;; [[../../model/nostr/pubkeys.cljc][Pubkeys Model]]
+;; [[../../actions/nostr/pubkeys.clj]]
+;; [[../../model/nostr/pubkeys.cljc]]
+
+(def model-key ::m.n.pubkeys/id)
 
 (def query-info
-  {:ident   ::m.n.pubkeys/id
+  {:ident   model-key
    :pk      '?pubkey-id
    :clauses [[::m.n.pubkeys/hex '?pubkey-hex]]
    :rules
@@ -31,17 +32,21 @@
   ([] (index-ids {}))
   ([query-params] (c.xtdb/index-ids query-info query-params)))
 
+(>defn read-record
+  [id]
+  [:xt/id => (? ::m.n.pubkeys/item)]
+  (c.xtdb/read model-key id))
+
+(>defn delete!
+  [id]
+  [::m.n.pubkeys/id => nil?]
+  (c.xtdb/delete! id))
+
 (>defn create-record
   [params]
   [::m.n.pubkeys/params => :xt/id]
   (log/info :create-record/starting {:params params})
-  (let [id     (new-uuid)
-        node   (c.xtdb/get-node)
-        params (assoc params ::m.n.pubkeys/id id)
-        params (assoc params :xt/id id)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-    (log/trace :create-record/finished {:id id})
-    id))
+  (c.xtdb/create! model-key params))
 
 (>defn find-by-hex
   [hex]
@@ -57,26 +62,6 @@
   [hex]
   [::m.n.pubkeys/hex => ::m.n.pubkeys/id]
   (create-record {::m.n.pubkeys/hex hex}))
-
-(>defn read-record
-  [id]
-  [:xt/id => (? ::m.n.pubkeys/item)]
-  (let [db     (c.xtdb/get-db)
-        record (xt/pull db '[*] id)]
-    (when (get record ::m.n.pubkeys/id)
-      (dissoc record :xt/id))))
-
-(defn get-index-query
-  [_query-params]
-  {:find  ['?pubkey-id]
-   :where [['?pubkey-id ::m.n.pubkeys/id '_]]})
-
-(>defn delete!
-  [id]
-  [::m.n.pubkeys/id => nil?]
-  (let [node (c.xtdb/get-node)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
-    nil))
 
 (defn update!
   [id data]

@@ -45,10 +45,6 @@
      "should retutrn the matching account id"
      (q.accounts/find-by-currency currency-id) => [account-id])))
 
-(deftest index-records
-  (assertions
-   (q.accounts/index-records) => []))
-
 (deftest read-record-not-found
   (let [id (ds/gen-key ::m.accounts/id)]
     (is (nil? (q.accounts/read-record id)))))

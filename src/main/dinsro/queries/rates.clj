@@ -20,9 +20,12 @@
 ;; [[../actions/rates.clj]]
 ;; [[../joins/rates.cljc]]
 
+(def model-key ::m.rates/id)
+(def record-limit 75)
+
 (def query-info
   "Query info for Debits"
-  {:ident        ::m.rates/id
+  {:ident        model-key
    :pk           '?rate-id
    :clauses      [[::m.currencies/id   '?currency-id]
                   [::m.rate-sources/id '?rate-source-id]]
@@ -47,8 +50,6 @@
   "Index rate records"
   ([] (index-ids {}))
   ([query-params] (c.xtdb/index-ids query-info query-params)))
-
-(def record-limit 75)
 
 (>defn find-by-rate-source
   [rate-source-id]
@@ -124,32 +125,10 @@
           (update ::m.rates/date t/instant)
           (dissoc :xt/id)))))
 
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.rates/item)]
-  (map read-record (index-ids)))
-
-(>defn index-records-by-currency
-  [currency-id]
-  [:xt/id => ::m.rates/rate-feed]
-  (let [db    (c.xtdb/get-db)
-        query '{:find  [?date ?rate]
-                :in    [[?currency-id]]
-                :where [[?rate-id ::m.rates/currency ?currency-id]
-                        [?rate-id ::m.rates/rate     ?rate]
-                        [?rate-id ::m.rates/date     ?date]]}]
-    (->> (xt/q db query [currency-id])
-         (sort-by first)
-         (reverse)
-         (take record-limit)
-         (map (fn [[date rate]] [(.getTime date) rate])))))
-
 (>defn delete!
   [id]
   [:xt/id => nil?]
-  (let [node (c.xtdb/get-node)]
-    (xt/submit-tx node [[:db/retractEntity id]]))
-  nil)
+  (c.xtdb/delete! id))
 
 (>defn find-for-debit
   "Find the most recent rate for the currency before the transaction date"

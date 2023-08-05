@@ -20,8 +20,10 @@
 ;; [[../model/transactions.cljc]]
 ;; [[../ui/transactions.cljs]]
 
+(def model-key ::m.transactions/id)
+
 (def query-info
-  {:ident   ::m.transactions/id
+  {:ident   model-key
    :pk      '?transaction-id
    :clauses [[:actor/id       '?actor-id]
              [:actor/admin?   '?admin?]
@@ -115,31 +117,14 @@
           (update ::m.transactions/date t/instant)
           (dissoc :xt/id)))))
 
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.transactions/item)]
-  (map read-record (index-ids)))
-
 (>defn delete!
   [id]
   [:xt/id => nil?]
   (log/info :delete!/starting {:id id})
-  (let [node (c.xtdb/get-node)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
-    nil))
+  (c.xtdb/delete! id))
 
 (>defn delete-all
   []
   [=> nil?]
   (doseq [id (index-ids)]
     (delete! id)))
-
-(defn find-by-account-and-user
-  [account-id user-id]
-  (c.xtdb/query-values
-   '{:find  [?transaction-id]
-     :in    [[?account-id ?user-id]]
-     :where [[?account-id ::m.accounts/user ?user-id]
-             [?debit-id ::m.debits/account ?account-id]
-             [?debit-id ::m.debits/transaction ?transaction-id]]}
-   [account-id user-id]))

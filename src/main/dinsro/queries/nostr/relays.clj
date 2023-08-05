@@ -14,11 +14,12 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-;; [[../../actions/nostr/relays.clj][Actions]]
-;; [[../nostr.clj][Nostr Queries]]
+;; [[../../actions/nostr/relays.clj]]
+
+(def model-key ::m.n.relays/id)
 
 (def query-info
-  {:ident   ::m.n.relays/id
+  {:ident   model-key
    :pk      '?relay-id
    :clauses [[::m.n.connections/id '?connection-id]]
    :rules
@@ -45,7 +46,7 @@
         id              (new-uuid)
         prepared-params (-> params
                             (assoc ::m.n.relays/connected connected)
-                            (assoc ::m.n.relays/id id)
+                            (assoc model-key id)
                             (assoc :xt/id id))]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     (log/info :create-record/finished {:id id})
@@ -57,7 +58,7 @@
   [::m.n.relays/id => (? ::m.n.relays/item)]
   (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
-    (when (get record ::m.n.relays/id)
+    (when (model-key record)
       (dissoc record :xt/id))))
 
 (>defn find-by-address
@@ -181,21 +182,3 @@
         id     (c.xtdb/query-value query params)]
     (log/trace :find-by-request/finished {:id id})
     id))
-
-(comment
-
-  (some->
-   (index-ids)
-   first
-   read-record)
-
-  (create-record
-   {::m.n.relays/addresses "wss://relay.kronkltd.net/"})
-
-  (find-by-address "wss://relay.kronkltd.net/")
-
-  (register-relay "wss://relay.kronkltd.net/")
-
-  (delete-all)
-
-  nil)

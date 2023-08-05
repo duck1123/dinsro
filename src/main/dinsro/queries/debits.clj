@@ -2,24 +2,23 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
-   [dinsro.model.users :as m.users]
-   [lambdaisland.glogc :as log]
-   [xtdb.api :as xt]))
+   [lambdaisland.glogc :as log]))
 
-;; [../../../notebooks/dinsro/notebooks/debits.clj]
-;; [../actions/debits.clj]
-;; [../joins/debits.cljc]
-;; [../model/debits.cljc]
+;; [[../actions/debits.clj]]
+;; [[../joins/debits.cljc]]
+;; [[../model/debits.cljc]]
+;; [[../../../notebooks/dinsro/notebooks/debits.clj]]
+
+(def model-key ::m.debits/id)
 
 (def query-info
   "Query info for Debits"
-  {:ident        ::m.debits/id
+  {:ident        model-key
    :pk           '?debit-id
    :clauses      [[:actor/id           '?actor-id]
                   [:actor/admin?       '?admin?]
@@ -64,36 +63,17 @@
   [params]
   [::m.debits/params => ::m.debits/id]
   (log/info :create-record/starting {:params params})
-  (let [id     (new-uuid)
-        node   (c.xtdb/get-node)
-        params (assoc params ::m.debits/id id)
-        params (assoc params :xt/id id)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-    (log/trace :create-record/finished {:id id})
-    id))
+  (c.xtdb/create! model-key params))
 
 (>defn read-record
   [id]
   [::m.debits/id => (? ::m.debits/item)]
-  (let [db     (c.xtdb/get-db)
-        record (xt/pull db '[*] id)]
-    (when (get record ::m.debits/id)
-      (dissoc record :xt/id))))
+  (c.xtdb/read model-key id))
 
 (>defn delete!
   [id]
   [::m.debits/id => nil?]
   (c.xtdb/delete! id))
-
-(>defn find-by-account
-  [account-id]
-  [::m.accounts/id => (s/coll-of ::m.debits/id)]
-  (log/info :find-by-account/starting {:account-id account-id})
-  (c.xtdb/query-values
-   '{:find  [?debit-id]
-     :in    [[?account-id]]
-     :where [[?debit-id ::m.debits/account ?account-id]]}
-   [account-id]))
 
 (>defn find-by-transaction
   [transaction-id]
@@ -104,14 +84,3 @@
      :in    [[?transaction-id]]
      :where [[?debit-id ::m.debits/transaction ?transaction-id]]}
    [transaction-id]))
-
-(>defn find-by-user
-  [user-id]
-  [::m.users/id => (s/coll-of ::m.debits/id)]
-  (log/info :find-by-user/starting {:user-id user-id})
-  (c.xtdb/query-values
-   '{:find  [?debit-id]
-     :in    [[?transaction-id]]
-     :where [[?debit-id ::m.debits/account ?account-id]
-             [?account-id ::m.accounts/user ?user-id]]}
-   [user-id]))

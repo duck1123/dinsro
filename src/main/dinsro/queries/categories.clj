@@ -2,19 +2,19 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.users :as m.users]
-   [dinsro.specs]
-   [xtdb.api :as xt]))
+   [dinsro.specs]))
 
-;; [../actions/categories.clj]
-;; [../joins/categories.cljc]
-;; [../model/categories.cljc]
+;; [[../actions/categories.clj]]
+;; [[../joins/categories.cljc]]
+;; [[../model/categories.cljc]]
+
+(def model-key ::m.categories/id)
 
 (def query-info
-  {:ident   ::m.categories/id
+  {:ident   model-key
    :pk      '?category-id
    :clauses [[:actor/id     '?actor-id]
              [:actor/admin? '?admin?]
@@ -47,24 +47,12 @@
 (>defn create-record
   [params]
   [::m.categories/params => :xt/id]
-  (let [node   (c.xtdb/get-node)
-        id     (new-uuid)
-        params (assoc params ::m.categories/id id)
-        params (assoc params :xt/id id)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-    id))
+  (c.xtdb/create! model-key params))
 
 (>defn read-record
   [id]
   [:xt/id => (? ::m.categories/item)]
-  (let [db     (c.xtdb/get-db)
-        record (xt/pull db '[*] id)]
-    ;; FIXME: This is doing too much
-    (when (get record ::m.categories/name)
-      (let [user-id (get-in record [::m.categories/user :xt/id])]
-        (-> record
-            (dissoc :xt/id)
-            (assoc ::m.categories/user {::m.users/id user-id}))))))
+  (c.xtdb/read model-key id))
 
 (>defn delete!
   [id]

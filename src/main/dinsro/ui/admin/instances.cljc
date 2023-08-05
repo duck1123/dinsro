@@ -20,6 +20,7 @@
    ;; [dinsro.mutations.categories :as mu.categories]
    [dinsro.mutations.instances :as mu.instances]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.controls :refer [ui-moment]]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -40,7 +41,11 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.instances/id #(u.links/ui-admin-instance-link %3)}
+  {ro/column-formatters {::m.instances/id #(u.links/ui-admin-instance-link %3)
+                         ::m.instances/created-time #(ui-moment {:fromNow true :withTitle true}
+                                                       (str %2))
+                         ::m.instances/last-heartbeat #(ui-moment {:fromNow true :withTitle true}
+                                                         (str %2))}
    ro/columns           [m.instances/id
                          m.instances/created-time
                          m.instances/last-heartbeat]

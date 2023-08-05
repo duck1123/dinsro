@@ -7,8 +7,7 @@
    [dinsro.queries.rates :as q.rates]
    [dinsro.specs :as ds]
    [dinsro.test-helpers :as th]
-   [fulcro-spec.core :refer [assertions]]
-   [tick.alpha.api :as t]))
+   [fulcro-spec.core :refer [assertions]]))
 
 (def schemata [])
 
@@ -34,25 +33,3 @@
          :as            item} (mocks/mock-rate)]
     (assertions
      (q.rates/read-record id) => item)))
-
-(deftest index-records-no-records
-  (assertions
-   (q.rates/index-records) => []))
-
-(deftest index-records-with-records
-  (let [item (mocks/mock-rate)]
-    (assertions
-     (q.rates/index-records) => [item])))
-
-(deftest index-records-by-currency-with-currency
-  (let [currency     (mocks/mock-currency)
-        currency-id  (::m.currencies/id currency)
-        params       (ds/gen-key ::m.rates/params)
-        params       (assoc params ::m.rates/currency currency-id)
-        rate-id      (q.rates/create-record params)
-        rate         (q.rates/read-record rate-id)
-        response     (q.rates/index-records-by-currency currency-id)
-        date         (.getTime (t/inst (::m.rates/date rate)))]
-    (assertions
-     (nth (first response) 0) => date
-     (nth (first response) 1) => (::m.rates/rate rate))))

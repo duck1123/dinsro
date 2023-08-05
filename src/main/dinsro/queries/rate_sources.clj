@@ -1,19 +1,19 @@
 (ns dinsro.queries.rate-sources
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
-   [dinsro.specs]
-   [xtdb.api :as xt]))
+   [dinsro.specs]))
 
-;; [../actions/rate_sources.clj]
-;; [../model/rate_sources.cljc]
+;; [[../actions/rate_sources.clj]]
+;; [[../model/rate_sources.cljc]]
+
+(def model-key ::m.rate-sources/id)
 
 (def query-info
-  {:ident   ::m.rate-sources/id
+  {:ident   model-key
    :pk      '?rate-source-id
    :clauses [[::m.accounts/id       '?account-id]
              [::m.currencies/id     '?currency-id]
@@ -58,23 +58,14 @@
 (>defn create-record
   [params]
   [::m.rate-sources/params => :xt/id]
-  (let [node   (c.xtdb/get-node)
-        id     (new-uuid)
-        params (assoc params ::m.rate-sources/id id)
-        params (assoc params :xt/id id)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-    id))
+  (c.xtdb/create! model-key params))
 
 (>defn read-record
   [id]
   [:xt/id => (? ::m.rate-sources/item)]
-  (let [db     (c.xtdb/get-db)
-        record (xt/pull db '[*] id)]
-    (when (get record ::m.rate-sources/id)
-      record)))
+  (c.xtdb/read model-key id))
 
 (>defn delete!
   [id]
   [:xt/id => any?]
-  (let [node (c.xtdb/get-node)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))))
+  (c.xtdb/delete! id))

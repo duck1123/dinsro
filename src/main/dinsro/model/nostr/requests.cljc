@@ -8,6 +8,8 @@
    [dinsro.model.nostr.relays :as m.n.relays]))
 
 ;; [[../../joins/nostr/requests.cljc]]
+;; [[../../queries/nostr/requests.clj]]
+;; [[../../../../notebooks/dinsro/notebooks/nostr/requests_notebook.clj]]
 
 (>def ::id uuid?)
 (defattr id ::id :uuid

@@ -2,17 +2,18 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.requests :as m.n.requests]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-(def ident-key ::m.n.filters/id)
+;; [[../../../../notebooks/dinsro/notebooks/nostr/filters_notebook.clj]]
+
+(def model-key ::m.n.filters/id)
 
 (def query-info
-  {:ident   ::m.n.filters/id
+  {:ident   model-key
    :pk      '?filter-id
    :clauses [[::m.n.requests/id '?request-id]]
    :rules
@@ -33,20 +34,14 @@
   [params]
   [::m.n.filters/params => :xt/id]
   (log/info :create-record/starting {:params params})
-  (let [id     (new-uuid)
-        node   (c.xtdb/get-node)
-        params (assoc params ident-key id)
-        params (assoc params :xt/id id)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-    (log/trace :create-record/finished {:id id})
-    id))
+  (c.xtdb/create! model-key params))
 
 (>defn read-record
   [id]
   [::m.n.filters/id => (? ::m.n.filters/item)]
   (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
-    (when (get record ident-key)
+    (when (model-key record)
       (dissoc record :xt/id))))
 
 (>defn delete!

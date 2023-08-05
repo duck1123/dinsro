@@ -2,7 +2,6 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.categories :as m.categories]
@@ -12,11 +11,16 @@
    [dinsro.model.rates :as m.rates]
    [dinsro.model.users :as m.users]
    [dinsro.specs]
-   [lambdaisland.glogc :as log]
-   [xtdb.api :as xt]))
+   [lambdaisland.glogc :as log]))
+
+(def model-key ::m.accounts/id)
+(def record-limit 1000)
+(def pk '?account-id)
+(def ident-key ::m.categories/id)
+(def index-param-syms ['?user-id])
 
 (def query-info
-  {:ident    ::m.accounts/id
+  {:ident    model-key
    :pk       '?account-id
    :clauses  [[:actor/id           '?actor-id]
               [:actor/admin?       '?admin?]
@@ -50,17 +54,7 @@
   ([] (index-ids {}))
   ([query-params] (c.xtdb/index-ids query-info query-params)))
 
-(def record-limit 1000)
-(def pk '?account-id)
-(def ident-key ::m.categories/id)
-(def index-param-syms ['?user-id])
-
 (>def ::query-params (s/keys))
-
-(defn get-index-params
-  [query-params]
-  (let [{user-id ::m.users/id} query-params]
-    [user-id]))
 
 (>defn find-by-user-and-name
   [user-id name]
@@ -94,47 +88,14 @@
 (>defn create-record
   [params]
   [::m.accounts/params => :xt/id]
-  (let [id       (new-uuid)
-        node     (c.xtdb/get-node)
-        params   (assoc params ::m.accounts/id id)
-        params   (assoc params :xt/id id)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-    id))
+  (c.xtdb/create! model-key params))
 
 (>defn read-record
   [id]
   [:xt/id => (? ::m.accounts/item)]
-  (let [db     (c.xtdb/get-db)
-        record (xt/pull db '[*] id)]
-    (when (get record ::m.accounts/name)
-      record)))
-
-(>defn index-records
-  []
-  [=> (s/coll-of ::m.accounts/item)]
-  (map read-record (index-ids)))
+  (c.xtdb/read model-key id))
 
 (>defn delete!
   [id]
   [::m.accounts/id => nil?]
-  (let [node (c.xtdb/get-node)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
-    nil))
-
-(defn find-by-rate-source
-  [rate-source-id]
-  (log/trace :find-by-rate-source/starting {:rate-source-id rate-source-id})
-  (c.xtdb/query-values
-   '{:find  [?account-id]
-     :in    [[?rate-source-id]]
-     :where [[?account-id ::m.accounts/source ?rate-source-id]]}
-   [rate-source-id]))
-
-(defn find-by-wallet
-  [wallet-id]
-  (log/trace :find-by-wallet/starting {:wallet-id wallet-id})
-  (c.xtdb/query-values
-   '{:find  [?account-id]
-     :in    [[?wallet-id]]
-     :where [[?account-id ::m.accounts/wallet ?wallet-id]]}
-   [wallet-id]))
+  (c.xtdb/delete! id))

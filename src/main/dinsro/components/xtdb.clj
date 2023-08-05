@@ -1,7 +1,9 @@
 (ns dinsro.components.xtdb
+  (:refer-clojure :exclude [read])
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
+   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.config :refer [get-config]]
    [lambdaisland.glogc :as log]
    [mount.core :refer [defstate]]
@@ -246,3 +248,21 @@
   (let [node (get-node)]
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]])))
   nil)
+
+(defn read
+  [model-key id]
+  (let [db     (get-db)
+        record (xt/pull db '[*] id)]
+    (when (get record model-key)
+      (dissoc record :xt/id))))
+
+(defn create!
+  [model-key params]
+  (log/info :create-record/starting {:params params})
+  (let [id     (new-uuid)
+        node   (get-node)
+        params (assoc params model-key id)
+        params (assoc params :xt/id id)]
+    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
+    (log/trace :create-record/finished {:id id})
+    id))

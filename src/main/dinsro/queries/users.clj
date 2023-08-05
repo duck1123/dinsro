@@ -13,10 +13,12 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
-;; [../joins/users.cljc]
+;; [[../joins/users.cljc]]
+
+(def model-key ::m.users/id)
 
 (def query-info
-  {:ident   ::m.users/id
+  {:ident   model-key
    :pk      '?user-id
    :clauses [[:actor/id       '?actor-id]
              [:actor/admin?   '?admin?]
@@ -40,20 +42,9 @@
   ([query-params] (c.xtdb/index-ids query-info query-params)))
 
 (>defn read-record
-  [user-id]
+  [id]
   [uuid? => (? ::m.users/item)]
-  (let [query  '{:find  [(pull ?id [*])]
-                 :in    [[?id]]
-                 :where [[?id ::m.users/id ?name]]}
-        result (c.xtdb/run-query query [user-id])
-        record (ffirst result)]
-    (when (get record ::m.users/id)
-      (dissoc record :xt/id))))
-
-(>defn read-records
-  [ids]
-  [(s/coll-of :xt/id) => (s/coll-of ::m.users/item)]
-  (map read-record ids))
+  (c.xtdb/read model-key id))
 
 (>defn find-by-name
   [name]
@@ -111,19 +102,11 @@
       id)
     (throw (ex-info "User already exists" {}))))
 
-(>defn index-records
-  "list all users"
-  []
-  [=> (s/coll-of ::m.users/item)]
-  (read-records (index-ids)))
-
 (>defn delete!
   "delete user by id"
   [id]
   [:xt/id => nil?]
-  (let [node (c.xtdb/get-node)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
-    nil))
+  (c.xtdb/delete! id))
 
 (>defn update!
   [id data]

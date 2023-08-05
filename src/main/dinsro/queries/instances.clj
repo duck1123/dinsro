@@ -2,11 +2,12 @@
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
-   [dinsro.components.xtdb :as c.xtdb]
+   [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.instances :as m.instances]
    [dinsro.model.users :as m.users]
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]
+   [tick.alpha.api :as t]
    [xtdb.api :as xt]))
 
 ;; [[../actions/instances.clj]]
@@ -16,16 +17,32 @@
 
 (def model-key ::m.instances/id)
 
+(def instance-timeout-minutes
+  "The amount of time (in minutes) an instance can go without updating its heartbeat without being considered stale"
+  15)
+
+(>defn expired?
+  [time]
+  [ds/instance? => boolean?]
+  (let [now (ds/->inst)]
+    (t/<
+     (t/instant time)
+     (t/<< now (t/new-duration instance-timeout-minutes :minutes)))))
+
 (def query-info
   {:ident        model-key
    :pk           '?instance-id
    :clauses      [[:actor/id     '?actor-id]
                   [:actor/admin? '?admin?]
-                  [::m.users/id '?user-id]]
+                  [::m.users/id  '?user-id]
+                  [:expired?     '?expired]]
    :order-by [['?instance-id :desc]]
    :sort-columns {}
-   :rules        (fn [[actor-id admin? user-id] rules]
-                   rules)})
+   :rules
+   (fn [[_actor-id _admin? _user-id expired?] rules]
+     (->> rules
+          (concat-when expired?
+            [['?instance-id ::m.instances/last-heartbeat '?expired-heartbeat]])))})
 
 (defn count-ids
   "Count instance records"
@@ -42,7 +59,7 @@
   [::m.instances/params => :xt/id]
   (let [node            (c.xtdb/get-node)
         id              (new-uuid)
-        time (ds/->inst)
+        time            (ds/->inst)
         prepared-params (-> params
                             (assoc ::m.instances/id id)
                             (assoc ::m.instances/created-time time)
@@ -54,10 +71,7 @@
 (>defn read-record
   [id]
   [::m.instances/id => (? ::m.instances/item)]
-  (let [db     (c.xtdb/get-db)
-        record (xt/pull db '[*] id)]
-    (when (get record ::m.instances/id)
-      (dissoc record :xt/id))))
+  (c.xtdb/read model-key id))
 
 (defn delete!
   [id]

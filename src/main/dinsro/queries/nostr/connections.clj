@@ -1,7 +1,6 @@
 (ns dinsro.queries.nostr.connections
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
@@ -9,11 +8,16 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../actions/nostr/connections.clj]]
+;; [[../../joins/nostr/connections.cljc]]
 ;; [[../../model/nostr/connections.cljc]]
 ;; [[../../processors/nostr/connections.clj]]
+;; [[../../../../notebooks/dinsro/notebooks/nostr/connections_notebook.clj]]
+
+(def model-key ::m.n.connections/id)
 
 (def query-info
-  {:ident   ::m.n.connections/id
+  {:ident   model-key
    :pk      '?connection-id
    :clauses [[::m.n.requests/id '?request-id]
              [::m.n.relays/id   '?relay-id]]
@@ -33,36 +37,20 @@
   ([] (index-ids {}))
   ([query-params] (c.xtdb/index-ids query-info query-params)))
 
-(def ident-key ::m.n.connections/id)
-(def params-key ::m.n.connections/params)
-(def item-key ::m.n.connections/item)
-
 (>defn create-record
   [params]
   [::m.n.connections/params => ::m.n.connections/id]
-  (log/debug :create-record/starting {:params params})
-  (let [id     (new-uuid)
-        node   (c.xtdb/get-node)
-        params (assoc params ident-key id)
-        params (assoc params :xt/id id)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put params]]))
-    (log/trace :create-record/finished {:id id})
-    id))
+  (c.xtdb/create! model-key params))
 
 (>defn read-record
   [id]
   [::m.n.connections/id => (? ::m.n.connections/item)]
-  (let [db     (c.xtdb/get-db)
-        record (xt/pull db '[*] id)]
-    (when (get record ident-key)
-      (dissoc record :xt/id))))
+  (c.xtdb/read model-key id))
 
 (>defn delete!
   [id]
   [::m.n.connections/id => nil?]
-  (let [node (c.xtdb/get-node)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
-    nil))
+  (c.xtdb/delete! id))
 
 (>defn set-connecting!
   [connection-id]

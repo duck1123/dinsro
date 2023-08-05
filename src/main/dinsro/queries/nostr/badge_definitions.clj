@@ -1,18 +1,20 @@
 (ns dinsro.queries.nostr.badge-definitions
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
-   [dinsro.specs]
-   [xtdb.api :as xt]))
+   [dinsro.specs]))
 
 ;; [[../../actions/nostr/badge_definitions.clj]]
 ;; [[../../joins/nostr/badge_definitions.cljc]]
+;; [[../../model/nostr/badge_definitions.cljc]]
+;; [[../../processors/nostr/connections.clj]]
+
+(def model-key ::m.n.badge-definitions/id)
 
 (def query-info
-  {:ident   ::m.n.badge-definitions/id
+  {:ident   model-key
    :pk      '?badge-definition-id
    :clauses [[::m.n.pubkeys/id '?pubkey-id]]
    :rules
@@ -32,18 +34,9 @@
 (>defn create-record
   [params]
   [::m.n.badge-definitions/params => ::m.n.badge-definitions/id]
-  (let [node            (c.xtdb/get-node)
-        id              (new-uuid)
-        prepared-params (-> params
-                            (assoc ::m.n.badge-definitions/id id)
-                            (assoc :xt/id id))]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
-    id))
+  (c.xtdb/create! model-key params))
 
 (>defn read-record
   [id]
   [::m.n.badge-definitions/id => (? ::m.n.badge-definitions/item)]
-  (let [db     (c.xtdb/get-db)
-        record (xt/pull db '[*] id)]
-    (when (get record ::m.n.badge-definitions/id)
-      (dissoc record :xt/id))))
+  (c.xtdb/read model-key id))

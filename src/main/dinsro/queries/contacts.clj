@@ -2,17 +2,16 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.contacts :as m.contacts]
-   [dinsro.model.users :as m.users]
-   [dinsro.specs]
-   [xtdb.api :as xt]))
+   [dinsro.model.users :as m.users]))
 
 ;; [[../actions/contacts.clj]]
 
+(def model-key ::m.contacts/id)
+
 (def query-info
-  {:ident   ::m.contacts/id
+  {:ident   model-key
    :pk      '?contacts-id
    :clauses [[::m.users/id '?user-id]]
    :rules
@@ -33,21 +32,12 @@
   "Create a contact record"
   [params]
   [::m.contacts/params => :xt/id]
-  (let [node            (c.xtdb/get-node)
-        id              (new-uuid)
-        prepared-params (-> params
-                            (assoc ::m.contacts/id id)
-                            (assoc :xt/id id))]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
-    id))
+  (c.xtdb/create! model-key params))
 
 (>defn read-record
   [id]
   [::m.contacts/id => (? ::m.contacts/item)]
-  (let [db     (c.xtdb/get-db)
-        record (xt/pull db '[*] id)]
-    (when (get record ::m.contacts/id)
-      (dissoc record :xt/id))))
+  (c.xtdb/read model-key id))
 
 (>defn find-by-user
   [user-id]
