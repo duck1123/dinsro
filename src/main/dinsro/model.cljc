@@ -44,8 +44,6 @@
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.joins.nostr.runs :as j.n.runs]
-   [dinsro.joins.nostr.subscription-pubkeys :as j.n.subscription-pubkeys]
-   [dinsro.joins.nostr.subscriptions :as j.n.subscriptions]
    [dinsro.joins.nostr.witnesses :as j.n.witnesses]
    [dinsro.joins.rate-sources :as j.rate-sources]
    [dinsro.joins.rates :as j.rates]
@@ -98,8 +96,6 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.runs :as m.n.runs]
-   [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
-   [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
@@ -143,8 +139,6 @@
    #?(:clj [dinsro.mutations.nostr.relays :as mu.n.relays])
    #?(:clj [dinsro.mutations.nostr.requests :as mu.n.requests])
    #?(:clj [dinsro.mutations.nostr.runs :as mu.n.runs])
-   #?(:clj [dinsro.mutations.nostr.subscription-pubkeys :as mu.n.subscription-pubkeys])
-   #?(:clj [dinsro.mutations.nostr.subscriptions :as mu.n.subscriptions])
    #?(:clj [dinsro.mutations.nostr.witnesses :as mu.n.witnesses])
    #?(:clj [dinsro.mutations.rate-sources :as mu.rate-sources])
    #?(:clj [dinsro.mutations.session :as mu.session])
@@ -199,8 +193,6 @@
         j.n.relays/attributes
         j.n.requests/attributes
         j.n.runs/attributes
-        j.n.subscription-pubkeys/attributes
-        j.n.subscriptions/attributes
         j.n.witnesses/attributes
         j.rates/attributes
         j.rate-sources/attributes
@@ -253,8 +245,6 @@
         m.n.relays/attributes
         m.n.requests/attributes
         m.n.runs/attributes
-        m.n.subscription-pubkeys/attributes
-        m.n.subscriptions/attributes
         m.n.witnesses/attributes
         m.rates/attributes
         m.rate-sources/attributes
@@ -302,8 +292,6 @@
            mu.n.relays/resolvers
            mu.n.requests/resolvers
            mu.n.runs/resolvers
-           mu.n.subscription-pubkeys/resolvers
-           mu.n.subscriptions/resolvers
            mu.n.witnesses/resolvers
            mu.rate-sources/resolvers
            mu.session/resolvers

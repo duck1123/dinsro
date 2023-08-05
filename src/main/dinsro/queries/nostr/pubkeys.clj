@@ -5,7 +5,6 @@
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.pubkey-contacts :as m.n.pubkey-contacts]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
-   [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
@@ -73,17 +72,6 @@
         tx     (xt/submit-tx node [[::xt/put params]])]
     (xt/await-tx node tx)
     id))
-
-(>defn find-by-subscription
-  [subscription-id]
-  [::m.n.subscription-pubkeys/subscription => (s/coll-of ::m.n.subscription-pubkeys/id)]
-  (log/info :find-by-subscription/starting {:subscription-id subscription-id})
-  (c.xtdb/query-values
-   '{:find  [?pubkey-id]
-     :in    [[?subscription-id]]
-     :where [[?sp-id ::m.n.subscription-pubkeys/pubkey ?pubkey-id]
-             [?sp-id ::m.n.subscription-pubkeys/subscription ?subscription-id]]}
-   [subscription-id]))
 
 (>defn find-contacts
   [pubkey-id]

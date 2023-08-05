@@ -1,7 +1,6 @@
 (ns dinsro.actions.nostr.streams
   (:require
    [lambdaisland.glogc :as log]
-   [manifold.deferred :as d]
    [manifold.stream :as st]))
 
 ;; [[../../../../notebooks/dinsro/notebooks/nostr/streams_notebook.clj]]
@@ -23,20 +22,3 @@
   [pubkey-id]
   (log/info :enqueue-pubkey-id!/starting {:pubkey-id pubkey-id})
   (st/put! pubkey-stream pubkey-id))
-
-(comment
-
-  s
-
-  (d/realized? (st/try-take! s ::drained 1000 ::timeout))
-
-  (st/put! s "foo")
-  (st/put! s "bar")
-
-  (st/stream->seq s)
-
-  (st/stream->seq pubkey-stream)
-
-  (start-consumer! "A")
-
-  nil)

@@ -7,7 +7,6 @@
    #?(:clj [dinsro.actions.nostr.pubkey-contacts :as a.n.pubkey-contacts])
    #?(:clj [dinsro.actions.nostr.pubkey-events :as a.n.pubkey-events])
    #?(:clj [dinsro.actions.nostr.pubkeys :as a.n.pubkeys])
-   #?(:clj [dinsro.actions.nostr.subscription-pubkeys :as a.n.subscription-pubkeys])
    #?(:cljs [dinsro.handlers.nostr.pubkeys :as h.n.pubkeys])
    [dinsro.model.contacts :as m.contacts]
    [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
@@ -19,11 +18,10 @@
    #?(:clj [dinsro.processors.nostr.pubkeys :as p.n.pubkeys])
    #?(:cljs [dinsro.responses.nostr.pubkeys :as r.n.pubkeys])))
 
-;; [[../../actions/nostr/pubkeys.clj][Pubkey Actions]]
-;; [[../../actions/nostr/subscription_pubkeys.clj][Subscription Pubkey Actions]]
-;; [[../../model/nostr/relays.cljc][Relay Model]]
-;; [[../../model/nostr/relay_pubkeys.cljc][Relay Pubkeys Model]]
-;; [[../../ui/nostr/pubkeys.cljs][Pubkeys UI]]
+;; [[../../actions/nostr/pubkeys.clj]]
+;; [[../../model/nostr/relays.cljc]]
+;; [[../../model/nostr/relay_pubkeys.cljc]]
+;; [[../../ui/nostr/pubkeys.cljs]]
 
 #?(:cljs (comment ::m.contacts/_ ::m.n.badge-awards/id ::m.n.relays/_ ::pc/_))
 
@@ -119,21 +117,8 @@
      (ok-action [env]  (h.n.pubkeys/handle-fetch-events env))))
 
 #?(:clj
-   (pc/defmutation subscribe! [_env props]
-     {::pc/params #{::m.n.pubkeys/id}
-      ::pc/output [::mu/status ::mu/errors ::m.n.pubkeys/item]}
-     (a.n.subscription-pubkeys/do-subscribe! props))
-
-   :cljs
-   (fm/defmutation subscribe! [_props]
-     (action    [_env] true)
-     (remote    [env]  (fm/returning env r.n.pubkeys/FetchResponse))
-     (ok-action [env]  (h.n.pubkeys/handle-fetch env))))
-
-#?(:clj
    (def resolvers
      [fetch!
       fetch-contacts!
       fetch-definitions!
-      fetch-events!
-      subscribe!]))
+      fetch-events!]))

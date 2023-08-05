@@ -6,19 +6,16 @@
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
-   [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    #?(:clj [dinsro.queries.nostr.connections :as q.n.connections])
    #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
    #?(:clj [dinsro.queries.nostr.requests :as q.n.requests])
-   #?(:clj [dinsro.queries.nostr.subscriptions :as q.n.subscriptions])
-   [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
-;; [[../../actions/nostr/relays.clj][Actions]]
-;; [[../../model/nostr/relays.cljc][Model]]
+;; [[../../actions/nostr/relays.clj]]
+;; [[../../model/nostr/relays.cljc]]
 ;; [[../../queries/nostr/connections.clj]]
-;; [[../../queries/nostr/relays.clj][Queries]]
-;; [[../../ui/nostr/relays.cljs][UI]]
+;; [[../../queries/nostr/relays.clj]]
+;; [[../../ui/nostr/relays.cljs]]
 
 (def join-info
   (merge
@@ -76,25 +73,6 @@
    ao/pc-input   #{::requests}
    ao/pc-resolve (fn [_ {::keys [requests]}] {::request-count (count requests)})})
 
-(defattr subscriptions ::subscriptions :ref
-  {ao/cardinality :many
-   ao/identities  #{::m.n.relays/id}
-   ao/pc-input    #{::m.n.relays/id}
-   ao/target      ::m.n.subscriptions/id
-   ao/pc-output   {::subscriptions [::m.n.subscriptions/id]}
-   ao/pc-resolve
-   (fn [_env params]
-     (log/info :subscription-count/starting {:params params})
-     (let [relay-id (::m.n.relays/id params)
-           ids      #?(:clj  (q.n.subscriptions/find-by-relay relay-id)
-                       :cljs (do (comment relay-id) []))]
-       {::subscriptions (m.n.subscriptions/idents ids)}))})
-
-(defattr subscription-count ::subscription-count :int
-  {ao/identities #{::m.n.relays/id}
-   ao/pc-input   #{::subscriptions}
-   ao/pc-resolve (fn [_ {::keys [subscriptions]}] {::subscription-count (count subscriptions)})})
-
 (def attributes
   [admin-index connection-count connections
-   index request-count requests subscription-count subscriptions])
+   index request-count requests])

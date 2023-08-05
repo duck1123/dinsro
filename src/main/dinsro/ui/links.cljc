@@ -47,8 +47,6 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.runs :as m.n.runs]
-   [dinsro.model.nostr.subscription-pubkeys :as m.n.subscription-pubkeys]
-   [dinsro.model.nostr.subscriptions :as m.n.subscriptions]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.model.rates :as m.rates]
@@ -738,23 +736,6 @@
 
 (def ui-relay-request-count-link
   (comp/factory RelayRequestCountLinkForm {:keyfn ::m.n.relays/id}))
-
-(form/defsc-form SubscriptionLinkForm [this {::m.n.subscriptions/keys [id code]}]
-  {fo/id           m.n.subscriptions/id
-   fo/route-prefix "subscription-link"
-   fo/attributes   [m.n.subscriptions/code]}
-  (form-link this id code :dinsro.ui.nostr.subscriptions/ShowPage))
-
-(def ui-subscription-link (comp/factory SubscriptionLinkForm {:keyfn ::m.n.subscriptions/id}))
-
-(form/defsc-form SubscriptionPubkeyLinkForm [this {::m.n.subscription-pubkeys/keys [id]}]
-  {fo/id           m.n.subscription-pubkeys/id
-   fo/route-prefix "subscription-pubkey-link"
-   fo/attributes   [m.n.subscription-pubkeys/id]}
-  (form-link this id (str id) :dinsro.ui.nostr.subscription-pubkeys/ShowPage))
-
-(def ui-subscription-pubkey-link
-  (comp/factory SubscriptionPubkeyLinkForm {:keyfn ::m.n.subscription-pubkeys/id}))
 
 (form/defsc-form TransactionLinkForm [this {::m.transactions/keys [id description]}]
   {fo/id           m.transactions/id

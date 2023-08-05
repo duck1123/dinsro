@@ -16,8 +16,8 @@
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]))
 
-;; [../../model/nostr/runs.cljc]
-;; [../../queries/nostr/runs.clj]
+;; [[../../model/nostr/runs.cljc]]
+;; [[../../queries/nostr/runs.clj]]
 
 (defn register-run!
   [request-id connection-id]

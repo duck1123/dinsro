@@ -6,6 +6,8 @@
    [dinsro.model.nostr.requests :as m.n.requests]
    #?(:clj [dinsro.processors.nostr.requests :as p.n.requests])))
 
+;; [[../../actions/nostr/requests.clj]]
+
 (comment ::m.n.requests/_  ::pc/_)
 
 #?(:clj
@@ -31,16 +33,5 @@
      (remote [_env]  true)))
 
 #?(:clj
-   (pc/defmutation stop! [_env props]
-     {::pc/params #{::m.n.requests/id}
-      ::pc/output [::status ::errors]}
-     (p.n.requests/stop! props))
-
-   :cljs
-   (fm/defmutation stop! [_props]
-     (action [_env] true)
-     (remote [_env]  true)))
-
-#?(:clj
    (def resolvers
-     [run! start! stop!]))
+     [run! start!]))

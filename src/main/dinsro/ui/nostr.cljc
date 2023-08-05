@@ -16,8 +16,6 @@
    [dinsro.ui.nostr.pubkeys :as u.n.pubkeys]
    [dinsro.ui.nostr.relays :as u.n.relays]
    [dinsro.ui.nostr.requests :as u.n.requests]
-   [dinsro.ui.nostr.subscription-pubkeys :as u.n.subscription-pubkeys]
-   [dinsro.ui.nostr.subscriptions :as u.n.subscriptions]
    [dinsro.ui.nostr.witnesses :as u.n.witnesses]
    [lambdaisland.glogc :as log]))
 
@@ -42,10 +40,6 @@
     u.n.relays/IndexPage
     u.n.relays/ShowPage
     u.n.requests/ShowPage
-    u.n.subscription-pubkeys/IndexPage
-    u.n.subscription-pubkeys/ShowPage
-    u.n.subscriptions/IndexPage
-    u.n.subscriptions/ShowPage
     u.n.witnesses/IndexPage]}
   (log/debug :Router/starting {:props props})
   (case current-state
