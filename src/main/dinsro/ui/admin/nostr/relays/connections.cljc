@@ -34,13 +34,11 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.connections/relay      #(u.links/ui-admin-relay-link %2)
-                         ::m.n.connections/status     #(u.links/ui-admin-connection-link %3)
+  {ro/column-formatters {::m.n.connections/status     #(u.links/ui-admin-connection-link %3)
                          ::m.n.connections/start-time u.controls/date-formatter
                          ::m.n.connections/end-time   u.controls/date-formatter
                          ::j.n.connections/run-count  #(u.links/ui-admin-connection-run-count-link %3)}
    ro/columns           [m.n.connections/status
-                         m.n.connections/relay
                          m.n.connections/start-time
                          m.n.connections/end-time
                          j.n.connections/run-count]

@@ -5,6 +5,7 @@
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.nostr.connections :as m.n.connections]
+   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.runs :as m.n.runs]
    [lambdaisland.glogc :as log]
@@ -18,12 +19,16 @@
 (def query-info
   {:ident   model-key
    :pk      '?run-id
-   :clauses [[::m.n.requests/id '?request-id]]
+   :clauses [[::m.n.requests/id '?request-id]
+             [::m.n.relays/id '?relay-id]]
    :rules
-   (fn [[request-id] rules]
+   (fn [[request-id relay-id] rules]
      (->> rules
           (concat-when request-id
-            [['?run-id ::m.n.runs/request '?request-id]])))})
+            [['?run-id ::m.n.runs/request '?request-id]])
+          (concat-when relay-id
+            [['?run-id ::m.n.runs/connection '?relay-connection-id]
+             ['?relay-connection-id ::m.n.connections/relay '?relay-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))

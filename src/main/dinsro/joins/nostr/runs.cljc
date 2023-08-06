@@ -12,6 +12,7 @@
 
 ;; [[../../model/nostr/runs.cljc]]
 ;; [[../../queries/nostr/runs.clj]]
+;; [[../../ui/admin/nostr/relays/runs.cljc]]
 ;; [[../../../../notebooks/dinsro/notebooks/nostr/runs_notebook.clj]]
 
 (def join-info

@@ -21,6 +21,7 @@
 
 ;; [[../../../joins/nostr/filters.cljc]]
 ;; [[../../../model/nostr/filters.cljc]]
+;; [[../../../ui/admin/nostr/requests/filters.cljc]]
 ;; [[../../../ui/nostr/filters.cljc]]
 
 (def index-page-key :admin-nostr-filters)
@@ -50,7 +51,8 @@
                          m.n.filters/request
                          m.n.filters/since
                          m.n.filters/until
-                         j.n.filters/item-count]
+                         j.n.filters/item-count
+                         j.n.filters/query-string]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/machine           spr/machine
@@ -64,24 +66,27 @@
 (def ui-report (comp/factory Report))
 
 (defsc Show
-  [_this {::m.n.filters/keys [id index request]
+  [_this {::j.n.filters/keys [query-string]
+          ::m.n.filters/keys [id index request]
           :ui/keys           [admin-nav-menu admin-router]
           :as                props}]
   {:ident         ::m.n.filters/id
    :initial-state (fn [props]
                     (let [id (model-key props)]
-                      {model-key             id
-                       ::m.n.filters/index   nil
-                       ::m.n.filters/request (comp/get-initial-state u.links/AdminRequestLinkForm)
-                       :ui/admin-nav-menu    (comp/get-initial-state u.menus/NavMenu
-                                               {::m.navbars/id show-menu-id
-                                                :id            id})
-                       :ui/admin-router      (comp/get-initial-state Router)}))
+                      {model-key                  id
+                       ::j.n.filters/query-string ""
+                       ::m.n.filters/index        nil
+                       ::m.n.filters/request      (comp/get-initial-state u.links/AdminRequestLinkForm)
+                       :ui/admin-nav-menu         (comp/get-initial-state u.menus/NavMenu
+                                                    {::m.navbars/id show-menu-id
+                                                     :id            id})
+                       :ui/admin-router           (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/admin-router   [Router {}]})
    :query         (fn []
-                    [::m.n.filters/id
+                    [::j.n.filters/query-string
+                     ::m.n.filters/id
                      ::m.n.filters/index
                      {::m.n.filters/request (comp/get-query u.links/AdminRequestLinkForm)}
                      {:ui/admin-nav-menu (comp/get-query u.menus/NavMenu)}
@@ -91,6 +96,7 @@
     (ui-segment {}
       (dom/div {} (str id))
       (dom/div {} (str index))
+      (dom/div {} (str query-string))
       (dom/div {}
         (if request
           (u.links/ui-request-link request)

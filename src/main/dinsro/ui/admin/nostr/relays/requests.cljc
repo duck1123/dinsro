@@ -53,7 +53,8 @@
    ro/columns           [m.n.requests/code
                          m.n.requests/relay
                          j.n.requests/filter-count
-                         j.n.requests/run-count]
+                         j.n.requests/run-count
+                         j.n.requests/query-string]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {model-key {:type :uuid :label "id"}
                          ::new           new-button

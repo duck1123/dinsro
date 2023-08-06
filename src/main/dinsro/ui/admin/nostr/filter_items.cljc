@@ -17,6 +17,7 @@
 
 ;; [[../../../joins/nostr/filter_items.cljc]]
 ;; [[../../../model/nostr/filter_items.cljc]]
+;; [[../../../queries/nostr/filter_items.clj]]
 
 (def index-page-key :admin-nostr-filter-items)
 (def model-key ::m.n.filter-items/id)
@@ -33,7 +34,8 @@
                          m.n.filter-items/type
                          m.n.filter-items/event
                          m.n.filter-items/pubkey
-                         j.n.filter-items/request]
+                         j.n.filter-items/request
+                         j.n.filter-items/query-string]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/machine           spr/machine

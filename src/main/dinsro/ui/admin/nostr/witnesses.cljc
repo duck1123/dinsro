@@ -25,10 +25,12 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.witnesses/event #(u.links/ui-admin-event-link %2)
+  {ro/column-formatters {::m.n.witnesses/id #(u.links/ui-admin-witness-link %3)
+                         ::m.n.witnesses/event #(u.links/ui-admin-event-link %2)
                          ::m.n.witnesses/run   #(u.links/ui-admin-run-link %2)
                          ::j.n.witnesses/relay #(u.links/ui-admin-relay-link %2)}
-   ro/columns           [m.n.witnesses/event
+   ro/columns           [m.n.witnesses/id
+                         m.n.witnesses/event
                          m.n.witnesses/run
                          j.n.witnesses/relay]
    ro/control-layout    {:action-buttons [::new ::refresh]}
@@ -44,18 +46,31 @@
 (def ui-report (comp/factory Report))
 
 (defsc Show
-  [_this {::m.n.witnesses/keys [id]
+  [_this {::m.n.witnesses/keys [id event run]
           :as                  props}]
   {:ident         ::m.n.witnesses/id
    :initial-state (fn [props]
                     (let [id (model-key props)]
-                      {model-key id}))
-   :query         [::m.n.witnesses/id]}
+                      {model-key             id
+                       ::m.n.witnesses/event {}
+                       ::m.n.witnesses/run   {}}))
+   :query         [::m.n.witnesses/id
+                   ::m.n.witnesses/event
+                   ::m.n.witnesses/run]}
   (log/info :Show/starting {:props props})
   (if id
-    (ui-segment {} "TODO: Show witness")
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+    (ui-segment {}
+      (dom/div {} (str id))
+      (dom/div {}
+        (when event
+          (u.links/ui-admin-event-link event)))
+      (dom/div {}
+        (when run
+          (dom/div {}
+            (u.debug/log-props run)
+            (comment (u.links/ui-admin-run-link run)))))
+      (u.debug/log-props props))
+    (u.debug/load-error props "admin show witness")))
 
 (def ui-show (comp/factory Show))
 
@@ -84,7 +99,7 @@
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show)}])
-   :route-segment ["event" :id]
+   :route-segment ["witness" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (model-key props)

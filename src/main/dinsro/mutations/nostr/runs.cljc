@@ -6,6 +6,8 @@
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.processors.nostr.runs :as p.n.runs])))
 
+;; [[../../joins/nostr/runs.cljc]]
+
 (comment ::m.n.runs/_  ::pc/_ ::mu/_)
 
 #?(:clj

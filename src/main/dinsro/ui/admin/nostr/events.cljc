@@ -17,6 +17,7 @@
 
 ;; [[../../../joins/nostr/events.cljc]]
 ;; [[../../../model/nostr/events.cljc]]
+;; [[../../../ui/admin/nostr/relays/events.cljc]]
 
 (def index-page-key :admin-nostr-events)
 (def model-key ::m.n.events/id)
@@ -49,11 +50,27 @@
   {:ident         ::m.n.events/id
    :initial-state (fn [props]
                     (let [id (model-key props)]
-                      {model-key id}))
-   :query         [::m.n.events/id]}
+                      {model-key               id
+                       ::m.n.events/note-id    ""
+                       ::m.n.events/pubkey     {}
+                       ::m.n.events/created-at 0
+                       ::m.n.events/kind       0
+                       ::m.n.events/content    ""
+                       ::m.n.events/sig        ""
+                       ::m.n.events/deleted?   true}))
+   :query         [::m.n.events/id
+                   ::m.n.events/note-id
+                   ::m.n.events/pubkey
+                   ::m.n.events/created-at
+                   ::m.n.events/kind
+                   ::m.n.events/content
+                   ::m.n.events/sig
+                   ::m.n.events/deleted?]}
   (log/info :Show/starting {:props props})
   (if id
-    (ui-segment {} "TODO: Show event")
+    (ui-segment {}
+      (u.debug/log-props props))
+
     (u.debug/load-error props "admin show event")))
 
 (def ui-show (comp/factory Show))

@@ -8,8 +8,8 @@
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.runs :as m.n.runs]))
 
-;; [../../ui/admin/nostr/witnesses.cljs]
-;; [../../ui/nostr/witnesses.cljs]
+;; [[../../ui/admin/nostr/witnesses.cljs]]
+;; [[../../ui/nostr/witnesses.cljs]]
 
 (>def ::id uuid?)
 (defattr id ::id :uuid

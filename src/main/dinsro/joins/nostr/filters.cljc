@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   #?(:clj [dinsro.actions.nostr.filters :as a.n.filters])
    [dinsro.joins :as j]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
@@ -9,6 +10,11 @@
    #?(:clj [dinsro.queries.nostr.filters :as q.n.filters])
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
+
+;; [[../../actions/nostr/filters.clj]]
+;; [[../../queries/nostr/filters.clj]]
+;; [[../../mutations/nostr/filters.cljc]]
+;; [[../../ui/admin/nostr/requests/filters.cljc]]
 
 #?(:cljs (comment ::m.n.filter-items/_))
 
@@ -50,4 +56,12 @@
    ao/pc-output  [::item-count]
    ao/pc-resolve (fn [_ {::keys [items]}] {::item-count (count items)})})
 
-(def attributes [admin-index index items item-count])
+(defattr query-string ::query-string :string
+  {ao/identities #{::m.n.filters/id}
+   ao/pc-input   #{::m.n.filters/id}
+   ao/pc-resolve
+   (fn [_ {::m.n.filters/keys [id]}]
+     {::query-string #?(:clj (str (a.n.filters/get-query-string id))
+                        :cljs (do (comment id) ""))})})
+
+(def attributes [admin-index index items item-count query-string])

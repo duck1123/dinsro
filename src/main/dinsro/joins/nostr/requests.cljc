@@ -14,6 +14,7 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../../model/nostr/requests.cljc]]
+;; [[../../queries/nostr/requests.clj]]
 
 (def join-info
   (merge

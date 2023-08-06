@@ -16,6 +16,7 @@
 
 ;; [[../../../../joins/nostr/witnesses.cljc]]
 ;; [[../../../../model/nostr/witnesses.cljc]]
+;; [[../../../../ui/admin/nostr/witnesses.cljc]]
 
 (def index-page-key :admin-nostr-relays-show-witnesses)
 (def model-key ::m.n.witnesses/id)

@@ -28,9 +28,10 @@
    :clauses [[::m.n.pubkeys/id  '?pubkey-id]
              [::m.n.events/id   '?event-id]
              [::m.n.requests/id '?request-id]
+             [::m.n.filters/id '?filters-id]
              [:kind             '?kind]]
    :rules
-   (fn [[pubkey-id event-id request-id kind] rules]
+   (fn [[pubkey-id event-id request-id filter-id kind] rules]
      (->> rules
           (concat-when pubkey-id
             [['?filter-item-id ::m.n.filter-items/pubkey '?pubkey-id]])
@@ -40,7 +41,9 @@
             [['?filter-item-id ::m.n.filter-items/filter '?filter-id]
              ['?filter-id      ::m.n.filters/request     '?request]])
           (concat-when kind
-            [['?filter-item-id ::m.n.filter-items/kind   '?kind]])))})
+            [['?filter-item-id ::m.n.filter-items/kind   '?kind]])
+          (concat-when filter-id
+            [['?filter-item-id ::m.n.filter-items/filter '?filter-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))

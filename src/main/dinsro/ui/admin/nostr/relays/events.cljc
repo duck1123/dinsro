@@ -17,6 +17,7 @@
 
 ;; [[../../../../joins/nostr/events.cljc]]
 ;; [[../../../../model/nostr/events.cljc]]
+;; [[../../../../ui/admin/nostr/events.cljc]]
 
 (def index-page-key :admin-nostr-relays-show-events)
 (def model-key ::m.n.pubkeys/id)

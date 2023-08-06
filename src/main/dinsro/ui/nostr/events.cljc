@@ -39,6 +39,7 @@
 ;; [[../../queries/nostr/events.clj]]
 ;; [[../../joins/nostr/events.cljc]]
 ;; [[../../mutations/nostr/events.cljc]]
+;; [[../../ui/admin/nostr/events.cljc]]
 ;; [[../../ui/nostr.cljs]]
 ;; [[../../ui/nostr/pubkeys/events.cljs]]
 

@@ -8,6 +8,8 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../model/nostr/filters.cljc]]
+;; [[../../ui/nostr/filters.cljc]]
 ;; [[../../../../notebooks/dinsro/notebooks/nostr/filters_notebook.clj]]
 
 (def model-key ::m.n.filters/id)

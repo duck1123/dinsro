@@ -12,7 +12,9 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../actions/nostr/requests.clj]]
 ;; [[../../model/nostr/requests.cljc]]
+;; [[../../ui/nostr/requests.cljc]]
 ;; [[../../../../notebooks/dinsro/notebooks/nostr/requests_notebook.clj]]
 
 (def model-key ::m.n.requests/id)

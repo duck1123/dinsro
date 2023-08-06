@@ -3,6 +3,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   #?(:clj [dinsro.actions.nostr.filter-items :as a.n.filter-items])
    [dinsro.joins :as j]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.relays :as m.n.relays]
@@ -12,9 +13,10 @@
    #?(:clj [dinsro.queries.nostr.requests :as q.n.requests])
    [lambdaisland.glogc :as log]))
 
-;; [../../actions/nostr/filter_items.clj]
-;; [../../model/nostr/filter_items.cljc]
-;; [../../queries/nostr/filter_items.clj]
+;; [[../../actions/nostr/filter_items.clj]]
+;; [[../../model/nostr/filter_items.cljc]]
+;; [[../../queries/nostr/filter_items.clj]]
+;; [[../../ui/admin/nostr/requests/filter_items.cljc]]
 
 (def join-info
   (merge
@@ -35,6 +37,14 @@
    ao/pc-resolve
    (fn [env props]
      {::index (j/make-indexer join-info env props)})})
+
+(defattr query-string ::query-string :string
+  {ao/identities #{::m.n.filter-items/id}
+   ao/pc-input   #{::m.n.filter-items/id}
+   ao/pc-resolve
+   (fn [_ {::m.n.filter-items/keys [id]}]
+     {::query-string #?(:clj (str (a.n.filter-items/get-query-string id))
+                        :cljs (do (comment id) ""))})})
 
 (defattr relay ::relay :ref
   {ao/target           ::m.n.relays/id
@@ -60,4 +70,4 @@
        {::request (when request-id (m.n.requests/ident request-id))}))
    ::report/column-EQL {::request [::m.n.requests/id ::m.n.requests/code]}})
 
-(def attributes [admin-index index request relay])
+(def attributes [admin-index index query-string request relay])

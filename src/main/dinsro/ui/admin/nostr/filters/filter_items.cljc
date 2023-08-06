@@ -11,6 +11,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -53,8 +54,10 @@
                          m.n.filter-items/kind
                          m.n.filter-items/type
                          m.n.filter-items/event
-                         m.n.filter-items/pubkey]
-   ro/control-layout    {:action-buttons [::add ::refresh]}
+                         m.n.filter-items/pubkey
+                         j.n.filter-items/query-string]
+   ro/control-layout    {:action-buttons [::add ::refresh]
+                         :inputs         [[parent-model-key]]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::add            new-item-button
                          ::refresh        u.links/refresh-control}
@@ -85,7 +88,9 @@
    :route-segment     ["items"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (ui-report report))
+  (if (parent-model-key props)
+    (ui-report report)
+    (u.debug/load-error props "Admin filters show filter items")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage

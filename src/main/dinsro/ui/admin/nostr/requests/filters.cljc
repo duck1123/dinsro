@@ -18,6 +18,8 @@
 
 ;; [[../../../../joins/nostr/filters.cljc]]
 ;; [[../../../../model/nostr/filters.cljc]]
+;; [[../../../../ui/admin/nostr/filters.cljc]]
+;; [[../../../../ui/admin/nostr/requests.cljc]]
 
 (def index-page-key :admin-nostr-requests-show-filters)
 (def model-key ::m.n.filters/id)
@@ -34,7 +36,8 @@
                          ::j.n.filters/item-count #(u.links/ui-admin-filter-item-count-link %3)}
    ro/columns           [m.n.filters/index
                          m.n.filters/request
-                         j.n.filters/item-count]
+                         j.n.filters/item-count
+                         j.n.filters/query-string]
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::add-filter     (u.buttons/sub-page-action-button

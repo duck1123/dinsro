@@ -86,10 +86,10 @@
                        ::j.n.requests/query-string ""
                        ::m.n.requests/code         ""
                        ::m.n.requests/relay        (comp/get-initial-state u.links/AdminRelayLinkForm)
-                       :ui/admin-nav-menu                (comp/get-initial-state u.menus/NavMenu
-                                                           {::m.navbars/id show-menu-id
-                                                            :id            id})
-                       :ui/admin-router                  (comp/get-initial-state Router)}))
+                       :ui/admin-nav-menu          (comp/get-initial-state u.menus/NavMenu
+                                                     {::m.navbars/id show-menu-id
+                                                      :id            id})
+                       :ui/admin-router            (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/admin-router   [Router {}]})

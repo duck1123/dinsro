@@ -1,18 +1,11 @@
 (ns dinsro.actions.nostr.requests
   (:require
    [clojure.data.json :as json]
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [dinsro.model.nostr.events :as m.n.events]
-   [dinsro.model.nostr.filter-items :as m.n.filter-items]
-   [dinsro.model.nostr.filters :as m.n.filters]
-   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.actions.nostr.filters :as a.n.filters]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
-   [dinsro.queries.nostr.events :as q.n.events]
-   [dinsro.queries.nostr.filter-items :as q.n.filter-items]
    [dinsro.queries.nostr.filters :as q.n.filters]
-   [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.requests :as q.n.requests]
    [dinsro.specs :as ds]
@@ -49,53 +42,6 @@
      request-id
      (create-request relay-id code))))
 
-(s/def ::item-data (s/keys))
-
-(>defn determine-item
-  "Create a query map based on item's params"
-  [item]
-  [::m.n.filter-items/item => (? ::item-data)]
-  (or
-   (when-let [hex (some-> item ::m.n.filter-items/pubkey
-                          q.n.pubkeys/read-record ::m.n.pubkeys/hex)]
-     {:pubkey hex})
-   (when-let [hex (some-> item ::m.n.filter-items/event
-                          q.n.events/read-record ::m.n.events/note-id)]
-     {:event hex})
-   (when-let [kind (some-> item ::m.n.filter-items/kind)]
-     {:kind kind})))
-
-(>defn get-query-string-item
-  [item-id]
-  [::m.n.filter-items/id => (? ::item-data)]
-  (let [item (q.n.filter-items/read-record item-id)
-        hex-maps (determine-item item)]
-    (log/info :get-query-string/mapped {:item item :hex-maps hex-maps})
-    hex-maps))
-
-(>defn get-query-string-filter
-  [filter-id]
-  [::m.n.filters/id => (s/keys)]
-  (log/info :get-query-string-filter/starting {:filter-id filter-id})
-  (let [data (->> filter-id
-                  q.n.filter-items/find-by-filter
-                  (map get-query-string-item)
-                  (reduce
-                   (fn [val item]
-                     (log/info :get-query-string-item/reducing {:val val :item item})
-                     (let [{:keys [pubkey event kind]} item]
-                       {:ids     (:ids val)
-                        :authors (concat (:authors val) (if pubkey [pubkey] []))
-                        :kinds   (concat (:kinds val) (if kind [kind] []))
-                        :#e      (concat (:#e val) (if event [event] []))
-                        :#p      (:#p val)}))
-                   {:ids [] :authors [] :kinds [] :#e [] :#p []})
-                  (map (fn [[k v]] (when (seq v) [k v])))
-                  (filter identity)
-                  (into {}))]
-    (log/info :get-query-string-filter/finished {:data data})
-    data))
-
 (>defn get-query-string
   "Get the query string for the request"
   [request-id]
@@ -104,7 +50,7 @@
         code       (::m.n.requests/code request)
         filter-ids (q.n.filters/find-by-request request-id)]
     (log/info :get-query-string/found {:filter-ids filter-ids})
-    (let [filter-response (mapv get-query-string-filter filter-ids)]
+    (let [filter-response (mapv a.n.filters/get-query-string filter-ids)]
       (json/json-str (concat ["REQ" code] filter-response)))))
 
 (comment

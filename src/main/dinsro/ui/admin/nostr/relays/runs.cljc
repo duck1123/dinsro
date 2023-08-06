@@ -11,6 +11,7 @@
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.mutations.nostr.runs :as mu.n.runs]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -18,6 +19,7 @@
 
 ;; [[../../../../joins/nostr/runs.cljc]]
 ;; [[../../../../model/nostr/runs.cljc]]
+;; [[../../../../mutations/nostr/runs.cljc]]
 ;; [[../../../../ui/admin.cljc]]
 ;; [[../../../../ui/admin/nostr/relays.cljc]]
 
@@ -36,12 +38,16 @@
   [_this _props]
   {ro/column-formatters {::m.n.runs/connection #(u.links/ui-admin-connection-link %2)
                          ::m.n.runs/request    #(u.links/ui-admin-request-link %2)
-                         ::m.n.runs/status     #(u.links/ui-admin-run-link %3)}
+                         ::m.n.runs/status     #(u.links/ui-admin-run-link %3)
+                         ::m.n.runs/end-time   u.controls/date-formatter
+                         ::m.n.runs/start-time u.controls/date-formatter
+                         ::j.n.runs/relay      #(u.links/ui-admin-relay-link %2)}
    ro/columns           [m.n.runs/status
                          m.n.runs/request
                          m.n.runs/connection
                          m.n.runs/start-time
-                         m.n.runs/end-time]
+                         m.n.runs/end-time
+                         j.n.runs/relay]
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh        u.links/refresh-control}

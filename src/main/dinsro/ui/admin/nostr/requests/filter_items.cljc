@@ -38,7 +38,8 @@
                          m.n.filter-items/type
                          m.n.filter-items/kind
                          m.n.filter-items/event
-                         m.n.filter-items/pubkey]
+                         m.n.filter-items/pubkey
+                         j.n.filter-items/query-string]
    ro/control-layout    {:action-buttons [::add-filter ::new ::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh        u.links/refresh-control}
