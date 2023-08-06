@@ -11,11 +11,11 @@
    [hato.websocket :as ws]
    [lambdaisland.glogc :as log]))
 
-;; [[../../joins/nostr/relays.cljc][Relay Joins]]
-;; [[../../model/nostr/relays.cljc][Relay Models]]
-;; [[../../mutations/nostr/relays.cljc][Relay Mutations]]
-;; [[../../queries/nostr/relays.clj][Relay Queries]]
-;; [[../../ui/nostr/relays.cljs][Relay UI]]
+;; [[../../joins/nostr/relays.cljc]]
+;; [[../../model/nostr/relays.cljc]]
+;; [[../../mutations/nostr/relays.cljc]]
+;; [[../../queries/nostr/relays.clj]]
+;; [[../../ui/nostr/relays.cljs]]
 
 (>def ::client any?)
 
@@ -75,7 +75,6 @@
   [relay-id]
   [::m.n.relays/id => (? ::client)]
   (log/trace :connect!/starting {:relay-id relay-id})
-  (q.n.relays/set-connected relay-id true)
   (if-let [client   (get-client-for-id relay-id false)]
     (do
       (log/trace :connect!/finished {:client client})
@@ -107,16 +106,15 @@
   [relay-id]
   [::m.n.relays/id => any?]
   (log/info :disconnect!/starting {:relay-id relay-id})
-  (let [response (q.n.relays/set-connected relay-id false)
-        relay    (q.n.relays/read-record relay-id)
+  (let [relay    (q.n.relays/read-record relay-id)
         url      (::m.n.relays/address relay)
         client   (get-client-for-id relay-id false)]
     (if client
       (ws/close! client)
       (log/warn :disconnect/no-connection {}))
     (swap! a.n.relay-client/connections dissoc url)
-    (log/info :disconnect!/finished {:response response :client client})
-    response))
+    (log/info :disconnect!/finished {:client client})
+    relay))
 
 (>defn register-relay!
   "Register a relay record from an address"
@@ -136,8 +134,6 @@
   (send! relay-id
          {:kinds [3]
           :authors ["6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"]})
-
-  (q.n.relays/create-connected-toggle)
 
   (q.n.relays/read-record relay-id)
 

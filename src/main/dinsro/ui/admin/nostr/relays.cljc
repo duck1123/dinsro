@@ -29,6 +29,7 @@
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../actions/nostr/relays.clj]]
 ;; [[../../../joins/nostr/relays.cljc]]
 ;; [[../../../model/nostr/relays.cljc]]
 ;; [[../../../ui/admin/nostr/relays/connections.cljc]]
@@ -76,8 +77,8 @@
                          ::j.n.relays/connection-count #(u.links/ui-admin-relay-connection-count-link %3)
                          ::j.n.relays/request-count    #(u.links/ui-admin-relay-request-count-link %3)}
    ro/columns           [m.n.relays/address
-                         m.n.relays/connected
                          j.n.relays/request-count
+                         j.n.relays/active-connection-count
                          j.n.relays/connection-count]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh u.links/refresh-control}

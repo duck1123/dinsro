@@ -34,11 +34,15 @@
 ;; [[../../mutations/nostr/relays.cljc]]
 ;; [[../../queries/nostr/relays.clj]]
 ;; [[../../ui/admin/nostr/relays.cljc]]
+;; [[../../ui/nostr/event_tags/relays.cljc]]
 
 (def index-page-key :nostr-relays)
 (def model-key ::m.n.relays/id)
 (def show-menu-id :nostr-relays)
 (def show-page-key :nostr-relays-show)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.relays/delete!))
 
 (def submit-button
   {:type   :button
@@ -77,7 +81,7 @@
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.n.relays/delete!)]
+   ro/row-actions       [delete-action]
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true

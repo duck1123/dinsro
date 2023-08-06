@@ -4,6 +4,10 @@
    [dinsro.queries.nostr :as q.nostr]
    [lambdaisland.glogc :as log]))
 
+;; [[./model.cljc]]
+;; [[./queries/instances.clj]]
+;; [[./queries/nostr.clj]]
+
 (defn initialize-queries!
   []
   (log/info :initialize-queries!/starting {})

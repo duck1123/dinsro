@@ -15,6 +15,8 @@
    [xtdb.api :as xt]))
 
 ;; [[../../actions/nostr/relays.clj]]
+;; [[../../queries.clj]]
+;; [[../../ui/nostr/relays.cljc]]
 
 (def model-key ::m.n.relays/id)
 
@@ -92,33 +94,6 @@
     (do
       (log/info :register-relay/not-found {})
       (create-record {::m.n.relays/address address}))))
-
-(defn create-connected-toggle
-  []
-  (log/info :create-connected-toggle/starting {})
-  (let [toggle-connected {:xt/id ::toggle-connected
-                          :xt/fn '(fn [ctx eid connected]
-                                    (let [db           (xtdb.api/db ctx)
-                                          entity       (xtdb.api/entity db eid)
-                                          updated-data (assoc entity ::m.n.relays/connected connected)]
-                                      [[::xt/put updated-data]]))}
-        node (c.xtdb/get-node)]
-    (xt/await-tx node (xt/submit-tx node [[::xt/put toggle-connected]]))))
-
-(>defn set-connected
-  [relay-id connected]
-  [::m.n.relays/id ::m.n.relays/connected => any?]
-  (log/info :set-connected/starting {:relay-id relay-id :connected connected})
-  (let [node     (c.xtdb/get-node)
-        response (xt/submit-tx node [[::xt/fn ::toggle-connected relay-id connected]])]
-    (log/trace :set-connected/finished {:response response})
-    response))
-
-(defn initialize-queries!
-  []
-  (log/info :initialize-queries!/starting {})
-  (create-connected-toggle)
-  (log/info :initialize-queries!/finished {}))
 
 (defn find-by-connection
   [connection-id]

@@ -23,6 +23,7 @@
 ;; [[../../../mutations/nostr/event_tags.cljc]]
 ;; [[../../../mutations/nostr/relays.cljc]]
 ;; [[../../../ui/nostr.cljs]]
+;; [[../../../ui/nostr/relays.cljc]]
 
 (def index-page-key :nostr-event-tags-show-relays)
 (def model-key ::m.n.relays/id)
@@ -49,8 +50,8 @@
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
-   ro/columns           [m.n.relays/connected
-                         m.n.relays/address
+   ro/columns           [m.n.relays/address
+                         j.n.relays/active-connection-count
                          j.n.relays/connection-count
                          j.n.relays/request-count]
    ro/control-layout    {:action-buttons [::add ::refresh]}

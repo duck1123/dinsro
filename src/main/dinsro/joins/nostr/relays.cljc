@@ -23,6 +23,25 @@
    #?(:clj {:indexer q.n.relays/index-ids
             :counter q.n.relays/count-ids})))
 
+(defattr active-connection-count ::active-connection-count :int
+  {ao/identities #{::m.n.relays/id}
+   ao/pc-input   #{::active-connections}
+   ao/pc-resolve (fn [_ {::keys [connections]}] {::active-connection-count (count connections)})})
+
+(defattr active-connections ::active-connections :ref
+  {ao/cardinality :many
+   ao/identities #{::m.n.relays/id}
+   ao/pc-input #{::m.n.relays/id}
+   ao/target ::m.n.connections/id
+   ao/pc-resolve
+   (fn [_env params]
+     (let [relay-id (::m.n.relays/id params)]
+       (log/info :request-count/starting {:relay-id relay-id})
+       (let [ids #?(:clj  (q.n.connections/index-ids {::m.n.relays/id relay-id
+                                                      :active         true})
+                    :cljs (do (comment relay-id) []))]
+         {::active-connections (m.n.requests/idents ids)})))})
+
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.n.relays/id
    ao/pc-output [{::admin-index [:total {:results [::m.n.relays/id]}]}]
@@ -74,5 +93,7 @@
    ao/pc-resolve (fn [_ {::keys [requests]}] {::request-count (count requests)})})
 
 (def attributes
-  [admin-index connection-count connections
+  [active-connection-count
+   active-connections
+   admin-index connection-count connections
    index request-count requests])
