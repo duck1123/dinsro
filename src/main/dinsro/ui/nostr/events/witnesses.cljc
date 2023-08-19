@@ -15,7 +15,8 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-;; [../../../actions/nostr/witnesses.clj]
+;; [[../../../actions/nostr/witnesses.clj]]
+;; [[../../../ui/nostr/witnesses.cljc]]
 
 (def index-page-key :nostr-events-show-witnesses)
 (def model-key ::m.n.witnesses/id)
@@ -44,12 +45,10 @@
 
 (report/defsc-report Report
   [_this props]
-  {ro/column-formatters {::m.n.witnesses/event #(u.links/ui-event-link %2)
-                         ::m.n.witnesses/run   #(u.links/ui-admin-run-link %2)
-                         ::j.n.witnesses/relay #(u.links/ui-relay-link %2)}
-   ro/columns           [j.n.witnesses/relay
-                         m.n.witnesses/id
-                         m.n.witnesses/run]
+  {ro/column-formatters {::m.n.witnesses/event #(when %2 (u.links/ui-event-link %2))
+                         ::m.n.witnesses/relay #(when %2 (u.links/ui-relay-link %2))}
+   ro/columns           [m.n.witnesses/relay
+                         m.n.witnesses/id]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh        u.links/refresh-control}

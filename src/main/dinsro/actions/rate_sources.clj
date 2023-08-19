@@ -18,8 +18,8 @@
    [mount.core :as mount]
    [tick.alpha.api :as t]))
 
-;; [../queries/rate_sources.clj]
-;; [../processors/rate_sources.clj]
+;; [[../queries/rate_sources.clj]]
+;; [[../processors/rate_sources.clj]]
 
 (declare ^:dynamic *scheduler*)
 

@@ -12,7 +12,7 @@
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.nostr.runs :as u.n.runs]))
+   [dinsro.ui.nostr.relays :as u.n.relays]))
 
 ;; [[../../model/nostr/witnesses.cljc]]
 ;; [[../../queries/nostr/witnesses.clj]]
@@ -22,15 +22,15 @@
 (def log-witness-props false)
 
 (defsc WitnessDisplay
-  [_this {::m.n.witnesses/keys [run] :as props}]
+  [_this {::m.n.witnesses/keys [relay] :as props}]
   {:ident         ::m.n.witnesses/id
    :query         [::m.n.witnesses/id
-                   {::m.n.witnesses/run (comp/get-query u.n.runs/RunDisplay)}]
+                   {::m.n.witnesses/relay (comp/get-query u.n.relays/RelayDisplay)}]
    :initial-state {::m.n.witnesses/id  nil
-                   ::m.n.witnesses/run {}}}
+                   ::m.n.witnesses/relay {}}}
   (ui-list-item {}
     (when log-witness-props (dom/div {} (u.links/ui-witness-link props)))
-    (u.n.runs/ui-run-display run)))
+    (u.n.relays/ui-relay-display relay)))
 
 (def ui-witness-display (comp/factory WitnessDisplay {:keyfn ::m.n.witnesses/id}))
 
@@ -38,7 +38,7 @@
   [_this _props]
   {ro/columns          [m.n.witnesses/id
                         m.n.witnesses/event
-                        m.n.witnesses/run]
+                        m.n.witnesses/relay]
    ro/control-layout   {:action-buttons [::new ::refresh]}
    ro/controls         {::refresh u.links/refresh-control}
    ro/machine          spr/machine

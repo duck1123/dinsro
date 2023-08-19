@@ -23,6 +23,7 @@
 
 ;; [[../../../joins/nostr/connections.cljc]]
 ;; [[../../../model/nostr/connections.cljc]]
+;; [[../../../mutations/nostr/connections.cljc]]
 ;; [[../../../ui/admin/nostr/connections/runs.cljc]]
 ;; [[../../../ui/nostr/connections.cljs]]
 
@@ -30,6 +31,9 @@
 (def model-key ::m.n.connections/id)
 (def show-menu-id :admin-nostr-connections)
 (def show-page-key :admin-nostr-connections-show)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.connections/delete!))
 
 (def disconnect-action
   (u.buttons/row-action-button "Disconnect" model-key mu.n.connections/disconnect!))
@@ -92,6 +96,7 @@
                          ::m.n.connections/relay  #(u.links/ui-admin-relay-link %2)}
    ro/columns           [m.n.connections/status
                          m.n.connections/relay
+                         m.n.connections/instance
                          m.n.connections/start-time
                          m.n.connections/end-time
                          j.n.connections/run-count]
@@ -100,10 +105,11 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [disconnect-action]
+   ro/row-actions       [disconnect-action
+                         delete-action]
    ro/row-pk            m.n.connections/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.connections/index
+   ro/source-attribute  ::j.n.connections/admin-index
    ro/title             "Connections"})
 
 (def ui-report (comp/factory Report))

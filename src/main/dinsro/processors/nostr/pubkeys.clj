@@ -10,11 +10,16 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
+   [dinsro.responses.nostr.pubkeys :as r.n.pubkeys]
    [dinsro.specs :as ds]
    [dinsro.specs.nostr.pubkeys :as s.n.pubkeys]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/pubkeys.clj]]
+;; [[../../mutations/nostr/pubkeys.cljc]]
+;; [[../../responses/nostr/pubkeys.cljc]]
+
+(def model-key ::m.n.pubkeys/id)
 
 (>defn update-pubkey!
   "Fetch the kind 0 information for a pubkey"
@@ -80,3 +85,10 @@
 (defn fetch-events!
   [props]
   (log/info :fetch-events!/starting {:props props}))
+
+(defn delete!
+  [_env props]
+  (let [id (model-key props)]
+    (a.n.pubkeys/delete! id)
+    {::mu/status                   :ok
+     ::r.n.pubkeys/deleted-records (m.n.pubkeys/idents [id])}))

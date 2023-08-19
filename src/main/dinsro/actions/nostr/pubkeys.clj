@@ -6,7 +6,6 @@
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [dinsro.actions.nostr.filter-items :as a.n.filter-items]
    [dinsro.actions.nostr.filters :as a.n.filters]
-   [dinsro.actions.nostr.relay-client :as a.n.relay-client]
    [dinsro.actions.nostr.relays :as a.n.relays]
    [dinsro.actions.nostr.requests :as a.n.requests]
    [dinsro.client.converters.byte-vector :as cs.byte-vector]
@@ -26,6 +25,7 @@
 ;; [[../../mutations/nostr/pubkeys.cljc]]
 ;; [[../../queries/nostr/pubkeys.clj]]
 ;; [[../../ui/nostr/pubkeys.cljs]]
+;; [[../../../../notebooks/dinsro/notebooks/nostr/pubkeys_notebook.clj]]
 
 (>defn parse-content-parsed
   [data]
@@ -179,43 +179,6 @@
   [hex]
   (bech32-encode hex "npub"))
 
-(comment
-
-  (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
-  (q.n.relays/read-record relay-id)
-
-  a.n.relay-client/connections
-
-  (q.n.pubkeys/index-ids)
-
-  (a.n.relays/disconnect! relay-id)
-
-  (def pubkey-id (first (q.n.pubkeys/index-ids)))
-  pubkey-id
-
-  (def hex (::m.n.pubkeys/hex (q.n.pubkeys/read-record pubkey-id)))
-
-  ;; https://github.com/nostr-protocol/nips/blob/master/19.md
-  (def hex2 "7e7e9c42a91bfef19fa929e5fda1b72e0ebc1a4c1141673e2794234d86addf4e")
-  (def expected-npub "npub10elfcs4fr0l0r8af98jlmgdh9c8tcxjvz9qkw038js35mp4dma8qzvjptg")
-
-  (def bv (cs/get-or-nil (cs.byte-vector/->obj hex2)))
-  bv
-  (def data-5bit (.from8bitTo5bit Bech32$/MODULE$ bv))
-  (def hrp-5bit (.hrpExpand Bech32$/MODULE$ "npub"))
-
-  org.bitcoins.core.util.Bech32Encoding/Bech32m
-
-  (.concat hrp-5bit data-5bit)
-  (def checksum (.createChecksum Bech32$/MODULE$ (.concat hrp-5bit data-5bit)
-                                 Bech32Encoding$Bech32$/MODULE$))
-
-  (.encode5bitToString Bech32$/MODULE$ checksum)
-
-  (bech32-encode hex2 "npub")
-
-  (calculate-npub hex2)
-
-  (fetch-pubkey! "3d842afecd5e293f28b6627933704a3fb8ce153aa91d790ab11f6a752d44a42d")
-
-  nil)
+(defn delete!
+  [id]
+  (q.n.pubkeys/delete! id))

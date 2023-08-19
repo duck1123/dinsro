@@ -12,6 +12,7 @@
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
    [dinsro.ui.admin.nostr.pubkeys.badge-acceptances :as u.a.n.p.badge-acceptances]
    [dinsro.ui.admin.nostr.pubkeys.badge-awards :as u.a.n.p.badge-awards]
    [dinsro.ui.admin.nostr.pubkeys.badge-definitions :as u.a.n.p.badge-definitions]
@@ -20,6 +21,7 @@
    [dinsro.ui.admin.nostr.pubkeys.items :as u.a.n.p.items]
    [dinsro.ui.admin.nostr.pubkeys.relays :as u.a.n.p.relays]
    [dinsro.ui.admin.nostr.pubkeys.users :as u.a.n.p.users]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -29,12 +31,16 @@
 
 ;; [[../../../joins/nostr/pubkeys.cljc]]
 ;; [[../../../model/nostr/pubkeys.cljc]]
+;; [[../../../mutations/nostr/pubkeys.cljc]]
 
 (def index-page-key :admin-nostr-pubkeys)
 (def model-key ::m.n.pubkeys/id)
 (def parent-router-key :admin-nostr)
 (def show-menu-id :admin-nostr-pubkeys)
 (def show-page-key :admin-nostr-pubkeys-show)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.pubkeys/delete!))
 
 (report/defsc-report Report
   [_this _props]
@@ -50,6 +56,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
+   ro/row-actions       [delete-action]
    ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.pubkeys/admin-index

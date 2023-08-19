@@ -9,7 +9,7 @@
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.specs :as ds]))
 
-;; [../../actions/nostr/runs.clj]
+;; [[../../actions/nostr/runs.clj]]
 
 (>def ::id uuid?)
 (defattr id ::id :uuid

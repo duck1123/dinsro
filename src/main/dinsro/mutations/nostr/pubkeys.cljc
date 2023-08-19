@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def =>]]
+   #?(:cljs [com.fulcrologic.fulcro.algorithms.normalized-state :as fns])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.nostr.pubkey-contacts :as a.n.pubkey-contacts])
@@ -16,12 +17,16 @@
    #?(:clj [dinsro.processors.nostr.badge-awards :as p.n.badge-awards])
    #?(:clj [dinsro.processors.nostr.badge-definitions :as p.n.badge-definitions])
    #?(:clj [dinsro.processors.nostr.pubkeys :as p.n.pubkeys])
-   #?(:cljs [dinsro.responses.nostr.pubkeys :as r.n.pubkeys])))
+   [dinsro.responses.nostr.pubkeys :as r.n.pubkeys]))
 
 ;; [[../../actions/nostr/pubkeys.clj]]
 ;; [[../../model/nostr/relays.cljc]]
 ;; [[../../model/nostr/relay_pubkeys.cljc]]
+;; [[../../processors/nostr/pubkeys.clj]]
+;; [[../../responses/nostr/pubkeys.cljc]]
 ;; [[../../ui/nostr/pubkeys.cljs]]
+
+(def model-key ::m.n.pubkeys/id)
 
 #?(:cljs (comment ::m.contacts/_ ::m.n.badge-awards/id ::m.n.relays/_ ::pc/_))
 
@@ -41,6 +46,24 @@
    (fm/defmutation add-contact! [_props]
      (action [_env] true)
      (remote [env]  (fm/returning env r.n.pubkeys/AddContactResponse))))
+
+;; Delete
+
+#?(:clj
+   (pc/defmutation delete!
+     [env props]
+     {::pc/params #{::m.n.pubkeys/id}
+      ::pc/output [::mu/status ::mu/errors ::r.n.pubkeys/deleted-records]}
+     (p.n.pubkeys/delete! env props))
+
+   :cljs
+   (fm/defmutation delete! [_props]
+     (action [_env] true)
+     (ok-action [{:keys [state] :as env}]
+       (doseq [record (get-in env [:result :body `delete! ::r.n.pubkeys/deleted-records])]
+         (swap! state fns/remove-entity [model-key (model-key record)])))
+     (remote [env]
+       (fm/returning env r.n.pubkeys/DeleteResponse))))
 
 ;; Fetch
 
@@ -118,7 +141,8 @@
 
 #?(:clj
    (def resolvers
-     [fetch!
+     [delete!
+      fetch!
       fetch-contacts!
       fetch-definitions!
       fetch-events!]))

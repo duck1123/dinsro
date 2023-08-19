@@ -79,7 +79,7 @@
 
 (defn beat!
   [id]
-  (log/debug :set-connecting!/starting {:id id})
+  (log/debug :beat!/starting {:id id})
   (c.xtdb/submit-tx! ::beat! [id]))
 
 (defn create-beat!

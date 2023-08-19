@@ -5,10 +5,12 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
+   [dinsro.model.instances :as m.instances]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.specs :as ds]))
 
 ;; [[../../actions/nostr/connections.clj]]
+;; [[../../processors/nostr/connections.clj]]
 ;; [[../../queries/nostr/connections.clj]]
 
 (>def ::id uuid?)
@@ -20,6 +22,13 @@
 (defattr end-time ::end-time :instant
   {ao/identities #{::id}
    ao/schema     :production})
+
+(>def ::instance uuid?)
+(defattr instance ::instance :ref
+  {ao/identities       #{::id}
+   ao/target           ::m.instances/id
+   ao/schema           :production
+   ::report/column-EQL {::instance [::m.instances/id]}})
 
 (>def ::relay uuid?)
 (defattr relay ::relay :ref
@@ -41,10 +50,10 @@
 
 (>def ::params (s/keys :req [::relay]))
 (>def ::item (s/keys :req [::id ::relay ::status]
-                     :opt [::start-time ::end-time]))
+                     :opt [::start-time ::end-time ::instance]))
 
 (>def ::ident (s/keys :req [::id]))
 (>defn ident [id] [::id => ::ident] {::id id})
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
-(def attributes [id end-time relay start-time status])
+(def attributes [id end-time instance relay start-time status])

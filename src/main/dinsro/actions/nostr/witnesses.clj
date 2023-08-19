@@ -8,12 +8,12 @@
    [dinsro.queries.nostr.witnesses :as q.n.witnesses]
    [lambdaisland.glogc :as log]))
 
-;; [../../joins/nostr/witnesses.cljc]
-;; [../../model/nostr/witnesses.cljc]
-;; [../../queries/nostr/witnesses.clj]
-;; [../../ui/admin/nostr/witnesses.cljs]
-;; [../../ui/nostr/events/witnesses.cljs]
-;; [../../ui/nostr/witnesses.cljs]
+;; [[../../joins/nostr/witnesses.cljc]]
+;; [[../../model/nostr/witnesses.cljc]]
+;; [[../../queries/nostr/witnesses.clj]]
+;; [[../../ui/admin/nostr/witnesses.cljs]]
+;; [[../../ui/nostr/events/witnesses.cljs]]
+;; [[../../ui/nostr/witnesses.cljs]]
 
 (>defn register-witness!
   [event-id run-id]
@@ -31,3 +31,7 @@
   (log/info :witness!/starting {:run-id run-id :msg msg})
   (let [event-id (a.n.events/register-event! msg)]
     (register-witness! event-id run-id)))
+
+(defn delete!
+  [id]
+  (q.n.witnesses/delete! id))

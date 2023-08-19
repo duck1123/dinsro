@@ -5,20 +5,30 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
    [dinsro.queries.nostr.connections :as q.n.connections]
+   [dinsro.responses.nostr.connections :as r.n.connections]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/connections.clj]]
+
+(def model-key ::m.n.connections/id)
 
 (defn connect!
   [props]
   (log/info :connect!/starting {:props props})
   (throw (ex-info "Not Implemented" {})))
 
+(defn delete!
+  [_env props]
+  (let [id (model-key props)]
+    (a.n.connections/delete! id)
+    {::mu/status :ok
+     ::r.n.connections/deleted-records (m.n.connections/idents [id])}))
+
 (defn disconnect!
   [props]
   (log/info :disconnect!/starting {:props props})
-  (let [connection-id (::m.n.connections/id props)]
-    (a.n.connections/disconnect! connection-id)
+  (let [id (model-key props)]
+    (a.n.connections/disconnect! id)
     {::mu/status :ok}))
 
 (defn toggle!

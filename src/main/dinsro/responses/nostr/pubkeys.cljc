@@ -8,6 +8,10 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations :as mu]))
 
+;; [[../../mutations/nostr/pubkeys.cljc]]
+
+(def model-key ::m.n.pubkeys/id)
+
 (defsc AddContactResponse
   [_ _]
   {:initial-state {::mu/status :initial
@@ -15,6 +19,15 @@
    :query         [{::mu/errors (comp/get-query mu/ErrorData)}
                    ::mu/status
                    ::m.contacts/item]})
+
+(defsc DeleteResponse
+  [_this _props]
+  {:initial-state {::deleted-records []
+                   ::mu/status       :initial
+                   ::mu/errors       {}}
+   :query         [{::deleted-records [model-key]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status]})
 
 (defsc FetchResponse
   [_ _]

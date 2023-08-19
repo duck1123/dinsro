@@ -24,35 +24,39 @@
 
 ;; [[../../../joins/nostr/runs.cljc]]
 ;; [[../../../model/nostr/runs.cljc]]
+;; [[../../../mutations/nostr/runs.cljc]]
 
 (def index-page-key :admin-nostr-runs)
 (def model-key ::m.n.runs/id)
 (def show-menu-id :admin-nostr-runs)
 (def show-page-key :admin-nostr-runs-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.runs/delete!))
+
 (def stop-action
   (u.buttons/row-action-button "Stop" model-key mu.n.runs/stop!))
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.runs/connection #(u.links/ui-admin-connection-link %2)
-                         ::m.n.runs/request    #(u.links/ui-admin-request-link %2)
+  {ro/column-formatters {::m.n.runs/connection #(when %2 (u.links/ui-admin-connection-link %2))
+                         ::m.n.runs/request    #(when %2 (u.links/ui-admin-request-link %2))
                          ::m.n.runs/status     #(u.links/ui-admin-run-link %3)
-                         ::j.n.runs/relay      #(u.links/ui-admin-relay-link %2)}
+                         ::j.n.runs/relay      #(when %2 (u.links/ui-admin-relay-link %2))}
    ro/columns           [m.n.runs/status
+                         j.n.runs/relay
                          m.n.runs/request
                          m.n.runs/connection
                          m.n.runs/start-time
                          m.n.runs/finish-time
-                         m.n.runs/end-time
-                         j.n.runs/relay]
+                         m.n.runs/end-time]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
    ro/route             "runs"
-   ro/row-actions       [stop-action]
+   ro/row-actions       [stop-action delete-action]
    ro/row-pk            m.n.runs/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.runs/admin-index

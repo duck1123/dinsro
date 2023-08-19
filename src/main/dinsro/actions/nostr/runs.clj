@@ -9,7 +9,6 @@
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.runs :as m.n.runs]
-   [dinsro.queries.nostr.connections :as q.n.connections]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.requests :as q.n.requests]
    [dinsro.queries.nostr.runs :as q.n.runs]
@@ -17,7 +16,10 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../../model/nostr/runs.cljc]]
+;; [[../../mutations/nostr/runs.cljc]]
 ;; [[../../queries/nostr/runs.clj]]
+;; [[../../ui/admin/nostr/runs.cljc]]
+;; [[../../../../notebooks/dinsro/notebooks/nostr/runs_notebook.clj]]
 
 (defn register-run!
   [request-id connection-id]
@@ -111,24 +113,4 @@
 (defn delete!
   [run-id]
   (log/info :delete!/starting {:run-id run-id})
-  (throw (ex-info "Not Implemented" {})))
-
-(comment
-
-  (def run-id (first (q.n.runs/find-active)))
-  run-id
-
-  (stop! run-id)
-
-  (q.n.connections/index-ids)
-  (def connection-id (first (q.n.connections/find-connected)))
-  connection-id
-
-  (q.n.runs/find-by-connection connection-id)
-  (q.n.runs/find-active-by-connection connection-id)
-
-  (q.n.runs/find-active)
-
-  (q.n.runs/read-record run-id)
-
-  nil)
+  (q.n.runs/delete! run-id))

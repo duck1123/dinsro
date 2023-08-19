@@ -1,0 +1,79 @@
+* [[./actions/][Actions]]
+
+Server-side code that performs operations on the state
+
+* Client
+
+code that interops with the bitcoin-s library
+
+* [[./client.cljs][client.cljs]]
+
+The main entrypoint for the ui
+
+This does the job of initializing the application and then mounting the Root component
+
+* Components
+
+libraries and functionality that is loaded by start-up code
+
+* [[./core.clj][core.clj]]
+
+The main entrypoint for the server
+
+* Formatters
+
+value formatting code
+
+* Handlers
+
+Deprecated. See processors
+
+* Joins
+
+pathom attibutes that require some calculation or need full access to the model
+namespaces
+
+Joins have access to all models, all actions and parent joins
+
+* Lib
+
+Deprecated. See Components
+
+* Model
+
+The main definitions for objects in the system.
+
+Models should only access their parent models
+
+* Mutations
+
+Definition for mutations sent by the front end. For each mutation, there is a
+cljs side that describes the operation for the client and then a mutation
+registration for the server side.
+
+Server side mutations defer to the clj-only processors namespace to handle the
+mutation.
+
+Specs for any operations are defined by the responses namespace.
+
+* Processors
+
+Clj-only code that handles the task of processing a mutation's params and
+constructing a response by calling the relevant functions in actions and
+formatting it according to the requirements of the spec in responses
+
+* Queries
+
+Clj-only code for handling the low-level interactions with the database
+
+* Responses
+
+Specs and query-only components for describing the requests and responses for mutations
+
+* Specs
+
+Deprecated. See Responses
+
+* UI
+
+front-end code

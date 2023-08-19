@@ -24,9 +24,11 @@
 
 (ds/gen-key ::m.instances/item)
 
-(comment
+a.instances/*current-instance-id*
 
-  (map q.instances/read-record (q.instances/index-ids))
+(map q.instances/read-record (q.instances/index-ids))
+
+(comment
 
   (a.instances/register!)
 

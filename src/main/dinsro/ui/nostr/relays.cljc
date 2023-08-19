@@ -155,6 +155,17 @@
 
 (def ui-show (comp/factory Show))
 
+(defsc RelayDisplay
+  [_this props]
+  {:ident         ::m.n.relays/id
+   :initial-state {::m.n.relays/id     nil
+                   ::m.n.relays/address ""}
+   :query         [::m.n.relays/id
+                   ::m.n.relays/address]}
+  (u.links/ui-admin-relay-link props))
+
+(def ui-relay-display (comp/factory RelayDisplay {:keyfn ::m.n.relays/id}))
+
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as props}]

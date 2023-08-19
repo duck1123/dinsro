@@ -10,6 +10,8 @@
    [dinsro.joins.nostr.witnesses :as j.n.witnesses]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
+   [dinsro.mutations.nostr.witnesses :as mu.n.witnesses]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -18,26 +20,31 @@
 ;; [[../../../actions/nostr/witnesses.clj]]
 ;; [[../../../joins/nostr/witnesses.cljc]]
 ;; [[../../../model/nostr/witnesses.cljc]]
+;; [[../../../mutations/nostr/witnesses.cljc]]
+;; [[../../../ui/admin/nostr/runs/witnesses.cljc]]
+;; [[../../../ui/nostr/events/witnesses.cljc]]
 
 (def index-page-key :admin-nostr-witnesses)
 (def model-key ::m.n.witnesses/id)
 (def show-page-key :admin-nostr-witnesses-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.witnesses/delete!))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.witnesses/id #(u.links/ui-admin-witness-link %3)
-                         ::m.n.witnesses/event #(u.links/ui-admin-event-link %2)
-                         ::m.n.witnesses/run   #(u.links/ui-admin-run-link %2)
-                         ::j.n.witnesses/relay #(u.links/ui-admin-relay-link %2)}
+                         ::m.n.witnesses/event #(when %2 (u.links/ui-admin-event-link %2))
+                         ::m.n.witnesses/relay #(when %2 (u.links/ui-admin-relay-link %2))}
    ro/columns           [m.n.witnesses/id
                          m.n.witnesses/event
-                         m.n.witnesses/run
-                         j.n.witnesses/relay]
+                         m.n.witnesses/relay]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
+   ro/row-actions       [delete-action]
    ro/row-pk            m.n.witnesses/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.witnesses/admin-index
@@ -46,17 +53,17 @@
 (def ui-report (comp/factory Report))
 
 (defsc Show
-  [_this {::m.n.witnesses/keys [id event run]
+  [_this {::m.n.witnesses/keys [id event relay]
           :as                  props}]
   {:ident         ::m.n.witnesses/id
    :initial-state (fn [props]
                     (let [id (model-key props)]
                       {model-key             id
                        ::m.n.witnesses/event {}
-                       ::m.n.witnesses/run   {}}))
+                       ::m.n.witnesses/relay {}}))
    :query         [::m.n.witnesses/id
                    ::m.n.witnesses/event
-                   ::m.n.witnesses/run]}
+                   {::m.n.witnesses/relay (comp/get-query u.links/AdminRelayLinkForm)}]}
   (log/info :Show/starting {:props props})
   (if id
     (ui-segment {}
@@ -65,10 +72,10 @@
         (when event
           (u.links/ui-admin-event-link event)))
       (dom/div {}
-        (when run
+        (when relay
           (dom/div {}
-            (u.debug/log-props run)
-            (comment (u.links/ui-admin-run-link run)))))
+            (u.debug/log-props relay)
+            (comment (u.links/ui-admin-relay-link relay)))))
       (u.debug/log-props props))
     (u.debug/load-error props "admin show witness")))
 

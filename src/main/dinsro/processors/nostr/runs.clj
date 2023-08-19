@@ -3,15 +3,23 @@
    [dinsro.actions.nostr.runs :as a.n.runs]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.mutations :as mu]
+   [dinsro.responses.nostr.runs :as r.n.runs]
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/nostr/runs.clj]]
+;; [[../../model/nostr/runs.cljc]]
+;; [[../../mutations/nostr/runs.cljc]]
+
+(def model-key ::m.n.runs/id)
+
 (defn delete!
-  [props]
+  [_env props]
   (log/info :do-delete!/starting {:props props})
-  (if-let [run-id (::m.n.runs/id props)]
+  (if-let [id (model-key props)]
     (try
-      (a.n.runs/delete! run-id)
-      {::mu/status :ok}
+      (a.n.runs/delete! id)
+      {::mu/status                :ok
+       ::r.n.runs/deleted-records (m.n.runs/idents [id])}
       (catch Exception ex
         (mu/exception-response ex)))
     (mu/error-response "No run id")))
@@ -19,9 +27,9 @@
 (defn stop!
   [props]
   (log/info :stop!/starting {:props props})
-  (if-let [run-id (::m.n.runs/id props)]
+  (if-let [id (model-key props)]
     (try
-      (a.n.runs/stop! run-id)
+      (a.n.runs/stop! id)
       (log/info :stop!/finished {})
       {::mu/status :ok}
       (catch Exception ex

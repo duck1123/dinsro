@@ -1,6 +1,7 @@
 (ns dinsro.core
   (:require
    [clojure.tools.cli :refer [parse-opts]]
+   [dinsro.actions.instances :as a.instances]
    [dinsro.components.config :as c.config]
    [dinsro.components.database-queries]
    [dinsro.components.nrepl]
@@ -43,7 +44,8 @@
     (let [options (parse-opts args cli-options)]
       (doseq [component (-> options mount/start-with-args :started)]
         (log/debug :component/started {:component component})))
-    (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app))))
+    (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app))
+    (a.instances/register!)))
 
 (defn -main
   [& args]

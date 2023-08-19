@@ -6,11 +6,9 @@
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
-   [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.queries.nostr.connections :as q.n.connections]
    [dinsro.queries.nostr.relays :as q.n.relays]
-   [dinsro.queries.nostr.requests :as q.n.requests]
    [dinsro.queries.nostr.runs :as q.n.runs]
    [dinsro.specs :as ds]
    [hato.websocket :as ws]
@@ -286,51 +284,6 @@
       (log/error :disconnect!/no-client {:connection-id connection-id})
       nil)))
 
-(comment
-
-  (def relay-id (first (q.n.relays/index-ids)))
-  relay-id
-
-  (q.n.connections/find-by-relay relay-id)
-
-  (ds/gen-key ::m.n.connections/item)
-  (q.n.connections/index-ids)
-
-  (register-connection! relay-id)
-
-  (map q.n.connections/read-record (q.n.connections/find-connected))
-
-  (def connection-id (first (q.n.connections/find-connected)))
-  connection-id
-
-  (q.n.connections/set-disconnected! connection-id)
-
-  (q.n.connections/read-record connection-id)
-  (disconnect! connection-id)
-
-  (some-> (q.n.relays/find-by-connection connection-id)
-          q.n.relays/read-record)
-
-  (start! connection-id)
-
-  (get-client connection-id)
-
-  (def code (::m.n.requests/code (q.n.requests/read-record (first (q.n.requests/index-ids)))))
-
-  (q.n.runs/index-ids)
-  (q.n.runs/find-active)
-
-  (q.n.runs/find-active-by-connection connection-id)
-  (q.n.runs/find-active-by-code code)
-
-  (q.n.runs/find-active-by-connection-and-code connection-id code)
-
-  (q.n.connections/delete! connection-id)
-  (q.n.connections/read-record connection-id)
-
-  (q.n.connections/set-connecting! connection-id)
-  (q.n.connections/set-connected! connection-id)
-  (q.n.connections/set-disconnected! connection-id)
-  (q.n.connections/set-errored! connection-id)
-
-  nil)
+(defn delete!
+  [id]
+  (q.n.connections/delete! id))

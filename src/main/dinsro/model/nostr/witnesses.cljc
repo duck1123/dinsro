@@ -6,7 +6,7 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.nostr.events :as m.n.events]
-   [dinsro.model.nostr.runs :as m.n.runs]))
+   [dinsro.model.nostr.relays :as m.n.relays]))
 
 ;; [[../../ui/admin/nostr/witnesses.cljs]]
 ;; [[../../ui/nostr/witnesses.cljs]]
@@ -23,19 +23,19 @@
    ao/schema           :production
    ::report/column-EQL {::event [::m.n.events/id ::m.n.events/note-id]}})
 
-;; [./runs.cljc]
-(>def ::run uuid?)
-(defattr run ::run :ref
+;; [[./relays.cljc]]
+(>def ::relay uuid?)
+(defattr relay ::relay :ref
   {ao/identities       #{::id}
-   ao/target           ::m.n.runs/id
+   ao/target           ::m.n.relays/id
    ao/schema           :production
-   ::report/column-EQL {::run [::m.n.runs/id ::m.n.runs/status]}})
+   ::report/column-EQL {::relay [::m.n.relays/id ::m.n.relays/address]}})
 
-(>def ::params (s/keys :req [::run ::event]))
-(>def ::item (s/keys :req [::id ::run ::event]))
+(>def ::params (s/keys :req [::event] :opt [::relay]))
+(>def ::item (s/keys :req [::id ::event] :opt [::relay]))
 
 (>def ::ident (s/keys :req [::id]))
 (>defn ident [id] [::id => ::ident] {::id id})
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
-(def attributes [id run event])
+(def attributes [id event relay])

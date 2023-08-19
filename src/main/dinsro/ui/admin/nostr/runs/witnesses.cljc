@@ -13,6 +13,8 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../../ui/admin/nostr/witnesses.cljc]]
+
 (def index-page-key :admin.nostr-runs-show-witnesses)
 (def model-key ::m.n.witnesses/id)
 (def parent-model-key ::m.n.runs/id)
@@ -20,11 +22,11 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.witnesses/event #(u.links/ui-admin-event-link %2)
-                         ::m.n.witnesses/run   #(u.links/ui-admin-run-link %2)}
+  {ro/column-formatters {::m.n.witnesses/event #(when %2 (u.links/ui-admin-event-link %2))
+                         ::m.n.witnesses/relay #(when %2 (u.links/ui-admin-run-link %2))}
    ro/columns           [m.n.witnesses/id
                          m.n.witnesses/event
-                         m.n.witnesses/run]
+                         m.n.witnesses/relay]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh     u.links/refresh-control}
@@ -33,7 +35,7 @@
    ro/paginate?         true
    ro/row-pk            m.n.witnesses/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.witnesses/index
+   ro/source-attribute  ::j.n.witnesses/admin-index
    ro/title             "Witnesses"})
 
 (def ui-report (comp/factory Report))
