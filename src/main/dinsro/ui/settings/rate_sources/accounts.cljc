@@ -12,8 +12,8 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-(def ident-key ::m.rate-sources/id)
 (def index-page-key :settings-rate-sources-show-accounts)
+(def parent-model-key ::m.rate-sources/id)
 (def router-key :dinsro.ui.settings.rate-sources/Router)
 
 (report/defsc-report Report
@@ -38,7 +38,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}

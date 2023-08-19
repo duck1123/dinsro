@@ -14,7 +14,6 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-(def ident-key ::m.n.relays/id)
 (def index-page-key :nostr-relays-show-events)
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.nostr.relays/Router)
@@ -41,7 +40,7 @@
 (defsc SubPage
   [_this {:ui/keys [report]
           :as props}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)

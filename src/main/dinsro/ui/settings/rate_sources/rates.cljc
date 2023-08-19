@@ -10,7 +10,6 @@
    [dinsro.ui.charts :as u.charts]
    [dinsro.ui.links :as u.links]))
 
-(def ident-key ::m.rate-sources/id)
 (def router-key :dinsro.ui.settings.rate-sources/Router)
 
 (report/defsc-report Report

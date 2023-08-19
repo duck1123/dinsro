@@ -25,6 +25,7 @@
 (def index-page-key :admin-core)
 (def menu-key :admin-core)
 (def router-key :dinsro.ui.admin/Router)
+(def show-menu-id :admin-core)
 
 (defrouter Router
   [_this _props]
@@ -59,7 +60,7 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :admin-core
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :admin
    ::m.navbars/router ::Router
    ::m.navbars/children

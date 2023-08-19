@@ -31,6 +31,7 @@
 
 (def debug-route false)
 (def index-page-key :admin-nostr)
+(def show-menu-id :admin-nostr)
 
 (defrouter Router
   [_this  {:keys [current-state route-factory route-props router-state] :as props}]
@@ -85,7 +86,7 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :admin-nostr
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :admin
    ::m.navbars/router ::Router
    ::m.navbars/children

@@ -3,34 +3,52 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-header :refer [ui-list-header]]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-list :refer [ui-list-list]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   ;; [dinsro.model.navbars :as m.navbars]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
+   [dinsro.ui.admin.ln.nodes.accounts :as u.a.ln.n.accounts]
+   [dinsro.ui.admin.ln.nodes.addresses :as u.a.ln.n.addresses]
+   [dinsro.ui.admin.ln.nodes.channels :as u.a.ln.n.channels]
+   [dinsro.ui.admin.ln.nodes.peers :as u.a.ln.n.peers]
+   [dinsro.ui.admin.ln.nodes.remote-nodes :as u.a.ln.n.remote-nodes]
+   [dinsro.ui.admin.ln.nodes.transactions :as u.a.ln.n.transactions]
+   [dinsro.ui.admin.ln.nodes.wallet-addresses :as u.a.ln.n.wallet-addresses]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.nodes :as u.ln.nodes]
    [dinsro.ui.loader :as u.loader]
-   ;; [dinsro.ui.menus :as u.menus]
+   [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/ln/nodes.cljc]]
 ;; [[../../../model/ln/nodes.cljc]]
+;; [[../../../ui/ln/nodes.cljc]]
+;; [[../../../ui/admin/ln/nodes/accounts.cljs]]
+;; [[../../../ui/admin/ln/nodes/addresses.cljc]]
 
 (def index-page-key :admin-ln-nodes)
 (def model-key ::m.ln.nodes/id)
 (def override-create-form false)
+(def show-menu-id :admin-ln-nodes)
 (def show-page-key :admin-ln-nodes-show)
 
 (form/defsc-form NewForm
@@ -68,9 +86,9 @@
    fo/title         "Create Lightning Node"}
   (if override-create-form
     (form/render-layout this props)
-    (dom/div :.ui.grid
-      (dom/div :.row
-        (dom/div :.sixteen.wide.column
+    (ui-grid {}
+      (ui-grid-row {}
+        (ui-grid-column {:width 16}
           (dom/div {}
             (form/render-layout this props)))))))
 
@@ -103,16 +121,28 @@
 
 (def ui-report (comp/factory Report))
 
+(defrouter Router
+  [_this _props]
+  {:router-targets
+   [u.a.ln.n.accounts/SubPage
+    u.a.ln.n.addresses/SubPage
+    u.a.ln.n.channels/SubPage
+    u.a.ln.n.peers/SubPage
+    u.a.ln.n.remote-nodes/SubPage
+    u.a.ln.n.transactions/SubPage
+    u.a.ln.n.wallet-addresses/SubPage]})
+
+(def ui-router (comp/factory Router))
+
 (defsc Show
   "Show a ln node"
-  [this {;; :ui/keys          [nav-menu router]
+  [this {:ui/keys          [admin-nav-menu admin-router]
          ::m.ln.nodes/keys [id user core-node host port hasCert? hasMacaroon? network]
          :as               props}]
   {:ident         ::m.ln.nodes/id
    :initial-state (fn [props]
-                    (log/trace :Show/initial-state {:props props})
-                    (let [_id (::m.ln.nodes/id props)]
-                      {::m.ln.nodes/id           nil
+                    (let [id (model-key props)]
+                      {::m.ln.nodes/id           id
                        ::m.ln.nodes/user         {}
                        ::m.ln.nodes/network      {}
                        ::m.ln.nodes/core-node    {}
@@ -120,13 +150,13 @@
                        ::m.ln.nodes/port         0
                        ::m.ln.nodes/hasCert?     false
                        ::m.ln.nodes/hasMacaroon? false
-                       ;; :ui/router                (comp/get-initial-state Router)
-                       ;; :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :ln-nodes
-                       ;;                                                                    :id            id})
-                       }))
-   ;; :pre-merge     (u.loader/page-merger model-key
-   ;;                  {:ui/router   [Router {}]
-   ;;                   :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :ln-nodes}]})
+                       :ui/admin-router          (comp/get-initial-state Router)
+                       :ui/admin-nav-menu        (comp/get-initial-state u.menus/NavMenu
+                                                   {::m.navbars/id show-menu-id
+                                                    :id            id})}))
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/admin-router   [Router {}]
+                     :ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]})
    :query         [::m.ln.nodes/id
                    ::m.ln.nodes/host
                    ::m.ln.nodes/port
@@ -135,9 +165,8 @@
                    {::m.ln.nodes/network (comp/get-query u.links/NetworkLinkForm)}
                    {::m.ln.nodes/user (comp/get-query u.links/UserLinkForm)}
                    {::m.ln.nodes/core-node (comp/get-query u.links/CoreNodeLinkForm)}
-                   ;; {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   ;; {:ui/router (comp/get-query Router)}
-                   ]}
+                   {:ui/admin-nav-menu (comp/get-query u.menus/NavMenu)}
+                   {:ui/admin-router (comp/get-query Router)}]}
   (log/info :Show/starting {:props props})
   (dom/div {}
     (if id
@@ -146,21 +175,21 @@
          {::m.ln.nodes/id           id
           ::m.ln.nodes/hasCert?     hasCert?
           ::m.ln.nodes/hasMacaroon? hasMacaroon?})
-        (dom/div :.ui.list
-          (dom/div :.item
-            (dom/div :.header "User")
+        (ui-list-list {}
+          (ui-list-item {}
+            (ui-list-header {} "User")
             (u.links/ui-user-link user))
-          (dom/div :.item
-            (dom/div :.header "Core Node")
+          (ui-list-item {}
+            (ui-list-header {} "Core Node")
             (u.links/ui-core-node-link core-node))
-          (dom/div :.item
-            (dom/div :.header "Address")
+          (ui-list-item {}
+            (ui-list-header {} "Address")
             host ":" (str port))
-          (dom/div :.item
-            (dom/div :.header "Network")
+          (ui-list-item {}
+            (ui-list-header {} "Network")
             (u.links/ui-network-link network))
-          (dom/div :.item
-            (dom/div :.header "Has Cert?")
+          (ui-list-item {}
+            (ui-list-header {} "Has Cert?")
             (str hasCert?)
             (when-not hasCert?
               (dom/div {}
@@ -168,19 +197,17 @@
                 (dom/button {:classes [:.ui.button]
                              :onClick #(comp/transact! this [`(mu.ln/download-cert! {::m.ln.nodes/id ~id})])}
                   "Fetch"))))
-          (dom/div :.item
-            (dom/div :.header "Has Macaroon?")
+          (ui-list-item {}
+            (ui-list-header {} "Has Macaroon?")
             (if hasMacaroon?
               (str hasMacaroon?)
               (dom/a {:onClick #(comp/transact! this [`(mu.ln/download-macaroon! {::m.ln.nodes/id ~id})])}
                 (str hasMacaroon?))))))
       (ui-segment {} "Failed to load record"))
-    #_(when nav-menu (u.menus/ui-nav-menu nav-menu))
-    #_(if router
-        (ui-router router)
-        (ui-segment {}
-          (dom/h3 {} "Network Router not loaded")
-          (u.debug/ui-props-logger props)))))
+    (when admin-nav-menu (u.menus/ui-nav-menu admin-nav-menu))
+    (if admin-router
+      (ui-router admin-router)
+      (u.debug/load-error props "admin ln nodes"))))
 
 (def ui-show (comp/factory Show))
 
@@ -230,6 +257,6 @@
    ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Node"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-ln-nodes
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :admin-ln
    ::m.navlinks/required-role :admin})

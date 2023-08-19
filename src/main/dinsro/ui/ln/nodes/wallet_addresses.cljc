@@ -17,11 +17,13 @@
 ;; [[../../../joins/core/wallet_addresses.cljc]]
 ;; [[../../../model/core/wallet_addresses.cljc]]
 
-(def ident-key ::m.ln.nodes/id)
 (def index-page-key :ln-nodes-show-wallet-addresses)
 (def model-key ::m.c.wallet-addresses/id)
 (def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
+
+(def generate-action
+  (u.buttons/subrow-action-button "Generate" model-key parent-model-key mu.c.wallet-addresses/generate!))
 
 (report/defsc-report Report
   [_this _props]
@@ -37,7 +39,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/subrow-action-button "Generate" ::m.c.wallet-addresses/id ident-key mu.c.wallet-addresses/generate!)]
+   ro/row-actions       [generate-action]
    ro/row-pk            m.c.wallet-addresses/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.wallet-addresses/index
@@ -47,7 +49,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     (fn [_]
                         {::m.navlinks/id index-page-key

@@ -27,6 +27,9 @@
 (def model-key ::m.c.peers/id)
 (def show-page-key :core-peers-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!))
+
 (def submit-button
   {:type   :button
    :local? true
@@ -93,7 +96,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.c.peers/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.peers/index

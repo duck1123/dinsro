@@ -10,10 +10,13 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.addons.pagination.ui-pagination :as sui-pagination]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-list :refer [ui-list-list]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.model.navbars :as m.navbars]
@@ -64,7 +67,7 @@
    :query         [::m.n.pubkeys/id
                    ::m.n.pubkeys/name
                    ::m.n.pubkeys/picture]}
-  (dom/div :.ui.container
+  (ui-container {}
     (when picture (dom/img {:src picture}))))
 
 (defsc EventAuthor
@@ -156,9 +159,9 @@
                                  (fn [tag] (= "p" (::m.n.event-tags/type tag)))
                                  (sort-by ::m.n.event-tags/index tags))]
                 (map u.n.event-tags/ui-tag-display pubkey-tags)))))
-        (dom/div :.ui.container
+        (ui-container {}
           (condp = kind
-            0 (dom/div :.ui.container
+            0 (ui-container {}
                 (dom/div {:style {:width "100%" :overflow "auto"}}
                   (dom/code {}
                     (dom/pre {} content))))
@@ -177,7 +180,7 @@
       (dom/div :.extra.content
         (when (seq tags)
           (ui-segment {}
-            (dom/div :.ui.relaxed.divided.list
+            (ui-list-list {:divided true :relaxed true}
               (let [filtered-tags (filter
                                    (fn [tag] (not= "p" (::m.n.event-tags/type tag)))
                                    (sort-by ::m.n.event-tags/index tags))]
@@ -190,7 +193,7 @@
 (def ui-event-box (comp/factory EventBox {:keyfn ::m.n.events/id}))
 
 (def override-report false)
-(def show-controls true)
+(def show-controls false)
 
 (report/defsc-report Report
   [this props]
@@ -210,18 +213,25 @@
   (if override-report
     (report/render-layout this)
     (let [{:ui/keys [current-rows]} props]
-      (dom/div :.ui.grid.center.event-report
-        (dom/div :.ui.row.center.text.align
-          (dom/div :.ui.column
+      (ui-grid {:centered true :className "event-report"}
+        (ui-grid-row {:centered true :textAlign "center"}
+          (ui-grid-column {}
             (ui-segment {}
               (dom/h1 :.ui.header "Events"))))
-        (dom/div :.ui.row
-          (dom/div :.ui.column
-            (dom/div {:classes [:.ui :.container]}
+        (ui-grid-row {}
+          (ui-grid-column {}
+            (ui-container {}
               (ui-segment {}
                 (ui-button {:icon    "refresh"
                             :onClick (fn [_] (control/run! this))})
                 (when show-controls ((report/control-renderer this) this))
+                (let [page-count (report/page-count this)]
+                  (sui-pagination/ui-pagination
+                   {:activePage   (report/current-page this)
+                    :onPageChange (fn [_ data]
+                                    (report/goto-page! this (comp/isoget data "activePage")))
+                    :totalPages   page-count
+                    :size         "tiny"}))
                 (dom/div {:classes [:.ui :.unstackable :.divided :.items :.center :.aligned]}
                   (map ui-event-box current-rows))))))))))
 

@@ -22,6 +22,12 @@
 (def model-key ::m.c.transactions/id)
 (def parent-model-key ::m.c.blocks/id)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.transactions/delete!))
+
+(def fetch-action
+  (u.buttons/row-action-button "Fetch" model-key mu.c.transactions/fetch!))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.transactions/tx-id (u.links/report-link ::m.c.transactions/tx-id u.links/ui-core-tx-link)}
@@ -34,8 +40,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.transactions/fetch!)
-                         (u.buttons/row-action-button "Delete" model-key mu.c.transactions/delete!)]
+   ro/row-actions       [fetch-action delete-action]
    ro/row-pk            m.c.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.transactions/index

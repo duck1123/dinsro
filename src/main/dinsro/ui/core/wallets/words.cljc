@@ -6,6 +6,8 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [dinsro.joins.core.words :as j.c.words]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
@@ -51,9 +53,9 @@
         sorted-rows               (sort-by ::m.c.words/position current-rows)
         groups                    (partition 12 sorted-rows)]
     (dom/div {}
-      (dom/div :.ui.grid
+      (ui-grid {}
         (map (fn [words]
-               (dom/div :.eight.wide.column
+               (ui-grid-column {:width 8}
                  (map
                   (fn [row]
                     (let [{::m.c.words/keys [position word]} row]
@@ -77,7 +79,7 @@
         sorted-rows               (sort-by ::m.c.words/position current-rows)
         groups                    (partition 12 sorted-rows)]
     (dom/div {}
-      (dom/div :.ui.grid
+      (ui-grid {}
         (map (fn [words]
                (dom/div :.eight.wide.column
                  (map

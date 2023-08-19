@@ -9,6 +9,7 @@
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
@@ -64,7 +65,7 @@
     (dom/div {}
       (dom/div {:classes [:.ui :.inverted :.vertical :.masthead
                           :.center :.aligned :.segment container]}
-        (dom/div :.ui.container
+        (ui-container {}
           (ui-segment {}
             (dom/h1 {:classes [:.ui :.header title]}
               (if username

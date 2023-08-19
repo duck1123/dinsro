@@ -30,6 +30,9 @@
 (def force-fetch-button false)
 (def debug-page false)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.blocks/delete!))
+
 (defsc RefRow
   [this {::m.c.blocks/keys [fetched? height id] :as props}]
   {:ident ::m.c.blocks/id
@@ -146,7 +149,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.blocks/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.c.blocks/id
    ro/run-on-mount?     true
    ro/title             "Core Blocks"})

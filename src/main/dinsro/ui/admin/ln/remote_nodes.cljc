@@ -26,6 +26,9 @@
 (def model-key ::m.ln.remote-nodes/id)
 (def show-page-key :admin-ln-remote-nodes-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.ln.remote-nodes/delete!))
+
 (defrouter Router
   [_this _props]
   {:router-targets
@@ -78,7 +81,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions      [(u.buttons/row-action-button "Delete" model-key mu.ln.remote-nodes/delete!)]
+   ro/row-actions      [delete-action]
    ro/row-pk           m.ln.remote-nodes/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.remote-nodes/index

@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
@@ -25,6 +26,9 @@
 (def model-key ::m.contacts/id)
 (def override-form true)
 (def show-page-key :admin-contacts-show)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.categories/delete!))
 
 (form/defsc-form NewForm
   [this props]
@@ -55,7 +59,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.categories/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.categories/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.categories/admin-index
@@ -72,7 +76,7 @@
    :pre-merge      (u.loader/page-merger model-key {})
    :query          [::m.contacts/id
                     ::m.contacts/name]}
-  (dom/div :.ui.container
+  (ui-container {}
     (ui-segment {}
       (str name))))
 

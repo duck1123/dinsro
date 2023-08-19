@@ -6,6 +6,7 @@
    [com.fulcrologic.fulcro.mutations :as fm]
    [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [dinsro.mutations.settings :as mu.settings]
    [dinsro.ui.inputs :as u.inputs]
    [lambdaisland.glogc :as log]))
@@ -22,10 +23,10 @@
    :route-segment ["first-run"]}
   (dom/div {}
     (dom/div :.ui.inverted.vertical.masthead.center.aligned.segment
-      (dom/div :.ui.text.container
+      (ui-container {:text true}
         (dom/h1 :.ui.inverted.header "dinsro")))
-    (dom/div {:classes [:.ui.container container]}
-      (dom/h1 {:classes [:.ui :.header :.center  :.aligned  header]}
+    (ui-container {:className container}
+      (dom/h1 {:classes [:.ui :.header :.center  :.aligned header]}
         "You must create an administrator account in order to continue")
       (dom/div :.ui.middle.aligned.center.aligned.grid
         (dom/div :.column

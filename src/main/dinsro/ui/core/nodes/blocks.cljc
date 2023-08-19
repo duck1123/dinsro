@@ -25,6 +25,12 @@
 (def parent-model-key ::m.c.nodes/id)
 (def router-key :dinsro.ui.core.nodes/Router)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.blocks/delete!))
+
+(def fetch-action
+  (u.buttons/row-action-button "Fetch" model-key mu.c.blocks/fetch!))
+
 (def generate-button
   {:label "Generate"
    :local? true
@@ -53,8 +59,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "blocks"
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.blocks/id mu.c.blocks/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.blocks/id mu.c.blocks/delete!)]
+   ro/row-actions       [fetch-action delete-action]
    ro/row-pk            m.c.blocks/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.blocks/index

@@ -5,7 +5,6 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   ;; [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -24,6 +23,8 @@
 (def index-page-key :admin-core-nodes-show-wallets)
 (def model-key ::m.c.wallets/id)
 (def parent-model-key ::m.c.nodes/id)
+(def parent-show-key :admin-core-nodes-show)
+(def parent-router :admin-core-nodes)
 (def router-key :dinsro.ui.admin.core.nodes/Router)
 
 (def delete-action
@@ -83,6 +84,6 @@
    ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Wallets"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-core-nodes-show
-   ::m.navlinks/router        :admin-core-nodes
+   ::m.navlinks/parent-key    parent-show-key
+   ::m.navlinks/router        parent-router
    ::m.navlinks/required-role :admin})

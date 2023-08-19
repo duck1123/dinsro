@@ -30,6 +30,9 @@
 (def override-form true)
 (def show-page-key :admin-accounts-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.accounts/delete!))
+
 (form/defsc-form NewForm
   [this {::m.accounts/keys [currency name initial-value user]
          :as               props}]
@@ -95,7 +98,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.accounts/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.accounts/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.accounts/admin-index

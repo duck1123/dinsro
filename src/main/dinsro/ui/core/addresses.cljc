@@ -21,6 +21,9 @@
 (def index-page-key :core-addresses)
 (def model-key ::m.c.addresses/id)
 
+(def fetch-action
+  (u.buttons/row-action-button "Fetch" model-key mu.c.addresses/delete!))
+
 (form/defsc-form NewForm
   [_this _props]
   {fo/attributes   [m.c.addresses/address]
@@ -42,7 +45,7 @@
    ro/machine          spr/machine
    ro/page-size        10
    ro/paginate?        true
-   ro/row-actions      [(u.buttons/row-action-button "Fetch" ::m.c.addresses/id mu.c.addresses/delete!)]
+   ro/row-actions      [fetch-action]
    ro/row-pk           m.c.addresses/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.c.addresses/index

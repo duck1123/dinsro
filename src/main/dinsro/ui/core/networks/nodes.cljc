@@ -23,6 +23,12 @@
 (def parent-model-key ::m.c.networks/id)
 (def router-key :dinsro.ui.core.networks/Router)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!))
+
+(def fetch-action
+  (u.buttons/row-action-button "Fetch" model-key mu.c.nodes/fetch!))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.nodes/name #(u.links/ui-core-node-link %3)}
@@ -37,8 +43,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "nodes"
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.nodes/fetch!)
-                         (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!)]
+   ro/row-actions       [fetch-action delete-action]
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.nodes/index

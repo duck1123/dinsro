@@ -7,6 +7,9 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.words :as j.c.words]
    [dinsro.model.core.wallets :as m.c.wallets]
@@ -62,19 +65,20 @@
     (let [{:ui/keys [current-rows]} report
           sorted-rows               (sort-by ::m.c.words/position current-rows)
           groups                    (partition 12 sorted-rows)]
-      (dom/div {}
-        (dom/div :.ui.grid
+      (ui-grid {}
+        (ui-grid-row {}
           (if (seq groups)
             (map (fn [words]
-                   (dom/div :.eight.wide.column
+                   (ui-grid-column {:width 8}
                      (map
                       (fn [row]
                         (let [{::m.c.words/keys [position word]} row]
                           (dom/div :.eight.wide.column (str position) ". " (str word))))
                       words)))
                  groups)
-            (ui-segment {}
-              "No words")))))
+            (ui-grid-column {:width 16}
+              (ui-segment {}
+                "No words"))))))
     (u.debug/load-error props "admin wallet words page")))
 
 (def ui-sub-page (comp/factory SubPage))

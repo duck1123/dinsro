@@ -17,7 +17,6 @@
 ;; [[../../joins/rate_sources.cljc]]
 ;; [[../../model/rate_sources.cljc]]
 
-(def ident-key ::m.currencies/id)
 (def index-page-key :currencies-show-rate-sources)
 (def model-key ::m.rate-sources/id)
 (def parent-model-key ::m.currencies/id)
@@ -43,9 +42,7 @@
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:parent-router     router-key
-   :parent-ident      ident-key
-   :componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}

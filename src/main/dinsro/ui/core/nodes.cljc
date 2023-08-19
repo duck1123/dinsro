@@ -36,6 +36,12 @@
 (def show-menu-id :core-nodes)
 (def show-page-key :core-nodes-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!))
+
+(def fetch-action
+  (u.buttons/row-action-button "Fetch" model-key mu.c.nodes/fetch!))
+
 (def button-info
   [{:label "fetch" :action mu.c.nodes/fetch!}
    {:label "fetch peers" :action mu.c.nodes/fetch-peers!}
@@ -73,7 +79,7 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :core-nodes
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :core
    ::m.navbars/router ::Router
    ::m.navbars/children
@@ -149,8 +155,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.nodes/fetch!)
-                         (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!)]
+   ro/row-actions       [fetch-action delete-action]
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.nodes/index

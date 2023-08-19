@@ -16,8 +16,8 @@
 
 ;; [[../../../joins/ln/accounts.cljc]]
 ;; [[../../../model/ln/accounts.cljc]]
+;; [[../../../ui/admin/ln/accounts.cljc]]
 
-(def ident-key ::m.ln.nodes/id)
 (def index-page-key :ln-nodes-show-accounts)
 (def model-key ::m.ln.accounts/id)
 (def parent-model-key ::m.ln.nodes/id)
@@ -52,7 +52,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     (fn [_]
                         {::m.navlinks/id index-page-key

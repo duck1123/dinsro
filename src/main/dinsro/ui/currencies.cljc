@@ -34,6 +34,9 @@
 (def show-menu-id :currencies)
 (def show-page-key :currencies-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.currencies/delete!))
+
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.currencies/name
                     m.currencies/code]
@@ -55,13 +58,13 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :currencies
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :root
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [:currencies-show-rate-sources
-    :currencies-show-accounts
-    :currencies-show-rates]})
+   [u.c.rate-sources/index-page-key
+    u.c.accounts/index-page-key
+    u.c.rates/index-page-key]})
 
 (report/defsc-report Report
   [_this _props]
@@ -75,7 +78,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.currencies/id mu.currencies/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.currencies/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.currencies/index

@@ -24,6 +24,12 @@
 (def parent-model-key ::m.c.networks/id)
 (def router-key :dinsro.ui.core.networks/Router)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.addresses/delete!))
+
+(def fetch-action
+  (u.buttons/row-action-button "Fetch" model-key mu.c.addresses/fetch!))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.addresses/height #(u.links/ui-block-height-link %3)}
@@ -35,8 +41,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.addresses/id mu.c.addresses/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.addresses/id mu.c.addresses/delete!)]
+   ro/row-actions       [fetch-action delete-action]
    ro/row-pk            m.c.addresses/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.addresses/index

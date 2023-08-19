@@ -4,7 +4,6 @@
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.categories :as m.categories]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.currencies :as m.currencies]
    [dinsro.model.rate-sources :as m.rate-sources]
@@ -14,10 +13,6 @@
    [lambdaisland.glogc :as log]))
 
 (def model-key ::m.accounts/id)
-(def record-limit 1000)
-(def pk '?account-id)
-(def ident-key ::m.categories/id)
-(def index-param-syms ['?user-id])
 
 (def query-info
   {:ident    model-key

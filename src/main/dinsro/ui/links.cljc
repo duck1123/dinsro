@@ -266,6 +266,14 @@
 
 (def ui-admin-ln-node-link (comp/factory AdminLnNodeLinkForm {:keyfn ::m.ln.nodes/id}))
 
+(form/defsc-form AdminLNPeerLinkForm [this {::m.ln.peers/keys [id remote-node]}]
+  {fo/id           m.ln.peers/id
+   fo/route-prefix "admin-ln-peer-link"
+   fo/attributes   [m.ln.peers/remote-node]}
+  (form-link this id remote-node :dinsro.ui.admin.ln.peers/ShowPage))
+
+(def ui-admin-ln-peer-link (comp/factory AdminLNPeerLinkForm {:keyfn ::m.ln.peers/id}))
+
 (form/defsc-form AdminNetworkLinkForm
   [this {::m.c.networks/keys [id name]}]
   {fo/id           m.c.networks/id
@@ -332,6 +340,14 @@
 
 (def ui-admin-relay-request-count-link
   (comp/factory AdminRelayRequestCountLinkForm {:keyfn ::m.n.relays/id}))
+
+(form/defsc-form AdminRemoteNodeLinkForm [this {::m.ln.remote-nodes/keys [id pubkey]}]
+  {fo/id           m.ln.remote-nodes/id
+   fo/route-prefix "admin-remote-node-link"
+   fo/attributes   [m.ln.remote-nodes/pubkey]}
+  (form-link this id pubkey :dinsro.ui.admin.ln.remote-nodes/ShowPage))
+
+(def ui-admin-remote-node-link (comp/factory AdminRemoteNodeLinkForm {:keyfn ::m.ln.remote-nodes/id}))
 
 (form/defsc-form AdminRequestFilterCountLinkForm
   [this {::j.n.requests/keys [filter-count]

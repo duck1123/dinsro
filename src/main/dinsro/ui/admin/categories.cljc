@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.categories :as j.categories]
    [dinsro.joins.users :as j.users]
@@ -30,6 +31,9 @@
 (def model-key ::m.categories/id)
 (def override-admin-form true)
 (def show-page-key :admin-categories-show)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.categories/delete!))
 
 (def user-picker
   {::picker-options/query-key       ::j.users/admin-index-flat
@@ -72,7 +76,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.categories/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.categories/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.categories/admin-index
@@ -91,7 +95,7 @@
    :query          [::m.categories/id
                     ::m.categories/name]}
   (if id
-    (dom/div :.ui.container
+    (ui-container {}
       (ui-segment {}
         (str name)))
     (u.debug/load-error props "admin show category")))

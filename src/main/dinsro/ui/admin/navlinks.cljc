@@ -15,6 +15,7 @@
 
 (def index-page-key :admin-navlinks)
 (def model-key ::m.navlinks/id)
+(def parent-router :root)
 (def show-page-key :admin-navlinks-show)
 
 (report/defsc-report Report
@@ -100,8 +101,8 @@
    ::m.navlinks/description   "Admin index navlinks"
    ::m.navlinks/label         "Navlinks"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
+   ::m.navlinks/parent-key    parent-router
+   ::m.navlinks/router        parent-router
    ::m.navlinks/required-role :admin})
 
 (m.navlinks/defroute show-page-key
@@ -111,5 +112,5 @@
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin
+   ::m.navlinks/router        parent-router
    ::m.navlinks/required-role :admin})

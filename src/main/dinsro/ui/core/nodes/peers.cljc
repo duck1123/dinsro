@@ -28,10 +28,13 @@
 (def parent-model-key ::m.c.nodes/id)
 (def router-key :dinsro.ui.core.nodes/Router)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!))
+
 (def fetch-button
   {:type   :button
    :label  "Fetch"
-   :action (u.buttons/report-action ::m.c.nodes/id mu.c.nodes/fetch!)})
+   :action (u.buttons/report-action parent-model-key mu.c.nodes/fetch!)})
 
 (def new-button
   {:type   :button
@@ -73,7 +76,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "node-peers"
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.c.peers/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.peers/index

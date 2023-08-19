@@ -8,6 +8,8 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-content :refer [ui-list-content]]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.events :as j.n.events]
    [dinsro.model.navlinks :as m.navlinks]
@@ -40,8 +42,8 @@
                    ::m.n.events/content
                    ::m.n.events/created-at
                    ::m.n.events/note-id]}
-  (dom/div :.ui.item
-    (dom/div :.content
+  (ui-list-item {}
+    (ui-list-content {}
       (ui-segment {}
         (u.links/ui-event-link event)
         (dom/div {} (str id))

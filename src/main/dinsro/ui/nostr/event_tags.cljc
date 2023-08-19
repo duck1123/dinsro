@@ -4,6 +4,12 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table :refer [ui-table]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-body :refer [ui-table-body]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
@@ -28,7 +34,8 @@
 (def log-tag-props false)
 
 (defsc TagDisplay
-  [this {::m.n.event-tags/keys [id pubkey event raw-value extra type] :as props}]
+  [this {::m.n.event-tags/keys [pubkey event raw-value extra type]
+         :as                   props}]
   {:query         [::m.n.event-tags/id
                    {::m.n.event-tags/pubkey (comp/get-query u.links/PubkeyNameLinkForm)}
                    {::m.n.event-tags/event (comp/get-query u.links/ui-event-link)}
@@ -44,60 +51,64 @@
                    ::m.n.event-tags/raw-value nil
                    ::m.n.event-tags/extra     nil
                    ::m.n.event-tags/type      nil}}
-  (let [show-labels false
-        tag?        (= type "t")
-        event?      (= type "e")
-        nonce?      (= type "nonce")
-        client?     (= type "client")]
+  (let [tag?       (= type "t")
+        event?     (= type "e")
+        nonce?     (= type "nonce")
+        client?    (= type "client")
+        has-extra? (and extra (not (or nonce? client?)))
+        has-type?  (not (or pubkey event tag? nonce? client?))]
     (ui-list-item {}
       (when log-tag-props
         (u.debug/log-props props))
-      (dom/div {:style {:marginRight "5px"}}
-        "[" (u.links/ui-event-tag-link props) "] ")
-      (dom/div {}
-        (when tag?
-          (str "#" raw-value))
-        (when client?
-          (str "Client: " raw-value))
-        (when nonce?
-          (str "POW=" extra))
-        (when pubkey
-          (dom/div {}
-            (when show-labels "Pubkey: ")
-            (u.links/ui-pubkey-name-link pubkey)
-            (ui-button
-             {:onClick
-              (fn [_]
-                (let [props (comp/props this)
-                      id    (model-key props)]
-                  (comp/transact! this [`(mu.n.event-tags/fetch! {~model-key ~id})])))}
-             "Fetch")))
-        (when event?
-          (dom/div {}
-            (when show-labels
-              "Event: ")
-            (if event
-              (u.links/ui-event-link event)
-              (dom/div {}
-                "Not Loaded"
-                (ui-button
-                 {:onClick (fn [_]
-                             (let [props (comp/props this)
-                                   id    (model-key props)]
-                               (comp/transact! this [`(mu.n.event-tags/fetch! {~model-key ~id})])))}
-                 "Register")))))
-
-        (when-not (or pubkey event tag? nonce? client?)
-          (comp/fragment
-           (dom/div {} "Type: " (str type))
-           (dom/div {} "Raw Value: " (str raw-value))))
-        (when (and extra (not (or nonce? client?)))
-          (dom/div {} "Extra: " (str extra)))
-        (when event?
-          (ui-button
-           {:onClick (fn [_]
-                       (log/info :TagDisplay/fetch {:extra extra :raw-value raw-value :id id}))}
-           "Fetch"))))))
+      (ui-table {}
+        (ui-table-header {}
+          (ui-table-row {}
+            (ui-table-header-cell {} "key")
+            (ui-table-header-cell {} "value")))
+        (ui-table-body {}
+          (ui-table-row {}
+            (ui-table-cell {} "index")
+            (ui-table-cell {} (u.links/ui-event-tag-link props)))
+          (when tag?
+            (ui-table-row {}
+              (ui-table-cell {} "tag")
+              (ui-table-cell {} (str "#" raw-value))))
+          (when event?
+            (ui-table-row {}
+              (ui-table-cell {} "Event")
+              (ui-table-cell {}
+                (if event
+                  (u.links/ui-event-link event)
+                  (ui-button
+                   {:onClick (fn [_]
+                               (let [props (comp/props this)
+                                     id    (model-key props)]
+                                 (comp/transact! this [`(mu.n.event-tags/fetch! {~model-key ~id})])))}
+                   raw-value)))))
+          (when has-type?
+            (ui-table-row {}
+              (ui-table-cell {} "Type")
+              (ui-table-cell {} (str type))))
+          (when has-type?
+            (ui-table-row {}
+              (ui-table-cell {} "Raw Value")
+              (ui-table-cell {} (str raw-value))))
+          (when client?
+            (ui-table-row {}
+              (ui-table-cell {} "Client")
+              (ui-table-cell {} (str raw-value))))
+          (when nonce?
+            (ui-table-row {}
+              (ui-table-cell {} "POW")
+              (ui-table-cell {} (str extra))))
+          (when pubkey
+            (ui-table-row {}
+              (ui-table-cell {} "Pubkey")
+              (ui-table-cell {} (u.links/ui-pubkey-name-link pubkey))))
+          (when has-extra?
+            (ui-table-row {}
+              (ui-table-cell {} "Extra")
+              (ui-table-cell {} (str extra)))))))))
 
 (def ui-tag-display (comp/factory TagDisplay {:keyfn ::m.n.event-tags/id}))
 

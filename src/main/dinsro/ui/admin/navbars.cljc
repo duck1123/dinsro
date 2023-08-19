@@ -26,6 +26,7 @@
 
 (def index-page-key :admin-navbars)
 (def model-key ::m.navbars/id)
+(def parent-router :root)
 (def show-page-key :admin-navbars-show)
 
 (report/defsc-report Report

@@ -6,6 +6,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
    [dinsro.model.ln.info :as m.ln.info]
@@ -32,10 +33,10 @@
                    ::m.ln.nodes/network
                    ::m.ln.info/alias-attr
                    ::m.ln.info/color]}
-  (dom/div :.ui.item
+  (ui-list-item {}
     (u.links/ui-node-link props)))
 
-(def ui-body-item (comp/factory BodyItem {:keyfn ::m.ln.nodes/id}))
+(def ui-body-item (comp/factory BodyItem {:keyfn model-key}))
 
 (report/defsc-report Report
   [this props]

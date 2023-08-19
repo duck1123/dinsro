@@ -15,7 +15,6 @@
 ;; [[../../../joins/core/addresses.cljc]]
 ;; [[../../../model/core/addresses.cljc]]
 
-(def ident-key ::m.ln.nodes/id)
 (def index-page-key :ln-nodes-show-addresses)
 (def model-key ::m.c.addresses/id)
 (def parent-model-key ::m.ln.nodes/id)
@@ -40,7 +39,7 @@
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}

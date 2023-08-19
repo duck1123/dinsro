@@ -47,34 +47,34 @@
 
 (defn merge-pages
   "Handles the process of initializing a page with the parent key"
-  [{:keys [data-tree] :as ctx} parent-ident-key mappings]
+  [{:keys [data-tree] :as ctx} parent-model-key mappings]
   (let [page-key  (get data-tree ::m.navlinks/id)
-        record-id (when parent-ident-key (get data-tree parent-ident-key))]
+        record-id (when parent-model-key (get data-tree parent-model-key))]
     (log/trace :merge-pages/starting
       {:page-key         page-key
-       :parent-ident-key parent-ident-key
+       :parent-model-key parent-model-key
        :record-id        record-id
        :mappings         mappings
        :ctx              ctx
        :data-tree        data-tree})
     (let [states       (->> mappings
-                            (map (partial process-state parent-ident-key record-id))
+                            (map (partial process-state parent-model-key record-id))
                             (into {}))
           merged-state (merge data-tree states {:ui/page-merged true})]
       (log/trace :merge-pages/finished
         {:page-key         page-key
-         :parent-ident-key parent-ident-key
+         :parent-model-key parent-model-key
          :record-id        record-id
          :merged-state     merged-state})
       merged-state)))
 
 (defn page-merger
   "pre-merge handler for show pages"
-  [parent-ident-key mappings]
+  [parent-model-key mappings]
   (fn [ctx]
-    (let [merged (merge-pages ctx parent-ident-key mappings)]
+    (let [merged (merge-pages ctx parent-model-key mappings)]
       (log/trace :page-merger/finished
-        {:parent-ident-key parent-ident-key
+        {:parent-model-key parent-model-key
          :merged           merged
          :mappings         mappings
          :ctx              ctx})

@@ -17,7 +17,6 @@
 ;; [[../../../joins/core/wallets.cljc]]
 ;; [[../../../model/core/wallets.cljc]]
 
-(def ident-key ::m.users/id)
 (def index-page-key :admin-users-show-wallets)
 (def model-key ::m.c.wallets/id)
 (def parent-model-key ::m.users/id)
@@ -46,7 +45,7 @@
   [_this {::m.users/keys [id]
           :ui/keys       [report]
           :as            props}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        ::m.users/id    nil

@@ -18,11 +18,16 @@
 ;; [[../../../joins/core/transactions.cljc]]
 ;; [[../../../model/core/transactions.cljc]]
 
-(def ident-key ::m.c.nodes/id)
 (def index-page-key :core-nodes-show-transactions)
 (def model-key ::m.c.transactions/id)
 (def parent-model-key ::m.c.nodes/id)
 (def router-key :dinsro.ui.core.nodes/Router)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.transactions/delete!))
+
+(def fetch-action
+  (u.buttons/row-action-button "Fetch" model-key mu.c.transactions/fetch!))
 
 (report/defsc-report Report
   [_this _props]
@@ -39,8 +44,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" ::m.c.transactions/id mu.c.transactions/fetch!)
-                         (u.buttons/row-action-button "Delete" ::m.c.transactions/id mu.c.transactions/delete!)]
+   ro/row-actions       [fetch-action delete-action]
    ro/row-pk            m.c.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.transactions/index

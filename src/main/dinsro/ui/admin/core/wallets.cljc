@@ -32,6 +32,9 @@
 (def model-key ::m.c.wallets/id)
 (def show-page-key :admin-core-wallets-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.wallets/delete!))
+
 (def create-button
   {:type   :button
    :local? true
@@ -142,7 +145,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.c.wallets/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.c.wallets/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.wallets/admin-index

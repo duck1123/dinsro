@@ -8,6 +8,8 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-list :refer [ui-list-list]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.model.navbars :as m.navbars]
@@ -33,13 +35,30 @@
 (def show-menu-id :admin-nostr-requests)
 (def show-page-key :admin-nostr-requests-show)
 
+(defsc BodyItem
+  [_this props]
+  {:ident         ::m.n.requests/id
+   :query         [::m.n.requests/id
+                   ::m.n.requests/code
+                   ::j.n.requests/run-count
+                   ::j.n.requests/filter-count
+                   ::j.n.requests/query-string]
+   :initial-state {::m.n.requests/id           nil
+                   ::m.n.requests/code         ""
+                   ::j.n.requests/run-count    0
+                   ::j.n.requests/filter-count 0
+                   ::j.n.requests/query-string ""}}
+  (ui-list-item {}
+    (u.debug/log-props props)))
+
+(def ui-body-item (comp/factory BodyItem {:keyfn ::m.n.requests/id}))
+
 (report/defsc-report Report
-  [_this _props]
-  {ro/column-formatters {::m.n.requests/id    #(u.links/ui-admin-request-link %3)
-                         ::m.n.requests/relay #(u.links/ui-admin-relay-link %2)}
+  [_this props]
+  {ro/BodyItem BodyItem
+   ro/column-formatters {::m.n.requests/id    #(u.links/ui-admin-request-link %3)}
    ro/columns           [m.n.requests/id
                          m.n.requests/code
-                         m.n.requests/relay
                          j.n.requests/run-count
                          j.n.requests/filter-count
                          j.n.requests/query-string]
@@ -51,7 +70,11 @@
    ro/row-pk            m.n.requests/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.requests/admin-index
-   ro/title             "Requests"})
+   ro/title             "Requests"}
+  (let [{:ui/keys [current-rows]} props]
+    (dom/div {}
+      (dom/h1 {} "Requests")
+      (ui-list-list {} (map ui-body-item current-rows)))))
 
 (def ui-report (comp/factory Report))
 

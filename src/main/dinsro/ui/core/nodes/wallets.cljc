@@ -21,6 +21,9 @@
 (def model-key ::m.c.wallets/id)
 (def parent-model-key ::m.c.nodes/id)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.wallets/delete!))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.c.wallets/node #(u.links/ui-core-node-link %2)
@@ -40,7 +43,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "wallets"
-   ro/row-actions       [(u.buttons/row-action-button "Delete" ::m.c.wallets/id mu.c.wallets/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.c.wallets/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.wallets/index

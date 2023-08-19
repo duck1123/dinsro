@@ -3,10 +3,14 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
+   [com.fulcrologic.semantic-ui.elements.header.ui-header :refer [ui-header]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.forms.registration :as u.f.registration]))
 
 (def index-page-key :registration)
+(def parent-router :root)
 
 (defsc IndexPage
   [_this {:ui/keys [allow-registration? form]}]
@@ -20,9 +24,9 @@
                     ::m.navlinks/id]
    :route-segment  ["register"]}
   (if allow-registration?
-    (dom/div :.ui.container.center.aligned
-      (dom/h4 :.ui.center.aligned.top.attached.header "Register")
-      (dom/div :.ui.center.aligned.attached.segment
+    (ui-container {:textAlign "center"}
+      (ui-header {:textAlign "center" :attached "top"} "Register")
+      (ui-segment {:textAlign "center" :attached "top"}
         (u.f.registration/ui-registration-form form)))
     (dom/div {}
       (dom/p {} "Registrations are not enabled"))))
@@ -30,6 +34,6 @@
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Registration"
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
+   ::m.navlinks/parent-key    parent-router
+   ::m.navlinks/router        parent-router
    ::m.navlinks/required-role :user})

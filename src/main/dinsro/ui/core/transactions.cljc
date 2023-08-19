@@ -28,6 +28,12 @@
 (def model-key ::m.c.transactions/id)
 (def show-page-key :core-transactions-show)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.c.transactions/delete!))
+
+(def fetch-action
+  (u.buttons/row-action-button "Fetch" model-key mu.c.transactions/fetch!))
+
 (defsc Show
   "Show a core tx"
   [this {::m.c.transactions/keys [id tx-id hash fetched? block size]
@@ -97,8 +103,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Fetch" model-key mu.c.transactions/fetch!)
-                         (u.buttons/row-action-button "Delete" model-key mu.c.transactions/delete!)]
+   ro/row-actions       [fetch-action delete-action]
    ro/row-pk            m.c.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.transactions/index

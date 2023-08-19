@@ -1,9 +1,10 @@
 (ns dinsro.ui.admin.ln
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
-   #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
@@ -21,6 +22,7 @@
    [lambdaisland.glogc :as log]))
 
 (def index-page-key :admin-ln)
+(def show-menu-id :admin-ln)
 
 (defrouter Router
   [_this _props]
@@ -36,18 +38,18 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :admin-ln
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :admin
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [:admin-ln-dashboard
-    :admin-ln-accounts
-    :admin-ln-channels
-    :admin-ln-invoices
-    :admin-ln-nodes
-    :admin-ln-payreqs
-    :admin-ln-peers
-    :admin-ln-remote-nodes]})
+   [u.a.ln.dashboard/index-page-key
+    u.a.ln.accounts/index-page-key
+    u.a.ln.channels/index-page-key
+    u.a.ln.invoices/index-page-key
+    u.a.ln.nodes/index-page-key
+    u.a.ln.payreqs/index-page-key
+    u.a.ln.peers/index-page-key
+    u.a.ln.remote-nodes/index-page-key]})
 
 (defsc IndexPage
   [_this {:ui/keys [router vertical-menu] :as props}]
@@ -64,16 +66,16 @@
                    {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}]
    :route-segment ["ln"]}
   (log/info :IndexPage/starting {:props props})
-  (comp/fragment
-   (dom/div :.ui.grid
-     (dom/div :.ui.four.wide.column
-       (if vertical-menu
-         (u.menus/ui-vertical-menu vertical-menu)
-         (ui-segment {} "Failed to load menu")))
-     (dom/div :.ui.twelve.wide.column
-       (if router
-         (ui-router router)
-         (ui-segment {} "Failed to load router"))))))
+  (ui-grid {}
+    (ui-grid-row {}
+      (ui-grid-column {:width 4}
+        (if vertical-menu
+          (u.menus/ui-vertical-menu vertical-menu)
+          (ui-segment {} "Failed to load menu")))
+      (ui-grid-column {:width 12}
+        (if router
+          (ui-router router)
+          (ui-segment {} "Failed to load router"))))))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage

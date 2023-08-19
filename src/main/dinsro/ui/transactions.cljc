@@ -9,6 +9,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.addons.pagination.ui-pagination :as sui-pagination]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
@@ -17,6 +18,7 @@
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
+   [com.fulcrologic.semantic-ui.elements.header.ui-header :refer [ui-header]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.debits :as j.debits]
@@ -40,8 +42,10 @@
 
 (def index-page-key :transactions)
 (def model-key ::m.transactions/id)
+(def parent-router :root)
 (def show-page-key :transactions-show)
 
+(def show-controls false)
 (def show-debits-debug false)
 (def use-table true)
 (def use-moment true)
@@ -212,8 +216,6 @@
    :type   :button
    :action (fn [this] (form/create! this NewTransaction))})
 
-(def show-controls true)
-
 (report/defsc-report Report
   [this props]
   {ro/BodyItem            BodyItem
@@ -236,12 +238,12 @@
    ro/title               "Transaction Report"}
   (log/debug :Report/starting {:props props})
   (let [{:ui/keys [current-rows]} props]
-    (dom/div :.ui.container.centered
+    (ui-container {:centered true}
       (ui-segment {}
         (ui-grid {}
           (ui-grid-row {:centered true}
             (ui-grid-column {:width 12}
-              (dom/h1 :.ui.header
+              (ui-header {}
                 (dom/span {} "Transactions")))
             (ui-grid-column {:width 4 :floated "right"}
               (ui-button-group {:compact true :floated "right"}
@@ -249,7 +251,14 @@
                 (ui-button {:icon "refresh" :onClick (fn [_] (control/run! this))})))))
         (when show-controls
           ((report/control-renderer this) this))
-        (dom/div :.ui.container.centered
+        (let [page-count (report/page-count this)]
+          (sui-pagination/ui-pagination
+           {:activePage   (report/current-page this)
+            :onPageChange (fn [_ data]
+                            (report/goto-page! this (comp/isoget data "activePage")))
+            :totalPages   page-count
+            :size         "tiny"}))
+        (ui-container {:centered true}
           (map ui-body-item  current-rows))))))
 
 (def ui-report
@@ -366,8 +375,8 @@
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Transactions"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
+   ::m.navlinks/parent-key    parent-router
+   ::m.navlinks/router        parent-router
    ::m.navlinks/required-role :user})
 
 (defroute show-page-key
@@ -375,6 +384,6 @@
    ::m.navlinks/label         "Show Transaction"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :transactions
-   ::m.navlinks/router        :root
+   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/router        parent-router
    ::m.navlinks/required-role :user})

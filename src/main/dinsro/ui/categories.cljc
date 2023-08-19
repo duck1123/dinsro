@@ -8,6 +8,7 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
@@ -81,7 +82,7 @@
    :pre-merge      (u.loader/page-merger model-key {})
    :query          [::m.categories/id
                     ::m.categories/name]}
-  (dom/div :.ui.container
+  (ui-container {}
     (ui-segment {}
       (str name))))
 

@@ -21,6 +21,9 @@
 (def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
+(def delete-action
+  (u.buttons/subrow-action-button "Delete" model-key parent-model-key mu.ln.peers/delete!))
+
 (def fetch-button
   {:type   :button
    :label  "Fetch"
@@ -43,7 +46,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/subrow-action-button "Delete" model-key parent-model-key mu.ln.peers/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.ln.peers/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.ln.peers/index

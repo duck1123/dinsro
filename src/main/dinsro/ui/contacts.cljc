@@ -76,7 +76,7 @@
    ro/run-on-mount?     true
    ro/source-attribute  ::j.contacts/index
    ro/title             "Contacts"}
-  (dom/div :.ui.container.centered
+  (ui-container {:centered true}
     (report/render-layout this)))
 
 (def ui-report (comp/factory Report))

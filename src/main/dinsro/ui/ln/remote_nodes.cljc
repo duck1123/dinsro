@@ -29,6 +29,9 @@
 (def debug-show false)
 (def debug-show-page false)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.ln.remote-nodes/delete!))
+
 (defsc Show
   [_this {::m.ln.remote-nodes/keys [id pubkey]
           :ui/keys                 [peers]
@@ -81,7 +84,7 @@
    ro/page-size         10
    ro/paginate?         true
    ro/route             "remote-nodes"
-   ro/row-actions       [(u.buttons/row-action-button "Delete" model-key mu.ln.remote-nodes/delete!)]
+   ro/row-actions       [delete-action]
    ro/row-pk            m.ln.remote-nodes/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.ln.remote-nodes/index

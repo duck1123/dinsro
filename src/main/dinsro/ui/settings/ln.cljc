@@ -5,6 +5,7 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
@@ -59,7 +60,7 @@
                      {:ui/router (comp/get-query Router)}])
    :route-segment ["ln"]}
   (let [{:keys [router-wrapper]} (css/get-classnames Page)]
-    (dom/div :.ui.container
+    (ui-container {}
       (if nav-menu
         (u.menus/ui-nav-menu nav-menu)
         (u.debug/load-error props "settings ln nav menu"))

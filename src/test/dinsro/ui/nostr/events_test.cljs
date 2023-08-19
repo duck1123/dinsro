@@ -41,6 +41,12 @@
    ::m.n.pubkeys/hex     "deadbeef"
    ::m.n.pubkeys/picture "https://duck1123.com/images/duck1123.png"})
 
+(ws/defcard EventAuthor
+  {}
+  (ct.fulcro3/fulcro-card
+   {::ct.fulcro3/root          u.n.events/EventAuthor
+    ::ct.fulcro3/initial-state (fn [] (make-pubkey))}))
+
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard EventBox
   {::wsm/card-height 12

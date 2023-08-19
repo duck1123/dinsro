@@ -21,11 +21,13 @@
 ;; [[../../../joins/ln/channels.cljc]]
 ;; [[../../../model/ln/channels.cljc]]
 
-(def ident-key ::m.ln.nodes/id)
 (def index-page-key :ln-nodes-show-channels)
 (def model-key ::m.ln.channels/id)
 (def parent-model-key ::m.ln.nodes/id)
 (def router-key :dinsro.ui.ln.nodes/Router)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.ln.channels/delete!))
 
 (def new-button
   {:type   :button
@@ -57,23 +59,22 @@
                          :inputs         [[::m.ln.nodes/id]]}
    ro/controls          {::m.ln.nodes/id {:type :uuid :label "Nodes"}
                          ::refresh       u.links/refresh-control
-                         ::new new-button}
-
+                         ::new           new-button}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route            "node-channels"
-   ro/row-actions      [(u.buttons/row-action-button "Delete" ::m.ln.channels/id mu.ln.channels/delete!)]
-   ro/row-pk           m.ln.channels/id
-   ro/run-on-mount?    true
-   ro/source-attribute ::j.ln.channels/index
-   ro/title            "Node Channels"})
+   ro/route             "node-channels"
+   ro/row-actions       [delete-action]
+   ro/row-pk            m.ln.channels/id
+   ro/run-on-mount?     true
+   ro/source-attribute  ::j.ln.channels/index
+   ro/title             "Node Channels"})
 
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}

@@ -17,7 +17,6 @@
 ;; [[../../joins/debits.cljc]]
 ;; [[../../model/debits.cljc]]
 
-(def ident-key ::m.accounts/id)
 (def index-page-key :accounts-show-debits)
 (def model-key ::m.debits/id)
 (def parent-model-key ::m.accounts/id)
@@ -43,7 +42,7 @@
 (defsc SubPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:componentDidMount (partial u.loader/subpage-loader ident-key router-key Report)
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
    :initial-state     {::m.navlinks/id index-page-key
                        :ui/report      {}}

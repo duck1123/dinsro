@@ -10,6 +10,12 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
+   [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-header :refer [ui-list-header]]
+   [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
@@ -40,6 +46,7 @@
 
 (def index-page-key :ln-nodes)
 (def model-key ::m.ln.nodes/id)
+(def show-menu-id :ln-nodes)
 (def show-page-key :ln-nodes-show)
 
 (declare CreateLightningNodeForm)
@@ -145,11 +152,10 @@
    fo/title         "Create Lightning Node"}
   (if override-create-form
     (form/render-layout this props)
-    (dom/div :.ui.grid
-      (dom/div :.row
-        (dom/div :.sixteen.wide.column
-          (dom/div {}
-            (form/render-layout this props)))))))
+    (ui-grid {}
+      (ui-grid-row {}
+        (ui-grid-column {:width 16}
+          (form/render-layout this props))))))
 
 (defrouter Router
   [_this _props]
@@ -164,7 +170,7 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :ln-nodes
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :ln
    ::m.navbars/router ::Router
    ::m.navbars/children
@@ -218,27 +224,26 @@
           ::m.ln.nodes/hasCert?     hasCert?
           ::m.ln.nodes/hasMacaroon? hasMacaroon?})
         (dom/div :.ui.list
-          (dom/div :.item
-            (dom/div :.header "User")
+          (ui-list-item {}
+            (ui-list-header {} "User")
             (u.links/ui-user-link user))
-          (dom/div :.item
-            (dom/div :.header "Core Node")
+          (ui-list-item {}
+            (ui-list-header {} "Core Node")
             (u.links/ui-core-node-link core-node))
-          (dom/div :.item
-            (dom/div :.header "Address")
+          (ui-list-item {}
+            (ui-list-header {} "Address")
             host ":" (str port))
-          (dom/div :.item
-            (dom/div :.header "Network")
+          (ui-list-item {}
+            (ui-list-header {} "Network")
             (u.links/ui-network-link network))
-          (dom/div :.item
-            (dom/div :.header "Has Cert?")
+          (ui-list-item {}
+            (ui-list-header {} "Has Cert?")
             (str hasCert?)
             (when-not hasCert?
               (dom/div {}
                 (dom/p {} "Cert not found")
-                (dom/button {:classes [:.ui.button]
-                             :onClick #(comp/transact! this [`(mu.ln/download-cert! {::m.ln.nodes/id ~id})])}
-                  "Fetch"))))
+                (ui-button {:onClick #(comp/transact! this [`(mu.ln/download-cert! {::m.ln.nodes/id ~id})])}
+                           "Fetch"))))
           (dom/div :.item
             (dom/div :.header "Has Macaroon?")
             (if hasMacaroon?

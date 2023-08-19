@@ -28,6 +28,7 @@
 
 (def index-page-key :core-networks)
 (def model-key ::m.c.networks/id)
+(def show-menu-id :core-networks)
 (def show-page-key :core-networks-show)
 
 (defrouter Router
@@ -41,7 +42,7 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :core-networks
+(m.navbars/defmenu show-menu-id
   {::m.navbars/parent :core
    ::m.navbars/router ::Router
    ::m.navbars/children

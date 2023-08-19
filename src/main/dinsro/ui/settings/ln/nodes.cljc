@@ -10,6 +10,9 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
+   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
@@ -142,9 +145,9 @@
    fo/title         "Create Lightning Node"}
   (if override-create-form
     (form/render-layout this props)
-    (dom/div :.ui.grid
-      (dom/div :.row
-        (dom/div :.sixteen.wide.column
+    (ui-grid {}
+      (ui-grid-row {}
+        (ui-grid-column {:width 16}
           (dom/div {}
             (form/render-layout this props)))))))
 

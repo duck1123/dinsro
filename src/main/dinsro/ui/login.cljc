@@ -10,6 +10,7 @@
    [com.fulcrologic.semantic-ui.collections.form.ui-form-field :refer [ui-form-field]]
    [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations]
@@ -34,7 +35,7 @@
                          :user/message]
    :route-segment       ["login"]}
   (when visible?
-    (dom/div :.ui.container
+    (ui-container {}
       (ui-form {:className "large"}
         (when message (dom/p :.notification.is-danger message))
         (ui-form-field {}

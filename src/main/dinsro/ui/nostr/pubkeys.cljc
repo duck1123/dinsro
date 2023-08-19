@@ -42,6 +42,9 @@
 (def show-menu-id :nostr-pubkeys)
 (def show-page-key :nostr-pubkeys-show)
 
+(def add-action
+  (u.buttons/row-action-button "Add to contacts" model-key mu.n.pubkeys/add-contact!))
+
 (defrouter Router
   [_this _props]
   {:router-targets
@@ -139,7 +142,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [(u.buttons/row-action-button "Add to contacts" model-key mu.n.pubkeys/add-contact!)]
+   ro/row-actions       [add-action]
    ro/row-pk            m.n.pubkeys/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.pubkeys/index
