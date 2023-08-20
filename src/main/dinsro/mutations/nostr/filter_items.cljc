@@ -6,7 +6,7 @@
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.processors.nostr.filter-items :as p.n.filter-items])
-   [dinsro.resources.nostr.filter-items :as r.n.filter-items]))
+   [dinsro.responses.nostr.filter-items :as r.n.filter-items]))
 
 (def model-key ::m.n.filter-items/id)
 
