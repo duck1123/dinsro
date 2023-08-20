@@ -3,7 +3,6 @@
    [clojure.core.async :as async]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
-   [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.actions.nostr.connections :as a.n.connections]
    [dinsro.actions.nostr.event-tags :as a.n.event-tags]
    [dinsro.actions.nostr.pubkeys :as a.n.pubkeys]
@@ -18,9 +17,10 @@
    [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]))
 
-;; [[../../model/nostr/events.cljc][Event Model]]
-;; [[../../queries/nostr/events.clj][Event Queries]]
-;; [[../../ui/nostr/events.cljs][Event UI]]
+;; [[../../model/nostr/events.cljc]]
+;; [[../../queries/nostr/events.clj]]
+;; [[../../ui/nostr/events.cljs]]
+;; [[../../../../notebooks/dinsro/notebooks/nostr/events_notebook.clj]]
 
 (defn update-event!
   [m]
@@ -183,43 +183,7 @@
 (defn extract-urls [text]
   (map first (re-seq #"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))" text)))
 
-(comment
-
-  (q.n.pubkeys/index-ids)
-
-  (def alice-id (first (q.n.pubkeys/find-by-name "alice")))
-  (def duck-id (first (q.n.pubkeys/find-by-name "duck")))
-
-  (fetch-by-note-id "e4f5b8f980885e5f013d1b0549ce871c42d892e744da3e4a611a65202a227472")
-  (fetch-by-note-id "36df49af7fe181520beee31644f121ea2bb8e4ff99468d08f56040e5b792bea5")
-
-  (def event (q.n.events/read-record (new-uuid "0186ae78-ae3d-8ab5-8af2-907aa8716e04")))
-  event
-
-  (def relay-id (first (q.n.relays/index-ids)))
-  relay-id
-
-  (fetch-by-note-id (::m.n.events/note-id event) relay-id)
-
-  (q.n.pubkeys/read-record alice-id)
-  (q.n.pubkeys/read-record duck-id)
-
-  (q.n.events/count-ids)
-
-  (q.n.events/find-by-author duck-id)
-  (q.n.events/find-by-author alice-id)
-
-  (map q.n.events/read-record (q.n.events/index-ids))
-
-  (def message "👀 https://nostr.build/i/nostr.build_9e6becea72a9673f6e33ade5fa7961728fb3758df5d56e376acb89f10e1c242e.jpeg https://nostr.build/i/nostr.build_fb5377f37c0dcedf5c88507b157b513c3ae75839fd43e5d6faa237c0b9f0d6e3.jpeg")
-
-  (def dperini-matcher
-    #"(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?")
-
-  (re-find dperini-matcher message)
-
-  (re-find #"https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)" message)
-
-  (extract-urls message)
-
-  nil)
+(defn delete!
+  [id]
+  (log/info :delete!/starting {:id id})
+  (q.n.events/delete! id))

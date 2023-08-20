@@ -48,7 +48,7 @@
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.filter-items/filter #(u.links/ui-admin-filter-link %2)
-                         ::m.n.filter-items/pubkey #(and %2 (u.links/ui-admin-pubkey-link %2))}
+                         ::m.n.filter-items/pubkey #(when %2 (u.links/ui-admin-pubkey-link %2))}
    ro/columns           [m.n.filter-items/filter
                          m.n.filter-items/index
                          m.n.filter-items/kind

@@ -12,7 +12,9 @@
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.filters :as m.n.filters]
+   [dinsro.mutations.nostr.filters :as mu.n.filters]
    [dinsro.ui.admin.nostr.filters.filter-items :as u.a.n.f.filter-items]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -28,6 +30,9 @@
 (def model-key ::m.n.filters/id)
 (def show-menu-id :admin-nostr-filters)
 (def show-page-key :admin-nostr-filters-show)
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.filters/delete!))
 
 (defrouter Router
   [_this _props]
@@ -58,6 +63,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
+   ro/row-actions       [delete-action]
    ro/row-pk            m.n.filters/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.filters/admin-index

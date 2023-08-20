@@ -15,7 +15,7 @@
 
 (def model-key ::m.n.connections/id)
 
-#?(:cljs (comment ::mu/_ ::pc/_  ::r.n.connections/_))
+#?(:cljs (comment ::mu/_ ::pc/_))
 
 ;; Connect
 

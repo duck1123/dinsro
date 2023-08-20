@@ -53,12 +53,15 @@
   [this props]
   {;; ro/BodyItem          AccountRow
    ro/column-formatters {::m.accounts/name     #(u.links/ui-account-link %3)
-                         ::m.accounts/currency #(u.links/ui-currency-link %2)}
+                         ::m.accounts/currency #(u.links/ui-currency-link %2)
+                         ::m.accounts/user     #(when %2 (u.links/ui-admin-user-link %2))}
    ro/columns           [m.accounts/name
-                         m.accounts/currency]
-   ro/control-layout    {:action-buttons [::refresh]}
+                         m.accounts/currency
+                         m.accounts/user]
+   ro/control-layout    {:action-buttons [::refresh]
+                         :inputs         [[parent-model-key]]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
-                         ::refresh    u.links/refresh-control}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -85,11 +88,11 @@
           :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_props]
-                        {::m.navlinks/id  index-page-key
-                         parent-model-key nil
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-key
                          :ui/report       (comp/get-initial-state Report {})})
-   :query             (fn [_props]
+   :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id

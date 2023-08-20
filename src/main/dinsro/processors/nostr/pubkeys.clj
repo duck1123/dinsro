@@ -88,6 +88,7 @@
 
 (defn delete!
   [_env props]
+  (log/info :delete!/starting {:props props})
   (let [id (model-key props)]
     (a.n.pubkeys/delete! id)
     {::mu/status                   :ok

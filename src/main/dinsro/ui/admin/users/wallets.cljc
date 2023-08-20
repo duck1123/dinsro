@@ -42,29 +42,33 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.users/keys [id]
-          :ui/keys       [report]
-          :as            props}]
+  [_this {:ui/keys [report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       ::m.users/id    nil
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       ::m.users/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-key
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         ::m.users/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["wallets"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
-    (u.debug/load-error props "admin user wallets")))
+  (if (parent-model-key props)
+    (if report
+      (ui-report report)
+      (u.debug/load-error props "admin user wallets report"))
+    (u.debug/load-error props "admin user wallets page")))
 
-(m.navlinks/defroute   :admin-users-show-wallets
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Wallets"
-   ::m.navlinks/model-key     ::m.c.wallets/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-users-show
    ::m.navlinks/router        :admin-users
    ::m.navlinks/required-role :admin})

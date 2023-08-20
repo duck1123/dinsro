@@ -6,16 +6,21 @@
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
+   [dinsro.model.nostr.runs :as m.n.runs]
    #?(:clj [dinsro.queries.nostr.connections :as q.n.connections])
    #?(:clj [dinsro.queries.nostr.relays :as q.n.relays])
    #?(:clj [dinsro.queries.nostr.requests :as q.n.requests])
+   #?(:clj [dinsro.queries.nostr.runs :as q.n.runs])
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/relays.clj]]
 ;; [[../../model/nostr/relays.cljc]]
+;; [[../../mutations/nostr/relays.cljc]]
 ;; [[../../queries/nostr/connections.clj]]
 ;; [[../../queries/nostr/relays.clj]]
 ;; [[../../ui/nostr/relays.cljs]]
+
+(def model-key ::m.n.relays/id)
 
 (def join-info
   (merge
@@ -92,8 +97,31 @@
    ao/pc-input   #{::requests}
    ao/pc-resolve (fn [_ {::keys [requests]}] {::request-count (count requests)})})
 
+(defattr run-count ::run-count :int
+  {ao/identities #{::m.n.runs/id}
+   ao/pc-input   #{::runs}
+   ao/pc-resolve (fn [_ {::keys [runs]}] {::run-count (count runs)})})
+
+(defattr runs ::runs :ref
+  {ao/cardinality :many
+   ao/identities  #{model-key}
+   ao/pc-input    #{model-key}
+   ao/target      ::m.n.runs/id
+   ao/pc-resolve
+   (fn [_env params]
+     (let [id (model-key params)]
+       (log/info :runs/starting {:id id})
+       (let [ids #?(:clj  (q.n.runs/index-ids {model-key id})
+                    :cljs (do (comment id) []))]
+         {::runs (m.n.runs/idents ids)})))})
+
 (def attributes
   [active-connection-count
    active-connections
-   admin-index connection-count connections
-   index request-count requests])
+   admin-index
+   connection-count
+   connections
+   index
+   request-count
+   requests
+   run-count runs])

@@ -33,6 +33,7 @@
 ;; [[../../../joins/nostr/relays.cljc]]
 ;; [[../../../model/nostr/relays.cljc]]
 ;; [[../../../ui/admin/nostr/relays/connections.cljc]]
+;; [[../../../ui/admin/nostr/relays/events.cljc]]
 ;; [[../../../ui/nostr/relays.cljs]]
 
 (def index-page-key :admin-nostr-relays)
@@ -79,7 +80,8 @@
    ro/columns           [m.n.relays/address
                          j.n.relays/request-count
                          j.n.relays/active-connection-count
-                         j.n.relays/connection-count]
+                         j.n.relays/connection-count
+                         j.n.relays/run-count]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/machine           spr/machine

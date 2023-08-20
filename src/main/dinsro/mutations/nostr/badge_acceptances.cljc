@@ -8,11 +8,12 @@
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.processors.nostr.badge-acceptances :as p.n.badge-acceptances])))
 
-;; [../../processors/nostr/badge_acceptances.clj]
+;; [[../../processors/nostr/badge_acceptances.clj]]
+
+(def model-key ::m.n.badge-acceptances/id)
 
 #?(:cljs (comment ::mu/_ ::pc/_
-                  ::m.n.relays/id ::m.n.pubkeys/id
-                  ::m.n.badge-acceptances/id))
+                  ::m.n.relays/id ::m.n.pubkeys/id))
 
 ;; fetch!
 

@@ -11,9 +11,11 @@
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-list :refer [ui-list-list]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
+   [dinsro.joins.nostr.filters :as j.n.filters]
    [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.ui.admin.nostr.requests.connections :as u.a.n.rq.connections]
    [dinsro.ui.admin.nostr.requests.filter-items :as u.a.n.rq.filter-items]
@@ -34,22 +36,48 @@
 (def parent-router-key :admin-nostr)
 (def show-menu-id :admin-nostr-requests)
 (def show-page-key :admin-nostr-requests-show)
+(def debug-props false)
+
+(defsc FilterItem
+  [_this {::j.n.filters/keys [query-string]
+          ::m.n.filters/keys [index]
+          :as                props}]
+  {:ident         ::m.n.filters/id
+   :initial-state {::m.n.filters/id           nil
+                   ::m.n.filters/index        0
+                   ::j.n.filters/query-string ""}
+   :query         [::m.n.filters/id
+                   ::m.n.filters/index
+                   ::j.n.filters/query-string]}
+  (ui-list-item {}
+    (dom/div {} (str index " - " query-string))
+    (when debug-props (u.debug/log-props props))))
+
+(def ui-filter-item (comp/factory FilterItem {:keyfn ::m.n.filters/id}))
 
 (defsc BodyItem
-  [_this props]
+  [_this {::j.n.requests/keys [filters]
+          ::m.n.requests/keys [code]
+          :as                 props}]
   {:ident         ::m.n.requests/id
    :query         [::m.n.requests/id
                    ::m.n.requests/code
                    ::j.n.requests/run-count
+                   {::j.n.requests/filters (comp/get-query FilterItem {})}
                    ::j.n.requests/filter-count
                    ::j.n.requests/query-string]
    :initial-state {::m.n.requests/id           nil
                    ::m.n.requests/code         ""
                    ::j.n.requests/run-count    0
+                   ::j.n.requests/filters      []
                    ::j.n.requests/filter-count 0
                    ::j.n.requests/query-string ""}}
   (ui-list-item {}
-    (u.debug/log-props props)))
+    (ui-segment {}
+      (dom/h2 {} (str code))
+      (ui-list-list {}
+        (map ui-filter-item filters))
+      (when debug-props (u.debug/log-props props)))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.n.requests/id}))
 
@@ -72,9 +100,10 @@
    ro/source-attribute  ::j.n.requests/admin-index
    ro/title             "Requests"}
   (let [{:ui/keys [current-rows]} props]
-    (dom/div {}
+    (ui-segment {}
       (dom/h1 {} "Requests")
-      (ui-list-list {} (map ui-body-item current-rows)))))
+      (ui-list-list {}
+        (map ui-body-item current-rows)))))
 
 (def ui-report (comp/factory Report))
 

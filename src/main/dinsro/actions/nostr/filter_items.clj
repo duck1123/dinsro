@@ -58,3 +58,8 @@
         hex-maps (determine-item item)]
     (log/trace :get-query-string/mapped {:item item :hex-maps hex-maps})
     hex-maps))
+
+(defn delete!
+  [id]
+  (log/info :delete!/starting {:id id})
+  (q.n.filter-items/delete! id))

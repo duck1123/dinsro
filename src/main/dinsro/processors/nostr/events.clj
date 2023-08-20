@@ -10,15 +10,21 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
+   [dinsro.responses.nostr.events :as r.n.events]
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/nostr/events.clj]]
 ;; [[../../model/nostr/events.cljc]]
+;; [[../../responses/nostr/events.cljc]]
+;; [[../../ui/nostr/events.cljc]]
+
+(def model-key ::m.n.events/id)
 
 (defn fetch!
   [props]
   (log/info :fetch!/starting {:props props})
-  (let [event-id (::m.n.events/id props)]
-    (a.n.events/fetch-event! event-id)))
+  (let [id (model-key props)]
+    (a.n.events/fetch-event! id)))
 
 (defn create-event-request!
   [pubkey-id relay-id]
@@ -49,3 +55,10 @@
       {::mu/status :ok}
       (catch Exception ex
         (mu/exception-response ex)))))
+
+(defn delete!
+  [_env props]
+  (let [id (model-key props)]
+    (a.n.events/delete! id)
+    {::mu/status                  :ok
+     ::r.n.events/deleted-records (m.n.events/idents [id])}))

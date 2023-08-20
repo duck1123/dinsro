@@ -154,34 +154,36 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.users/keys [id]
-          :ui/keys       [form report]
-          :as            props}]
+  [_this {:ui/keys [form report]
+          :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.users/id    nil
-                       ::m.navlinks/id index-page-key
-                       :ui/form        {}
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       ::m.users/id
-                       :ui/form
-                       {:ui/form (comp/get-query NewForm)}
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-key
+                         :ui/form         (comp/get-initial-state NewForm {})
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/form (comp/get-query NewForm)}
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["categories"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/debug :SubPage/starting {:props props})
-  (if (and report id)
-    (dom/div {}
-      (ui-new-form form)
-      (ui-report report))
-    (u.debug/load-error props "admin user categories")))
+  (if (parent-model-key props)
+    (if report
+      (dom/div {}
+        (ui-new-form form)
+        (ui-report report))
+      (u.debug/load-error props "admin user categories report"))
+    (u.debug/load-error props "admin user categories page")))
 
-(m.navlinks/defroute   :admin-users-show-categories
+(m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Categories"
-   ::m.navlinks/model-key     ::m.categories/id
+   ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :admin-users-show
    ::m.navlinks/router        :admin-users
    ::m.navlinks/required-role :admin})

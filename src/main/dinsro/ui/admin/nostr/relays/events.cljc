@@ -10,6 +10,8 @@
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.mutations.nostr.events :as mu.n.events]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -17,6 +19,7 @@
 
 ;; [[../../../../joins/nostr/events.cljc]]
 ;; [[../../../../model/nostr/events.cljc]]
+;; [[../../../../mutations/nostr/events.cljc]]
 ;; [[../../../../ui/admin/nostr/events.cljc]]
 
 (def index-page-key :admin-nostr-relays-show-events)
@@ -24,21 +27,26 @@
 (def parent-model-key ::m.n.relays/id)
 (def router-key :dinsro.ui.admin.nostr.relays/Router)
 
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.n.events/delete!))
+
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.events/pubkey  #(u.links/ui-admin-pubkey-link %2)
+  {ro/column-formatters {::m.n.events/pubkey  #(when %2 (u.links/ui-admin-pubkey-link %2))
                          ::m.n.events/note-id #(u.links/ui-admin-event-link %3)
                          ::m.n.pubkeys/hex    #(u.links/ui-admin-pubkey-link %3)}
-   ro/columns           [m.n.events/content]
-   ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::m.n.relays/id {:type :uuid :label "id"}
-                         ::refresh       u.links/refresh-control}
+   ro/columns           [m.n.events/content
+                         m.n.events/pubkey]
+   ro/control-layout    {:action-buttons [::refresh]
+                         :inputs         [[parent-model-key]]}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
    ro/row-pk            m.n.events/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.n.events/index
+   ro/source-attribute  ::j.n.events/admin-index
    ro/title             "Events"})
 
 (def ui-report (comp/factory Report))
@@ -52,7 +60,7 @@
                         {parent-model-key (parent-model-key props)
                          ::m.navlinks/id  index-page-key
                          :ui/report       (comp/get-initial-state Report {})})
-   :query             (fn [_]
+   :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id

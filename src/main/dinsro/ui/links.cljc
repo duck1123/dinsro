@@ -81,7 +81,7 @@
 (defn img-formatter
   [pubkey]
   (if-let [picture (::m.n.pubkeys/picture pubkey)]
-    (dom/img {:src picture})
+    (dom/img {:src picture :height "200" :width "200"})
     ""))
 
 (form/defsc-form AccountLinkForm

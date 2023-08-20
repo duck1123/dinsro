@@ -10,6 +10,7 @@
 
 ;; [[../../actions/nostr/events.clj]]
 ;; [[../../model/nostr/events.cljc]]
+;; [[../../mutations/nostr/events.cljc]]
 ;; [[../../joins/nostr/events.cljc]]
 ;; [[../../ui/nostr/events.cljs]]
 ;; [[../../../../notebooks/dinsro/notebooks/nostr/events_notebook.clj]]
@@ -46,6 +47,11 @@
   [id]
   [::m.n.events/id => (? ::m.n.events/item)]
   (c.xtdb/read model-key id))
+
+(>defn delete!
+  [id]
+  [::m.n.events/id => nil?]
+  (c.xtdb/delete! id))
 
 (>defn index-ids
   ([]

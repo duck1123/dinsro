@@ -15,6 +15,7 @@
 ;; [[../../model/nostr/pubkeys.cljc]]
 ;; [[../../mutations/nostr/pubkeys.cljc]]
 ;; [[../../queries/nostr/pubkeys.clj]]
+;; [[../../ui/admin/nostr/pubkeys.cljc]]
 ;; [[../../ui/nostr/pubkeys.cljs]]
 
 (def join-info

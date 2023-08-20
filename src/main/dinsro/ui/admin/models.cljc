@@ -49,7 +49,7 @@
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :route-segment     ["navlinks"]}
+   :route-segment     ["models"]}
   (log/trace :Page/starting {:props props})
   (ui-report report))
 
