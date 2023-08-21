@@ -10,13 +10,13 @@
 
 (def model-key ::m.n.filter-items/id)
 
-#?(:cljs (comment ::mu/_ ::pc/_ ::m.n.filter-items/_))
+#?(:cljs (comment ::mu/_ ::pc/_))
 
 #?(:clj
-   (pc/defmutation delete! [_env props]
+   (pc/defmutation delete! [env props]
      {::pc/params #{::m.n.filter-items/id}
       ::pc/output [::mu/status ::mu/errors ::r.n.filter-items/deleted-records]}
-     (p.n.filter-items/delete! props))
+     (p.n.filter-items/delete! env props))
 
    :cljs
    (fm/defmutation delete! [_props]

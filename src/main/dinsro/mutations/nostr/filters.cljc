@@ -28,10 +28,10 @@
      (remote [_env] true)))
 
 #?(:clj
-   (pc/defmutation delete! [_env props]
+   (pc/defmutation delete! [env props]
      {::pc/params #{::m.n.filters/id}
       ::pc/output [::mu/status ::mu/errors ::r.n.filters/deleted-records]}
-     (p.n.filters/delete! props))
+     (p.n.filters/delete! env props))
 
    :cljs
    (fm/defmutation delete! [_props]

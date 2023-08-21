@@ -7,13 +7,21 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
    [dinsro.queries.nostr.relays :as q.n.relays]
+   [dinsro.responses.nostr.relays :as r.n.relays]
    [dinsro.specs.nostr.relays :as s.n.relays]
    [lambdaisland.glogc :as log]))
 
+;; [[../../actions/nostr/relays.clj]]
+
+(def model-key ::m.n.relays/id)
+
 (defn delete!
-  [props]
+  [_env props]
   (log/info :delete!/starting {:props props})
-  (mu/error-response "Not Implemented"))
+  (let [id (model-key props)]
+    (a.n.relays/delete! id)
+    {::mu/status                   :ok
+     ::r.n.relays/deleted-records (m.n.relays/idents [id])}))
 
 (defn submit!
   [props]

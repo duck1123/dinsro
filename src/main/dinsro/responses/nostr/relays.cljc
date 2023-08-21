@@ -4,6 +4,17 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]))
 
+(def model-key ::m.n.relays/id)
+
+(defsc DeleteResponse
+  [_this _props]
+  {:initial-state {::deleted-records []
+                   ::mu/status       :initial
+                   ::mu/errors       {}}
+   :query         [{::deleted-records [model-key]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status]})
+
 (defsc FetchResponse
   [_ _]
   {:initial-state {::mu/status :initial

@@ -9,7 +9,7 @@
 ;; [[../../actions/nostr/badge_definitions.clj]]
 ;; [[../../joins/nostr/badge_definitions.cljc]]
 ;; [[../../model/nostr/badge_definitions.cljc]]
-;; [[../../processors/nostr/connections.clj]]
+;; [[../../processors/nostr/badge_definitions.clj]]
 
 (def model-key ::m.n.badge-definitions/id)
 
@@ -40,3 +40,8 @@
   [id]
   [::m.n.badge-definitions/id => (? ::m.n.badge-definitions/item)]
   (c.xtdb/read model-key id))
+
+(>defn delete!
+  [id]
+  [::m.n.badge-definitions/id => nil?]
+  (c.xtdb/delete! id))

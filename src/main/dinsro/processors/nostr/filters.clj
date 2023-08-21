@@ -4,6 +4,7 @@
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations :as mu]
+   [dinsro.responses.nostr.filters :as r.n.filters]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/filters.clj]]
@@ -22,8 +23,9 @@
      ::mu/errors ["No request id"]}))
 
 (defn delete!
-  [props]
-  (log/info :do-delete!/starting {:props props})
+  [_env props]
+  (log/info :delete!/starting {:props props})
   (let [id (model-key props)]
-    (a.n.filters/delete! id))
-  {::mu/status :ok})
+    (a.n.filters/delete! id)
+    {::mu/status                   :ok
+     ::r.n.filters/deleted-records (m.n.filters/idents [id])}))

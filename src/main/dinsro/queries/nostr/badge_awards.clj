@@ -39,3 +39,8 @@
   [id]
   [::m.n.badge-awards/id => (? ::m.n.badge-awards/item)]
   (c.xtdb/read model-key id))
+
+(>defn delete!
+  [id]
+  [::m.n.badge-awards/id => nil?]
+  (c.xtdb/delete! id))

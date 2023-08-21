@@ -8,6 +8,7 @@
    [dinsro.specs]))
 
 ;; [[../../model/nostr/badge_acceptances.cljc]]
+;; [[../../processors/nostr/badge_acceptances.clj]]
 
 (def model-key ::m.n.badge-acceptances/id)
 
@@ -41,3 +42,8 @@
   [id]
   [::m.n.badge-acceptances/id => (? ::m.n.badge-acceptances/item)]
   (c.xtdb/read model-key id))
+
+(>defn delete!
+  [id]
+  [::m.n.badge-acceptances/id => nil?]
+  (c.xtdb/delete! id))

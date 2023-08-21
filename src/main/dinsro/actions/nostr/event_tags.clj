@@ -10,6 +10,7 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../../mutations/nostr/event_tags.cljc]]
+;; [[../../processors/nostr/event_tags.clj]]
 ;; [[../../queries/nostr/event_tags.clj]]
 ;; [[../../ui/nostr/event_tags.cljs]]
 ;; [[../../../../notebooks/dinsro/notebooks/nostr/event_tags_notebook.clj]]
@@ -76,16 +77,7 @@
         nil)
       nil)))
 
-(comment
-
-  (q.n.events/find-by-note-id "e4f5b8f980885e5f013d1b0549ce871c42d892e744da3e4a611a65202a227472")
-
-  (q.n.events/index-ids)
-  (q.n.event-tags/index-ids)
-
-  (doseq [event-id (q.n.event-tags/index-ids)]
-    (q.n.event-tags/delete! event-id))
-
-  (q.n.events/find-by-note-id "36df49af7fe181520beee31644f121ea2bb8e4ff99468d08f56040e5b792bea5")
-
-  nil)
+(defn delete!
+  [id]
+  (log/info :delete!/starting {:id id})
+  (q.n.event-tags/delete! id))

@@ -14,8 +14,10 @@
 ;; [[../../joins/nostr/relays.cljc]]
 ;; [[../../model/nostr/relays.cljc]]
 ;; [[../../mutations/nostr/relays.cljc]]
+;; [[../../processors/nostr/relays.clj]]
 ;; [[../../queries/nostr/relays.clj]]
 ;; [[../../ui/nostr/relays.cljs]]
+;; [[../../../../notebooks/dinsro/notebooks/nostr/relays_notebook.clj]]
 
 (>def ::client any?)
 
@@ -127,24 +129,7 @@
                   ::m.n.relays/connected false}]
       (q.n.relays/create-record params))))
 
-(comment
-
-  (def relay-id (q.n.relays/register-relay "wss://relay.kronkltd.net"))
-
-  (send! relay-id
-         {:kinds [3]
-          :authors ["6fe701bde348f57e1068101830ad2015f32d3d51d0d685ff0f2812ee8635efec"]})
-
-  (q.n.relays/read-record relay-id)
-
-  (connect! relay-id)
-  (disconnect! relay-id)
-
-  (map q.n.relays/read-record (q.n.relays/index-ids))
-
-  (some->
-   (q.n.relays/index-ids)
-   first
-   q.n.relays/read-record)
-
-  nil)
+(defn delete!
+  [id]
+  (log/info :delete!/starting {:id id})
+  (q.n.relays/delete! id))

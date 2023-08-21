@@ -6,13 +6,13 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.queries.nostr.filters :as q.n.filters]
-   [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.requests :as q.n.requests]
-   [dinsro.specs :as ds]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../model/nostr/requests.cljc]]
+;; [[../../responses/nostr/requests.cljc]]
 ;; [[../../ui/admin/nostr/requests.cljc]]
+;; [[../../../../notebooks/dinsro/notebooks/nostr/requests_notebook.clj]]
 
 (defonce request-counter (atom 0))
 
@@ -53,40 +53,7 @@
     (let [filter-response (mapv a.n.filters/get-query-string filter-ids)]
       (json/json-str (concat ["REQ" code] filter-response)))))
 
-(comment
-
-  (q.n.relays/index-ids)
-
-  (def relay-id (q.n.relays/find-by-address "wss://nostr-pub.wellorder.net"))
-  relay-id
-  (def code "adhoc 0")
-
-  (map q.n.requests/read-record (q.n.requests/find-by-relay relay-id))
-
-  (q.n.requests/find-by-relay relay-id)
-  (q.n.requests/find-by-code code)
-  (q.n.requests/find-by-relay-and-code relay-id code)
-
-  (ds/gen-key ::m.n.requests/item)
-
-  (def request-id (first (q.n.requests/index-ids)))
-  request-id
-  (q.n.requests/read-record request-id)
-
-  (q.n.requests/index-ids)
-
-  (get-query-string request-id)
-
-  (q.n.relays/read-record (q.n.requests/find-relay request-id))
-
-  (q.n.requests/delete-all!)
-
-  (q.n.requests/read-record (first (q.n.requests/index-ids)))
-
-  (some-> relay-id q.n.requests/find-relay q.n.relays/read-record)
-
-  ds/date
-
-  (ds/->inst)
-
-  nil)
+(defn delete!
+  [id]
+  (log/info :delete!/starting {:id id})
+  (q.n.requests/delete! id))
