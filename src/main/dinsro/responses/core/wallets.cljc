@@ -5,14 +5,37 @@
    [dinsro.model.core.words :as m.c.words]
    [dinsro.mutations :as mu]))
 
+;; [[../../mutations/core/wallets.cljc]]
+;; [[../../processors/core/wallets.clj]]
+
+(def model-key ::m.c.wallets/id)
+
+(declare RollWallet RollWord)
+
+(defsc CalculateAddressesResponse
+  [_this _props]
+  {:query [::mu/status]})
+
 (defsc CreationResponse
   [_this _props]
   {:query [:mu/status ::m.c.wallets/id]})
 
-(defsc RollWord
+(defsc DeleteResponse
   [_this _props]
-  {:query [::m.c.words/word ::m.c.words/position ::m.c.words/id]
-   :ident ::m.c.words/id})
+  {:initial-state {::deleted-records []
+                   ::mu/status       :initial
+                   ::mu/errors       {}}
+   :query         [{::deleted-records [model-key]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status]})
+
+(defsc DeriveResponse
+  [_this _props]
+  {:query [::mu/status]})
+
+(defsc RollResponse
+  [_this _props]
+  {:query [::mu/status {::m.c.wallets/item (comp/get-query RollWallet)}]})
 
 (defsc RollWallet
   [_this _props]
@@ -21,14 +44,7 @@
            {::m.c.wallets/words (comp/get-query RollWord)}]
    :ident ::m.c.wallets/id})
 
-(defsc RollResponse
+(defsc RollWord
   [_this _props]
-  {:query [::mu/status {::m.c.wallets/item (comp/get-query RollWallet)}]})
-
-(defsc DeriveResponse
-  [_this _props]
-  {:query [::mu/status]})
-
-(defsc CalculateAddressesResponse
-  [_this _props]
-  {:query [::mu/status]})
+  {:query [::m.c.words/word ::m.c.words/position ::m.c.words/id]
+   :ident ::m.c.words/id})

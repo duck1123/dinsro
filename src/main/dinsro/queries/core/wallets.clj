@@ -13,6 +13,8 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../processors/core/wallets.clj]]
+
 (def query-info
   {:ident   ::m.c.wallets/id
    :pk      '?wallet-id
@@ -114,3 +116,7 @@
         tx            (xt/submit-tx node [[::xt/put updated-props]])]
     (xt/await-tx node tx)
     wallet-id))
+
+(defn delete!
+  [id]
+  (c.xtdb/delete! id))

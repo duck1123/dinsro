@@ -1,9 +1,7 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.notebooks.ln.invoices-notebook
   (:require
-   [dinsro.actions.ln.invoices :as a.ln.invoices]
    [dinsro.lnd-notebook :as n.lnd]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.notebook-utils :as nu]
    [dinsro.queries.ln.invoices :as q.ln.invoices]
    [dinsro.viewers :as dv]
@@ -23,7 +21,5 @@
   (q.ln.invoices/index-ids)
 
   (map q.ln.invoices/delete!  (q.ln.invoices/index-ids))
-
-  (a.ln.invoices/update! (::m.ln.nodes/id n.lnd/node))
 
   nil)

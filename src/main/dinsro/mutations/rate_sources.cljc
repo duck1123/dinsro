@@ -23,6 +23,8 @@
      (a.rate-sources/run-query! id)
      {::mu/status :success}))
 
+;; Create
+
 #?(:clj
    (pc/defmutation create!
      [_request {::m.rate-sources/keys [id]}]
@@ -33,6 +35,8 @@
    (fm/defmutation create! [_props]
      (action [_env] true)
      (remote [_env] true)))
+
+;; Delete
 
 #?(:clj
    (pc/defmutation delete!
@@ -49,6 +53,8 @@
        (doseq [record (get-in env [:result :body `delete! ::r.rate-sources/deleted-records])]
          (swap! state fns/remove-entity [id-key (id-key record)])))
      (remote [env]  (fm/returning env r.rate-sources/DeleteResponse))))
+
+;; Run Query
 
 #?(:clj
    (pc/defmutation run-query!

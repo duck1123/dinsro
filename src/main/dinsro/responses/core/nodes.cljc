@@ -6,6 +6,10 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.mutations :as mu]))
 
+;; [[../../mutations/core/nodes.cljc]]
+
+(def model-key ::m.c.nodes/id)
+
 (>def ::item ::m.c.nodes/item)
 (>def ::creation-response (s/keys :req [::mu/status ::mu/errors ::m.c.nodes/item]))
 
@@ -17,6 +21,15 @@
    :query         [{::mu/errors (comp/get-query mu/ErrorData)}
                    ::mu/status
                    ::m.c.nodes/item]})
+
+(defsc DeleteResponse
+  [_this _props]
+  {:initial-state {::deleted-records []
+                   ::mu/status       :initial
+                   ::mu/errors       {}}
+   :query         [{::deleted-records [model-key]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status]})
 
 (>def ::fetch!-request
   (s/keys :req [::m.c.nodes/id]))

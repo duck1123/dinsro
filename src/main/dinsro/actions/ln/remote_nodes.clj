@@ -28,6 +28,7 @@
   (log/info :fetch!/starting {:id id})
   (throw (ex-info "Not Implemented" {})))
 
-(defn do-delete!
-  [props]
-  (log/info :do-delete!/starting {:props props}))
+(defn delete!
+  [id]
+  (log/info :delete!/starting {:id id})
+  (q.ln.remote-nodes/delete! id))

@@ -14,9 +14,10 @@
    [dinsro.queries.core.tx-out :as q.c.tx-out]
    [lambdaisland.glogc :as log]))
 
-;; [../../model/core/transactions.cljc]
-;; [../../mutations/core/transactions.cljc]
-;; [../../responses/core/transactions.cljc]
+;; [[../../model/core/transactions.cljc]]
+;; [[../../mutations/core/transactions.cljc]]
+;; [[../../queries/core/transactions.clj]]
+;; [[../../responses/core/transactions.cljc]]
 
 (>defn fetch-tx
   [node tx-id]
@@ -134,3 +135,8 @@
       (do
         (log/info :search!/not-cached {:tx-id tx-id})
         nil))))
+
+(defn delete!
+  [id]
+  (log/info :delete!/starting {:id id})
+  (q.c.tx/delete! id))

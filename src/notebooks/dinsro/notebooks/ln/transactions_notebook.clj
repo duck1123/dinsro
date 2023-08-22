@@ -23,7 +23,7 @@
   (q.c.transactions/index-ids)
 
   (map q.c.blocks/delete (q.c.blocks/index-ids))
-  (map q.c.transactions/delete (q.c.transactions/index-ids))
+  (map q.c.transactions/delete! (q.c.transactions/index-ids))
   (map q.c.tx-out/delete! (q.c.tx-out/index-ids))
   (map q.c.tx-in/delete! (q.c.tx-in/index-ids))
 

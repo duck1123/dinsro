@@ -14,6 +14,8 @@
    [dinsro.queries.core.transactions :as q.c.transactions]
    [lambdaisland.glogc :as log]))
 
+;; [[../../mutations/core/nodes.cljc]]
+
 (def sample-address "bcrt1qyyvtjwguj3z6dlqdd66zs2zqqe6tp4qzy0cp6g")
 
 (>defn generate-to-address!
@@ -94,7 +96,7 @@
       (log/error :generate!/node-not-found {:node-id node-id})
       nil)))
 
-(defn do-delete!
-  [props]
-  (log/info :do-delete!/starting {:props props})
-  (throw (ex-info "no implemented" {})))
+(defn delete!
+  [id]
+  (log/info :do-delete!/starting {:id id})
+  (q.c.nodes/delete! id))

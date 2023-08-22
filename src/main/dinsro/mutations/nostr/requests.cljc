@@ -58,4 +58,4 @@
 
 #?(:clj
    (def resolvers
-     [run! start!]))
+     [delete! run! start!]))

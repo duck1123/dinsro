@@ -8,8 +8,8 @@
    #?(:clj [dinsro.processors.currencies :as p.currencies])
    [dinsro.responses.currencies :as r.currencies]))
 
-;; [../processors/currencies.clj]
-;; [../responses/currencies.cljc]
+;; [[../processors/currencies.clj]]
+;; [[../responses/currencies.cljc]]
 
 (def id-key ::m.currencies/id)
 

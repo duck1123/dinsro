@@ -77,3 +77,7 @@
      :in [[?address]]
      :where [[?address-id ::m.c.addresses/address ?address]]}
    [address]))
+
+(defn delete!
+  [id]
+  (c.xtdb/delete! id))

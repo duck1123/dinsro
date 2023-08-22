@@ -33,7 +33,7 @@
 (defn delete!
   [id]
   (log/info :delete!/starting {:id id})
-  (throw (ex-info "Not implemented" {})))
+  (q.ln.channels/delete! id))
 
 (>defn fetch-channels
   [node]

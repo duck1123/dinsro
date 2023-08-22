@@ -11,9 +11,9 @@
    [dinsro.specs]
    [xtdb.api :as xt]))
 
-;; [../../actions/ln/nodes.clj]
-;; [../../joins/ln/nodes.cljc]
-;; [../../model/ln/nodes.cljc]
+;; [[../../actions/ln/nodes.clj]]
+;; [[../../joins/ln/nodes.cljc]]
+;; [[../../model/ln/nodes.cljc]]
 
 (def query-info
   {:ident   ::m.ln.nodes/id
@@ -93,3 +93,8 @@
      :in    [[?core-node-id]]
      :where [[?node-id ::m.ln.nodes/core-node ?core-node-id]]}
    [core-node-id]))
+
+(>defn delete!
+  [id]
+  [::m.ln.nodes/id => nil?]
+  (c.xtdb/delete! id))

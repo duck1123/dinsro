@@ -75,7 +75,7 @@
 
   (map q.c.tx-out/delete! (q.c.tx-out/index-ids))
   (map q.c.tx-in/delete! (q.c.tx-in/index-ids))
-  (map q.c.tx/delete (q.c.tx/index-ids))
+  (map q.c.tx/delete! (q.c.tx/index-ids))
   (map q.c.blocks/delete (q.c.blocks/index-ids))
 
   (q.c.blocks/index-ids)

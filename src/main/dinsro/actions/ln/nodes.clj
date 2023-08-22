@@ -25,9 +25,9 @@
    org.bitcoins.lnd.rpc.LndRpcClient
    scala.Option))
 
-;; [../../model/ln/nodes.cljc]
-;; [../../joins/ln/nodes.cljc]
-;; [../../queries/ln/nodes.clj]
+;; [[../../model/ln/nodes.cljc]]
+;; [[../../joins/ln/nodes.cljc]]
+;; [[../../queries/ln/nodes.clj]]
 
 (def default-passphrase "password12345678")
 
@@ -252,6 +252,11 @@
           (doseq [utxo-result results]
             (let [record (cs/->record utxo-result)]
               (log/info :update-info!/converted {:record record}))))))))
+
+(defn delete!
+  [id]
+  (log/info :delete!/starting {:id id})
+  (q.ln.nodes/delete! id))
 
 (comment
 

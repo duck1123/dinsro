@@ -12,6 +12,8 @@
 
 #?(:cljs (comment ::mu/_ ::pc/_))
 
+;; Delete
+
 #?(:clj
    (pc/defmutation delete!
      [env props]

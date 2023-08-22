@@ -222,6 +222,7 @@
          :hash    hash
          :node-id node-id}))))
 
-(defn do-delete!
-  [props]
-  (log/info :do-delete!/starting {:props props}))
+(defn delete!
+  [id]
+  (log/info :delete!/staring {:id id})
+  (q.c.blocks/delete! id))

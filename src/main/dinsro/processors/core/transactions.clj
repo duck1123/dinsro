@@ -10,10 +10,12 @@
    [dinsro.responses.core.transactions :as r.c.transactions]
    [lambdaisland.glogc :as log]))
 
-;; [../../actions/core/transactions.clj]
-;; [../../model/core/transactions.cljc]
-;; [../../mutations/core/transactions.cljc]
-;; [../../responses/core/transactions.cljc]
+;; [[../../actions/core/transactions.clj]]
+;; [[../../model/core/transactions.cljc]]
+;; [[../../mutations/core/transactions.cljc]]
+;; [[../../responses/core/transactions.cljc]]
+
+(def model-key ::m.c.transactions/id)
 
 (defn search!
   [props]
@@ -34,8 +36,10 @@
          :node-id node-id}))))
 
 (defn delete!
-  [props]
-  (log/info :delete!/starting {:props props}))
+  [_env props]
+  (log/info :delete!/starting {:props props})
+  (let [id (model-key props)]
+    (a.c.transactions/delete! id)))
 
 (>defn fetch!
   "Fetch tx info from node. Mutation handler"

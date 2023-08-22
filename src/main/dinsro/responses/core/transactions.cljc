@@ -6,7 +6,19 @@
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.mutations :as mu]))
 
-;; [../../actions/core/transactions.clj]
+;; [[../../actions/core/transactions.clj]]
+;; [[../../mutations/core/transactions.cljc]]
+
+(def model-key ::m.c.transactions/id)
+
+(defsc DeleteResponse
+  [_this _props]
+  {:initial-state {::deleted-records []
+                   ::mu/status       :initial
+                   ::mu/errors       {}}
+   :query         [{::deleted-records [model-key]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status]})
 
 (>def ::fetch-result (s/keys))
 

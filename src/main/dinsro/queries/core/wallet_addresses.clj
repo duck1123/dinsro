@@ -13,6 +13,8 @@
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
+;; [[../../mutations/core/wallet_addresses.cljc]]
+
 (def query-info
   {:ident        ::m.c.wallet-addresses/id
    :pk           '?wallet-address-id

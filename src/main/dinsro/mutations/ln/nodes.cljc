@@ -1,5 +1,6 @@
 (ns dinsro.mutations.ln.nodes
   (:require
+   #?(:cljs [com.fulcrologic.fulcro.algorithms.normalized-state :as fns])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.ln.accounts :as a.ln.accounts])
@@ -11,11 +12,18 @@
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.queries.ln.nodes :as q.ln.nodes])
+   #?(:clj [dinsro.processors.ln.nodes :as p.ln.nodes])
    [dinsro.responses.ln.nodes :as r.ln.nodes]
    #?(:clj [lambdaisland.glogc :as log])))
 
+;; [[../../responses/ln/nodes.cljc]]
+
+(def model-key ::m.ln.nodes/id)
+
 #?(:clj (comment ::r.ln.nodes/_))
-#?(:cljs (comment ::m.ln.nodes/_ ::m.ln.remote-nodes/_ ::pc/_ ::mu/_))
+#?(:cljs (comment ::m.ln.remote-nodes/_ ::pc/_ ::mu/_))
+
+;; Create Peer
 
 #?(:clj
    (pc/defmutation create-peer!
@@ -29,9 +37,29 @@
          {::mu/status (if (nil? response) :fail :ok)})
        {::mu/status :not-found}))
    :cljs
-   (defmutation create-peer! [_props]
+   (fm/defmutation create-peer! [_props]
      (action [_env] true)
      (remote [_env] true)))
+
+;; Delete
+
+#?(:clj
+   (pc/defmutation delete!
+     [env props]
+     {::pc/params #{model-key}
+      ::pc/output [::mu/status ::r.ln.nodes/deleted-records]}
+     (p.ln.nodes/delete! env props))
+
+   :cljs
+   (fm/defmutation delete! [_props]
+     (action [_env] true)
+     (ok-action [{:keys [state] :as env}]
+       (doseq [record (get-in env [:result :body `delete! ::r.ln.nodes/deleted-records])]
+         (swap! state fns/remove-entity [model-key (model-key record)])))
+     (remote [env]
+       (fm/returning env r.ln.nodes/DeleteResponse))))
+
+;; Download Cert
 
 #?(:clj
    (pc/defmutation download-cert!
@@ -63,6 +91,8 @@
      (action [_env] true)
      (remote [env] (fm/returning env r.ln.nodes/NodeCert))))
 
+;; Download Macaroon
+
 #?(:clj
    (pc/defmutation download-macaroon!
      [_env {::m.ln.nodes/keys [id]}]
@@ -81,6 +111,8 @@
      (action [_env] true)
      (remote [env] (fm/returning env r.ln.nodes/NodeMacaroonResponse))))
 
+;; Generate
+
 #?(:clj
    (pc/defmutation generate!
      [_env {::m.ln.nodes/keys [id]}]
@@ -95,6 +127,8 @@
      (action [_env] true)
      (remote [_env] true)))
 
+;; Fetch Accounts
+
 #?(:clj
    (pc/defmutation fetch-accounts!
      [_env {::m.ln.nodes/keys [id]}]
@@ -105,6 +139,8 @@
    (defmutation fetch-accounts! [_props]
      (action [_env] true)
      (remote [_env] true)))
+
+;; Fetch Channels
 
 #?(:clj
    (pc/defmutation fetch-channels!
@@ -118,6 +154,8 @@
      (action [_env] true)
      (remote [_env] true)))
 
+;; Fetch Invoices
+
 #?(:clj
    (pc/defmutation fetch-invoices!
      [_env {::m.ln.nodes/keys [id]}]
@@ -129,6 +167,8 @@
    (defmutation fetch-invoices! [_props]
      (action [_env] true)
      (remote [_env] true)))
+
+;; Fetch Payments
 
 #?(:clj
    (pc/defmutation fetch-payments!
@@ -203,6 +243,8 @@
      (action [_env] true)
      (remote [_env] true)))
 
+;; Update Info
+
 #?(:clj
    (pc/defmutation update-info!
      [_env {::m.ln.nodes/keys [id]}]
@@ -217,6 +259,8 @@
    (defmutation update-info! [_props]
      (action [_env] true)
      (remote [_env] true)))
+
+;; Update Transactions
 
 #?(:clj
    (pc/defmutation update-transactions!
@@ -234,6 +278,8 @@
    (defmutation update-transactions! [_props]
      (action [_env] true)
      (remote [_env] true)))
+
+;; Unlock
 
 #?(:clj
    (pc/defmutation unlock!
@@ -253,6 +299,7 @@
 #?(:clj
    (def resolvers
      [create-peer!
+      delete!
       download-cert!
       download-macaroon!
       fetch-accounts!

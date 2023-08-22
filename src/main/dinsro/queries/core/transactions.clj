@@ -108,12 +108,10 @@
     (xt/await-tx node tx)
     id))
 
-(>defn delete
+(>defn delete!
   [id]
   [::m.c.transactions/id => any?]
-  (let [node (c.xtdb/get-node)
-        tx   (xt/submit-tx node [[::xt/evict id]])]
-    (xt/await-tx node tx)))
+  (c.xtdb/delete! id))
 
 (>defn find-by-ln-node
   [ln-node-id]

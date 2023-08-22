@@ -17,10 +17,12 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.requests :as m.n.requests]
+   [dinsro.mutations.nostr.requests :as mu.n.requests]
    [dinsro.ui.admin.nostr.requests.connections :as u.a.n.rq.connections]
    [dinsro.ui.admin.nostr.requests.filter-items :as u.a.n.rq.filter-items]
    [dinsro.ui.admin.nostr.requests.filters :as u.a.n.rq.filters]
    [dinsro.ui.admin.nostr.requests.runs :as u.a.n.rq.runs]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -56,9 +58,9 @@
 (def ui-filter-item (comp/factory FilterItem {:keyfn ::m.n.filters/id}))
 
 (defsc BodyItem
-  [_this {::j.n.requests/keys [filters]
-          ::m.n.requests/keys [code]
-          :as                 props}]
+  [this {::j.n.requests/keys [filters]
+         ::m.n.requests/keys [code]
+         :as                 props}]
   {:ident         ::m.n.requests/id
    :query         [::m.n.requests/id
                    ::m.n.requests/code
@@ -76,13 +78,15 @@
     (ui-segment {}
       (dom/h2 {} (str code))
       (ui-list-list {}
-        (map ui-filter-item filters))
+        (map ui-filter-item filters)
+        (u.buttons/delete-button `mu.n.requests/delete! model-key this))
+
       (when debug-props (u.debug/log-props props)))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.n.requests/id}))
 
 (report/defsc-report Report
-  [_this props]
+  [this props]
   {ro/BodyItem BodyItem
    ro/column-formatters {::m.n.requests/id    #(u.links/ui-admin-request-link %3)}
    ro/columns           [m.n.requests/id
@@ -102,6 +106,7 @@
   (let [{:ui/keys [current-rows]} props]
     (ui-segment {}
       (dom/h1 {} "Requests")
+      (u.buttons/refresh-button this)
       (ui-list-list {}
         (map ui-body-item current-rows)))))
 

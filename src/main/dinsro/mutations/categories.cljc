@@ -8,11 +8,11 @@
    #?(:clj [dinsro.processors.categories :as p.categories])
    [dinsro.responses.categories :as r.categories]))
 
-;; [../joins/categories.cljc]
-;; [../model/categories.cljc]
-;; [../processors/categories.clj]
-;; [../responses/categories.cljc]
-;; [../ui/categories.cljs]
+;; [[../joins/categories.cljc]]
+;; [[../model/categories.cljc]]
+;; [[../processors/categories.clj]]
+;; [[../responses/categories.cljc]]
+;; [[../ui/categories.cljs]]
 
 (def id-key ::m.categories/id)
 

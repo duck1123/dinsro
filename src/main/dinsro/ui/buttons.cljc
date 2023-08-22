@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.control :as control]
+   [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [lambdaisland.glogc :as log]))
 
 (defn get-control-value
@@ -68,3 +69,17 @@
        (let [parent-id (get-control-value report-instance parent-key)
              props     {parent-key parent-id}]
          (comp/transact! report-instance [(mutation props)])))}))
+
+(defn refresh-button
+  [this]
+  (ui-button {:icon    "refresh"
+              :onClick (fn [_] (control/run! this))}))
+
+(defn delete-button
+  [mutation model-key this]
+  (ui-button {:icon "delete"
+              :onClick
+              (fn [_]
+                (let [props (comp/props this)
+                      id (model-key props)]
+                  (comp/transact! this [`(~mutation {~model-key ~id})])))}))

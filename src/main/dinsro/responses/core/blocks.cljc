@@ -4,6 +4,17 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.mutations :as mu]))
 
+(def model-key ::m.c.blocks/id)
+
+(defsc DeleteResponse
+  [_this _props]
+  {:initial-state {::deleted-records []
+                   ::mu/status       :initial
+                   ::mu/errors       {}}
+   :query         [{::deleted-records [model-key]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status]})
+
 (defsc FetchResponseResponse
   [_this _props]
   {:query [::m.c.blocks/id

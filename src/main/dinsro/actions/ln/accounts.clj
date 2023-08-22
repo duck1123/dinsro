@@ -14,7 +14,7 @@
 (defn delete!
   [id]
   (log/info :delete!/starting {:id id})
-  (throw (ex-info "Not implemented" {})))
+  (q.ln.accounts/delete! id))
 
 (defn fetch!
   [node]

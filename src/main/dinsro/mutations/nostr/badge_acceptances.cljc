@@ -49,4 +49,4 @@
      (action [_env] true)
      (remote [_env] true)))
 
-#?(:clj (def resolvers [fetch!]))
+#?(:clj (def resolvers [delete! fetch!]))

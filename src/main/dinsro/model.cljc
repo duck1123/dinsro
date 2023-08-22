@@ -109,16 +109,17 @@
    #?(:clj [dinsro.mutations.contacts :as mu.contacts])
    #?(:clj [dinsro.mutations.core.addresses :as mu.c.addresses])
    #?(:clj [dinsro.mutations.core.blocks :as mu.c.blocks])
+   #?(:clj [dinsro.mutations.core.connections :as mu.c.connections])
    #?(:clj [dinsro.mutations.core.nodes :as mu.c.nodes])
    #?(:clj [dinsro.mutations.core.peers :as mu.c.peers])
    #?(:clj [dinsro.mutations.core.transactions :as mu.c.transactions])
    #?(:clj [dinsro.mutations.core.wallets :as mu.c.wallets])
    #?(:clj [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses])
-   #?(:clj [dinsro.mutations.core.words :as mu.c.words])
    #?(:clj [dinsro.mutations.currencies :as mu.currencies])
    #?(:clj [dinsro.mutations.debits :as mu.debits])
    #?(:clj [dinsro.mutations.instances :as mu.instances])
    #?(:clj [dinsro.mutations.ln.accounts :as mu.ln.accounts])
+   #?(:clj [dinsro.mutations.ln.channels :as mu.ln.channels])
    #?(:clj [dinsro.mutations.ln.invoices :as mu.ln.invoices])
    #?(:clj [dinsro.mutations.ln.nodes :as mu.ln.nodes])
    #?(:clj [dinsro.mutations.ln.payments :as mu.ln.payments])
@@ -262,16 +263,17 @@
            mu.contacts/resolvers
            mu.c.addresses/resolvers
            mu.c.blocks/resolvers
+           mu.c.connections/resolvers
            mu.c.nodes/resolvers
            mu.c.peers/resolvers
            mu.c.transactions/resolvers
            mu.c.wallets/resolvers
            mu.c.wallet-addresses/resolvers
-           mu.c.words/resolvers
            mu.currencies/resolvers
            mu.debits/resolvers
            mu.instances/resolvers
            mu.ln.accounts/resolvers
+           mu.ln.channels/resolvers
            mu.ln.invoices/resolvers
            mu.ln.payments/resolvers
            mu.ln.payreqs/resolvers

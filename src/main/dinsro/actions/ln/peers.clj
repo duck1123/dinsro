@@ -42,11 +42,9 @@
           (create-peer-record! params))))))
 
 (defn delete!
-  "Handler for delete peer mutation"
-  [props]
-  (log/info :delete!/starting {:props props})
-  (let [{peer-id ::m.ln.peers/id} props]
-    (q.ln.peers/delete peer-id)))
+  [id]
+  (log/info :delete!/starting {:id id})
+  (q.ln.peers/delete! id))
 
 (>defn create-peer!
   "Connect this node to a new peer"

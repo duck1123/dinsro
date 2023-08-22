@@ -1,7 +1,8 @@
 (ns dinsro.mutations.core.nodes
   (:require
    #?(:cljs [com.fulcrologic.fulcro.algorithms.merge :as merge])
-   #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
+   #?(:cljs [com.fulcrologic.fulcro.algorithms.normalized-state :as fns])
+   #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.core.nodes :as a.c.nodes])
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -11,11 +12,13 @@
    [dinsro.responses.core.nodes :as r.c.nodes]
    [lambdaisland.glogc :as log]))
 
-;; [../../processors/core/nodes.clj]
-;; [../../../../notebooks/dinsro/mutations/core/nodes_notebook.clj]
+;; [[../../processors/core/nodes.clj]]
+;; [[../../../../notebooks/dinsro/mutations/core/nodes_notebook.clj]]
+
+(def model-key ::m.c.nodes/id)
 
 #?(:clj (comment ::r.c.nodes/_ ::log/_))
-#?(:cljs (comment ::m.c.nodes/_ ::mu/_ ::pc/_))
+#?(:cljs (comment ::mu/_ ::pc/_))
 
 ;; Connect
 
@@ -31,23 +34,28 @@
         ::m.c.nodes/item nil}))
 
    :cljs
-   (defmutation connect! [_props]
+   (fm/defmutation connect! [_props]
      (action [_env] true)
-     (remote [env]  (fm/returning env r.c.nodes/ConnectResponse))))
+     (remote [env]
+       (fm/returning env r.c.nodes/ConnectResponse))))
 
 ;; Delete
 
 #?(:clj
    (pc/defmutation delete!
-     [_env props]
-     {::pc/params #{::m.c.nodes/id}
-      ::pc/output [::mu/status ::mu/errors ::m.c.nodes/item]}
-     (a.c.nodes/do-delete! props))
+     [env props]
+     {::pc/params #{model-key}
+      ::pc/output [::mu/status ::mu/errors ::r.c.nodes/deleted-records]}
+     (p.c.nodes/delete! env props))
 
    :cljs
-   (defmutation delete! [_props]
+   (fm/defmutation delete! [_props]
      (action [_env] true)
-     (remote [_env] true)))
+     (ok-action [{:keys [state] :as env}]
+       (doseq [record (get-in env [:result :body `delete! ::r.c.nodes/deleted-records])]
+         (swap! state fns/remove-entity [model-key (model-key record)])))
+     (remote [env]
+       (fm/returning env r.c.nodes/DeleteResponse))))
 
 ;; Fetch
 
@@ -83,7 +91,7 @@
      (p.c.nodes/fetch! props))
 
    :cljs
-   (defmutation fetch! [_props]
+   (fm/defmutation fetch! [_props]
      (action    [_env] true)
      (remote    [env]  (fm/returning env r.c.nodes/FetchResponse))
      (ok-action [env]  (handle-fetch env))))
@@ -98,7 +106,7 @@
      (p.c.nodes/generate! props))
 
    :cljs
-   (defmutation generate! [_props]
+   (fm/defmutation generate! [_props]
      (action [_env] true)
      (remote [_env] true)))
 
@@ -112,7 +120,7 @@
      (p.c.nodes/fetch-peers! params))
 
    :cljs
-   (defmutation fetch-peers! [_props]
+   (fm/defmutation fetch-peers! [_props]
      (action [_env] true)
      (remote [_env] true)))
 

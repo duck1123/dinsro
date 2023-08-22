@@ -114,3 +114,8 @@
      :where [[?peer-id ::m.ln.peers/remote-node ?remote-node-id]
              [?peer-id ::m.ln.peers/node ?node-id]]}
    [node-id remote-node-id]))
+
+(>defn delete!
+  [id]
+  [::m.ln.peers/id => nil?]
+  (c.xtdb/delete! id))

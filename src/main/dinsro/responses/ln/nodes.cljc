@@ -4,6 +4,18 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.mutations :as mu]))
 
+;; [[../../mutations/ln/nodes.cljc]]
+
+(def model-key ::m.ln.nodes/id)
+
+(defsc DeleteResponse
+  [_this _props]
+  {:initial-state {::deleted-records []
+                   ::mu/status       :initial
+                   ::mu/errors       {}}
+   :query         [{::deleted-records [model-key]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
+                   ::mu/status]})
 (defsc NodeCert
   [_this _props]
   {:query [::m.ln.nodes/hasCert?

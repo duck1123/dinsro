@@ -21,6 +21,8 @@
    org.bitcoins.core.protocol.script.P2WPKHWitnessSPKV0
    [org.bitcoins.crypto ECPublicKey]))
 
+;; [[../../queries/core/wallets.clj]]
+
 ;; FIXME: Use a proper parser
 (defn parse-descriptor
   "parse a descriptor using regex"
@@ -170,9 +172,10 @@
           address        ^Bech32Address (Bech32Address/apply script-pub-key network)]
       (.value address))))
 
-(defn do-delete!
-  [props]
-  (log/info :do-delete!/starting {:props props}))
+(defn delete!
+  [id]
+  (log/info :delete!/starting {:id id})
+  (q.c.wallets/delete! id))
 
 (defn do-derive!
   [env props]

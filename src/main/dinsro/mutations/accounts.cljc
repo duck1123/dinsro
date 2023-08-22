@@ -8,12 +8,14 @@
    #?(:clj [dinsro.processors.accounts :as p.accounts])
    [dinsro.responses.accounts :as r.accounts]))
 
-;; [../processors/accounts.clj]
-;; [../responses/accounts.cljc]
+;; [[../processors/accounts.clj]]
+;; [[../responses/accounts.cljc]]
 
-(def id-key ::m.accounts/id)
+(def model-key ::m.accounts/id)
 
 #?(:cljs (comment ::mu/_ ::pc/_))
+
+;; Delete
 
 #?(:clj
    (pc/defmutation delete!
@@ -27,7 +29,7 @@
      (action [_env] true)
      (ok-action [{:keys [state] :as env}]
        (doseq [record (get-in env [:result :body `delete! ::r.accounts/deleted-records])]
-         (swap! state fns/remove-entity [id-key (id-key record)])))
+         (swap! state fns/remove-entity [model-key (model-key record)])))
      (remote [env]
        (fm/returning env r.accounts/DeleteResponse))))
 

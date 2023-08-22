@@ -9,6 +9,8 @@
    [dinsro.queries.core.nodes :as q.c.nodes]
    [lambdaisland.glogc :as log]))
 
+;; [[../../queries/core/addresses.clj]]
+
 (defn register-address!
   [address]
   (if-let [address-id (q.c.addresses/find-by-address address)]
@@ -33,6 +35,7 @@
       {:status  :failed
        :message "No address"})))
 
-(defn do-delete!
-  [props]
-  (log/info :do-delete!/starting {:props props}))
+(defn delete!
+  [id]
+  (log/info :delete!/staring {:id id})
+  (q.c.addresses/delete! id))

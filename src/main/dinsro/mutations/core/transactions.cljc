@@ -1,5 +1,6 @@
 (ns dinsro.mutations.core.transactions
   (:require
+   #?(:cljs [com.fulcrologic.fulcro.algorithms.normalized-state :as fns])
    #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
    [com.wsscode.pathom.connect :as pc]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -11,8 +12,11 @@
    [dinsro.responses.core.transactions :as r.c.transactions]
    [lambdaisland.glogc :as log]))
 
-;; [../../actions/core/transactions.clj]
-;; [../../processors/core/transactions.clj]
+;; [[../../actions/core/transactions.clj]]
+;; [[../../processors/core/transactions.clj]]
+;; [[../../responses/core/transactions.cljc]]
+
+(def model-key ::m.c.transactions/id)
 
 #?(:clj
    (comment
@@ -21,9 +25,28 @@
 #?(:cljs
    (comment
      ::m.c.nodes/_
-     ::m.c.transactions/id
      ::mu/_
      ::pc/_))
+
+;; Delete
+
+#?(:clj
+   (pc/defmutation delete!
+     [env props]
+     {::pc/params #{model-key}
+      ::pc/output [::mu/status ::r.c.transactions/deleted-records]}
+     (p.c.transactions/delete! env props))
+
+   :cljs
+   (fm/defmutation delete! [_props]
+     (action [_env] true)
+     (ok-action [{:keys [state] :as env}]
+       (doseq [record (get-in env [:result :body `delete! ::r.c.transactions/deleted-records])]
+         (swap! state fns/remove-entity [model-key (model-key record)])))
+     (remote [env]
+       (fm/returning env r.c.transactions/DeleteResponse))))
+
+;; Fetch
 
 #?(:clj
    (pc/defmutation fetch!
@@ -33,10 +56,12 @@
      (p.c.transactions/fetch! props))
 
    :cljs
-   (defmutation fetch! [_props]
+   (fm/defmutation fetch! [_props]
      (action [_env] true)
      (remote [env]
        (fm/returning env r.c.transactions/FetchResponse))))
+
+;; Search
 
 #?(:clj
    (pc/defmutation search!
@@ -62,18 +87,6 @@
 
      (remote [env]
        (fm/returning env r.c.transactions/SearchResponse))))
-
-#?(:clj
-   (pc/defmutation delete!
-     [_env props]
-     {::pc/params #{::m.c.transactions/id}
-      ::pc/output [::mu/status]}
-     (p.c.transactions/delete! props))
-
-   :cljs
-   (defmutation delete! [_props]
-     (action [_env] true)
-     (remote [_env] true)))
 
 #?(:clj (def resolvers [delete! fetch! search!]))
 

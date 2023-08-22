@@ -76,7 +76,7 @@
     (q.c.blocks/delete id))
 
   (doseq [id (q.c.tx/index-ids)]
-    (q.c.tx/delete id))
+    (q.c.tx/delete! id))
 
   (create-core-nodes site-config)
 

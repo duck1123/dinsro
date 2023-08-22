@@ -119,3 +119,7 @@
      :where [[?node-id ::m.c.nodes/network ?network-id]
              [?block-id ::m.c.blocks/network ?network-id]]}
    [node-id]))
+
+(defn delete!
+  [id]
+  (c.xtdb/delete! id))

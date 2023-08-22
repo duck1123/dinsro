@@ -1,24 +1,37 @@
 (ns dinsro.mutations.core.addresses
   (:require
-   #?(:cljs [com.fulcrologic.fulcro.mutations :as fm :refer [defmutation]])
+   #?(:cljs [com.fulcrologic.fulcro.algorithms.normalized-state :as fns])
+   #?(:cljs [com.fulcrologic.fulcro.mutations :as fm])
    [com.wsscode.pathom.connect :as pc]
    #?(:clj [dinsro.actions.core.addresses :as a.c.addresses])
    [dinsro.model.core.addresses :as m.c.addresses]
-   [dinsro.mutations :as mu]))
+   [dinsro.mutations :as mu]
+   #?(:clj [dinsro.processors.core.addresses :as p.c.addresses])
+   [dinsro.responses.core.addresses :as r.c.addresses]))
 
-#?(:cljs (comment ::pc/_ ::m.c.addresses/_ ::mu/_))
+(def model-key ::m.c.addresses/id)
+
+#?(:cljs (comment ::pc/_ ::mu/_))
+
+;; Delete
 
 #?(:clj
    (pc/defmutation delete!
-     [_env props]
+     [env props]
      {::pc/params #{::m.c.addresses/id}
-      ::pc/output [::mu/status]}
-     (a.c.addresses/do-delete! props))
+      ::pc/output [::mu/status ::mu/errors ::r.c.addresses/deleted-records]}
+     (p.c.addresses/delete! env props))
 
    :cljs
-   (defmutation delete! [_props]
+   (fm/defmutation delete! [_props]
      (action [_env] true)
-     (remote [_env] true)))
+     (ok-action [{:keys [state] :as env}]
+       (doseq [record (get-in env [:result :body `delete! ::r.c.addresses/deleted-records])]
+         (swap! state fns/remove-entity [model-key (model-key record)])))
+     (remote [env]
+       (fm/returning env r.c.addresses/DeleteResponse))))
+
+;; Fetch
 
 #?(:clj
    (pc/defmutation fetch!
@@ -28,7 +41,7 @@
      (a.c.addresses/fetch! id))
 
    :cljs
-   (defmutation fetch! [_props]
+   (fm/defmutation fetch! [_props]
      (action [_env] true)
      (remote [_env] true)))
 

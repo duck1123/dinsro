@@ -9,7 +9,10 @@
    [dinsro.responses.core.nodes :as r.c.nodes]
    [lambdaisland.glogc :as log]))
 
-;; [../../mutations/core/nodes.cljc]
+;; [[../../actions/core/nodes.clj]]
+;; [[../../mutations/core/nodes.cljc]]
+
+(def model-key ::m.c.nodes/id)
 
 (>defn fetch!
   "Handler for fetch! mutation"
@@ -43,3 +46,10 @@
   [{::m.c.nodes/keys [id]}]
   (let [node (q.c.nodes/read-record id)]
     (a.c.peers/fetch-peers! node)))
+
+(defn delete!
+  [_env props]
+  (let [id (model-key props)]
+    (a.c.nodes/delete! id)
+    {::mu/status :ok
+     ::r.c.nodes/deleted-records (m.c.nodes/idents [id])}))
