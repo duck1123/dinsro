@@ -196,6 +196,7 @@ compile-styles:
   FROM +deps-builder
   COPY --dir src/styles src/styles
   COPY semantic/src/theme.config semantic/src/theme.config
+  COPY semantic/src/collections/menu.variables semantic/src/site/collections/
   COPY semantic/src/site/globals/site.* semantic/src/site/globals/
   RUN bb install-style-dependencies
   RUN bb compile-styles
