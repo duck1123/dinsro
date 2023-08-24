@@ -115,6 +115,8 @@ main-pipeline:
   PIPELINE
   TRIGGER push master
   TRIGGER pr master
+  TRIGGER push main
+  TRIGGER pr main
   BUILD +test
 
 all-images:
