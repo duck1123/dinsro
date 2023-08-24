@@ -26,7 +26,7 @@ value formatting code
 
 * Handlers
 
-Deprecated. See processors
+Cljs-only functions for dealing with mutation responses
 
 * Joins
 
