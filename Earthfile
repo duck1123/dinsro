@@ -197,6 +197,7 @@ compile-styles:
   COPY --dir src/styles src/styles
   COPY semantic/src/theme.config semantic/src/theme.config
   COPY semantic/src/collections/menu.variables semantic/src/site/collections/
+  COPY semantic/src/elements/segment.variables semantic/src/site/elements/
   COPY semantic/src/site/globals/site.* semantic/src/site/globals/
   RUN bb install-style-dependencies
   RUN bb compile-styles
