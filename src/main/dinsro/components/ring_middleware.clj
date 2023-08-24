@@ -23,11 +23,13 @@
 
 (def minimal false)
 
-(defn index [csrf-token]
+(defn index
+  "The main html page for the application"
+  [csrf-token]
   (html5
    [:html {:lang "en"}
     [:head {:lang "en"}
-     [:title "Application"]
+     [:title "Dinsro"]
      [:meta {:charset "utf-8"}]
      [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"}]
      [:script {:src
@@ -35,6 +37,8 @@
                    "https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.js")}]
      [:link {:rel "stylesheet" :type "text/css" :href "/css/semantic.min.css"}]
      [:script {:src "/css/semantic.min.js"}]
+     [:link {:rel "manifest" :href "/app.webmanifest"}]
+     [:link {:rel "icon" :type "image/x-icon" :href "/images/favicon.ico"}]
      [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
     [:body {}
@@ -53,7 +57,8 @@
 
 (defn wrap-html-routes [ring-handler]
   (fn [{:keys [uri anti-forgery-token] :as req}]
-    (if (or (str/starts-with? uri "/api")
+    (if (or (str/starts-with? uri "/app.webmanifest")
+            (str/starts-with? uri "/api")
             (str/starts-with? uri "/css")
             (str/starts-with? uri "/images")
             (str/starts-with? uri "/files")
@@ -75,16 +80,6 @@
           "duck"   "47b38f4d3721390d5b6bef78dae3f3e3888ecdbf1844fbb33b88721d366d5c88"}
          :relays  {}}]
     (json/json-str props)))
-
-(defn wrap-well-known-routes
-  [ring-handler]
-  (fn [req]
-    (let [{:keys [uri]} req]
-      (if (str/starts-with? uri "/.well-known")
-        (if (str/starts-with? uri "/.well-known/nostr.json")
-          {:status 200 :body (nip05-response)}
-          {:status 200 :body "Well known"})
-        (ring-handler req)))))
 
 (def transit-write-handlers
   {java.lang.Throwable
@@ -130,7 +125,26 @@
 (defn wrap-websockets [handler]
   (fws/wrap-api handler websockets))
 
+(defn handle-manifest
+  [req]
+  (log/info :handle-manifest/starting {:req req})
+  (json/json-str
+   {:name             "Dinsro: Sats-first budget management"
+    :short_name       "Dinsro"
+    :description      "Sats-first budget management"
+    :icons
+    [{:src "/images/android-chrome-192x192.png" :sizes "192x192" :type "image/png"}
+     {:src "/images/android-chrome-512x512.png" :sizes "512x512" :type "image/png"}]
+    :theme_color      "#ffffff"
+    :background_color "#ffffff"
+    :display          "standalone"}))
+
 (defroutes base-app
+  (GET "/app.webmanifest" req
+    (-> (resp/response (handle-manifest req))
+        (resp/content-type "application/json")
+        ;; (resp/content-type "application/manifest+json")
+        (assoc-in [:headers "Access-Control-Allow-Origin"] "*")))
   (GET "/.well-known/nostr.json" []
     (-> (resp/response (nip05-response))
         (resp/content-type "application/json")
