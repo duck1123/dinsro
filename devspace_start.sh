@@ -6,7 +6,8 @@ export PATH="./bin:$PATH"
 
 chsh -s /bin/bash root
 
-yarn install
+bb install
+bb install-style-dependencies
 
 byobu-ctrl-a screen
 tilt analytics opt out

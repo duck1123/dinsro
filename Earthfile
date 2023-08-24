@@ -1,16 +1,16 @@
 # Earthfile
 VERSION 0.7
-# FROM srghma/docker-dind-nixos:latest@sha256:d6b11f39ac5a4fcd11166f5830ee3a903a8d812404b3d6bbc99a92c5af4a0e6b
 FROM alpine:3.15
-# ARG base_image=circleci/clojure:openjdk-11-tools-deps-node-browsers-legacy
 ARG --global base_image=cimg/clojure:1.10-node
 ARG --global clojure_version=1.10.1.727
 # https://github.com/clj-kondo/clj-kondo/releases
-ARG --global kondo_version=2023.01.20
-ARG --global node_version=18.13.0
+ARG --global kondo_version=2023.07.13
+# https://nodejs.org/en/download
+ARG --global node_version=18.17.1
 # https://www.npmjs.com/package/npm?activeTab=versions
-ARG --global npm_version=9.7.2
-ARG --global tilt_version=0.33.1
+ARG --global npm_version=9.8.1
+# https://github.com/tilt-dev/tilt/releases
+ARG --global tilt_version=0.33.4
 
 # ARG repo=duck1123
 # ARG project=dinsro
