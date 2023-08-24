@@ -8,7 +8,6 @@
    [dinsro.mutations :as mu]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.responses.nostr.relays :as r.n.relays]
-   [dinsro.specs.nostr.relays :as s.n.relays]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/relays.clj]]
@@ -41,7 +40,7 @@
 
 (>defn connect!
   [{::m.n.relays/keys [id]}]
-  [::s.n.relays/connect!-request => ::s.n.relays/connect!-response]
+  [::r.n.relays/connect!-request => ::r.n.relays/connect!-response]
   (log/info :connect!/started {:id id})
   (a.n.connections/register-connection! id)
   (a.n.relays/connect! id)

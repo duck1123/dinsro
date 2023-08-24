@@ -70,10 +70,6 @@ Clj-only code for handling the low-level interactions with the database
 
 Specs and query-only components for describing the requests and responses for mutations
 
-* Specs
-
-Deprecated. See Responses
-
 * UI
 
 front-end code

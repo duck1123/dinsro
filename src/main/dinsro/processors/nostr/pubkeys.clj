@@ -12,7 +12,6 @@
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.responses.nostr.pubkeys :as r.n.pubkeys]
    [dinsro.specs :as ds]
-   [dinsro.specs.nostr.pubkeys :as s.n.pubkeys]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/pubkeys.clj]]
@@ -47,7 +46,7 @@
 (>defn fetch!
   "Handler for fetch! mutation"
   [props]
-  [::s.n.pubkeys/fetch!-request => ::s.n.pubkeys/fetch!-response]
+  [::r.n.pubkeys/fetch!-request => ::r.n.pubkeys/fetch!-response]
   (let [{pubkey-id ::m.n.pubkeys/id relay-id ::m.n.relays/id} props]
     (log/info :fetch!/starting {:pubkey-id pubkey-id :relay-id relay-id})
     (try
