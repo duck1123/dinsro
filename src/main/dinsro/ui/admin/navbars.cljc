@@ -1,32 +1,18 @@
 (ns dinsro.ui.admin.navbars
   (:require
-   ;; #?(:cljs ["semantic-ui-react/dist/commonjs/collections/Menu/Menu" :default Menu])
-   ;; [com.fulcrologic.fulcro-css.css :as css]
-   ;; [com.fulcrologic.fulcro.algorithms.form-state :as fs]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   ;; #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
-   ;; #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
-   ;; [com.fulcrologic.fulcro.ui-state-machines :as uism]
-   ;; [com.fulcrologic.rad.authorization :as auth]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
-   ;; [com.fulcrologic.rad.routing :as rroute]
-   ;; [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
-   ;; [com.fulcrologic.semantic-ui.collections.menu.ui-menu-menu :refer [ui-menu-menu]]
-   ;; [com.fulcrologic.semantic-ui.modules.sidebar.ui-sidebar :refer [ui-sidebar]]
    [dinsro.joins.navbars :as j.navbars]
-   ;; [dinsro.joins.navlinks :as j.navlinks]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
-   ;; [dinsro.mutations.navbars :as mu.navbars]
-   ;; [dinsro.ui.home :as u.home]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 (def index-page-key :admin-navbars)
 (def model-key ::m.navbars/id)
-(def parent-router :root)
+(def parent-router :admin)
 (def show-page-key :admin-navbars-show)
 
 (report/defsc-report Report
@@ -65,7 +51,7 @@
    ::m.navlinks/label         "Navbars"
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
+   ::m.navlinks/router        parent-router
    ::m.navlinks/required-role :user})
 
 (m.navlinks/defroute show-page-key
@@ -75,5 +61,5 @@
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin
+   ::m.navlinks/router        parent-router
    ::m.navlinks/required-role :admin})
