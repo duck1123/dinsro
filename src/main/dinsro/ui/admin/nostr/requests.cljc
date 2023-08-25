@@ -5,6 +5,8 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+   [com.fulcrologic.rad.form :as form]
+   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -15,6 +17,7 @@
    [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations.nostr.requests :as mu.n.requests]
@@ -31,6 +34,7 @@
 
 ;; [[../../../joins/nostr/requests.cljc]]
 ;; [[../../../model/nostr/requests.cljc]]
+;; [[../../../mutations/nostr/requests.cljc]]
 ;; [[../../../ui/nostr/requests.cljc]]
 
 (def index-page-key :admin-nostr-requests)
@@ -38,21 +42,45 @@
 (def parent-router-key :admin-nostr)
 (def show-menu-id :admin-nostr-requests)
 (def show-page-key :admin-nostr-requests-show)
-(def debug-props false)
+(def debug-props true)
+
+(form/defsc-form EditForm [_this _props]
+  {fo/attributes    [m.n.requests/id]
+   fo/cancel-route  ["requests"]
+   ;; fo/field-styles  {::m.transactions/account :pick-one}
+   ;; fo/field-options {::m.transactions/account u.pickers/account-picker}
+   fo/id            m.n.requests/id
+   fo/route-prefix  "edit-request-form"
+   fo/title         "Edit Request"})
+
+(defsc FilterItemItem
+  [_this {::m.n.filter-items/keys [id]
+          :as                     props}]
+  {:ident         ::m.n.filter-items/id
+   :initial-state {::m.n.filter-items/id nil}
+   :query         [::m.n.filter-items/id]}
+  (dom/div {}
+    (str "id: " id)
+    (u.debug/log-props props)))
+
+(def ui-filter-item-item (comp/factory FilterItemItem {:keyfn ::m.n.filter-items/id}))
 
 (defsc FilterItem
-  [_this {::j.n.filters/keys [query-string]
+  [_this {::j.n.filters/keys [query-string filter-items]
           ::m.n.filters/keys [index]
           :as                props}]
   {:ident         ::m.n.filters/id
    :initial-state {::m.n.filters/id           nil
                    ::m.n.filters/index        0
+                   ::j.n.filters/filter-items []
                    ::j.n.filters/query-string ""}
    :query         [::m.n.filters/id
                    ::m.n.filters/index
+                   {::j.n.filters/filter-items (comp/get-query FilterItemItem {})}
                    ::j.n.filters/query-string]}
   (ui-list-item {}
     (dom/div {} (str index " - " query-string))
+    (map ui-filter-item-item filter-items)
     (when debug-props (u.debug/log-props props))))
 
 (def ui-filter-item (comp/factory FilterItem {:keyfn ::m.n.filters/id}))
@@ -79,6 +107,7 @@
       (dom/h2 {} (str code))
       (ui-list-list {}
         (map ui-filter-item filters)
+        (u.buttons/action-button `mu.n.requests/edit "Edit" model-key this)
         (u.buttons/delete-button `mu.n.requests/delete! model-key this))
 
       (when debug-props (u.debug/log-props props)))))

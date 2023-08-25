@@ -7,14 +7,16 @@
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.processors.nostr.requests :as p.n.requests])
-   [dinsro.responses.nostr.requests :as r.n.requests]))
+   [dinsro.responses.nostr.requests :as r.n.requests]
+   [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/requests.clj]]
 ;; [[../../processors/nostr/requests.clj]]
 
 (def model-key ::m.n.requests/id)
 
-(comment ::pc/_ ::mu/_)
+#?(:clj ::log/_)
+#?(:cljs (comment ::pc/_ ::mu/_))
 
 ;; Delete
 
@@ -33,6 +35,16 @@
          (swap! state fns/remove-entity [model-key (model-key record)])))
      (remote [env]
        (fm/returning env r.n.requests/DeleteResponse))))
+
+;; Edit
+
+#?(:cljs
+   (fm/defmutation edit [props]
+     (action [env]
+       (log/info :edit/starting {:props props :env env})
+       true)))
+
+;; Run
 
 #?(:clj
    (pc/defmutation run! [_env props]

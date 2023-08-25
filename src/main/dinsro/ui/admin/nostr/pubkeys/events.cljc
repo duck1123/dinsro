@@ -15,6 +15,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.nostr.events :as u.n.events]
@@ -23,6 +24,7 @@
    [nextjournal.markdown.transform :as transform]))
 
 ;; [[../../../../model/nostr/events.cljc]]
+;; [[../../../../ui/admin/nostr/events.cljc]]
 ;; [[../../../../ui/nostr/event_tags.cljs]]
 
 (def index-page-key :admin-nostr-pubkeys-show-events)
@@ -103,7 +105,9 @@
    :route-segment     ["events"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
-  (ui-report report))
+  (if (parent-model-key props)
+    (ui-report report)
+    (u.debug/load-error props "admin pubkeys events page")))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::SubPage
@@ -112,4 +116,4 @@
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr-pubkeys-show
    ::m.navlinks/router        :nostr-pubkeys
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/required-role :admin})

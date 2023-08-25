@@ -75,6 +75,16 @@
   (ui-button {:icon    "refresh"
               :onClick (fn [_] (control/run! this))}))
 
+(defn action-button
+  [mutation label model-key this]
+  (ui-button
+   {:onClick
+    (fn [_]
+      (let [props (comp/props this)
+            id (model-key props)]
+        (comp/transact! this [`(~mutation {~model-key ~id})])))}
+   label))
+
 (defn delete-button
   [mutation model-key this]
   (ui-button {:icon "delete"

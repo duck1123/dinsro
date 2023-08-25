@@ -21,11 +21,13 @@
 ;; [[../../../model/nostr/events.cljc]]
 ;; [[../../../mutations/nostr/events.cljc]]
 ;; [[../../../processors/nostr/events.clj]]
+;; [[../../../ui/admin/nostr/pubkeys/events.cljc]]
 ;; [[../../../ui/admin/nostr/relays/events.cljc]]
 
 (def index-page-key :admin-nostr-events)
 (def model-key ::m.n.events/id)
 (def show-page-key :admin-nostr-events-show)
+(def log-props false)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.n.events/delete!))
@@ -53,7 +55,8 @@
 (def ui-report (comp/factory Report))
 
 (defsc Show
-  [_this {:as props}]
+  [_this {::m.n.events/keys [content pubkey kind sig created-at]
+          :as               props}]
   {:ident         ::m.n.events/id
    :initial-state (fn [props]
                     (let [id (model-key props)]
@@ -67,7 +70,7 @@
                        ::m.n.events/deleted?   true}))
    :query         [::m.n.events/id
                    ::m.n.events/note-id
-                   ::m.n.events/pubkey
+                   {::m.n.events/pubkey (comp/get-query u.links/AdminPubkeyLinkForm)}
                    ::m.n.events/created-at
                    ::m.n.events/kind
                    ::m.n.events/content
@@ -76,7 +79,12 @@
   (log/info :Show/starting {:props props})
   (if (model-key props)
     (ui-segment {}
-      (u.debug/log-props props))
+      (dom/div {} (u.links/ui-admin-pubkey-link pubkey))
+      (dom/div {} (str content))
+      (dom/div {} (str kind))
+      (dom/div {} (str sig))
+      (dom/div {} (str created-at))
+      (when log-props (u.debug/log-props props)))
     (u.debug/load-error props "admin show event")))
 
 (def ui-show (comp/factory Show))

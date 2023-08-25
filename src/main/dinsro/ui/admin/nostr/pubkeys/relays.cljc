@@ -9,6 +9,9 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
+   [dinsro.mutations.nostr.events :as mu.n.events]
+   [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -23,17 +26,24 @@
 (def parent-model-key ::m.n.pubkeys/id)
 (def router-key :dinsro.ui.admin.nostr.pubkeys/Router)
 
+(def fetch-action
+  (u.buttons/subrow-action-button "Fetch" model-key parent-model-key  mu.n.pubkeys/fetch!))
+
+(def fetch-events-action
+  (u.buttons/subrow-action-button "Fetch Events" model-key parent-model-key mu.n.events/fetch-events!))
+
 (report/defsc-report Report
   [_this _props]
   {ro/column-formatters {::m.n.relays/address #(u.links/ui-admin-relay-link %3)}
-   ro/columns           [m.n.relays/id
-                         m.n.relays/address]
+   ro/columns           [m.n.relays/address
+                         j.n.relays/run-count]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
+   ro/row-actions       [fetch-action fetch-events-action]
    ro/row-pk            m.n.relays/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.n.relays/admin-index

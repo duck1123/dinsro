@@ -21,6 +21,7 @@
    [nextjournal.markdown.transform :as transform]))
 
 ;; [[../../../model/nostr/events.cljc]]
+;; [[../../../ui/admin/nostr/pubkeys/events.cljc]]
 ;; [[../../../ui/nostr/event_tags.cljs]]
 
 (def index-page-key :nostr-pubkeys-show-events)
