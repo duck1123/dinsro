@@ -91,3 +91,4 @@ jobs:
             export BUILD_VERSION=$(clojure -T:build print-version)
             earthly -P --remote-cache=duck1123/dinsro:cache --push +all-images --tag ${BUILD_VERSION?}
             earthly -P --remote-cache=duck1123/dinsro:cache --push +all-images --tag latest
+            echo "Latest version is ${BUILD_VERSION}"
