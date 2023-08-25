@@ -5,6 +5,7 @@
    [manifold.time :as mt]
    [mount.core :as mount]))
 
+;; [[../joins/instances.cljc]]
 ;; [[../model/instances.cljc]]
 ;; [[../queries/instances.clj]]
 ;; [[../../../notebooks/dinsro/notebooks/instances_notebook.clj]]

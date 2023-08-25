@@ -9,6 +9,7 @@
    #?(:clj [dinsro.queries.nostr.runs :as q.n.runs])
    [lambdaisland.glogc :as log]))
 
+;; [[../../joins/instances.cljc]]
 ;; [[../../queries/nostr/connections.clj]]
 
 (def join-info

@@ -51,17 +51,18 @@
    ::m.navbars/children [u.a.n.c.runs/index-page-key]})
 
 (defsc Show
-  [_this {::m.n.connections/keys [id status relay start-time end-time]
+  [_this {::m.n.connections/keys [id status relay start-time end-time instance]
           :ui/keys               [nav-menu router]
           :as                    props}]
   {:ident         ::m.n.connections/id
    :initial-state (fn [props]
                     (let [id (model-key props)]
-                      {::m.n.connections/id         id
-                       ::m.n.connections/status     :unknown
+                      {::m.n.connections/end-time   nil
+                       ::m.n.connections/id         id
+                       ::m.n.connections/instance   {}
                        ::m.n.connections/relay      {}
+                       ::m.n.connections/status     :unknown
                        ::m.n.connections/start-time nil
-                       ::m.n.connections/end-time   nil
                        :ui/nav-menu                 (comp/get-initial-state u.menus/NavMenu
                                                       {::m.navbars/id show-menu-id
                                                        :id            id})
@@ -69,11 +70,12 @@
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
                      :ui/router   [Router {}]})
-   :query         [::m.n.connections/id
-                   ::m.n.connections/status
-                   {::m.n.connections/relay (comp/get-query u.links/RelayLinkForm)}
+   :query         [::m.n.connections/end-time
+                   ::m.n.connections/id
+                   {::m.n.connections/instance (comp/get-query u.links/AdminInstanceLinkForm)}
+                   {::m.n.connections/relay (comp/get-query u.links/AdminRelayLinkForm)}
                    ::m.n.connections/start-time
-                   ::m.n.connections/end-time
+                   ::m.n.connections/status
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/router (comp/get-query Router)}]}
   (if id
@@ -83,7 +85,8 @@
         (dom/div {} (name status))
         (dom/div {} (u.links/ui-relay-link relay))
         (dom/div {} (str start-time))
-        (dom/div {} (str end-time)))
+        (dom/div {} (str end-time))
+        (dom/div {} (u.links/ui-admin-instance-link instance)))
       (u.menus/ui-nav-menu nav-menu)
       (ui-router router))
     (u.debug/load-error props "admin show connection record")))
@@ -92,8 +95,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.connections/status #(u.links/ui-admin-connection-link %3)
-                         ::m.n.connections/relay  #(u.links/ui-admin-relay-link %2)}
+  {ro/column-formatters {::m.n.connections/status   #(u.links/ui-admin-connection-link %3)
+                         ::m.n.connections/relay    #(when %2 (u.links/ui-admin-relay-link %2))
+                         ::m.n.connections/instance #(when %2 (u.links/ui-admin-instance-link %2))}
    ro/columns           [m.n.connections/status
                          m.n.connections/relay
                          m.n.connections/instance

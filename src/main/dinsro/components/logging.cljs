@@ -5,13 +5,14 @@
    [lambdaisland.glogi.console :as glogi-console]
    [taoensso.timbre :as timbre]))
 
-(def root-level :trace)
+(def root-level :debug)
 
 (def default-levels
   {:glogi/root                                    root-level
    'com.fulcrologic.fulcro.ui-state-machines      :info
    'com.fulcrologic.fulcro.inspect.inspect-client :info
    'dinsro.client                                 :info
+   'dinsro.joins.navlinks                         :info
    'dinsro.ui.admin                               :info
    'dinsro.ui.breadcrumbs                         :info
    'dinsro.ui.debug                               :info

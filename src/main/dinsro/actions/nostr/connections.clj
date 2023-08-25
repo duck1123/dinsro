@@ -4,6 +4,7 @@
    [clojure.data.json :as json]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
+   [dinsro.actions.instances :as a.instances]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.runs :as m.n.runs]
@@ -16,8 +17,10 @@
   (:import
    java.nio.HeapCharBuffer))
 
+;; [[../../joins/nostr/connections.cljc]]
 ;; [[../../model/nostr/connections.cljc]]
 ;; [[../../mutations/nostr/connections.cljc]]
+;; [[../../queries/nostr/connections.clj]]
 ;; [[../../../../notebooks/dinsro/notebooks/nostr/connections_notebook.clj]]
 
 ;; "a atom holding a map from connection ids to a map holding client and connection"
@@ -150,9 +153,11 @@
   [relay-id]
   [::m.n.relays/id => ::m.n.connections/id]
   (log/info :create-connection!/starting {:relay-id relay-id})
-  (q.n.connections/create-record
-   {::m.n.connections/relay  relay-id
-    ::m.n.connections/status :initial}))
+  (let [instance-id (a.instances/register!)]
+    (q.n.connections/create-record
+     {::m.n.connections/relay    relay-id
+      ::m.n.connections/instance instance-id
+      ::m.n.connections/status   :initial})))
 
 (>defn handle-event
   [type req-id evt]
@@ -269,20 +274,27 @@
     (ws/send! client message)
     nil))
 
+(defn remove-connection
+  [connection-id]
+  (swap! connections dissoc connection-id))
+
 (defn disconnect!
   [connection-id]
   (log/info :disconnect!/starting {:connection-id connection-id})
-  (if-let [client (get-client connection-id)]
-    (do
-      (log/debug :disconnect!/closing {:client client})
-      (let [response (ws/close! client)]
-        (log/debug :disconnect!/closed {:response response
-                                        :client client})
-        response))
+  (let [client (get-client* connection-id)]
+    (remove-connection connection-id)
+    (if client
+      (do
+        (log/debug :disconnect!/closing {:client client})
+        (let [response (ws/close! client)]
+          (log/debug :disconnect!/closed {:response response
+                                          :client client})
+          response))
 
-    (do
-      (log/error :disconnect!/no-client {:connection-id connection-id})
-      nil)))
+      (do
+        (log/error :disconnect!/no-client {:connection-id connection-id})
+        (q.n.connections/set-disconnected! connection-id)
+        nil))))
 
 (defn delete!
   [id]

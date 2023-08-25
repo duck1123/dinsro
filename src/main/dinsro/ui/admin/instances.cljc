@@ -39,7 +39,8 @@
                                                          (str %2))}
    ro/columns           [m.instances/id
                          m.instances/created-time
-                         m.instances/last-heartbeat]
+                         m.instances/last-heartbeat
+                         j.instances/alive?]
    ro/controls          {::refresh u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10

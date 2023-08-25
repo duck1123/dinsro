@@ -10,6 +10,7 @@
 ;; [[../model/instances.cljc]]
 ;; [[../mutations/instances.cljc]]
 ;; [[../queries/instances.clj]]
+;; [[../ui/admin/instances.cljc]]
 ;; [[../../../notebooks/dinsro/notebooks/instances_notebook.clj]]
 
 (def join-info
@@ -32,5 +33,16 @@
    (fn [env props]
      {::index (j/make-indexer join-info env props)})})
 
+(defattr alive? ::alive? :ref
+  {ao/target    ::m.instances/id
+   ao/pc-input #{::m.instances/last-heartbeat}
+   ao/pc-output [::alive?]
+   ao/pc-resolve
+   (fn [_env props]
+     (let [{::m.instances/keys [last-heartbeat]} props
+           is-alive? #?(:clj (not (q.instances/expired? last-heartbeat))
+                        :cljs (do (comment last-heartbeat) true))]
+       {::alive? is-alive?}))})
+
 (def attributes
-  [admin-index index])
+  [admin-index index alive?])
