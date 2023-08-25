@@ -10,6 +10,7 @@
    [dinsro.joins.nostr.witnesses :as j.n.witnesses]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.nostr.relays :as u.n.relays]))
@@ -29,8 +30,11 @@
    :initial-state {::m.n.witnesses/id  nil
                    ::m.n.witnesses/relay {}}}
   (ui-list-item {}
-    (when log-witness-props (dom/div {} (u.links/ui-witness-link props)))
-    (u.n.relays/ui-relay-display relay)))
+    (when log-witness-props
+      (dom/div {} (u.links/ui-witness-link props)))
+    (if relay
+      (u.n.relays/ui-relay-display relay)
+      (u.debug/load-error props "witness display"))))
 
 (def ui-witness-display (comp/factory WitnessDisplay {:keyfn ::m.n.witnesses/id}))
 

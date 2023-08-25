@@ -51,6 +51,8 @@
 (def show-menu-id :nostr-events)
 (def show-page-key :nostr-events-show)
 
+(def show-witnesses? false)
+
 (form/defsc-form NewForm [_this _props]
   {fo/attributes   [m.n.events/id]
    fo/cancel-route ["events"]
@@ -132,63 +134,63 @@
                    {::j.n.events/witnesses (comp/get-query u.n.witnesses/WitnessDisplay)}
                    {::m.n.events/pubkey (comp/get-query EventAuthor)}
                    {::j.n.events/tags (comp/get-query u.n.event-tags/TagDisplay)}]}
-  (dom/div :.ui.item.segment.event-box
-    (dom/div :.ui.tiny.image
-      (ui-event-author-image pubkey))
-    (dom/div :.content
-      (dom/div {:classes [:.header] :style {:width "100%"}}
-        (ui-grid {}
-          (ui-grid-row {}
-            (ui-grid-column {:stretched true :width 10}
-              (u.links/ui-pubkey-name-link pubkey))
-            (ui-grid-column {:textAlign "right" :width 6}
-              (str (::m.n.pubkeys/nip05 pubkey))))))
-      (dom/div {:classes [:.meta] :style {:width "100%"}}
-        (ui-grid {}
-          (ui-grid-row {}
-            (ui-grid-column {:width 13}
-              (ui-moment {:fromNow true :withTitle true}
-                (str created-date)))
-            (ui-grid-column {:floated "right" :textAlign "right" :width 2}
-              (str kind)))))
-      (dom/div {:classes [:.description]}
-        (when (seq tags)
-          (ui-segment {}
-            (dom/div :.ui.relaxed.divided.list
-              (let [pubkey-tags (filter
-                                 (fn [tag] (= "p" (::m.n.event-tags/type tag)))
-                                 (sort-by ::m.n.event-tags/index tags))]
-                (map u.n.event-tags/ui-tag-display pubkey-tags)))))
-        (ui-container {}
-          (condp = kind
-            0 (ui-container {}
-                (dom/div {:style {:width "100%" :overflow "auto"}}
-                  (dom/code {}
-                    (dom/pre {} content))))
-            (let [ast (replace-images (md/parse content))]
-              (comp/fragment
-               (if show-ast
-                 (u.debug/log-props ast)
-                 (if transform-markup
-                   (let [hiccup (md.transform/->hiccup transformer ast)]
-                     (if convert-html
-                       #?(:cljs (html hiccup)
-                          :clj (do (comment html)
-                                   (str hiccup)))
-                       (str hiccup)))
-                   (str content))))))))
-      (dom/div :.extra.content
-        (when (seq tags)
-          (ui-segment {}
-            (ui-list-list {:divided true :relaxed true}
-              (let [filtered-tags (filter
-                                   (fn [tag] (not= "p" (::m.n.event-tags/type tag)))
-                                   (sort-by ::m.n.event-tags/index tags))]
-                (map u.n.event-tags/ui-tag-display filtered-tags)))))
-        (when (seq witnesses)
-          (ui-segment {}
-            (dom/div :.ui.relaxed.divided.list
-              (map u.n.witnesses/ui-witness-display witnesses))))))))
+  (let [pubkey-tags (filter
+                     (fn [tag] (= "p" (::m.n.event-tags/type tag)))
+                     (sort-by ::m.n.event-tags/index tags))]
+    (dom/div :.ui.item.segment.event-box
+      (dom/div :.ui.tiny.image
+        (ui-event-author-image pubkey))
+      (dom/div :.content
+        (dom/div {:classes [:.header] :style {:width "100%"}}
+          (ui-grid {}
+            (ui-grid-row {}
+              (ui-grid-column {:stretched true :width 10}
+                (u.links/ui-pubkey-name-link pubkey))
+              (ui-grid-column {:textAlign "right" :width 6}
+                (str (::m.n.pubkeys/nip05 pubkey))))))
+        (dom/div {:classes [:.meta] :style {:width "100%"}}
+          (ui-grid {}
+            (ui-grid-row {}
+              (ui-grid-column {:width 13}
+                (ui-moment {:fromNow true :withTitle true}
+                  (str created-date)))
+              (ui-grid-column {:floated "right" :textAlign "right" :width 2}
+                (str kind)))))
+        (dom/div {:classes [:.description]}
+          (when (seq pubkey-tags)
+            (ui-segment {}
+              (dom/div :.ui.relaxed.divided.list
+                (map u.n.event-tags/ui-tag-display pubkey-tags))))
+          (ui-container {}
+            (condp = kind
+              0 (ui-container {}
+                  (dom/div {:style {:width "100%" :overflow "auto"}}
+                    (dom/code {}
+                      (dom/pre {} content))))
+              (let [ast (replace-images (md/parse content))]
+                (comp/fragment
+                 (if show-ast
+                   (u.debug/log-props ast)
+                   (if transform-markup
+                     (let [hiccup (md.transform/->hiccup transformer ast)]
+                       (if convert-html
+                         #?(:cljs (html hiccup)
+                            :clj (do (comment html)
+                                     (str hiccup)))
+                         (str hiccup)))
+                     (str content))))))))
+        (dom/div :.extra.content
+          (when (> (- (count tags) (count pubkey-tags)) 0)
+            (ui-segment {}
+              (ui-list-list {:divided true :relaxed true}
+                (let [filtered-tags (filter
+                                     (fn [tag] (not= "p" (::m.n.event-tags/type tag)))
+                                     (sort-by ::m.n.event-tags/index tags))]
+                  (map u.n.event-tags/ui-tag-display filtered-tags)))))
+          (when (and show-witnesses? (seq witnesses))
+            (ui-segment {}
+              (dom/div :.ui.relaxed.divided.list
+                (map u.n.witnesses/ui-witness-display witnesses)))))))))
 
 (def ui-event-box (comp/factory EventBox {:keyfn ::m.n.events/id}))
 
@@ -346,5 +348,14 @@
    ::m.navlinks/label         "Events"
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    :nostr
+   ::m.navlinks/router        :nostr
+   ::m.navlinks/required-role :user})
+
+(m.navlinks/defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/label         "Show Event"
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-key
    ::m.navlinks/router        :nostr
    ::m.navlinks/required-role :user})

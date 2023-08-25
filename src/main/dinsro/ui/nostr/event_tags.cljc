@@ -10,13 +10,13 @@
    [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
-   [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.mutations.nostr.event-tags :as mu.n.event-tags]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -32,6 +32,8 @@
 (def show-page-key :nostr-event-tags-show)
 
 (def log-tag-props false)
+(def log-tag-table false)
+(def display-tags? true)
 
 (defsc TagDisplay
   [this {::m.n.event-tags/keys [pubkey event raw-value extra type]
@@ -53,62 +55,86 @@
                    ::m.n.event-tags/type      nil}}
   (let [tag?       (= type "t")
         event?     (= type "e")
+        pubkey?    (= type "p")
         nonce?     (= type "nonce")
         client?    (= type "client")
-        has-extra? (and extra (not (or nonce? client?)))
+        reference? (= type "r")
+        has-extra? (and extra (not (or nonce? client? event?)))
         has-type?  (not (or pubkey event tag? nonce? client?))]
     (ui-list-item {}
       (when log-tag-props
         (u.debug/log-props props))
-      (ui-table {}
-        (ui-table-header {}
-          (ui-table-row {}
-            (ui-table-header-cell {} "key")
-            (ui-table-header-cell {} "value")))
-        (ui-table-body {}
-          (ui-table-row {}
-            (ui-table-cell {} "index")
-            (ui-table-cell {} (u.links/ui-event-tag-link props)))
-          (when tag?
-            (ui-table-row {}
-              (ui-table-cell {} "tag")
-              (ui-table-cell {} (str "#" raw-value))))
-          (when event?
-            (ui-table-row {}
-              (ui-table-cell {} "Event")
-              (ui-table-cell {}
-                (if event
-                  (u.links/ui-event-link event)
-                  (ui-button
-                   {:onClick (fn [_]
-                               (let [props (comp/props this)
-                                     id    (model-key props)]
-                                 (comp/transact! this [`(mu.n.event-tags/fetch! {~model-key ~id})])))}
-                   raw-value)))))
-          (when has-type?
-            (ui-table-row {}
-              (ui-table-cell {} "Type")
-              (ui-table-cell {} (str type))))
-          (when has-type?
-            (ui-table-row {}
-              (ui-table-cell {} "Raw Value")
-              (ui-table-cell {} (str raw-value))))
+
+      (when display-tags?
+        (dom/div {}
+          (when (and event? event)
+            (u.links/ui-event-link event))
+          (when (and event? (not event))
+            (dom/div {}
+              (if (seq extra)
+                (u.buttons/action-button `mu.n.event-tags/fetch!
+                                         (str raw-value " - " extra) model-key this)
+                (str "No relay listed: " raw-value))))
+          (when (and pubkey? pubkey)
+            (u.links/ui-pubkey-name-link pubkey))
+          (when (and pubkey? (not pubkey))
+            (str "unknown pubkey"))
           (when client?
+            (str "Client: " raw-value))
+          (when tag?
+            (str "#" raw-value))
+          (when reference?
+            (str "ref: " raw-value))
+          (when (not (or event? pubkey? tag? client? reference?))
+            (dom/div {}
+              (dom/div {} (str "Unknown type: " type))
+              (u.debug/log-props props)))))
+
+      (when log-tag-table
+        (ui-table {}
+          (ui-table-header {}
             (ui-table-row {}
-              (ui-table-cell {} "Client")
-              (ui-table-cell {} (str raw-value))))
-          (when nonce?
+              (ui-table-header-cell {} "key")
+              (ui-table-header-cell {} "value")))
+          (ui-table-body {}
             (ui-table-row {}
-              (ui-table-cell {} "POW")
-              (ui-table-cell {} (str extra))))
-          (when pubkey
-            (ui-table-row {}
-              (ui-table-cell {} "Pubkey")
-              (ui-table-cell {} (u.links/ui-pubkey-name-link pubkey))))
-          (when has-extra?
-            (ui-table-row {}
-              (ui-table-cell {} "Extra")
-              (ui-table-cell {} (str extra)))))))))
+              (ui-table-cell {} "index")
+              (ui-table-cell {} (u.links/ui-event-tag-link props)))
+            (when tag?
+              (ui-table-row {}
+                (ui-table-cell {} "tag")
+                (ui-table-cell {} (str "#" raw-value))))
+            (when event?
+              (ui-table-row {}
+                (ui-table-cell {} "Event")
+                (ui-table-cell {}
+                  (if event
+                    (u.links/ui-event-link event)
+                    (u.buttons/action-button `mu.n.event-tags/fetch! raw-value model-key this)))))
+            (when has-type?
+              (ui-table-row {}
+                (ui-table-cell {} "Type")
+                (ui-table-cell {} (str type))))
+            (when has-type?
+              (ui-table-row {}
+                (ui-table-cell {} "Raw Value")
+                (ui-table-cell {} (str raw-value))))
+            (when client?
+              (ui-table-row {}
+                (ui-table-cell {} "Client")
+                (ui-table-cell {} (str raw-value))))
+            (when nonce?
+              (ui-table-row {}
+                (ui-table-cell {} "POW")
+                (ui-table-cell {} (str extra))))
+            (when pubkey
+              (ui-table-row {}
+                (ui-table-cell {} "Pubkey")
+                (ui-table-cell {} (u.links/ui-pubkey-name-link pubkey))))
+            (when has-extra?
+              (ui-table-row {}
+                (ui-table-cell {} "Extra")
+                (ui-table-cell {} (str extra))))))))))
 
 (def ui-tag-display (comp/factory TagDisplay {:keyfn ::m.n.event-tags/id}))
 
