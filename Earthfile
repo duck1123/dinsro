@@ -375,6 +375,7 @@ jar:
   FROM +src
   COPY --dir +compile-production/classes .
   COPY +compile-styles/* resources/main/public/
+  COPY --dir resources/main/public/images resources/main/public/
   COPY resources/main/*.conf resources/main
   RUN bb compile-production-cljs
   RUN bb package-jar
