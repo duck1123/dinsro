@@ -53,6 +53,8 @@ m.c.nodes/attributes
 ^{::clerk/viewer clerk/code ::clerk/visibility {:code :hide}}
 (def node-bob (q.c.nodes/read-record (q.c.nodes/find-by-name "bitcoin-bob")))
 
+node-bob
+
 ^{::clerk/visibility {:code :hide :result :hide}}
 (def node node-alice)
 
@@ -65,6 +67,8 @@ m.c.nodes/attributes
 
 (def address "bcrt1qpe5thhr9p582w0ymg99ea5ql9e5y5lqsxm5527")
 (def address2 "bcrt1qasndfxduf6ap94hkpn3kde0mcvdrqvs95e8adz")
+
+address2
 
 (comment
 
@@ -108,6 +112,8 @@ m.c.nodes/attributes
   (cs/await-future (.getBlockCount client-s) context)
 
   (def ch (cs/await-future (.getPeerInfo client-s)))
+  ch
+
   (async/<!! (cs/await-future (.getPeerInfo client-s) context))
 
   nil)

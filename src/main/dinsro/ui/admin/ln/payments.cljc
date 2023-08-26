@@ -15,8 +15,11 @@
 ;; [[../../../joins/ln/payments.cljc]]
 ;; [[../../../model/ln/payments.cljc]]
 
-(def index-page-key :admin-ln-payments)
+(def index-page-id :admin-ln-payments)
 (def model-key ::m.ln.payments/id)
+(def parent-router-id :admin-ln)
+(def required-role :admin)
+(def show-page-id :admin-ln-payments-show)
 
 (report/defsc-report Report
   [this _props]
@@ -49,29 +52,29 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["payments"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
-(m.navlinks/defroute :admin-ln-payments
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Payments"
-   ::m.navlinks/model-key     ::m.ln.payments/id
-   ::m.navlinks/parent-key    :admin-ln
-   ::m.navlinks/router        :admin-ln
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute :admin-ln-payments-show
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.ln.payments/id
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Payment"
-   ::m.navlinks/model-key     ::m.ln.payments/id
-   ::m.navlinks/parent-key    :admin-ln-payments
-   ::m.navlinks/router        :admin-ln
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

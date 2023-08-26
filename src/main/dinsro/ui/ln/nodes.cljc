@@ -44,10 +44,11 @@
 ;; [[../../joins/ln/nodes.cljc]]
 ;; [[../../model/ln/nodes.cljc]]
 
-(def index-page-key :ln-nodes)
+(def index-page-id :ln-nodes)
 (def model-key ::m.ln.nodes/id)
-(def show-menu-id :ln-nodes)
-(def show-page-key :ln-nodes-show)
+(def parent-router-id :ln)
+(def required-role :user)
+(def show-page-id :ln-nodes-show)
 
 (declare CreateLightningNodeForm)
 
@@ -170,16 +171,16 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent :ln
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.ln.n.accounts/index-page-key
-    u.ln.n.addresses/index-page-key
-    u.ln.n.channels/index-page-key
-    u.ln.n.peers/index-page-key
-    u.ln.n.remote-nodes/index-page-key
-    u.ln.n.wallet-addresses/index-page-key]})
+   [u.ln.n.accounts/index-page-id
+    u.ln.n.addresses/index-page-id
+    u.ln.n.channels/index-page-id
+    u.ln.n.peers/index-page-id
+    u.ln.n.remote-nodes/index-page-id
+    u.ln.n.wallet-addresses/index-page-id]})
 
 (defsc Show
   "Show a ln node"
@@ -200,11 +201,11 @@
                        ::m.ln.nodes/hasMacaroon? false
                        :ui/router                (comp/get-initial-state Router)
                        :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
-                                                   {::m.navbars/id :ln-nodes
+                                                   {::m.navbars/id show-page-id
                                                     :id            id})}))
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/router   [Router {}]
-                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :ln-nodes}]})
+                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]})
    :query         [::m.ln.nodes/id
                    ::m.ln.nodes/host
                    ::m.ln.nodes/port
@@ -287,13 +288,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["nodes"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/info :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -302,32 +303,34 @@
   [_this {::m.navlinks/keys [target]
           ::m.ln.nodes/keys [id]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.ln.nodes/id     nil
-                   ::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.ln.nodes/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key           (model-key props)
+                     ::m.navlinks/id     show-page-id
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["node" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (u.debug/load-error props "ln node show page")))
 
-(m.navlinks/defroute   :ln-nodes
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Index LN Nodes"
-   ::m.navlinks/model-key     ::m.ln.nodes/id
-   ::m.navlinks/parent-key    :ln
-   ::m.navlinks/router        :ln
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute   :ln-nodes-show
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Node"
-   ::m.navlinks/model-key     ::m.ln.nodes/id
-   ::m.navlinks/parent-key    :ln-nodes
-   ::m.navlinks/router        :ln-nodes
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

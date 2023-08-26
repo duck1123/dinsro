@@ -33,11 +33,11 @@
 ;; [[../../../model/nostr/pubkeys.cljc]]
 ;; [[../../../mutations/nostr/pubkeys.cljc]]
 
-(def index-page-key :admin-nostr-pubkeys)
+(def index-page-id :admin-nostr-pubkeys)
 (def model-key ::m.n.pubkeys/id)
-(def parent-router-key :admin-nostr)
-(def show-menu-id :admin-nostr-pubkeys)
-(def show-page-key :admin-nostr-pubkeys-show)
+(def parent-router-id :admin-nostr)
+(def required-role :admin)
+(def show-page-id :admin-nostr-pubkeys-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.n.pubkeys/delete!))
@@ -78,18 +78,18 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent   parent-router-key
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent   parent-router-id
    ::m.navbars/router   ::Router
    ::m.navbars/children
-   [u.a.n.p.relays/index-page-key
-    u.a.n.p.badge-acceptances/index-page-key
-    u.a.n.p.badge-awards/index-page-key
-    u.a.n.p.badge-definitions/index-page-key
-    u.a.n.p.items/index-page-key
-    u.a.n.p.contacts/index-page-key
-    u.a.n.p.events/index-page-key
-    u.a.n.p.users/index-page-key]})
+   [u.a.n.p.relays/index-page-id
+    u.a.n.p.badge-acceptances/index-page-id
+    u.a.n.p.badge-awards/index-page-id
+    u.a.n.p.badge-definitions/index-page-id
+    u.a.n.p.items/index-page-id
+    u.a.n.p.contacts/index-page-id
+    u.a.n.p.events/index-page-id
+    u.a.n.p.users/index-page-id]})
 
 (defsc Show
   [_this {:ui/keys [admin-nav-menu admin-router]
@@ -110,11 +110,11 @@
                        ::m.n.pubkeys/picture      ""
                        ::m.n.pubkeys/website      ""
                        :ui/admin-nav-menu         (comp/get-initial-state u.menus/NavMenu
-                                                    {::m.navbars/id show-menu-id
+                                                    {::m.navbars/id show-page-id
                                                      :id            id})
                        :ui/admin-router           (comp/get-initial-state Router {})}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                    {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
                      :ui/admin-router   [Router {}]})
    :query         (fn []
                     [model-key
@@ -144,13 +144,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["pubkeys"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/info :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -158,18 +158,18 @@
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state (fn [props]
                     (log/info :ShowPage/initial-state {:props props})
                     {model-key           (model-key props)
-                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/id     show-page-id
                      ::m.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show {})}])
    :route-segment ["pubkey" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (model-key props)
     (if target
@@ -177,20 +177,20 @@
       (u.debug/load-error props "admin show pubkey target"))
     (u.debug/load-error props "admin show pubkey page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Pubkeys"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-nostr
-   ::m.navlinks/router        parent-router-key
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Pubkey"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/navigate-key  u.a.n.p.relays/index-page-key
-   ::m.navlinks/router        parent-router-key
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/navigate-key  u.a.n.p.relays/index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

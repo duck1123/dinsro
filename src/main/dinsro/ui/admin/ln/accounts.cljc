@@ -20,10 +20,12 @@
 ;; [[../../../model/ln/accounts.cljc]]
 ;; [[../../../ui/admin/ln.cljc]]
 
-(def index-page-key :admin-ln-accounts)
+(def index-page-id :admin-ln-accounts)
 (def model-key ::m.ln.accounts/id)
 (def show-page-key :admin-ln-accounts-show)
-(def parent-router :admin-ln)
+(def parent-router-id :admin-ln)
+(def required-role :admin)
+(def show-page-id :admin-ln-accounts-show)
 
 (report/defsc-report Report
   [_this _props]
@@ -80,13 +82,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["accounts"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
@@ -107,19 +109,19 @@
     (ui-show target)
     (u.debug/load-error props "admin show account page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Accounts"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-ln
-   ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Account"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

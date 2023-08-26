@@ -11,7 +11,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.instances :as mu.instances]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.controls :refer [ui-moment]]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -19,10 +19,13 @@
 
 ;; [[../../joins/instances.cljc]]
 ;; [[../../model/instances.cljc]]
+;; [[../../ui/admin.cljc]]
 ;; [[../../ui/instances.cljs]]
 
-(def index-page-key :admin-instances)
+(def index-page-id :admin-instances)
 (def model-key ::m.instances/id)
+(def parent-router-id :admin)
+(def required-role :admin)
 
 (def beat-action
   (u.buttons/row-action-button "Beat" model-key mu.instances/beat!))
@@ -32,11 +35,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.instances/id #(u.links/ui-admin-instance-link %3)
-                         ::m.instances/created-time #(ui-moment {:fromNow true :withTitle true}
-                                                       (str %2))
-                         ::m.instances/last-heartbeat #(ui-moment {:fromNow true :withTitle true}
-                                                         (str %2))}
+  {ro/column-formatters {::m.instances/id             #(u.links/ui-admin-instance-link %3)
+                         ::m.instances/created-time   u.controls/date-formatter
+                         ::m.instances/last-heartbeat u.controls/date-formatter}
    ro/columns           [m.instances/id
                          m.instances/created-time
                          m.instances/last-heartbeat
@@ -56,24 +57,24 @@
 (defsc IndexPage
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["instances"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/info :Page/starting {:props props})
   (dom/div {}
     (if report
       (ui-report report)
       (u.debug/load-error props "admin index instances page"))))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin page of all instances"
    ::m.navlinks/label         "Instances"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

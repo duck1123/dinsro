@@ -22,10 +22,11 @@
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :admin-core)
+(def index-page-id :admin-core)
 (def menu-key :admin-core)
+(def parent-router-id :admin)
+(def required-role :admin)
 (def router-key :dinsro.ui.admin/Router)
-(def show-menu-id :admin-core)
 
 (defrouter Router
   [_this _props]
@@ -60,21 +61,21 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent :admin
+(m.navbars/defmenu index-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.a.c.dashboard/index-page-key
-    u.a.c.addresses/index-page-key
-    u.a.c.blocks/index-page-key
-    u.a.c.chains/index-page-key
-    u.a.c.mnemonics/index-page-key
-    u.a.c.networks/index-page-key
-    u.a.c.nodes/index-page-key
-    u.a.c.peers/index-page-key
-    u.a.c.transactions/index-page-key
-    u.a.c.wallets/index-page-key
-    u.a.c.wallet-addresses/index-page-key]})
+   [u.a.c.dashboard/index-page-id
+    u.a.c.addresses/index-page-id
+    u.a.c.blocks/index-page-id
+    u.a.c.chains/index-page-id
+    u.a.c.mnemonics/index-page-id
+    u.a.c.networks/index-page-id
+    u.a.c.nodes/index-page-id
+    u.a.c.peers/index-page-id
+    u.a.c.transactions/index-page-id
+    u.a.c.wallets/index-page-id
+    u.a.c.wallet-addresses/index-page-id]})
 
 (defsc IndexPage
   [_this {:ui/keys [nav-menu router]
@@ -98,11 +99,11 @@
       (ui-router router)
       (u.debug/load-error props "admin core page router"))))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Router page for core admin"
    ::m.navlinks/label         "Core"
-   ::m.navlinks/navigate-key  u.a.c.dashboard/index-page-key
-   ::m.navlinks/parent-key    :admin
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/navigate-key  u.a.c.dashboard/index-page-id
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

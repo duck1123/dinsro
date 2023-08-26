@@ -8,15 +8,17 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../joins/accounts.cljc]]
 ;; [[../../../model/accounts.cljc]]
 
-(def index-page-key :core-wallets-show-accounts)
+(def index-page-id :core-wallets-show-accounts)
 (def model-key ::m.accounts/id)
 (def parent-model-key ::m.c.wallets/id)
+(def required-role :user)
 
 (report/defsc-report Report
   [_this _props]
@@ -39,26 +41,24 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-key
+                       ::m.navlinks/id  index-page-id
                        :ui/report       {}}
    :query             [::m.c.wallets/id
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (ui-report report))
-
-(def ui-sub-page (comp/factory SubPage))
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
 (defsc SubSection
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-key
+                       ::m.navlinks/id  index-page-id
                        :ui/report       {}}
    :query             [::m.c.wallets/id
                        ::m.navlinks/id

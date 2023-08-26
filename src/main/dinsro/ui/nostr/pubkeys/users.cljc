@@ -9,15 +9,17 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.users :as m.users]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../model/users.cljc]]
 
-(def index-page-key :nostr-pubkeys-show-users)
+(def index-page-id :nostr-pubkeys-show-users)
 (def model-key ::m.users/id)
 (def parent-model-key ::m.n.pubkeys/id)
+(def parent-router-id :nostr-pubkeys-show)
+(def required-role :user)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
 (report/defsc-report Report
@@ -37,13 +39,12 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]
-          :as      props}]
+  [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-key
+                         ::m.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
@@ -51,15 +52,14 @@
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["users"]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (log/info :SubPage/starting {:props props})
-  (ui-report report))
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Users"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :nostr-pubkeys-show
-   ::m.navlinks/router        :nostr-pubkeys
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

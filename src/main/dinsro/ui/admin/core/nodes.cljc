@@ -35,11 +35,11 @@
 ;; [[../../../joins/core/nodes.cljc]]
 ;; [[../../../model/core/nodes.cljc]]
 
-(def index-page-key :admin-core-nodes)
+(def index-page-id :admin-core-nodes)
 (def model-key ::m.c.nodes/id)
 (def parent-router-id :admin-core)
-(def show-menu-id :admin-core-nodes)
-(def show-page-key :admin-core-nodes-show)
+(def required-role :admin)
+(def show-page-id :admin-core-nodes-show)
 
 (def debug-props false)
 
@@ -82,18 +82,20 @@
 (defrouter Router
   [_this _props]
   {:router-targets [u.a.c.n.blocks/SubPage
-                    u.a.c.n.peers/SubPage]})
+                    u.a.c.n.peers/SubPage
+                    u.a.c.n.transactions/SubPage
+                    u.a.c.n.wallets/SubPage]})
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
+(m.navbars/defmenu show-page-id
   {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.a.c.n.peers/index-page-key
-    u.a.c.n.blocks/index-page-key
-    u.a.c.n.transactions/index-page-key
-    u.a.c.n.wallets/index-page-key]})
+   [u.a.c.n.peers/index-page-id
+    u.a.c.n.blocks/index-page-id
+    u.a.c.n.transactions/index-page-id
+    u.a.c.n.wallets/index-page-id]})
 
 (form/defsc-form EditForm
   [this props]
@@ -135,12 +137,12 @@
                        :ui/admin-edit-form                 (comp/get-initial-state EditForm)
                        :ui/admin-editing?                  false
                        :ui/admin-nav-menu                  (comp/get-initial-state u.menus/NavMenu
-                                                             {::m.navbars/id show-menu-id
+                                                             {::m.navbars/id show-page-id
                                                               :id            id})
                        :ui/admin-router                    (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/admin-edit-form [EditForm {}]
-                     :ui/admin-nav-menu  [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                     :ui/admin-nav-menu  [u.menus/NavMenu {::m.navbars/id show-page-id}]
                      :ui/admin-router    [Router {}]})
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
@@ -234,30 +236,30 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["nodes"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state (fn [props]
                     {model-key           (model-key props)
-                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/id     show-page-id
                      ::m.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["node" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (model-key props)
     (if target
@@ -265,20 +267,20 @@
       (u.debug/load-error props "Admin show core nodes target"))
     (u.debug/load-error props "Admin show core nodes page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Nodes"
    ::m.navlinks/description   "Admin Index Core Nodes"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-core
+   ::m.navlinks/parent-key    parent-router-id
    ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Node"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/navigate-key  u.a.c.n.blocks/index-page-key
-   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/navigate-key  u.a.c.n.blocks/index-page-id
+   ::m.navlinks/parent-key    index-page-id
    ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/required-role required-role})

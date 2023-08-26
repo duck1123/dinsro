@@ -1,16 +1,29 @@
-(ns dinsro.ui.accounts.transactions
+(ns dinsro.ui.admin.accounts.transactions
   (:require
-   [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.transactions :as m.transactions]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
+   [dinsro.ui.loader :as u.loader]
    [dinsro.ui.transactions :as u.transactions]))
+
+;; [[../joins/transactions.cljc]]
+;; [[../model/accounts.cljc]]
+;; [[../model/transactions.cljc]]
+
+(def index-page-id :admin-accounts-show-transactions)
+(def model-key ::m.transactions/id)
+(def parent-model-key ::m.accounts/id)
+(def router-key :dinsro.ui.admin.accounts/Router)
 
 (report/defsc-report Report
   [_this props]
@@ -28,10 +41,23 @@
    ro/paginate?         true
    ro/row-pk            m.transactions/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.transactions/index
+   ro/source-attribute  ::j.transactions/admin-index
    ro/title             "Transactions"}
   (let [{:ui/keys [current-rows]} props]
     (dom/div :.ui.items
       (map u.transactions/ui-body-item  current-rows))))
 
 (def ui-report (comp/factory Report))
+
+(defsc SubPage
+  [_this props]
+  {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
+                       :ui/report      {}}
+   :query             [[::dr/id router-key]
+                       ::m.navlinks/id
+                       {:ui/report (comp/get-query Report)}]
+   :route-segment     ["transactions"]
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))

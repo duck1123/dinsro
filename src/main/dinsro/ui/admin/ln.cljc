@@ -24,8 +24,11 @@
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :admin-ln)
-(def show-menu-id :admin-ln)
+;; [[../../ui/admin.cljc]]
+
+(def index-page-id :admin-ln)
+(def parent-router-id :admin)
+(def required-role :admin)
 
 (defrouter Router
   [_this _props]
@@ -41,18 +44,18 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent :admin
+(m.navbars/defmenu index-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.a.ln.dashboard/index-page-key
-    u.a.ln.accounts/index-page-key
-    u.a.ln.channels/index-page-key
-    u.a.ln.invoices/index-page-key
-    u.a.ln.nodes/index-page-key
-    u.a.ln.payreqs/index-page-key
-    u.a.ln.peers/index-page-key
-    u.a.ln.remote-nodes/index-page-key]})
+   [u.a.ln.dashboard/index-page-id
+    u.a.ln.accounts/index-page-id
+    u.a.ln.channels/index-page-id
+    u.a.ln.invoices/index-page-id
+    u.a.ln.nodes/index-page-id
+    u.a.ln.payreqs/index-page-id
+    u.a.ln.peers/index-page-id
+    u.a.ln.remote-nodes/index-page-id]})
 
 (defsc IndexPage
   [_this {:ui/keys [router vertical-menu] :as props}]
@@ -61,7 +64,7 @@
                    [:.page-container {:display "flex" :flex-flow "row nowrap"}]]
    :ident         (fn [] [::m.navlinks/id :admin-ln])
    :initial-state (fn [_]
-                    {::m.navlinks/id   index-page-key
+                    {::m.navlinks/id   index-page-id
                      :ui/router        (comp/get-initial-state Router)
                      :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :admin-ln})})
    :pre-merge     (u.loader/page-merger nil
@@ -86,9 +89,9 @@
                 (ui-router router)
                 (ui-segment {} "Failed to load router")))))))))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "LN"
-   ::m.navlinks/parent-key    :admin
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

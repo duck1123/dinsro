@@ -10,24 +10,26 @@
 
 ;; [[../../../ui/settings/core.cljs]]
 
-(def index-page-key :settings-core-dashboard)
+(def index-page-id :settings-core-dashboard)
+(def parent-router-id :settings-core)
+(def required-role :user)
 
 (defsc Page
   [_this props]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key}
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id}
    :query         [::m.navlinks/id]
    :route-segment ["dashboard"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/info :Page/starting {:props props})
   (ui-segment {}
     (dom/h1 {}
       "Core Settings Dashboard")
     (dom/p {} "TODO: Put stuff here")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::Page
    ::m.navlinks/label         "Dashboard"
-   ::m.navlinks/parent-key    :settings-core
-   ::m.navlinks/router        :settings
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

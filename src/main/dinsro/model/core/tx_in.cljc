@@ -24,7 +24,7 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::scriptPubKey (s/or :string string? :nil nil?))
+(s/def ::script-pub-key (s/or :string string? :nil nil?))
 (defattr script-pub-key ::script-pub-key :string
   {ao/identities #{::id}
    ao/schema     :production})

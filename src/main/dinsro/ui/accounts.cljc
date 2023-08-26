@@ -36,10 +36,11 @@
 ;; [[../joins/accounts.cljc]]
 ;; [[../model/accounts.cljc]]
 
-(def index-page-key :accounts)
+(def index-page-id :accounts)
 (def model-key ::m.accounts/id)
 (def override-form true)
 (def override-report false)
+(def parent-router-id :root)
 (def show-controls false)
 (def show-transactions true)
 (def show-page-key :accounts-show)
@@ -245,24 +246,24 @@
 (defsc IndexPage
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["accounts"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/trace :Page/starting {:props props})
   (dom/div {}
     (ui-report report)))
 
-(defroute index-page-key
+(defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Accounts"
    ::m.navlinks/description   "An index of all accounts for a user"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role :user})
 
 (defroute show-page-key
@@ -271,6 +272,6 @@
    ::m.navlinks/label         "Show Accounts"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :root
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role :user})

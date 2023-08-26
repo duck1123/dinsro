@@ -19,8 +19,10 @@
 ;; [[../../../model/core/mnemonics.cljc]]
 ;; [[../../../ui/core/mnemonics.cljs]]
 
-(def index-page-key :admin-core-mnemonics)
+(def index-page-id :admin-core-mnemonics)
 (def model-key ::m.c.mnemonics/id)
+(def parent-router-id :admin-core)
+(def required-role :admin)
 (def show-page-key :admin-core-mnemonics-show)
 
 (report/defsc-report Report
@@ -66,13 +68,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["mnemonics"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
@@ -94,14 +96,14 @@
     (ui-show target)
     (u.debug/load-error props "admin show mnemonic")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin Index Mnemonics"
    ::m.navlinks/label         "Mnemonics"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-core
-   ::m.navlinks/router        :admin-core
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
@@ -109,6 +111,6 @@
    ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Mnemonics"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin-core
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

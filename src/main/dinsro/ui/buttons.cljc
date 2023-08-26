@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.control :as control]
+   [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [lambdaisland.glogc :as log]))
 
@@ -33,6 +34,26 @@
   {:type   :button
    :label  "Fetch"
    :action (report-action model-key mutation)})
+
+(defn form-create-button
+  [label Form]
+  {:label label
+   :type :button
+   :action #(form/create! % Form)})
+
+(defn form-edit-button
+  [this model-key label Form]
+  (ui-button
+   {:onClick (fn [_] (->> this comp/props model-key (form/edit! this Form)))}
+   label))
+
+(defn form-edit-icon-button
+  [this model-key icon Form]
+  (ui-button {:icon    icon
+              :onClick (fn [_]
+                         (let [props (comp/props this)
+                               id    (model-key props)]
+                           (form/edit! this Form id)))}))
 
 (defn row-action-button
   "Create a report row button definition calling the mutation with this record's id param"

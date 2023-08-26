@@ -56,6 +56,7 @@
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.chains :as m.c.chains]
+   [dinsro.model.core.connections :as m.c.connections]
    [dinsro.model.core.mnemonics :as m.c.mnemonics]
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.core.nodes :as m.c.nodes]
@@ -206,6 +207,7 @@
         m.c.addresses/attributes
         m.c.blocks/attributes
         m.c.chains/attributes
+        m.c.connections/attributes
         m.c.mnemonics/attributes
         m.c.networks/attributes
         m.c.nodes/attributes

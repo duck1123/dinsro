@@ -9,15 +9,18 @@
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../joins/core/addresses.cljc]]
 ;; [[../../../model/core/addresses.cljc]]
 
-(def index-page-key :ln-nodes-show-addresses)
+(def index-page-id :ln-nodes-show-addresses)
 (def model-key ::m.c.addresses/id)
 (def parent-model-key ::m.ln.nodes/id)
+(def parent-router-id :ln-nodes-show)
+(def required-role :user)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (report/defsc-report Report
@@ -38,23 +41,27 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     (fn [props]
+                        {::m.navlinks/id  index-page-id
+                         parent-model-key (parent-model-key props)
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["addresses"]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (ui-report report))
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Addresses"
    ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :ln-nodes-show
-   ::m.navlinks/router        :ln-nodes
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

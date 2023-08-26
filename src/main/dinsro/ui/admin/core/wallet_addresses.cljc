@@ -1,39 +1,28 @@
 (ns dinsro.ui.admin.core.wallet-addresses
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   ;; [com.fulcrologic.fulcro.data-fetch :as df]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
-   ;; [com.fulcrologic.rad.form :as form]
-   ;; [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   ;; [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
-   ;; [dinsro.joins.core.wallets :as j.c.wallets]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
-   ;; [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
-   ;; [dinsro.mutations.core.wallets :as mu.c.wallets]
-   ;; [dinsro.ui.admin.core.wallets.accounts :as u.a.c.w.accounts]
-   ;; [dinsro.ui.admin.core.wallets.addresses :as u.a.c.w.addresses]
-   ;; [dinsro.ui.admin.core.wallets.words :as u.a.c.w.words]
    [dinsro.ui.buttons :as u.buttons]
-   ;; [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   ;; [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/wallet_addresses.cljc]]
 ;; [[../../../model/core/wallet_addresses.cljc]]
 ;; [[../../../mutations/core/wallet_addresses.cljc]]
 
-(def index-page-key :admin-core-wallet-addresses)
+(def index-page-id :admin-core-wallet-addresses)
 (def model-key ::m.c.wallet-addresses/id)
 (def parent-router-id :admin-core)
+(def required-role :admin)
 (def show-page-key :admin-core-wallet-addresses-show)
 
 (def delete-action
@@ -65,25 +54,25 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["wallet-addresses"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Wallet Addresses"
    ::m.navlinks/description   "Admin index of wallet addresses"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-core
+   ::m.navlinks/parent-key    parent-router-id
    ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
@@ -91,6 +80,6 @@
    ::m.navlinks/label         "Show Wallet Address"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/parent-key    index-page-id
    ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/required-role required-role})

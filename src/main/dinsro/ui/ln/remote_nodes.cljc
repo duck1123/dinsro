@@ -22,8 +22,10 @@
 ;; [[../../joins/ln/remote_nodes.cljc]]
 ;; [[../../model/ln/remote_nodes.cljc]]
 
-(def index-page-key :ln-remote-nodes)
+(def index-page-id :ln-remote-nodes)
 (def model-key ::m.ln.remote-nodes/id)
+(def parent-router-id :ln)
+(def required-role :user)
 (def show-page-key :ln-remote-nodes-show)
 
 (def debug-show false)
@@ -95,13 +97,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["remote-nodes"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/info :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -131,11 +133,11 @@
     (ui-segment {:color "red" :inverted true}
       "Failed to load page")))
 
-(m.navlinks/defroute   :ln-remote-nodes-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Remote Node"
-   ::m.navlinks/input-key     ::m.ln.remote-nodes/id
-   ::m.navlinks/model-key     ::m.ln.remote-nodes/id
-   ::m.navlinks/parent-key    :ln
-   ::m.navlinks/router        :ln
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

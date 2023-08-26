@@ -8,25 +8,27 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.loader :as u.loader]))
 
-(def index-page-key :admin-core-dashboard)
+(def index-page-id :admin-core-dashboard)
+(def parent-router-id :admin-core)
+(def required-role :admin)
 (def router-key :dinsro.ui.admin/Router)
 
 (defsc Page
   [_this _props]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key}
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id}
    :query         [[::dr/id router-key]
                    ::m.navlinks/id]
    :route-segment ["dashboard"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (ui-segment {}
     (dom/h1 "Dashboard")
     (dom/p "TODO: Admin Core Dashboard")))
 
-(m.navlinks/defroute :admin-core-dashboard
-  {::m.navlinks/label         "Dashboard"
+(m.navlinks/defroute index-page-id
+  {::m.navlinks/control       ::Page
    ::m.navlinks/description   "Admin Core Dashboard"
-   ::m.navlinks/control       ::Page
-   ::m.navlinks/parent-key    :admin-core
-   ::m.navlinks/router        :admin-core
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/label         "Dashboard"
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/required-role required-role
+   ::m.navlinks/router        parent-router-id})

@@ -15,7 +15,7 @@
 ;; [[../../../../joins/core/tx_out.cljc]]
 ;; [[../../../../model/core/tx_out.cljc]]
 
-(def index-page-key :admin-core-transactions-show-outputs)
+(def index-page-id :admin-core-transactions-show-outputs)
 (def model-key ::m.c.tx-out/id)
 (def parent-model-key ::m.c.transactions/id)
 
@@ -42,10 +42,10 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [_props]
                         {parent-model-key nil
-                         ::m.navlinks/id  index-page-key
+                         ::m.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn [_props]
                         [parent-model-key

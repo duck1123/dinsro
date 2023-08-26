@@ -36,10 +36,11 @@
 ;; [[../../ui/admin/nostr/relays.cljc]]
 ;; [[../../ui/nostr/event_tags/relays.cljc]]
 
-(def index-page-key :nostr-relays)
+(def index-page-id :nostr-relays)
 (def model-key ::m.n.relays/id)
-(def show-menu-id :nostr-relays)
-(def show-page-key :nostr-relays-show)
+(def parent-router-id :nostr)
+(def required-role :user)
+(def show-page-id :nostr-relays-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.n.relays/delete!))
@@ -104,16 +105,16 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent :nostr
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.n.r.connections/index-page-key
-    u.n.r.pubkeys/index-page-key
-    u.n.r.events/index-page-key
-    u.n.r.pubkeys/index-page-key
-    u.n.r.runs/index-page-key
-    u.n.r.witnesses/index-page-key]})
+   [u.n.r.connections/index-page-id
+    u.n.r.pubkeys/index-page-id
+    u.n.r.events/index-page-id
+    u.n.r.pubkeys/index-page-id
+    u.n.r.runs/index-page-id
+    u.n.r.witnesses/index-page-id]})
 
 (defsc Show
   [_this {::m.n.relays/keys [address id]
@@ -127,11 +128,11 @@
                      ::m.n.relays/address          ""
                      ::j.n.relays/connection-count 0
                      :ui/nav-menu                  (comp/get-initial-state u.menus/NavMenu
-                                                     {::m.navbars/id show-menu-id
+                                                     {::m.navbars/id show-page-id
                                                       :id            id})
                      :ui/router                    (comp/get-initial-state Router)})
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
                      :ui/router   [Router {}]})
    :query         [::m.n.relays/id
                    ::m.n.relays/address
@@ -169,13 +170,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["relays"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -183,17 +184,17 @@
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state (fn [_props]
                     {model-key           nil
-                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/id     show-page-id
                      ::m.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn [_props]
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["relay" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
   (if (get props model-key)
     (if target
@@ -201,11 +202,11 @@
       (u.debug/load-error props "show relay target"))
     (u.debug/load-error props "show relay")))
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Relay"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :nostr
-   ::m.navlinks/router        :nostr
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

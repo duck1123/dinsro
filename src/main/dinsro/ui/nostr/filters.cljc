@@ -18,8 +18,9 @@
 ;; [[../../ui/admin/nostr/filters.cljc]]
 
 (def model-key ::m.n.filters/id)
-(def show-menu-id :nostr-filters)
-(def show-page-key :nostr-filters-show)
+(def parent-router-id :nostr)
+(def required-role :user)
+(def show-page-id :nostr-filters-show)
 
 (defrouter Router
   [_this _props]
@@ -29,10 +30,10 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :nostr-filters
-  {::m.navbars/parent   :nostr
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent   parent-router-id
    ::m.navbars/children
-   [u.n.f.filter-items/index-page-key]})
+   [u.n.f.filter-items/index-page-id]})
 
 (defsc Show
   [_this {::m.n.filters/keys [id index request]
@@ -45,11 +46,11 @@
                        ::m.n.filters/index   nil
                        ::m.n.filters/request {}
                        :ui/nav-menu          (comp/get-initial-state u.menus/NavMenu
-                                               {::m.navbars/id show-menu-id
+                                               {::m.navbars/id show-page-id
                                                 :id            id})
                        :ui/router            (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
                      :ui/router   [Router {}]})
    :query         [::m.n.filters/id
                    ::m.n.filters/index
@@ -78,27 +79,27 @@
   [_this {::m.n.filters/keys [id]
           ::m.navlinks/keys  [target]
           :as                props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state (fn [_props]
                     {model-key           nil
-                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/id     show-page-id
                      ::m.navlinks/target {}})
    :query         (fn [_props]
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["filter" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (ui-segment {} "Failed to load record")))
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Filter"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :nostr
-   ::m.navlinks/router        :nostr
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -23,8 +23,10 @@
 ;; [[../../joins/core/peers.cljc]]
 ;; [[../../model/core/peers.cljc]]
 
-(def index-page-key :core-peers)
+(def index-page-id :core-peers)
 (def model-key ::m.c.peers/id)
+(def parent-router-id :core)
+(def required-role :user)
 (def show-page-key :core-peers-show)
 
 (def delete-action
@@ -116,13 +118,13 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["peers"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 

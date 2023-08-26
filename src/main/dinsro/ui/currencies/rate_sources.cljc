@@ -17,9 +17,11 @@
 ;; [[../../joins/rate_sources.cljc]]
 ;; [[../../model/rate_sources.cljc]]
 
-(def index-page-key :currencies-show-rate-sources)
+(def index-page-id :currencies-show-rate-sources)
 (def model-key ::m.rate-sources/id)
 (def parent-model-key ::m.currencies/id)
+(def parent-router-id :currencies-show)
+(def required-role :user)
 (def router-key :dinsro.ui.currencies/Router)
 
 (report/defsc-report Report
@@ -43,14 +45,14 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [[::dr/id router-key]
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["rate-sources"]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (log/debug :SubPage/starting {:props props})
   (if report
     (ui-report report)
@@ -59,8 +61,8 @@
 (m.navlinks/defroute   :currencies-show-rate-sources
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Rates Sources"
-   ::m.navlinks/input-key     ::m.currencies/id
-   ::m.navlinks/model-key     ::m.rate-sources/id
-   ::m.navlinks/parent-key    :currencies-show
-   ::m.navlinks/router        :currencies
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

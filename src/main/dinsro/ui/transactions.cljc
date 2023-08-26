@@ -28,7 +28,8 @@
    [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks :refer [defroute]]
    [dinsro.model.transactions :as m.transactions]
-   [dinsro.ui.controls :refer [ui-moment]]
+   [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -40,9 +41,10 @@
 ;; [[../model/transactions.cljc]]
 ;; [[../ui/admin/transactions.cljs]]
 
-(def index-page-key :transactions)
+(def index-page-id :transactions)
 (def model-key ::m.transactions/id)
-(def parent-router :root)
+(def parent-router-id :root)
+(def required-role :user)
 (def show-page-key :transactions-show)
 
 (def show-controls false)
@@ -195,11 +197,7 @@
   (dom/div :.ui.item
     (ui-segment {}
       (dom/div {} (u.links/ui-transaction-link props))
-      (dom/div {}
-        (if use-moment
-          (ui-moment {:fromNow true :withTitle true}
-            (str date))
-          (str date)))
+      (dom/div {} (if use-moment (u.controls/relative-date date) (str date)))
       (ui-grid {:padded false}
         (ui-grid-row {}
           (ui-grid-column {:width 8}
@@ -311,23 +309,12 @@
   (if id
     (dom/div {}
       (ui-segment {}
-        (dom/h1 {}
-          (str description))
-        (dom/div {}
-          (str "Debit Count: " debit-count))
+        (dom/h1 {} (str description))
+        (dom/div {} (str "Debit Count: " debit-count))
         (dom/p {}
-          (dom/span {}
-            "Date: ")
-          (dom/span {}
-            (ui-moment {:fromNow true :withTitle true}
-              (str date))))
-        (dom/button {:classes [:.ui :.button]
-                     :onClick (fn [_e]
-                                (let [props (comp/props this)]
-                                  (log/info :Show/clicked {:props props})
-                                  (let [id (::m.transactions/id props)]
-                                    (form/edit! this NewTransaction id))))}
-          "Edit"))
+          (dom/span {} "Date: ")
+          (dom/span {} (u.controls/relative-date date)))
+        (u.buttons/form-edit-button this model-key "Edit" NewTransaction))
       (if debits
         (ui-segment {}
           (u.t.debits/ui-sub-page debits))
@@ -340,13 +327,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [_] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [_] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["transactions"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (if report
     (ui-report report)
@@ -371,19 +358,19 @@
     (ui-show target)
     (u.debug/load-error props "show transaction page")))
 
-(defroute index-page-key
+(defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Transactions"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router
-   ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
 (defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Transaction"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -15,9 +15,11 @@
 
 ;; [[../../../../ui/admin/nostr/witnesses.cljc]]
 
-(def index-page-key :admin.nostr-runs-show-witnesses)
+(def index-page-id :admin.nostr-runs-show-witnesses)
 (def model-key ::m.n.witnesses/id)
 (def parent-model-key ::m.n.runs/id)
+(def parent-router-id :admin.nostr-runs-show)
+(def required-role :admin)
 (def router-key :dinsro.ui.admin.nostr.runs/Router)
 
 (report/defsc-report Report
@@ -44,10 +46,10 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-key
+                         ::m.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
@@ -55,14 +57,14 @@
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["witnesses"]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
   (ui-report report))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Witnesses"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-nostr-runs-show
-   ::m.navlinks/router        :admin-nostr-runs
-   ::m.navlinks/required-role :admin-user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

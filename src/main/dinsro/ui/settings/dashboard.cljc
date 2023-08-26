@@ -12,15 +12,17 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :settings-dashboard)
+(def index-page-id :settings-dashboard)
+(def parent-router-id :settings)
+(def required-role :user)
 
 (defsc Page
   [_this props]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key}
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id}
    :query         [::m.navlinks/id]
    :route-segment ["dashboard"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/debug :Page/starting {:props props})
   (ui-grid {}
     (ui-grid-row {:centered true}
@@ -33,9 +35,9 @@
           (ui-segment {}
             (dom/h2 "Core Nodes")))))))
 
-(m.navlinks/defroute   :settings-dashboard
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::Page
    ::m.navlinks/label         "Dashboard"
-   ::m.navlinks/parent-key    :setting
-   ::m.navlinks/router        :settings
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

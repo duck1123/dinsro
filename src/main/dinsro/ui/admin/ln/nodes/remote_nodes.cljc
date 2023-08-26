@@ -11,18 +11,17 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.nodes :as mu.ln.nodes]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../../ui/admin/ln/nodes.cljc]]
 
-(def index-page-key :admin-ln-nodes-show-remote-nodes)
+(def index-page-id :admin-ln-nodes-show-remote-nodes)
 (def model-key ::m.ln.remote-nodes/id)
 (def parent-model-key ::m.ln.nodes/id)
-(def parent-show-key :admin-ln-nodes-show)
-(def parent-router :admin-ln-nodes)
+(def parent-router-id :admin-ln-nodes-show)
+(def required-role :admin)
 (def router-key :dinsro.ui.ln.nodes/Router)
 
 (def make-peer-action
@@ -53,31 +52,25 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]
-          :as      props}]
+  [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key props
-                         ::m.navlinks/id  index-page-key})
+                         ::m.navlinks/id  index-page-id})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (log/info :SubPage/starting {:props props})
-  (if (get props parent-model-key)
-    (if report
-      (ui-report report)
-      (u.debug/load-error props "admin nodes show remote nodes report"))
-    (u.debug/load-error props "admin nodes show remote nodes")))
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Remote Nodes"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-show-key
-   ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

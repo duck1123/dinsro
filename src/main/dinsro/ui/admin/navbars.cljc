@@ -10,10 +10,11 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :admin-navbars)
+(def index-page-id :admin-navbars)
 (def model-key ::m.navbars/id)
-(def parent-router :admin)
-(def show-page-key :admin-navbars-show)
+(def parent-router-id :admin)
+(def required-role :admin)
+(def show-page-id :admin-navbars-show)
 
 (report/defsc-report Report
   [_this _props]
@@ -35,31 +36,31 @@
 (defsc IndexPage
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [_] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [_] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    ::m.navlinks/id    :navbars
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["navbars"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/trace :Page/starting {:props props})
   (ui-report report))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Navbars"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Admin show page for navbars"
    ::m.navlinks/label         "Show Navbar"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

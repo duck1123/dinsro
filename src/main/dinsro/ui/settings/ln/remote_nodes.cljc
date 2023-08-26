@@ -20,8 +20,10 @@
    [dinsro.ui.settings.ln.remote-nodes.peers :as u.s.ln.rn.peers]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :settings-ln-remote-nodes)
+(def index-page-id :settings-ln-remote-nodes)
 (def model-key ::m.ln.remote-nodes/id)
+(def parent-router-id :settings-ln)
+(def required-role :user)
 (def show-page-key :settings-ln-remote-nodes-show)
 
 (def delete-action
@@ -96,13 +98,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["remote-nodes"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -122,10 +124,10 @@
     (ui-show target)
     (u.debug/load-error props "settings show remote node")))
 
-(m.navlinks/defroute   :settings-ln-remote-nodes
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Remote Nodes"
-   ::m.navlinks/model-key     ::m.ln.remote-nodes/id
-   ::m.navlinks/parent-key    :settings-ln
-   ::m.navlinks/router        :settings-ln
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

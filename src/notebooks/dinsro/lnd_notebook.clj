@@ -16,6 +16,8 @@
 (nu/display-file-links)
 
 (def user-alice (q.users/find-by-name "alice"))
+
+user-alice
 (def alice-id (q.users/find-by-name "alice"))
 (def user-bob (q.users/find-by-name "bob"))
 (def node-alice-id (q.ln.nodes/find-by-user-and-name alice-id "lnd-alice"))
@@ -25,6 +27,8 @@
 (def node node-alice)
 (def core-node-alice (q.c.nodes/read-record (q.c.nodes/find-by-ln-node (::m.ln.nodes/id node-alice))))
 (def core-node-bob (q.c.nodes/read-record (q.c.nodes/find-by-ln-node (::m.ln.nodes/id node-bob))))
+
+core-node-bob
 
 ;; (a.ln.nodes/get-cert-text node)
 ;; (a.ln.nodes/get-macaroon-hex node)

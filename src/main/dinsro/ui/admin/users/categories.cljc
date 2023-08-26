@@ -30,9 +30,11 @@
 ;; [[../../../ui/categories.cljs]]
 ;; [[../../../../../test/dinsro/ui/admin/users/categories_test.cljs]]
 
-(def index-page-key :admin-users-show-categories)
+(def index-page-id :admin-users-show-categories)
 (def model-key ::m.categories/id)
 (def parent-model-key ::m.users/id)
+(def parent-router-id :admin-users-show)
+(def required-role :admin)
 (def router-key :dinsro.ui.admin.users/Router)
 
 (def override-report false)
@@ -157,10 +159,10 @@
   [_this {:ui/keys [form report]
           :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-key
+                         ::m.navlinks/id  index-page-id
                          :ui/form         (comp/get-initial-state NewForm {})
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
@@ -170,7 +172,7 @@
                          {:ui/form (comp/get-query NewForm)}
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["categories"]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (log/debug :SubPage/starting {:props props})
   (if (parent-model-key props)
     (if report
@@ -180,10 +182,10 @@
       (u.debug/load-error props "admin user categories report"))
     (u.debug/load-error props "admin user categories page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Categories"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-users-show
-   ::m.navlinks/router        :admin-users
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

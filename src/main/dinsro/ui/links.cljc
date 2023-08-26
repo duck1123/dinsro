@@ -147,7 +147,7 @@
   {fo/id           m.c.chains/id
    fo/route-prefix "admin-chain-link"
    fo/attributes   [m.c.chains/name]}
-  (form-link this id name :dinsro.ui.admin.core.chains/ShowPage))
+  (form-link this id name :dinsro.ui.admin.core.chains.networks/SubPage))
 
 (def ui-admin-chain-link (comp/factory AdminChainLinkForm {:keyfn ::m.c.chains/id}))
 
@@ -315,7 +315,7 @@
   {fo/id         m.rate-sources/id
    fo/route-prefix "admin-rate-source-link"
    fo/attributes [m.rate-sources/name]}
-  (form-link this id name :dinsro.ui.admin.rate-sources/ShowPage))
+  (form-link this id name :dinsro.ui.admin.rate-sources.accounts/SubPage))
 
 (def ui-admin-rate-source-link (comp/factory AdminRateSourceLinkForm {:keyfn ::m.rate-sources/id}))
 
@@ -497,7 +497,7 @@
   {fo/id         m.c.chains/id
    fo/route-prefix "chain-link"
    fo/attributes [m.c.chains/name]}
-  (form-link this id name :dinsro.ui.core.chains/ShowPage))
+  (form-link this id name :dinsro.ui.core.chains.networks/SubPage))
 
 (def ui-chain-link (comp/factory ChainLinkForm {:keyfn ::m.c.chains/id}))
 
@@ -524,7 +524,7 @@
    fo/route-prefix "core-node-link"
    fo/attributes [m.c.nodes/id m.c.nodes/name]}
   (log/trace :CoreNodeLinkForm/starting {:id id :name name :props props})
-  (form-link this id (or name (str id)) :dinsro.ui.core.nodes/ShowPage))
+  (form-link this id (or name (str id)) :dinsro.ui.core.nodes.blocks/SubPage))
 
 (def ui-core-node-link (comp/factory CoreNodeLinkForm {:keyfn ::m.c.nodes/id}))
 
@@ -653,7 +653,7 @@
    fo/route-prefix "ln-node-link"
    fo/attributes   [m.ln.nodes/name]}
   (log/trace :NodeLinkForm/starting {:id id :name name :props props})
-  (form-link this id name :dinsro.ui.ln.nodes/ShowPage))
+  (form-link this id name :dinsro.ui.ln.nodes.accounts/SubPage))
 
 (def ui-node-link (comp/factory NodeLinkForm {:keyfn ::m.ln.nodes/id}))
 
@@ -722,7 +722,7 @@
   {fo/id           m.rate-sources/id
    fo/route-prefix "rate-source-link"
    fo/attributes   [m.rate-sources/name]}
-  (form-link this id name :dinsro.ui.settings.rate-sources/ShowPage))
+  (form-link this id name :dinsro.ui.settings.rate-sources.accounts/SubPage))
 
 (def ui-rate-source-link (comp/factory RateSourceLinkForm {:keyfn ::m.rate-sources/id}))
 

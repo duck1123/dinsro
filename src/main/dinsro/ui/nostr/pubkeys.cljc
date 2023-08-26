@@ -37,10 +37,12 @@
 ;; [[../../mutations/nostr/pubkey_contacts.cljc]]
 ;; [[../../mutations/nostr/pubkeys.cljc]]
 
-(def index-page-key :nostr-pubkeys)
+(def index-page-id :nostr-pubkeys)
 (def model-key ::m.n.pubkeys/id)
+(def parent-router-id :nostr)
+(def required-role :user)
 (def show-menu-id :nostr-pubkeys)
-(def show-page-key :nostr-pubkeys-show)
+(def show-page-id :nostr-pubkeys-show)
 
 (def add-action
   (u.buttons/row-action-button "Add to contacts" model-key mu.n.pubkeys/add-contact!))
@@ -63,9 +65,9 @@
   {::m.navbars/parent :nostr
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.n.p.events/index-page-key
-    u.n.p.relays/index-page-key
-    u.n.p.items/index-page-key]})
+   [u.n.p.events/index-page-id
+    u.n.p.relays/index-page-id
+    u.n.p.items/index-page-id]})
 
 (defsc PubkeyInfo
   [_this {::j.n.pubkeys/keys [npub]
@@ -169,12 +171,12 @@
                        ::m.n.pubkeys/picture      ""
                        ::m.n.pubkeys/website      ""
                        :ui/nav-menu               (comp/get-initial-state u.menus/NavMenu
-                                                    {::m.navbars/id show-menu-id
+                                                    {::m.navbars/id show-page-id
                                                      :id            id})
                        :ui/router                 (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/router   [Router {}]
-                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]})
+                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]})
    :query         [::m.n.pubkeys/about
                    ::m.n.pubkeys/display-name
                    ::m.n.pubkeys/hex
@@ -201,13 +203,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["pubkeys"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -216,35 +218,35 @@
   [_this {id                model-key
           ::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state (fn [_props]
                     {model-key           nil
-                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/id     show-page-id
                      ::m.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn [_props]
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show {})}])
    :route-segment ["pubkey" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (u.debug/load-error props "show pubkeys page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Pubkeys"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :nostr
-   ::m.navlinks/router        :nostr
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
 (m.navlinks/defroute   :nostr-pubkeys-show
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Pubkey"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :nostr-pubkeys
-   ::m.navlinks/router        :nostr
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -24,9 +24,11 @@
 ;; [[../../joins/core/chains.cljc]]
 ;; [[../../model/core/chains.cljc]]
 
-(def index-page-key :core-chains)
+(def index-page-id :core-chains)
 (def model-key ::m.c.chains/id)
-(def show-page-key :core-chains-show)
+(def parent-router-id :core)
+(def required-role :user)
+(def show-page-id :core-chains-show)
 
 (def override-form false)
 
@@ -48,12 +50,11 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu
-  :core-chains
-  {::m.navbars/parent :core
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [:core-chains-show-networks]})
+   [u.c.c.networks/index-page-id]})
 
 (defsc Show
   [_this {::m.c.chains/keys [name]
@@ -109,13 +110,13 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["chains"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
@@ -123,25 +124,25 @@
   [_this {::m.c.chains/keys [id]
           ::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.c.chains/id     nil
-                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/id     show-page-id
                    ::m.navlinks/target {}}
    :query         [::m.c.chains/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["chain" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (u.debug/load-error props "show chains")))
 
-(m.navlinks/defroute   :core-chains-show
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Chain"
-   ::m.navlinks/model-key     ::m.c.chains/id
-   ::m.navlinks/navigate-key  :core-chains-show-networks
-   ::m.navlinks/parent-key    :core
-   ::m.navlinks/router        :core
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/navigate-key  u.c.c.networks/index-page-id
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

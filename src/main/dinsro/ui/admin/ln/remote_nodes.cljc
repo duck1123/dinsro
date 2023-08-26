@@ -22,9 +22,11 @@
 ;; [[../../../joins/ln/remote_nodes.cljc]]
 ;; [[../../../model/ln/remote_nodes.cljc]]
 
-(def index-page-key :admin-ln-remote-nodes)
+(def index-page-id :admin-ln-remote-nodes)
 (def model-key ::m.ln.remote-nodes/id)
-(def show-page-key :admin-ln-remote-nodes-show)
+(def parent-router-id :admin-ln)
+(def required-role :admin)
+(def show-page-id :admin-ln-remote-nodes-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.ln.remote-nodes/delete!))
@@ -92,40 +94,40 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["remote-nodes"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
+   :initial-state {::m.navlinks/id     show-page-id
                    ::m.navlinks/target {}}
    :query         [::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["remote-node" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (ui-show target))
 
-(m.navlinks/defroute :admin-ln-remote-nodes
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Remote Nodes"
-   ::m.navlinks/model-key     ::m.ln.remote-nodes/id
-   ::m.navlinks/parent-key    :admin-ln
-   ::m.navlinks/router        :admin-ln
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute :admin-ln-remote-nodes-show
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.ln.remote-nodes/id
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Remote Node"
-   ::m.navlinks/model-key     ::m.ln.remote-nodes/id
-   ::m.navlinks/parent-key    :admin-ln-remote-nodes
-   ::m.navlinks/router        :admin-ln
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

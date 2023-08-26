@@ -29,10 +29,11 @@
 ;; [[../joins/currencies.cljc]]
 ;; [[../model/currencies.cljc]]
 
-(def index-page-key :currencies)
+(def index-page-id :currencies)
 (def model-key ::m.currencies/id)
-(def show-menu-id :currencies)
-(def show-page-key :currencies-show)
+(def parent-router-id :root)
+(def required-role :user)
+(def show-page-id :currencies-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.currencies/delete!))
@@ -45,9 +46,7 @@
    fo/title        "New Currency"})
 
 (def new-button
-  {:label  "New"
-   :type   :button
-   :action #(form/create! % NewForm)})
+  (u.buttons/form-create-button "New" NewForm))
 
 (defrouter Router
   [_this _props]
@@ -58,13 +57,13 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent :root
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.c.rate-sources/index-page-key
-    u.c.accounts/index-page-key
-    u.c.rates/index-page-key]})
+   [u.c.rate-sources/index-page-id
+    u.c.accounts/index-page-id
+    u.c.rates/index-page-id]})
 
 (report/defsc-report Report
   [_this _props]
@@ -97,11 +96,11 @@
                        ::m.currencies/code ""
                        ::m.currencies/id   nil
                        :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu
-                                             {::m.navbars/id show-menu-id
+                                             {::m.navbars/id show-page-id
                                               :id            id})
                        :ui/router          (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
                      :ui/router   [Router {}]})
    :query         [::m.currencies/name
                    ::m.currencies/code
@@ -121,13 +120,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["currencies"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
@@ -135,33 +134,35 @@
   [_this {::m.currencies/keys [id]
           ::m.navlinks/keys   [target]
           :as                 props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.currencies/id   nil
-                   ::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.currencies/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key           (model-key props)
+                     ::m.navlinks/id     show-page-id
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["currency" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (u.debug/load-error props "show currency page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Currencies"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Currency"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :root
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

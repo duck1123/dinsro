@@ -18,8 +18,10 @@
 ;; [[../../joins/core/addresses.cljc]]
 ;; [[../../model/core/addresses.cljc]]
 
-(def index-page-key :core-addresses)
+(def index-page-id :core-addresses)
 (def model-key ::m.c.addresses/id)
+(def parent-router-id :core)
+(def required-role :user)
 
 (def fetch-action
   (u.buttons/row-action-button "Fetch" model-key mu.c.addresses/delete!))
@@ -55,12 +57,12 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["addresses"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))

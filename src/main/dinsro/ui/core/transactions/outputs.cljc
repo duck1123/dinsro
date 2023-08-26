@@ -10,13 +10,12 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
-   ;; [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/tx_in.cljc]]
 ;; [[../../../model/core/tx_in.cljc]]
 
-(def index-page-key :core-transactions-show-outputs)
+(def index-page-id :core-transactions-show-outputs)
 (def model-key ::m.c.tx-out/id)
 (def parent-model-key ::m.c.transactions/id)
 
@@ -43,17 +42,17 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         (let [id (get props parent-model-key)]
                           {parent-model-key id
-                           ::m.navlinks/id index-page-key
+                           ::m.navlinks/id index-page-id
                            :ui/report      {}}))
    :query             (fn [_props]
                         [::m.navlinks/id
                          parent-model-key
                          {:ui/report (comp/get-query Report)}])
-   ;; :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)
+   ;; :will-enter        (u.loader/targeted-subpage-loader index-page-idparent-model-key ::SubPage)
    }
   (log/info :SubPage/starting {:props props})
   (if (get props parent-model-key)

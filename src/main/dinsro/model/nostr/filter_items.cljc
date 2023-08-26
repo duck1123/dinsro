@@ -10,7 +10,7 @@
    [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]))
 
-;; [../../joins/nostr/filter_items.cljc]
+;; [[../../joins/nostr/filter_items.cljc]]
 
 (>def ::id uuid?)
 (defattr id ::id :uuid

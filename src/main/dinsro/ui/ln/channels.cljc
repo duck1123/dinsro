@@ -19,8 +19,9 @@
 ;; [[../../joins/ln/channels.cljc]]
 ;; [[../../model/ln/channels.cljc]]
 
-(def index-page-key :ln-channels)
+(def index-page-id :ln-channels)
 (def model-key ::m.ln.channels/id)
+(def required-role :user)
 (def show-page-key :ln-channels-show)
 
 (form/defsc-form NewForm [_this _props]
@@ -67,13 +68,13 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["channels"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 

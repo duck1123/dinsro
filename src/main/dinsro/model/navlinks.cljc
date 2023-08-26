@@ -13,32 +13,9 @@
 (defonce routes-atom (atom {}))
 
 (defn defroute
+  "Add model to routes"
   [key options]
   (swap! routes-atom assoc key options))
-
-;; (m.navlinks/defroute :admin-models
-;;   {::m.navlinks/control       :dinsro.ui.admin.models/IndexPage
-;;    ::m.navlinks/label         "Models"
-;;    ::m.navlinks/parent-key    :admin
-;;    ::m.navlinks/router        :admin
-;;    ::m.navlinks/required-role :admin})
-
-;; (m.navlinks/defroute :admin-nostr-connections-show-runs
-;;   {::m.navlinks/control       :dinsro.ui.nostr.connections.runs/SubPage
-;;    ::m.navlinks/input-key     :dinsro.model.nostr.connections/id
-;;    ::m.navlinks/label         "Runs"
-;;    ::m.navlinks/model-key     :dinsro.model.nostr.runs/id
-;;    ::m.navlinks/parent-key    :admin-nostr-connections-show
-;;    ::m.navlinks/router        :admin-nostr
-;;    ::m.navlinks/required-role :admin})
-
-;; (m.navlinks/defroute :settings-ln-channels
-;;   {::m.navlinks/control       :dinsro.ui.settings.ln.channels/IndexPage
-;;    ::m.navlinks/label         "Channels"
-;;    ::m.navlinks/model-key     :dinsro.model.ln.channels/id
-;;    ::m.navlinks/parent-key    :settings-ln
-;;    ::m.navlinks/router        :settings-ln
-;;    ::m.navlinks/required-role :user})
 
 (s/def ::id keyword?)
 (s/def ::label string?)
@@ -64,12 +41,6 @@
   (if-let [navigate-key (get-in @routes-atom [id ::navigate-key])]
     (find-nav-target navigate-key)
     id))
-
-(comment
-
-  (find-nav-target :admin)
-
-  nil)
 
 (defattr id ::id :keyword
   {ao/identity? true

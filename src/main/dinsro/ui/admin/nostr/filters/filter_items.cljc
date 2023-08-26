@@ -11,19 +11,20 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.model.nostr.filters :as m.n.filters]
-   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../../actions/nostr/filter_items.clj]]
 ;; [[../../../../model/nostr/filter_items.cljc]]
 ;; [[../../../../queries/nostr/filter_items.clj]]
 ;; [[../../../../ui/nostr/requests/filter_items.cljs]]
 
-(def index-page-key :admin-nostr-filters-show-filter-items)
+(def index-page-id :admin-nostr-filters-show-filter-items)
 (def model-key ::m.n.filter-items/id)
 (def parent-model-key ::m.n.filters/id)
+(def parent-router-id :admin-nostr-filters-show)
+(def required-role :admin)
 (def router-key :dinsro.ui.nostr.filters/Router)
 
 (form/defsc-form NewForm
@@ -72,13 +73,12 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]
-          :as      props}]
+  [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-key
+                         ::m.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
@@ -86,17 +86,14 @@
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["items"]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (log/info :SubPage/starting {:props props})
-  (if (parent-model-key props)
-    (ui-report report)
-    (u.debug/load-error props "Admin filters show filter items")))
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Items"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :nostr-filters-show
-   ::m.navlinks/router        :nostr-filters
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

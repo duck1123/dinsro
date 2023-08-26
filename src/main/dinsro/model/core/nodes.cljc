@@ -42,16 +42,6 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::balance number?)
-(defattr balance :wallet-info/balance :double
-  {ao/identities #{::id}
-   ao/schema     :production})
-
-(s/def ::tx-count number?)
-(defattr tx-count :wallet-info/tx-count :int
-  {ao/identities #{::id}
-   ao/schema     :production})
-
 (s/def ::network uuid?)
 (defattr network ::network :ref
   {ao/identities       #{::id}
@@ -112,11 +102,6 @@
 (s/def ::required-params
   (s/keys :req [::name ::host ::port ::rpcuser ::rpcpass]))
 
-(s/def ::blockchain-info
-  (s/keys :req [::pruned? ::difficulty ::size-on-disk ::initial-block-download?
-                ::best-block-hash ::verification-progress ::warnings ::headers
-                ::chainwork ::chain ::block-count]))
-
 (s/def ::params
   (s/keys :req [::name ::host ::port ::rpcuser ::rpcpass ::network]
           :opt [::pruned? ::difficulty ::size-on-disk ::initial-block-download?
@@ -127,8 +112,6 @@
           :opt [::pruned? ::difficulty ::size-on-disk ::initial-block-download?
                 ::best-block-hash ::verification-progress ::warnings ::headers
                 ::chainwork ::block-count]))
-(s/def ::items (s/coll-of ::item))
-
 (def rename-map
   {:pruned               ::pruned?
    :difficulty           ::difficulty
@@ -157,6 +140,6 @@
 (>defn idents [ids] [(s/coll-of ::id) => (s/coll-of ::ident)] (mapv ident ids))
 
 (def attributes
-  [id name host port rpcuser rpcpass balance tx-count network pruned? difficulty
+  [id name host port rpcuser rpcpass network pruned? difficulty
    size-on-disk initial-block-download? best-block-hash verification-progress
    warnings headers chainwork block-count])

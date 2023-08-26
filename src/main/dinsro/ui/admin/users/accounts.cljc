@@ -12,7 +12,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
-   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -20,9 +20,11 @@
 ;; [[../../../joins/accounts.cljc]]
 ;; [[../../../model/accounts.cljc]]
 
-(def index-page-key :admin-users-show-accounts)
+(def index-page-id :admin-users-show-accounts)
 (def model-key ::m.accounts/id)
 (def parent-model-key ::m.users/id)
+(def parent-router-id :admin-users-show)
+(def required-role :admin)
 (def router-key :dinsro.ui.admin.users/Router)
 
 (def override-report true)
@@ -84,13 +86,12 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]
-          :as      props}]
+  [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
-                        {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-key
+                        {::m.navlinks/id  index-page-id
+                         parent-model-key (parent-model-key props)
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
@@ -98,18 +99,13 @@
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["accounts"]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (log/info :SubPage/starting {:props props})
-  (if (get props parent-model-key)
-    (if report
-      (ui-report report)
-      (u.debug/load-error props "admin user accounts report"))
-    (u.debug/load-error props "admin user accounts page")))
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Accounts"
-   ::m.navlinks/model-key      model-key
-   ::m.navlinks/parent-key    :admin-users
-   ::m.navlinks/router        :admin-users
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -31,10 +31,11 @@
 ;; [[../../joins/core/nodes.cljc]]
 ;; [[../../model/core/nodes.cljc]]
 
-(def index-page-key :core-nodes)
+(def index-page-id :core-nodes)
 (def model-key ::m.c.nodes/id)
-(def show-menu-id :core-nodes)
-(def show-page-key :core-nodes-show)
+(def parent-router-id :core)
+(def required-role :user)
+(def show-page-id :core-nodes-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.nodes/delete!))
@@ -79,8 +80,8 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent :core
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
    [:core-nodes-show-peers
@@ -97,12 +98,12 @@
                        ::m.c.nodes/name    ""
                        ::m.c.nodes/network (comp/get-initial-state u.links/NetworkLinkForm)
                        :ui/nav-menu        (comp/get-initial-state u.menus/NavMenu
-                                             {::m.navbars/id show-menu-id
+                                             {::m.navbars/id show-page-id
                                               :id            id})
                        :ui/router          (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/router   [Router {}]
-                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]})
+                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]})
    :query         [::m.c.nodes/id
                    ::m.c.nodes/name
                    {::m.c.nodes/network (comp/get-query u.links/NetworkLinkForm)}
@@ -166,8 +167,8 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
@@ -179,33 +180,33 @@
   [_this {::m.c.nodes/keys  [id]
           ::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.c.nodes/id      nil
-                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/id     show-page-id
                    ::m.navlinks/target {}}
    :query         [::m.c.nodes/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["node" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (u.debug/load-error props "show core nodes")))
 
-(m.navlinks/defroute   :core-nodes
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Index Nodes"
-   ::m.navlinks/model-key     ::m.c.nodes/id
-   ::m.navlinks/parent-key    :core
-   ::m.navlinks/router        :core
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute   :core-nodes-show
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Node"
-   ::m.navlinks/input-key     ::m.c.nodes/id
-   ::m.navlinks/model-key     ::m.c.nodes/id
-   ::m.navlinks/parent-key    :core
-   ::m.navlinks/router        :core
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

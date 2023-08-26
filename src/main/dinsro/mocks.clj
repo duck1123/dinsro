@@ -102,10 +102,6 @@
         id (q.ln.nodes/create-record params)]
     (q.ln.nodes/read-record id)))
 
-(defn mock-block
-  []
-  {})
-
 (comment
   (ds/gen-key ::m.users/id)
   (ds/gen-key ::m.users/hashed-value)

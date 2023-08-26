@@ -6,7 +6,6 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
-   [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.debug :as u.debug]
@@ -18,7 +17,9 @@
    [dinsro.ui.settings.ln.payreqs :as u.s.ln.payreqs]
    [dinsro.ui.settings.ln.remote-nodes :as u.s.ln.remote-nodes]))
 
-(def index-page-key :settings-ln)
+(def index-page-id :settings-ln)
+(def parent-router-id :settings)
+(def required-role :user)
 
 (defrouter Router
   [_this _props]
@@ -35,22 +36,21 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :settings-ln
-  {::m.navbars/parent :settings
+(m.navbars/defmenu index-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/children
-   [:settings-ln-dashboard
-    :settings-ln-nodes
-    ;; :settings-ln-channels
-    :settings-ln-payments
-    :settings-ln-payreqs
-    :settings-ln-remote-nodes]})
+   [u.s.ln.dashboard/index-page-id
+    u.s.ln.nodes/index-page-id
+    u.s.ln.payments/index-page-id
+    u.s.ln.payreqs/index-page-id
+    u.s.ln.remote-nodes/index-page-id]})
 
 (defsc Page
   [_this {:ui/keys [nav-menu router]
           :as props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
    :initial-state (fn [_]
-                    {::m.navlinks/id index-page-key
+                    {::m.navlinks/id index-page-id
                      :ui/nav-menu    (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings-ln})
                      :ui/router      (comp/get-initial-state Router)})
    :pre-merge     (u.loader/page-merger nil {:ui/router [Router {}]})
@@ -70,11 +70,10 @@
           (ui-router router)
           (u.debug/load-error props "settings ln router"))))))
 
-(m.navlinks/defroute   :settings-ln
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::Page
    ::m.navlinks/label         "Lightning"
-   ::m.navlinks/model-key     ::m.ln.payments/id
-   ::m.navlinks/navigate-key  :settings-ln-dashboard
-   ::m.navlinks/parent-key    :settings
-   ::m.navlinks/router        :settings
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/navigate-key  u.s.ln.dashboard/index-page-id
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

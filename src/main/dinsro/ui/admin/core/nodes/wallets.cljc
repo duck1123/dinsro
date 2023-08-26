@@ -11,20 +11,19 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.core.wallets :as u.c.wallets]
-   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../../joins/core/wallets.cljc]]
 ;; [[../../../../model/core/wallets.cljc]]
 
-(def index-page-key :admin-core-nodes-show-wallets)
+(def index-page-id :admin-core-nodes-show-wallets)
 (def model-key ::m.c.wallets/id)
 (def parent-model-key ::m.c.nodes/id)
-(def parent-show-key :admin-core-nodes-show)
-(def parent-router :admin-core-nodes)
+(def parent-router-id :admin-core-nodes-show)
+(def required-role :admin)
 (def router-key :dinsro.ui.admin.core.nodes/Router)
 
 (def delete-action
@@ -40,11 +39,11 @@
                          m.c.wallets/key
                          m.c.wallets/user
                          m.c.wallets/network]
-   ro/control-layout    {:inputs         [[::m.c.nodes/id]]
+   ro/control-layout    {:inputs         [[parent-model-key]]
                          :action-buttons [::new ::refresh]}
-   ro/controls          {::new          u.c.wallets/new-action-button
-                         ::m.c.nodes/id {:type :uuid :label "Nodes"}
-                         ::refresh      u.links/refresh-control}
+   ro/controls          {::new            u.c.wallets/new-action-button
+                         parent-model-key {:type :uuid :label "Id"}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -52,38 +51,32 @@
    ro/row-actions       [delete-action]
    ro/row-pk            m.c.wallets/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.c.wallets/index
+   ro/source-attribute  ::j.c.wallets/admin-index
    ro/title             "Wallets"})
 
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]
-          :as      props}]
+  [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
-                        {parent-model-key props
-                         ::m.navlinks/id  index-page-key
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (log/info :SubPage/starting {:props props})
-  (if (get props parent-model-key)
-    (if report
-      (ui-report report)
-      (u.debug/load-error props "admin nodes show wallets report"))
-    (u.debug/load-error props "admin nodes show wallets")))
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Wallets"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-show-key
-   ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

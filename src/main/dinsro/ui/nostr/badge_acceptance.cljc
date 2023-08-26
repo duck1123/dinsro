@@ -17,8 +17,10 @@
 ;; [[../../joins/nostr/badge_acceptances.cljc]]
 ;; [[../../model/nostr/badge_acceptances.cljc]]
 
-(def index-page-key :nostr-badge-acceptances)
+(def index-page-id :nostr-badge-acceptances)
 (def model-key ::m.n.badge-acceptances/id)
+(def parent-router-id :nostr)
+(def required-role :user)
 
 (report/defsc-report Report
   [_this _props]
@@ -38,13 +40,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["badge-acceptances"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (if report
@@ -52,10 +54,10 @@
       (ui-segment {}
         "Failed to load report"))))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/label         "Badge Acceptances"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :nostr
-   ::m.navlinks/router        :nostr
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

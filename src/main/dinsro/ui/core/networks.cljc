@@ -26,10 +26,11 @@
 ;; [[../../joins/core/networks.cljc]]
 ;; [[../../model/core/networks.cljc]]
 
-(def index-page-key :core-networks)
+(def index-page-id :core-networks)
 (def model-key ::m.c.networks/id)
-(def show-menu-id :core-networks)
-(def show-page-key :core-networks-show)
+(def parent-router-id :core)
+(def required-role :user)
+(def show-page-id :core-networks-show)
 
 (defrouter Router
   [_this _props]
@@ -42,15 +43,15 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent :core
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [:core-networks-show-addresses
-    :core-networks-show-blocks
-    :core-networks-show-ln-nodes
-    :core-networks-show-core-nodes
-    :core-networks-show-wallets]})
+   [u.c.n.addresses/index-page-id
+    u.c.n.blocks/index-page-id
+    u.c.n.ln-nodes/index-page-id
+    u.c.n.nodes/index-page-id
+    u.c.n.wallets/index-page-id]})
 
 (defsc Show
   [_this {::m.c.networks/keys [id chain name]
@@ -109,13 +110,13 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["networks"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
@@ -123,15 +124,15 @@
   [_this {::m.c.networks/keys [id]
           ::m.navlinks/keys [target]
           :as props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.c.networks/id nil
-                   ::m.navlinks/id show-page-key
+                   ::m.navlinks/id show-page-id
                    ::m.navlinks/target      {}}
    :query         [::m.c.networks/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["network" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
@@ -139,9 +140,9 @@
 
 (m.navlinks/defroute   :core-networks-show
   {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     ::m.c.networks/id
+   ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Network"
-   ::m.navlinks/model-key     ::m.c.networks/id
-   ::m.navlinks/parent-key    :core-networks
-   ::m.navlinks/router        :core
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    u.c.n.addresses/index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

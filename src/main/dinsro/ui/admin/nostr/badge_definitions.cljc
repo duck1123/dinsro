@@ -18,8 +18,10 @@
 ;; [[../../../joins/nostr/badge_definitions.cljc]]
 ;; [[../../../model/nostr/badge_definitions.cljc]]
 
-(def index-page-key :admin-nostr-badge-definitions)
+(def index-page-id :admin-nostr-badge-definitions)
 (def model-key ::m.n.badge-definitions/id)
+(def parent-router-id :admin-nostr)
+(def required-role :admin)
 (def show-page-key :admin-nostr-badge-definitions-show)
 
 (report/defsc-report Report
@@ -60,13 +62,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["badge-definitions"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
@@ -88,18 +90,18 @@
     (ui-show target)
     (u.debug/load-error props "admin badge definition")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Definitions"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-nostr
-   ::m.navlinks/router        :admin-nostr
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Definition"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin-nostr
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -48,6 +48,7 @@
 
 ;; [[./ui/admin.cljc]]
 
+(def show-page-id :root)
 (def show-breadcrumbs true)
 
 (defsc GlobalErrorDisplay [this {:ui/keys [global-error]}]
@@ -103,14 +104,14 @@
 
 (def ui-root-router (comp/factory RootRouter))
 
-(m.navbars/defmenu :root
+(m.navbars/defmenu show-page-id
   {::m.navbars/parent nil
    ::m.navbars/router ::RootRouter
    ::m.navbars/children
-   [u.accounts/index-page-key
-    u.admin/index-page-key
-    :contacts
-    :currencies
+   [u.accounts/index-page-id
+    u.admin/index-page-id
+    u.contacts/index-page-id
+    u.currencies/index-page-id
     :home
     :login
     :navbars

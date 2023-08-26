@@ -9,16 +9,17 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.ui.debug :as u.debug]
-   [dinsro.ui.links :as u.links]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.controls :as u.controls]
+   [dinsro.ui.links :as u.links]))
 
 ;; [[../../../../joins/accounts.cljc]]
 ;; [[../../../../model/accounts.cljc]]
 
-(def index-page-key :admin-core-wallets-show-accounts)
+(def index-page-id :admin-core-wallets-show-accounts)
 (def model-key ::m.accounts/id)
 (def parent-model-key ::m.c.wallets/id)
+(def parent-router-id :admin-core-wallets-show)
+(def required-role :admin)
 (def router-key :dinsro.ui.admin.core.wallets/Router)
 
 (report/defsc-report Report
@@ -42,24 +43,27 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]
-          :as      props}]
+  [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-key
+                         ::m.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn [_props]
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])}
-  (log/info :SubPage/starting {:props props})
-  (if (get props parent-model-key)
-    (if report
-      (ui-report report)
-      (u.debug/load-error props "admin show wallet accounts report"))
-    (u.debug/load-error props "admin show wallet accounts page")))
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
 (def ui-sub-page (comp/factory SubPage))
+
+(m.navlinks/defroute index-page-id
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Accounts"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

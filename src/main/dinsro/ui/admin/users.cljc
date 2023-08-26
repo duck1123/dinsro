@@ -33,24 +33,20 @@
 ;; [[../../joins/users.cljc]]
 ;; [[../../model/users.cljc]]
 
-(def index-page-key
+(def index-page-id
   "The navlink id for indexing this model"
   :admin-users)
 (def model-key
   "The model key for these pages"
   ::m.users/id)
-(def show-menu-id
-  :admin-users)
-(def show-page-key
+(def parent-router-id :admin)
+(def required-role :admin)
+(def show-page-id
   "The navlink id of the show page"
   :admin-users-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.users/delete!))
-
-(def debug-show false)
-(def debug-show-page false)
-(def debug-page false)
 
 (defrouter Router
   [_this _props]
@@ -66,18 +62,18 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent :admin
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.a.u.accounts/index-page-key
-    u.a.u.categories/index-page-key
-    u.a.u.debits/index-page-key
-    u.a.u.ln-nodes/index-page-key
-    u.a.u.pubkeys/index-page-key
-    u.a.u.transactions/index-page-key
-    u.a.u.user-pubkeys/index-page-key
-    u.a.u.wallets/index-page-key]})
+   [u.a.u.accounts/index-page-id
+    u.a.u.categories/index-page-id
+    u.a.u.debits/index-page-id
+    u.a.u.ln-nodes/index-page-id
+    u.a.u.pubkeys/index-page-id
+    u.a.u.transactions/index-page-id
+    u.a.u.user-pubkeys/index-page-id
+    u.a.u.wallets/index-page-id]})
 
 (defsc Show
   [_this {::m.users/keys [id name role]
@@ -100,11 +96,11 @@
                            ::m.users/role nil
                            ::m.users/id   nil
                            :ui/nav-menu   (comp/get-initial-state u.menus/NavMenu
-                                            {::m.navbars/id show-menu-id :id id})
+                                            {::m.navbars/id show-page-id :id id})
                            :ui/router     (comp/get-initial-state Router)}))
    :pre-merge         (u.loader/page-merger model-key
                         {:ui/router   [Router {}]
-                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]})
+                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]})
    :query             [::m.users/name
                        ::m.users/role
                        ::m.users/id
@@ -175,14 +171,14 @@
 (defsc IndexPage
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :pre-merge         (u.loader/page-merger nil {:ui/report [Report {}]})
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["users"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/info :Page/starting {:props props})
   (if report
     (ui-report report)
@@ -192,17 +188,17 @@
   [_this {::m.users/keys    [id]
           ::m.navlinks/keys [target]
           :as               props}]
-  {:ident             (fn [] [::m.navlinks/id show-page-key])
+  {:ident             (fn [] [::m.navlinks/id show-page-id])
    :initial-state     (fn [props]
                         (log/info :ShowPage/initial-state {:props props})
-                        {::m.navlinks/id     show-page-key
+                        {::m.navlinks/id     show-page-id
                          ::m.users/id        nil
                          ::m.navlinks/target (comp/get-initial-state Show {})})
    :query             [::m.navlinks/id
                        ::m.users/id
                        {::m.navlinks/target (comp/get-query Show)}]
    :route-segment     ["user" :id]
-   :will-enter        (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter        (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if id
     (dom/div :.show-page
@@ -211,20 +207,20 @@
         (u.debug/load-error props "Admin Show User Page target")))
     (u.debug/load-error props "Admin Show User Page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Users"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Admin Show User"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/navigate-key  u.a.u.accounts/index-page-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/navigate-key  u.a.u.accounts/index-page-id
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

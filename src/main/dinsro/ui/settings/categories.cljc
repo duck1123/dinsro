@@ -21,8 +21,10 @@
 ;; [[../joins/categories.cljc]]
 ;; [[../model/categories.cljc]]
 
-(def index-page-key :settings-categories)
+(def index-page-id :settings-categories)
 (def model-key ::m.categories/id)
+(def parent-router-id :settings)
+(def required-role :user)
 (def show-page-key :settings-categories-show)
 
 (form/defsc-form NewForm
@@ -94,13 +96,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["categories"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (if report
@@ -125,19 +127,19 @@
     (ui-show target)
     (u.debug/load-error props "settings show category")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Categories"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :settings
-   ::m.navlinks/router        :settings
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Category"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :settings
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

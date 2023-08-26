@@ -10,6 +10,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.buttons :as u.buttons]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.core.wallets :as u.c.wallets]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
@@ -17,9 +18,11 @@
 ;; [[../../../joins/core/wallets.cljc]]
 ;; [[../../../model/core/wallets.cljc]]
 
-(def index-page-key :core-nodes-show-wallets)
+(def index-page-id :core-nodes-show-wallets)
 (def model-key ::m.c.wallets/id)
 (def parent-model-key ::m.c.nodes/id)
+(def parent-router-id :core-nodes-show)
+(def required-role :user)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.wallets/delete!))
@@ -52,14 +55,22 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {:ui/keys [report]}]
+  [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     {::m.c.nodes/id  nil
-                       ::m.navlinks/id index-page-key
+                       ::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.c.nodes/id
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (ui-report report))
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
+
+(m.navlinks/defroute index-page-id
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/label         "Wallets"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

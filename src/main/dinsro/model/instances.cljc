@@ -26,7 +26,6 @@
   {ao/identities #{::id}
    ao/schema     :production})
 
-(s/def ::required-params (s/keys :req []))
 (s/def ::params (s/keys :req []))
 (s/def ::item (s/keys :req [::id ::created-time ::last-heartbeat]))
 (>def ::ident (s/keys :req [::id]))

@@ -80,11 +80,6 @@
     (xt/await-tx node (xt/submit-tx node [[::xt/delete id]]))
     nil))
 
-(>defn delete-all
-  []
-  [=> nil?]
-  (doseq [id (index-ids)] (delete! id)))
-
 (>defn register-relay
   [address]
   [string? => ::m.n.relays/id]

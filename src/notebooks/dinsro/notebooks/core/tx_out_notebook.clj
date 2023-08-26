@@ -27,3 +27,5 @@
    {:dinsro.client.converters.currency-unit/value 0E-8},
    :dinsro.model.core.tx-out/transaction
    #uuid "01827983-7719-8804-8127-00620fb4c178"})
+
+params

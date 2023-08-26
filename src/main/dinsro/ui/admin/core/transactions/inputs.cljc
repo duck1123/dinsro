@@ -15,7 +15,7 @@
 ;; [[../../../../joins/core/tx_in.cljc]]
 ;; [[../../../../model/core/tx_out.cljc]]
 
-(def index-page-key :admin-core-transactions-show-inputs)
+(def index-page-id :admin-core-transactions-show-inputs)
 (def model-key ::m.c.tx-in/id)
 (def parent-model-key ::m.c.transactions/id)
 (def router-key :dinsro.ui.admin.core.transactions/Router)
@@ -27,14 +27,14 @@
                         m.c.tx-in/sequence]
    ro/control-layout   {:action-buttons [::refresh]
                         :inputs         [[parent-model-key]]}
-   ro/controls         {::refresh             u.links/refresh-control
-                        parent-model-key {:type :uuid :label "TX"}}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
+   ro/controls         {::refresh        u.links/refresh-control
+                        parent-model-key {:type :uuid :label "id"}}
+   ro/machine          spr/machine
+   ro/page-size        10
+   ro/paginate?        true
    ro/row-pk           m.c.tx-in/id
    ro/run-on-mount?    true
-   ro/source-attribute ::j.c.tx-in/index
+   ro/source-attribute ::j.c.tx-in/admin-index
    ro/title            "Inputs"})
 
 (def ui-report (comp/factory Report))
@@ -43,10 +43,10 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [_props]
                         {parent-model-key nil
-                         ::m.navlinks/id  index-page-key
+                         ::m.navlinks/id  index-page-id
                          :ui/report       {}})
    :query             (fn [_props]
                         [parent-model-key

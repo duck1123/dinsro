@@ -24,7 +24,7 @@
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
-   [dinsro.ui.controls :refer [ui-moment]]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -46,10 +46,11 @@
 ;; [[../../ui/nostr.cljs]]
 ;; [[../../ui/nostr/pubkeys/events.cljs]]
 
-(def index-page-key :nostr-events)
+(def index-page-id :nostr-events)
 (def model-key ::m.n.events/id)
-(def show-menu-id :nostr-events)
-(def show-page-key :nostr-events-show)
+(def required-role :user)
+(def parent-router-id :nostr)
+(def show-page-id :nostr-events-show)
 
 (def show-witnesses? false)
 
@@ -152,8 +153,7 @@
           (ui-grid {}
             (ui-grid-row {}
               (ui-grid-column {:width 13}
-                (ui-moment {:fromNow true :withTitle true}
-                  (str created-date)))
+                (u.controls/relative-date created-date))
               (ui-grid-column {:floated "right" :textAlign "right" :width 2}
                 (str kind)))))
         (dom/div {:classes [:.description]}
@@ -248,12 +248,12 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :nostr-events
-  {::m.navbars/parent :nostr
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/children
-   [u.n.e.event-tags/index-page-key
-    u.n.e.witnesses/index-page-key
-    u.n.e.relays/index-page-key]})
+   [u.n.e.event-tags/index-page-id
+    u.n.e.witnesses/index-page-id
+    u.n.e.relays/index-page-id]})
 
 (defsc Show
   [_this {::m.n.events/keys [content id pubkey kind sig created-at note-id]
@@ -270,12 +270,12 @@
                        ::m.n.events/created-at 0
                        ::m.n.events/sig        ""
                        :ui/nav-menu            (comp/get-initial-state u.menus/NavMenu
-                                                 {::m.navbars/id show-menu-id
+                                                 {::m.navbars/id show-page-id
                                                   :id            id})
                        :ui/router              (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/router   [Router {}]
-                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]})
+                     :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]})
    :query         [::m.n.events/id
                    ::m.n.events/content
                    {::m.n.events/pubkey (comp/get-query EventAuthorImage)}
@@ -312,13 +312,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report)
-   :ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+   :ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["events"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/info :Page/starting {:props props})
   (dom/div {}
     (if report
@@ -329,33 +329,33 @@
   [_this {::m.n.events/keys [id]
           ::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.n.events/id     nil
-                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/id     show-page-id
                    ::m.navlinks/target {}}
    :query         [::m.n.events/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["event" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (u.debug/load-error props "show nostr event page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Events"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :nostr
-   ::m.navlinks/router        :nostr
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Event"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :nostr
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -9,26 +9,28 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :admin-nostr-dashboard)
+(def index-page-id :admin-nostr-dashboard)
+(def parent-router-id :admin-nostr)
+(def required-role :admin)
 (def router-key :dinsro.ui.admin/Router)
 
 (defsc IndexPage
   [_this props]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key}
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id}
    :query         [[::dr/id router-key]
                    ::m.navlinks/id]
    :route-segment ["dashboard"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/debug :Page/starting {:props props})
   (ui-segment {}
     (dom/h1 "Dashboard")
     (dom/div {}
       "Active Connections")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "dashboard"
-   ::m.navlinks/parent-key    :admin-nostr
-   ::m.navlinks/router        :admin-nostr
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

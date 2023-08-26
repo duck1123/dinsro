@@ -8,23 +8,25 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.loader :as u.loader]))
 
-(def index-page-key :admin-ln-dashboard)
+(def index-page-id :admin-ln-dashboard)
+(def parent-router-id :admin-ln)
+(def required-role :admin)
 (def router-key :dinsro.ui.admin/Router)
 
 (defsc IndexPage
   [_this _props]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key}
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id}
    :query         [[::dr/id router-key]
                    ::m.navlinks/id]
    :route-segment ["dashboard"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (ui-segment {}
     (dom/h1 "Dashboard")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Dashboard"
-   ::m.navlinks/parent-key    :admin-ln
-   ::m.navlinks/router        :admin-ln
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

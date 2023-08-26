@@ -6,8 +6,7 @@
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
-   [lambdaisland.glogc :as log]))
+   [dinsro.model.ln.nodes :as m.ln.nodes]))
 
 (def rename-map
   {:active                ::active
@@ -117,12 +116,6 @@
 ;; local-balance :long
 ;; local-chan-reserve-sat :long
 ;; num-updates :long
-
-(>defn find-channel
-  [_node-id _pubkey]
-  [::id ::pubkey => any?]
-  (log/info :find-channel/starting {})
-  nil)
 
 (>def ::nodeless-params
   (s/keys :req [::active ::capacity ::chan-id ::channel-point ::chan-status-flags

@@ -23,9 +23,11 @@
 ;; [[../../../model/core/blocks.cljc]]
 
 (def force-fetch-button false)
-(def index-page-key :admin-core-blocks)
+(def index-page-id :admin-core-blocks)
 (def model-key ::m.c.blocks/id)
-(def show-page-key :admin-core-blocks-show)
+(def parent-router-id :admin-core)
+(def required-role :admin)
+(def show-page-id :admin-core-blocks-show)
 (def debug-page false)
 
 (def delete-action
@@ -126,46 +128,46 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["blocks"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
+   :initial-state {::m.navlinks/id     show-page-id
                    ::m.navlinks/target {}}
    :query         [::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["block" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (if target
     (ui-show target)
     (u.debug/load-error props "admin show block")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin index blocks"
    ::m.navlinks/label         "Blocks"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-core
-   ::m.navlinks/router        :admin-core
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Admin show block"
    ::m.navlinks/label         "Show Block"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin-core
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

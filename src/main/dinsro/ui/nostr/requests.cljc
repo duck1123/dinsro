@@ -23,6 +23,8 @@
 ;; [[../../model/nostr/requests.cljc]]
 
 (def model-key ::m.n.requests/id)
+(def parent-router-id :nostr)
+(def required-role :user)
 (def show-page-key :nostr-requests-show)
 
 (defrouter Router
@@ -35,13 +37,13 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :nostr-requests
-  {::m.navbars/parent :nostr
+(m.navbars/defmenu show-page-key
+  {::m.navbars/parent parent-router-id
    ::m.navbars/children
-   [u.n.rq.filters/index-page-key
-    u.n.rq.filter-items/index-page-key
-    u.n.rq.runs/index-page-key
-    u.n.rq.connections/index-page-key]})
+   [u.n.rq.filters/index-page-id
+    u.n.rq.filter-items/index-page-id
+    u.n.rq.runs/index-page-id
+    u.n.rq.connections/index-page-id]})
 
 (defsc Show
   [_this {::m.n.requests/keys [code id relay]
@@ -106,6 +108,6 @@
    ::m.navlinks/label         "Show Requests"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :nostr-requests
-   ::m.navlinks/router        :nostr
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

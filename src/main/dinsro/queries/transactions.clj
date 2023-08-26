@@ -122,9 +122,3 @@
   [:xt/id => nil?]
   (log/info :delete!/starting {:id id})
   (c.xtdb/delete! id))
-
-(>defn delete-all
-  []
-  [=> nil?]
-  (doseq [id (index-ids)]
-    (delete! id)))

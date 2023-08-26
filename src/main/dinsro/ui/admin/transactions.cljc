@@ -15,7 +15,7 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.mutations.transactions :as mu.transactions]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.controls :refer [ui-moment]]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -26,8 +26,10 @@
 ;; [[../../model/transactions.cljc]]
 ;; [[../../ui/transactions.cljs]]
 
-(def index-page-key :admin-transactions)
+(def index-page-id :admin-transactions)
 (def model-key ::m.transactions/id)
+(def parent-router-id :admin)
+(def required-role :admin)
 (def show-page-key :admin-transactions-show)
 
 (def delete-action
@@ -58,9 +60,7 @@
    fo/title         "Transaction"})
 
 (def new-button
-  {:label  "New Transaction"
-   :type   :button
-   :action (fn [this] (form/create! this NewForm))})
+  (u.buttons/form-create-button "New Transaction" NewForm))
 
 (report/defsc-report Report
   [_this _props]
@@ -99,24 +99,13 @@
   (dom/div {}
     (if id
       (ui-segment {}
-        (dom/h1 {}
-          (str description))
-        (dom/div {}
-          (str "Debit Count: " debit-count))
+        (dom/h1 {} (str description))
+        (dom/div {} (str "Debit Count: " debit-count))
         (dom/p {}
-          (dom/span {}
-            "Date: ")
-          (dom/span {}
-            (ui-moment {:fromNow true :withTitle true}
-              (str date))))
-        (dom/button {:classes [:.ui :.button]
-                     :onClick (fn [_e]
-                                (let [props (comp/props this)]
-                                  (log/info :Show/clicked {:props props})
-                                  (let [id (::m.transactions/id props)]
-                                    (form/edit! this NewForm id))))}
-          "Edit"))
-      (ui-segment {:color "red" :inverted true} "Failed to load record"))))
+          (dom/span {} "Date: ")
+          (dom/span {} (u.controls/relative-date date)))
+        (u.buttons/form-edit-button this model-key "Edit" NewForm))
+      (u.debug/load-error props "asmin show transactions"))))
 
 (def ui-show (comp/factory Show))
 
@@ -124,13 +113,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["transactions"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -150,13 +139,13 @@
     (ui-show target)
     (u.debug/load-error props "admin show transaction")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Transactions"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
@@ -164,6 +153,6 @@
    ::m.navlinks/label         "Show Transaction"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

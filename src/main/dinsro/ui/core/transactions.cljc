@@ -24,9 +24,11 @@
 ;; [[../../model/core/transactions.cljc]]
 ;; [[../../ui/admin/core/transactions.cljs]]
 
-(def index-page-key :core-transactions)
+(def index-page-id :core-transactions)
 (def model-key ::m.c.transactions/id)
-(def show-page-key :core-transactions-show)
+(def parent-router-id :core)
+(def required-role :user)
+(def show-page-id :core-transactions-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.transactions/delete!))
@@ -113,30 +115,30 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["transactions"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state (fn [props]
                     (let [id (get props model-key)]
                       {model-key           id
-                       ::m.navlinks/id     show-page-key
+                       ::m.navlinks/id     show-page-id
                        ::m.navlinks/target {}}))
    :query         [::m.c.transactions/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["transaction" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (get props model-key)
     (if target
@@ -144,11 +146,11 @@
       (u.debug/load-error props "core transactions page"))
     (u.debug/load-error props "core transactions page")))
 
-(m.navlinks/defroute   :core-transactions-show
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Transaction"
-   ::m.navlinks/input-key     ::m.c.transactions/id
-   ::m.navlinks/model-key     ::m.c.transactions/id
-   ::m.navlinks/parent-key    :core
-   ::m.navlinks/router        :core
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

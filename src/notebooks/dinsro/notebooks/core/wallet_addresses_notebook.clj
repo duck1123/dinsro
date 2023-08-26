@@ -19,6 +19,8 @@
 
 (def wallet (q.c.wallets/read-record wallet-id))
 
+wallet
+
 (q.c.wallet-addresses/index-ids)
 
 (q.c.wallet-addresses/find-by-wallet wallet-id)

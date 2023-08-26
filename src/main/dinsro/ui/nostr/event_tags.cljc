@@ -29,7 +29,9 @@
 ;; [[../../../../test/dinsro/ui/nostr/event_tags_test.cljs]]
 
 (def model-key ::m.n.event-tags/id)
-(def show-page-key :nostr-event-tags-show)
+(def parent-router-id :nostr)
+(def required-role :user)
+(def show-page-id :nostr-event-tags-show)
 
 (def log-tag-props false)
 (def log-tag-table false)
@@ -145,10 +147,10 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :nostr-event-tags
-  {::m.navbars/parent :nostr
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/children
-   [:nostr-event-tags-show-relays]})
+   [u.n.et.relays/index-page-id]})
 
 (defsc Show
   [_this {::m.n.event-tags/keys [id index type raw-value pubkey]
@@ -156,16 +158,16 @@
           :as                   props}]
   {:ident         ::m.n.event-tags/id
    :initial-state (fn [props]
-                    (let [id (::m.n.event-tags/id props)]
+                    (let [id (model-key props)]
                       {::m.n.event-tags/id        nil
                        ::m.n.event-tags/index     0
                        ::m.n.event-tags/type      ""
                        ::m.n.event-tags/raw-value ""
                        ::m.n.event-tags/pubkey    {}
-                       :ui/nav-menu               (comp/get-query u.menus/NavMenu {::m.navbars/id :nostr-event-tags :id id})
+                       :ui/nav-menu               (comp/get-query u.menus/NavMenu {::m.navbars/id show-page-id :id id})
                        :ui/router                 (comp/get-query Router)}))
    :pre-merge     (u.loader/page-merger ::m.n.event-tags/id
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id :nostr-event-tags}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
                      :ui/router   [Router {}]})
    :query         [::m.n.event-tags/id
                    ::m.n.event-tags/index
@@ -188,8 +190,7 @@
               (dom/p {} (u.links/ui-event-tag-link pubkey))))))
       (u.menus/ui-nav-menu nav-menu)
       (ui-router router))
-    (ui-segment {:color "red" :inverted true}
-      "Failed to load record")))
+    (u.debug/load-error props "event tags")))
 
 (def ui-show (comp/factory Show))
 
@@ -197,25 +198,25 @@
   [_this {::m.n.event-tags/keys [id]
           ::m.navlinks/keys     [target]
           :as                   props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.n.event-tags/id nil
-                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/id     show-page-id
                    ::m.navlinks/target {}}
    :query         [::m.n.event-tags/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["event-tag" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
-    (ui-segment {} "Failed to load record")))
+    (u.debug/load-error props "event tags")))
 
-(m.navlinks/defroute   :nostr-event-tags-show
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Event Tag"
-   ::m.navlinks/input-key     ::m.n.event-tags/id
-   ::m.navlinks/model-key     ::m.n.event-tags/id
-   ::m.navlinks/parent-key    :nostr-event-tags
-   ::m.navlinks/router        :nostr-event-tags
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

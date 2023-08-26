@@ -25,6 +25,8 @@
 
 (def node-name "bitcoin-alice")
 
+node-name
+
 ^{::clerk/viewer clerk/code}
 (def wallet (first (q.c.wallets/index-records)))
 (def wallet-id (::m.c.wallets/id wallet))
@@ -44,6 +46,8 @@
                        (some-> xpriv (.deriveChildPrivKey account-path) .extPublicKey)))
 (def diffsome (and account-path (.diff account-path first-address-path)))
 (def purpose (HDPurpose. 84))
+
+purpose
 
 (and xpriv (.fingerprint xpriv))
 
@@ -111,7 +115,12 @@
 (def wallet-a-entropy-hex "edd0874f5090d25000813e9abdf6603274b6ccb050e7fdca5e68df32756d1b7c")
 (def wallet-a-seed-hex "91a06a5c738f077a9b0ea21f2a07250336af6e1e5f82dd822c676b39fbc3da6fb7d7101438a35dbd491f6ea55880a19751ff8a892bdc9b549265ac83f82a3de5")
 (def wallet-a-tpriv "tprv8ZgxMBicQKsPerr7TjPkdyirqJXtYBqiDYHhYusszUa4DQksbdAHnpViXG2VEyEHqgQjhZ7F8cFwi9rRtdQrAxbZ5g2BaR1pWmojCzHdftQ")
+
+wallet-a-tpriv
+
 (def wallet-a-vpriv "vprv9MzYTyxDsS6wiGT8r3gLJN3mathoRdA2SPnTXaymAUFknU5oDnsn22ntkFm4455LQM726qF33xWDJrywAmxk2XGYp2X3mmZzH32Y3SHGqib")
+
+wallet-a-vpriv
 
 (comment
   {:type        "wpkh"
@@ -134,6 +143,8 @@
      (a.c.wallets/mnemonic->seed
       (c.bitcoin-s/words->mnemonic wallet-b-words))
      84 "testnet"))
+
+  xpriv3
 
   (def wallet-a-mc (c.bitcoin-s/words->mnemonic wallet-a-words))
 

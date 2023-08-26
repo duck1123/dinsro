@@ -42,15 +42,16 @@
                               (log/warn :NavMenu/mounted-no-key {:props props})
                               nil))))
    :ident             ::m.navbars/id
-   :query             [[df/marker-table '_]
-                       :id
-                       ::m.navbars/id
-                       {::m.navbars/children (comp/get-query (comp/registry-key->class :dinsro.ui.navbars/NavLink))}]
    :initial-state     (fn [props]
                         (log/debug :NavMenu/initial-state {:props props})
                         {::m.navbars/id       (::m.navbars/id props)
                          ::m.navbars/children []
-                         :id                  nil})}
+                         :id                  nil})
+   :query             (fn []
+                        [[df/marker-table '_]
+                         :id
+                         ::m.navbars/id
+                         {::m.navbars/children (comp/get-query (comp/registry-key->class :dinsro.ui.navbars/NavLink))}])}
   (let [converted-items (map convert-item children)]
     (log/debug :NavMenu/starting
       {:id              id

@@ -10,11 +10,10 @@
        (http-kit/get-sch-adapter)
        {:packer        (sente-transit/get-transit-packer)
         :csrf-token-fn nil})
-      {:keys [ch-recv send-fn connected-uids
+      {:keys [send-fn connected-uids
               ajax-post-fn ajax-get-or-ws-handshake-fn]} chsk-server]
   (def ring-ajax-post                ajax-post-fn)
   (def ring-ajax-get-or-ws-handshake ajax-get-or-ws-handshake-fn)
-  (def ch-chsk                       ch-recv)
   (def chsk-send!                    send-fn)
   (def connected-uids                connected-uids))
 

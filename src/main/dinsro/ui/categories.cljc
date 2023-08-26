@@ -13,6 +13,7 @@
    [dinsro.joins.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
@@ -20,8 +21,10 @@
 ;; [[../model/categories.cljc]]
 ;; [[../ui/admin/users/categories.cljs]]
 
-(def index-page-key :categories)
+(def index-page-id :categories)
 (def model-key ::m.categories/id)
+(def parent-router-id :root)
+(def required-role :user)
 (def show-page-key :categories-show)
 
 (form/defsc-form NewForm
@@ -88,29 +91,51 @@
 
 (def ui-show (comp/factory Show))
 
-(defsc ShowPage
-  [_this {::m.categories/keys [id]
-          :ui/keys            [record]}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state (fn [_props]
-                    {::m.categories/id nil
-                     ::m.navlinks/id   show-page-key
-                     :ui/record        (comp/get-initial-state Show)})
-   :query         (fn [_props] [model-key ::m.navlinks/id {:ui/record (comp/get-query Show)}])
-   :route-segment ["category" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::Show)}
-  (if (and record id)
-    (ui-show record)
-    (ui-segment {} "Failed to load record")))
-
 (defsc IndexPage
   [_this _props]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["categories"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {} "Index Categories"))
+
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]
+          :as                 props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-key])
+   :initial-state (fn [props]
+                    {model-key           (model-key props)
+                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/target (comp/get-initial-state Show)})
+   :query         (fn []
+                    [model-key
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
+   :route-segment ["category" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+  (if (model-key props)
+    (if (seq target)
+      (ui-show target)
+      (u.debug/load-error props "show category record"))
+    (u.debug/load-error props "show category")))
+
+(m.navlinks/defroute index-page-id
+  {::m.navlinks/control       ::IndexPage
+   ::m.navlinks/label         "Categories"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
+
+(m.navlinks/defroute show-page-key
+  {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/label         "Show Category"
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

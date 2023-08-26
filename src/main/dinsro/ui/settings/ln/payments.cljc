@@ -17,8 +17,10 @@
 ;; [[../../../joins/ln/payments.cljc]]
 ;; [[../../../model/ln/payments.cljc]]
 
-(def index-page-key :settings-ln-payments)
+(def index-page-id :settings-ln-payments)
 (def model-key ::m.ln.payments/id)
+(def parent-router-id :settings)
+(def required-role :user)
 (def show-page-key :settings-ln-payments-show)
 
 (report/defsc-report Report
@@ -56,13 +58,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["payments"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -82,10 +84,10 @@
     (ui-show target)
     (u.debug/load-error props "settings show payment")))
 
-(m.navlinks/defroute   :settings-ln-payments
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Payments"
-   ::m.navlinks/model-key     ::m.ln.payments/id
-   ::m.navlinks/parent-key    :settings-ln
-   ::m.navlinks/router        :settings-ln
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

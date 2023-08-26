@@ -17,9 +17,10 @@
 ;; [[../model/navlinks.cljc]]
 ;; [[../mutations/navlinks.cljc]]
 
-(def index-page-key :navlinks)
+(def index-page-id :navlinks)
 (def model-key ::m.navlinks/id)
 (def parent-router :root)
+(def required-role :user)
 (def show-page-key :navlinks-show)
 
 (report/defsc-report Report
@@ -76,8 +77,8 @@
   [_this {:ui/keys [report]
           :as props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [_] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [_] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
@@ -100,10 +101,10 @@
     (ui-show target)
     (u.debug/load-error props "show navlink page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Navlinks"
    ::m.navlinks/model-key     model-key
    ::m.navlinks/parent-key    parent-router
    ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/required-role required-role})

@@ -13,20 +13,22 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :admin-navlinks)
+(def index-page-id :admin-navlinks)
 (def model-key ::m.navlinks/id)
 (def parent-router :root)
+(def parent-router-id :admin)
+(def required-role :admin)
 (def show-page-key :admin-navlinks-show)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters   {::m.navlinks/id         #(str %2)
-                           ::m.navlinks/control    #(str %2)
-                           ::m.navlinks/router     #(and %2 (u.links/ui-navbar-link %2))
-                           ::m.navlinks/model-key  #(str %2)
-                           ::m.navlinks/navigate-key  #(str %2)
-                           ::m.navlinks/parent-key #(str %2)
-                           ::m.navlinks/input-key  #(str %2)}
+  {ro/column-formatters   {::m.navlinks/id           #(str %2)
+                           ::m.navlinks/control      #(str %2)
+                           ::m.navlinks/router       #(and %2 (u.links/ui-navbar-link %2))
+                           ::m.navlinks/model-key    #(str %2)
+                           ::m.navlinks/navigate-key #(str %2)
+                           ::m.navlinks/parent-key   #(str %2)
+                           ::m.navlinks/input-key    #(str %2)}
    ro/columns             [m.navlinks/id
                            m.navlinks/parent-key
                            m.navlinks/control
@@ -72,8 +74,8 @@
   [_this {:ui/keys [report]
           :as props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [_] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [_] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
@@ -96,14 +98,14 @@
     (ui-show target)
     (u.debug/load-error props "show navlink page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin index navlinks"
    ::m.navlinks/label         "Navlinks"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router
-   ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
@@ -111,6 +113,6 @@
    ::m.navlinks/label         "Show Navlink"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -18,7 +18,11 @@
    [dinsro.ui.core.wallets.addresses :as u.c.w.addresses]
    [dinsro.ui.core.words :as u.c.words]))
 
-(def index-page-key :core)
+;; [[../ui.cljc]]
+
+(def index-page-id :core)
+(def parent-router-id :root)
+(def required-role :guest)
 
 (defrouter Router
   [_this {:keys [current-state pending-path-segment]
@@ -67,19 +71,19 @@
 
 (defsc IndexPage
   [_this {:ui/keys [router]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/router      {}}
    :query         [::m.navlinks/id
                    {:ui/router (comp/get-query Router)}]
    :route-segment ["core"]}
   (ui-router router))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Router for core"
    ::m.navlinks/label         "Core"
-   ::m.navlinks/navigate-key  u.c.nodes/index-page-key
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
-   ::m.navlinks/required-role :guest})
+   ::m.navlinks/navigate-key  u.c.nodes/index-page-id
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

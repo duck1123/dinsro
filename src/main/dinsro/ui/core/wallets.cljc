@@ -28,8 +28,10 @@
 ;; [[../../model/core/wallets.cljc]]
 ;; [[../../../../test/dinsro/ui/core/wallets_test.cljs]]
 
-(def index-page-key :core-wallets)
+(def index-page-id :core-wallets)
 (def model-key ::m.c.wallets/id)
+(def parent-router-id :core)
+(def required-role :user)
 (def show-page-key :core-wallets-show)
 
 (def delete-action
@@ -168,13 +170,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["wallets"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/info :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -199,11 +201,11 @@
     (ui-show target)
     (u.debug/load-error props "show wallet page")))
 
-(m.navlinks/defroute   :core-wallets-show
+(m.navlinks/defroute show-page-key
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Wallet"
-   ::m.navlinks/input-key     ::m.c.wallets/id
-   ::m.navlinks/model-key     ::m.c.wallets/id
-   ::m.navlinks/parent-key    :core
-   ::m.navlinks/router        :core
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

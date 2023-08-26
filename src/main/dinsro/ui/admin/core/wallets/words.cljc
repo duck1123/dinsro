@@ -23,9 +23,11 @@
 ;; [[../../../../joins/core/words.cljc]]
 ;; [[../../../../model/core/words.cljc]]
 
-(def index-page-key :admin-core-wallets-show-words)
+(def index-page-id :admin-core-wallets-show-words)
 (def model-key ::m.c.words/id)
 (def parent-model-key ::m.c.wallets/id)
+(def parent-router-id :admin-core-wallets-show)
+(def required-role :admin)
 (def router-key :dinsro.ui.admin.core.wallets/Router)
 
 (report/defsc-report Report
@@ -49,17 +51,17 @@
           :ui/keys           [report]
           :as                props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     (fn [_props]
-                        {parent-model-key nil
-                         ::m.navlinks/id  index-page-key
-                         :ui/report       {}})
-   :query             (fn [_props]
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-id
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
   (if (and report id)
     (let [{:ui/keys [current-rows]} report
@@ -82,3 +84,12 @@
     (u.debug/load-error props "admin wallet words page")))
 
 (def ui-sub-page (comp/factory SubPage))
+
+(m.navlinks/defroute index-page-id
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Wallets"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

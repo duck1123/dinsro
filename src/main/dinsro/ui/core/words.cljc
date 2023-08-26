@@ -16,8 +16,10 @@
 ;; [[../../joins/core/words.cljc]]
 ;; [[../../model/core/words.cljc]]
 
-(def index-page-key :core-words)
+(def index-page-id :core-words)
 (def model-key ::m.c.words/id)
+(def parent-router-id :core)
+(def required-role :user)
 
 (report/defsc-report Report
   [_this _props]
@@ -38,13 +40,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["words"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/info :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))

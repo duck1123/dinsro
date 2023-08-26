@@ -19,7 +19,7 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :settings-ln-peers)
+(def index-page-id :settings-ln-peers)
 
 (def submit-button
   {:type   :button
@@ -94,13 +94,13 @@
 (defsc Page
   [_this {:ui/keys [report]
           :as      props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["peers"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/debug :Page/starting {:props props})
   (dom/div {}
     (ui-report report)))

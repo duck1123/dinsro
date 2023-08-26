@@ -12,7 +12,9 @@
    [dinsro.ui.ln.nodes :as u.ln.nodes]
    [dinsro.ui.ln.remote-nodes :as u.ln.remote-nodes]))
 
-(def index-page-key :ln)
+(def index-page-id :ln)
+(def parent-router-id :root)
+(def required-role :guest)
 
 (defrouter Router
   [_this _props]
@@ -34,8 +36,8 @@
 
 (defsc IndexPage
   [_this {:ui/keys [router]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/router      {}}
    :query         [::m.navlinks/id
                    {:ui/router (comp/get-query Router)}]
@@ -44,10 +46,10 @@
     (dom/div {:classes [:.nostr-page router-wrapper]}
       (ui-router router))))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "LN Router"
-   ::m.navlinks/navigate-key  :ln-nodes
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/navigate-key  u.ln.nodes/index-page-id
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

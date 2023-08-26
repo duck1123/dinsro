@@ -27,11 +27,15 @@
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
+;; [[../../ui/admin/nostr.cljc]]
+;; [[../../ui/admin/nostr/filters.cljc]]
 ;; [[../../ui/admin/nostr/relays.cljc]]
+;; [[../../ui/admin/nostr/requests.cljc]]
 
 (def debug-route false)
-(def index-page-key :admin-nostr)
-(def show-menu-id :admin-nostr)
+(def index-page-id :admin-nostr)
+(def parent-router-id :admin)
+(def required-role :admin)
 
 (defrouter Router
   [_this  {:keys [current-state route-factory route-props router-state] :as props}]
@@ -86,34 +90,34 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent :admin
+(m.navbars/defmenu index-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.a.n.dashboard/index-page-key
-    u.a.n.relays/index-page-key
-    u.a.n.pubkeys/index-page-key
-    u.a.n.events/index-page-key
-    u.a.n.filters/index-page-key
-    u.a.n.badge-acceptances/index-page-key
-    u.a.n.badge-awards/index-page-key
-    u.a.n.badge-definitions/index-page-key
-    u.a.n.requests/index-page-key
-    u.a.n.connections/index-page-key
-    u.a.n.filter-items/index-page-key
-    u.a.n.runs/index-page-key
-    u.a.n.witnesses/index-page-key]})
+   [u.a.n.dashboard/index-page-id
+    u.a.n.relays/index-page-id
+    u.a.n.pubkeys/index-page-id
+    u.a.n.events/index-page-id
+    u.a.n.filters/index-page-id
+    u.a.n.badge-acceptances/index-page-id
+    u.a.n.badge-awards/index-page-id
+    u.a.n.badge-definitions/index-page-id
+    u.a.n.requests/index-page-id
+    u.a.n.connections/index-page-id
+    u.a.n.filter-items/index-page-id
+    u.a.n.runs/index-page-id
+    u.a.n.witnesses/index-page-id]})
 
 (defsc IndexPage
   [_this {:ui/keys [nav-menu router vertical-menu] :as props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
    :initial-state (fn [props]
                     (log/debug :IndexPage/initial-state {:props props})
                     (let [state {::m.navlinks/id   :admin-nostr
                                  :ui/nav-menu      (comp/get-initial-state u.menus/NavMenu
-                                                     {::m.navbars/id index-page-key})
+                                                     {::m.navbars/id index-page-id})
                                  :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu
-                                                     {::m.navbars/id index-page-key})
+                                                     {::m.navbars/id index-page-id})
                                  :ui/router        (comp/get-initial-state Router)}]
                       (log/debug :IndexPage/initial-state-generated {:props props :state state})
                       state))
@@ -142,10 +146,10 @@
                 (ui-router router)
                 (u.debug/load-error props "admin nostr router")))))))))
 
-(m.navlinks/defroute :admin-nostr
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Nostr"
-   ::m.navlinks/navigate-key  u.a.n.dashboard/index-page-key
-   ::m.navlinks/parent-key    :admin
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/navigate-key  u.a.n.dashboard/index-page-id
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

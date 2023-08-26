@@ -20,8 +20,9 @@
 ;; [[../../joins/ln/invoices.cljc]]
 ;; [[../../model/ln/invoices.cljc]]
 
-(def index-page-key :ln-invoices)
+(def index-page-id :ln-invoices)
 (def model-key ::m.ln.invoices/id)
+(def required-role :user)
 (def show-page-key :ln-invoices-show)
 
 (def submit-button
@@ -83,13 +84,13 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["invoices"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 

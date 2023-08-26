@@ -13,7 +13,7 @@
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.pickers :as u.pickers]
@@ -23,9 +23,11 @@
 ;; [[../../../../joins/core/wallet_addresses.cljc]]
 ;; [[../../../../model/core/addresses.cljc]]
 
-(def index-page-key :admin-core-wallets-show-addresses)
+(def index-page-id :admin-core-wallets-show-addresses)
 (def model-key ::m.c.wallet-addresses/id)
 (def parent-model-key ::m.c.wallets/id)
+(def parent-router-id :admin-core-wallets-show)
+(def required-role :admin)
 (def router-key :dinsro.ui.admin.core.wallets/Router)
 
 (def generate-action
@@ -93,21 +95,25 @@
 (def ui-report (comp/factory Report))
 
 (defsc SubPage
-  [_this {::m.c.wallets/keys [id]
-          :ui/keys           [report]
-          :as                props}]
+  [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-key
+                       ::m.navlinks/id  index-page-id
                        :ui/report       {}}
    :query             [::m.c.wallets/id
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (log/info :SubPage/starting {:props props})
-  (if (and report id)
-    (ui-report report)
-    (u.debug/load-error props "admin wallet addresses page")))
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
 (def ui-sub-page (comp/factory SubPage))
+
+(m.navlinks/defroute index-page-id
+  {::m.navlinks/control       ::SubPage
+   ::m.navlinks/input-key     parent-model-key
+   ::m.navlinks/label         "Addresses"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -31,8 +31,10 @@
 ;; [[../ui/admin/ln.cljc]]
 ;; [[../ui/admin/nostr.cljc]]
 
-(def debug-route false)
-(def index-page-key :admin)
+(def debug-route? false)
+(def index-page-id :admin)
+(def parent-router-id :root)
+(def required-role :admin)
 
 (defrouter Router
   [_this {:keys [current-state route-factory route-props router-state] :as props}]
@@ -79,7 +81,7 @@
       (dom/div :.admin-router
         (dom/div "No route selected.")
         (u.debug/log-props {:current-state current-state :router-state router-state})))
-    (when debug-route
+    (when debug-route?
       (ui-segment {}
         (dom/h3 {} "Admin Router")
         (u.debug/log-props props)))))
@@ -87,25 +89,25 @@
 (def ui-router (comp/factory Router))
 
 ;; The top sub menu on admin pages
-(m.navbars/defmenu :admin
-  {::m.navbars/parent :root
+(m.navbars/defmenu index-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.a.users/index-page-key
-    u.a.core/index-page-key
-    u.a.ln/index-page-key
-    u.a.nostr/index-page-key
-    u.a.categories/index-page-key
-    u.a.accounts/index-page-key
-    u.a.currencies/index-page-key
-    u.a.transactions/index-page-key
-    u.a.debits/index-page-key
-    u.a.rate-sources/index-page-key
-    u.a.rates/index-page-key
-    ;; u.a.models/index-page-key
-    u.a.navbars/index-page-key
-    u.a.navlinks/index-page-key
-    u.a.instances/index-page-key]})
+   [u.a.users/index-page-id
+    u.a.core/index-page-id
+    u.a.ln/index-page-id
+    u.a.nostr/index-page-id
+    u.a.categories/index-page-id
+    u.a.accounts/index-page-id
+    u.a.currencies/index-page-id
+    u.a.transactions/index-page-id
+    u.a.debits/index-page-id
+    u.a.rate-sources/index-page-id
+    u.a.rates/index-page-id
+    ;; u.a.models/index-page-id
+    u.a.navbars/index-page-id
+    u.a.navlinks/index-page-id
+    u.a.instances/index-page-id]})
 
 (def debug-props false)
 
@@ -132,11 +134,11 @@
     (when debug-props
       (u.debug/log-props props))))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/description   "Admin root page"
    ::m.navlinks/label         "Admin"
-   ::m.navlinks/navigate-key  u.a.users/index-page-key
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/navigate-key  u.a.users/index-page-id
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -22,7 +22,9 @@
 ;; [[../ui/nostr/connections.cljs]]
 ;; [[../ui/nostr/events.cljs]]
 
-(def index-page-key :nostr)
+(def index-page-id :nostr)
+(def parent-router-id :root)
+(def required-role :guest)
 
 (defrouter Router
   [_this  {:keys [current-state route-factory route-props] :as props}]
@@ -60,9 +62,9 @@
 
 (defsc IndexPage
   [_this {:ui/keys [router] :as props}]
-  {:ident          (fn [] [::m.navlinks/id index-page-key])
+  {:ident          (fn [] [::m.navlinks/id index-page-id])
    :initial-state  (fn [_props]
-                     {::m.navlinks/id index-page-key
+                     {::m.navlinks/id index-page-id
                       :ui/router      (comp/get-initial-state Router)})
    :query          [::m.navlinks/id
                     {:ui/router (comp/get-query Router)}]
@@ -72,9 +74,9 @@
     (ui-router router)
     (u.debug/load-error "Nostr router")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::Page
    ::m.navlinks/label         "Nostr"
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/required-role :user
-   ::m.navlinks/router        :root})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/required-role required-role
+   ::m.navlinks/router        parent-router-id})

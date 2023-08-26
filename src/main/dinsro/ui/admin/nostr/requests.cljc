@@ -13,14 +13,12 @@
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-list :refer [ui-list-list]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
-   [dinsro.joins.nostr.filters :as j.n.filters]
    [dinsro.joins.nostr.requests :as j.n.requests]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.nostr.filter-items :as m.n.filter-items]
-   [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations.nostr.requests :as mu.n.requests]
+   [dinsro.ui.admin.nostr.filters :as u.a.n.filters]
    [dinsro.ui.admin.nostr.requests.connections :as u.a.n.rq.connections]
    [dinsro.ui.admin.nostr.requests.filter-items :as u.a.n.rq.filter-items]
    [dinsro.ui.admin.nostr.requests.filters :as u.a.n.rq.filters]
@@ -35,14 +33,15 @@
 ;; [[../../../joins/nostr/requests.cljc]]
 ;; [[../../../model/nostr/requests.cljc]]
 ;; [[../../../mutations/nostr/requests.cljc]]
+;; [[../../../ui/admin/nostr.cljc]]
 ;; [[../../../ui/nostr/requests.cljc]]
 
-(def index-page-key :admin-nostr-requests)
+(def index-page-id :admin-nostr-requests)
 (def model-key ::m.n.requests/id)
-(def parent-router-key :admin-nostr)
-(def show-menu-id :admin-nostr-requests)
-(def show-page-key :admin-nostr-requests-show)
-(def debug-props true)
+(def parent-router-id :admin-nostr)
+(def required-role :admin)
+(def show-page-id :admin-nostr-requests-show)
+(def debug-props false)
 
 (form/defsc-form EditForm [_this _props]
   {fo/attributes    [m.n.requests/id]
@@ -53,38 +52,6 @@
    fo/route-prefix  "edit-request-form"
    fo/title         "Edit Request"})
 
-(defsc FilterItemItem
-  [_this {::m.n.filter-items/keys [id]
-          :as                     props}]
-  {:ident         ::m.n.filter-items/id
-   :initial-state {::m.n.filter-items/id nil}
-   :query         [::m.n.filter-items/id]}
-  (dom/div {}
-    (str "id: " id)
-    (u.debug/log-props props)))
-
-(def ui-filter-item-item (comp/factory FilterItemItem {:keyfn ::m.n.filter-items/id}))
-
-(defsc FilterItem
-  [_this {::j.n.filters/keys [query-string filter-items]
-          ::m.n.filters/keys [index]
-          :as                props}]
-  {:ident         ::m.n.filters/id
-   :initial-state {::m.n.filters/id           nil
-                   ::m.n.filters/index        0
-                   ::j.n.filters/filter-items []
-                   ::j.n.filters/query-string ""}
-   :query         [::m.n.filters/id
-                   ::m.n.filters/index
-                   {::j.n.filters/filter-items (comp/get-query FilterItemItem {})}
-                   ::j.n.filters/query-string]}
-  (ui-list-item {}
-    (dom/div {} (str index " - " query-string))
-    (map ui-filter-item-item filter-items)
-    (when debug-props (u.debug/log-props props))))
-
-(def ui-filter-item (comp/factory FilterItem {:keyfn ::m.n.filters/id}))
-
 (defsc BodyItem
   [this {::j.n.requests/keys [filters]
          ::m.n.requests/keys [code]
@@ -93,7 +60,7 @@
    :query         [::m.n.requests/id
                    ::m.n.requests/code
                    ::j.n.requests/run-count
-                   {::j.n.requests/filters (comp/get-query FilterItem {})}
+                   {::j.n.requests/filters (comp/get-query u.a.n.filters/FilterItem {})}
                    ::j.n.requests/filter-count
                    ::j.n.requests/query-string]
    :initial-state {::m.n.requests/id           nil
@@ -104,12 +71,13 @@
                    ::j.n.requests/query-string ""}}
   (ui-list-item {}
     (ui-segment {}
-      (dom/h2 {} (str code))
+      (dom/div {}
+        (dom/h2 {} (str code))
+        (dom/div {}
+          (u.buttons/action-button `mu.n.requests/edit "Edit" model-key this)
+          (u.buttons/delete-button `mu.n.requests/delete! model-key this)))
       (ui-list-list {}
-        (map ui-filter-item filters)
-        (u.buttons/action-button `mu.n.requests/edit "Edit" model-key this)
-        (u.buttons/delete-button `mu.n.requests/delete! model-key this))
-
+        (map u.a.n.filters/ui-filter-item filters))
       (when debug-props (u.debug/log-props props)))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.n.requests/id}))
@@ -151,14 +119,14 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent parent-router-key
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.a.n.rq.filters/index-page-key
-    u.a.n.rq.filter-items/index-page-key
-    u.a.n.rq.runs/index-page-key
-    u.a.n.rq.connections/index-page-key]})
+   [u.a.n.rq.filters/index-page-id
+    u.a.n.rq.filter-items/index-page-id
+    u.a.n.rq.runs/index-page-id
+    u.a.n.rq.connections/index-page-id]})
 
 (defsc Show
   [_this {::m.n.requests/keys [code id relay]
@@ -173,11 +141,11 @@
                        ::m.n.requests/code         ""
                        ::m.n.requests/relay        (comp/get-initial-state u.links/AdminRelayLinkForm)
                        :ui/admin-nav-menu          (comp/get-initial-state u.menus/NavMenu
-                                                     {::m.navbars/id show-menu-id
+                                                     {::m.navbars/id show-page-id
                                                       :id            id})
                        :ui/admin-router            (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                    {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
                      :ui/admin-router   [Router {}]})
    :query         (fn []
                     [::m.n.requests/code
@@ -203,30 +171,30 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["requests"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state (fn [props]
                     {model-key           (model-key props)
-                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/id     show-page-id
                      ::m.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["request" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
   (if (model-key props)
     (if (seq target)
@@ -234,19 +202,19 @@
       (u.debug/load-error props "Admin show request target"))
     (u.debug/load-error props "Admin show request")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Requests"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-nostr
-   ::m.navlinks/router        parent-router-key
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Request"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        parent-router-key
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

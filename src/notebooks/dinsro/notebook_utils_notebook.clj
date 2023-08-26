@@ -17,6 +17,8 @@
    {:f "src/notebooks/dinsro/actions/core/chains_notebook.clj" :n 'dinsro.actions.core.chains-notebook}
    {:f "src/notebooks/dinsro/actions/core/connections_notebook.clj" :n 'dinsro.actions.core.connections-notebook}))
 
+sample-props
+
 (nu/display (nu/x2))
 
 ;; (nu/display-file-links sample-props)

@@ -27,10 +27,11 @@
 ;; [[../../../ui/admin/nostr/connections/runs.cljc]]
 ;; [[../../../ui/nostr/connections.cljs]]
 
-(def index-page-key :admin-nostr-connections)
+(def index-page-id :admin-nostr-connections)
 (def model-key ::m.n.connections/id)
-(def show-menu-id :admin-nostr-connections)
-(def show-page-key :admin-nostr-connections-show)
+(def parent-router-id :admin-nostr)
+(def required-role :admin)
+(def show-page-id :admin-nostr-connections-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.n.connections/delete!))
@@ -45,10 +46,10 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent   :admin-nostr
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent   parent-router-id
    ::m.navbars/router   ::Router
-   ::m.navbars/children [u.a.n.c.runs/index-page-key]})
+   ::m.navbars/children [u.a.n.c.runs/index-page-id]})
 
 (defsc Show
   [_this {::m.n.connections/keys [id status relay start-time end-time instance]
@@ -64,11 +65,11 @@
                        ::m.n.connections/status     :unknown
                        ::m.n.connections/start-time nil
                        :ui/nav-menu                 (comp/get-initial-state u.menus/NavMenu
-                                                      {::m.navbars/id show-menu-id
+                                                      {::m.navbars/id show-page-id
                                                        :id            id})
                        :ui/router                   (comp/get-initial-state Router {})}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
                      :ui/router   [Router {}]})
    :query         [::m.n.connections/end-time
                    ::m.n.connections/id
@@ -122,13 +123,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["connections"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/info :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -137,33 +138,33 @@
   [_this {::m.n.connections/keys [id]
           ::m.navlinks/keys      [target]
           :as                    props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.n.connections/id nil
-                   ::m.navlinks/id      show-page-key
+                   ::m.navlinks/id      show-page-id
                    ::m.navlinks/target  {}}
    :query         [::m.n.connections/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["connections" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (u.debug/load-error props "Admin show nostr connection page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Connections"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-nostr
-   ::m.navlinks/router        :admin-nostr
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Connection"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/navigate-key  u.a.n.c.runs/index-page-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin-nostr
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/navigate-key  u.a.n.c.runs/index-page-id
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -17,8 +17,10 @@
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :settings-ln-payreqs)
+(def index-page-id :settings-ln-payreqs)
 (def model-key ::m.ln.payreqs/id)
+(def parent-router-id :settings-ln)
+(def required-role :user)
 (def show-page-key :settings-ln-payreqs-show)
 
 (def decode-button
@@ -74,13 +76,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["requests"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -100,10 +102,10 @@
     (ui-show target)
     (u.debug/load-error props "settings show payreqs")))
 
-(m.navlinks/defroute   :settings-ln-payreqs
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Payreqs"
-   ::m.navlinks/model-key     ::m.ln.payreqs/id
-   ::m.navlinks/parent-key    :settings-ln
-   ::m.navlinks/router        :settings-ln
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

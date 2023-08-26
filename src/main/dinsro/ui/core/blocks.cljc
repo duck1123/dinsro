@@ -23,9 +23,11 @@
 ;; [[../../joins/core/blocks.cljc]]
 ;; [[../../model/core/blocks.cljc]]
 
-(def index-page-key :core-blocks)
+(def index-page-id :core-blocks)
 (def model-key ::m.c.blocks/id)
-(def show-page-key :core-blocks-show)
+(def parent-router-id :core)
+(def required-role :user)
+(def show-page-id :core-blocks-show)
 
 (def force-fetch-button false)
 (def debug-page false)
@@ -75,9 +77,7 @@
                    ::m.c.blocks/network        {}
                    :ui/transactions            {}}
    :pre-merge         (u.loader/page-merger model-key
-                        {:ui/transactions   [u.c.b.transactions/SubPage {}]
-                         ;; :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-blocks}]
-                         })
+                        {:ui/transactions   [u.c.b.transactions/SubPage {}]})
    :query         [::m.c.blocks/id
                    ::m.c.blocks/height
                    ::m.c.blocks/hash
@@ -89,10 +89,7 @@
                    {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {:ui/transactions (comp/get-query u.c.b.transactions/SubPage)}
                    [df/marker-table '_]]}
-  (log/debug :Show/creating {:props props
-                             ;; :id id
-                             ;; :this this
-                             })
+  (log/debug :Show/creating {:props props})
   (if id
     (dom/div {}
       (if id
@@ -158,13 +155,13 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["blocks"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
@@ -172,25 +169,25 @@
   [_this {::m.c.blocks/keys [id]
           ::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
+   :initial-state {::m.navlinks/id     show-page-id
                    ::m.navlinks/target {}}
    :query         [::m.navlinks/id
                    ::m.c.blocks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["block" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (ui-segment {:color "red" :inverted true}
       "Failed to load record")))
 
-(m.navlinks/defroute   :core-blocks-show
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Block"
-   ::m.navlinks/input-key     ::m.c.blocks/id
-   ::m.navlinks/model-key     ::m.c.blocks/id
-   ::m.navlinks/parent-key    :core
-   ::m.navlinks/router        :core
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -2,7 +2,6 @@
   (:require
    #?(:cljs ["semantic-ui-react/dist/commonjs/collections/Menu/Menu" :default Menu])
    [com.fulcrologic.fulcro-css.css :as css]
-   [com.fulcrologic.fulcro.algorithms.form-state :as fs]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
@@ -28,22 +27,14 @@
 ;; [[../model/navbars.cljc]]
 ;; [[../mutations/navbars.cljc]]
 
-(def index-page-key :navbars)
-(def log-props true)
+(def index-page-id :navbars)
+(def model-key ::m.navlinks/id)
+(def parent-router-id :root)
+(def required-role :user)
 
 (defn get-logged-in
   [props]
   (= (get-in props [[::auth/authorization :local] ::auth/status]) :success))
-
-(defsc FormStateConfigQuery
-  [_ _]
-  {:query         [::fs/id]
-   :initial-state {::fs/id nil}})
-
-(defsc FormStateQuery
-  [_ _]
-  {:query         [{::fs/config (comp/get-query FormStateConfigQuery)}]
-   :initial-state {::fs/config {}}})
 
 (defsc RouteTarget
   [_this _props]
@@ -84,12 +75,10 @@
   {:ident         ::m.navlinks/id
    :initial-state {::m.navlinks/id       nil
                    ::m.navlinks/label    ""
-                   ;; ::j.navlinks/target   {}
                    ::m.navlinks/children []}
    :query         [::m.navlinks/auth-link?
                    ::m.navlinks/id
                    ::m.navlinks/label
-                   ;; {::j.navlinks/target (comp/get-query RouteTarget)}
                    {::m.navlinks/children (comp/get-query NavLink)}]}
   (log/debug :top-nav-link/rendered {:props props})
   (if (seq children)
@@ -305,21 +294,21 @@
 (defsc IndexPage
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [_] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [_] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    ::m.navlinks/id    :navbars
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["navbars"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/trace :Page/starting {:props props})
   (ui-report report))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Navbars"
-   ::m.navlinks/model-key     ::m.navbars/id
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -20,7 +20,9 @@
    [dinsro.ui.settings.rate-sources :as u.s.rate-sources]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :settings)
+(def index-page-id :settings)
+(def parent-router-id :root)
+(def required-role :user)
 
 (defrouter Router
   [_this {:keys [current-state route-factory route-props] :as  props}]
@@ -53,22 +55,22 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu :settings
-  {::m.navbars/parent :root
+(m.navbars/defmenu index-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.s.dashboard/index-page-key
-    u.s.core/index-page-key
-    u.s.ln/index-page-key
-    u.s.rate-sources/index-page-key
-    u.s.categories/index-page-key]})
+   [u.s.dashboard/index-page-id
+    u.s.core/index-page-id
+    u.s.ln/index-page-id
+    u.s.rate-sources/index-page-id
+    u.s.categories/index-page-id]})
 
 (defsc IndexPage
   [_this {:ui/keys [nav-menu router vertical-menu]
           :as props}]
-  {:ident          (fn [_] [::m.navlinks/id index-page-key])
+  {:ident          (fn [_] [::m.navlinks/id index-page-id])
    :initial-state  (fn [_]
-                     {::m.navlinks/id   index-page-key
+                     {::m.navlinks/id   index-page-id
                       :ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings})
                       :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :settings})
                       :ui/router        (comp/get-initial-state Router)})
@@ -92,10 +94,10 @@
           (ui-router router)
           (u.debug/load-error props "settings router"))))))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Settings"
-   ::m.navlinks/navigate-key  u.s.dashboard/index-page-key
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/navigate-key  u.s.dashboard/index-page-id
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

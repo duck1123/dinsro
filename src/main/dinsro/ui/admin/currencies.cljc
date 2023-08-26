@@ -27,10 +27,11 @@
 ;; [[../../actions/currencies.clj]]
 ;; [[../../queries/currencies.clj]]
 
-(def index-page-key :admin-currencies)
+(def index-page-id :admin-currencies)
 (def model-key ::m.currencies/id)
-(def show-menu-id :admin-currencies)
-(def show-page-key :admin-currencies-show)
+(def parent-router-id :admin)
+(def required-role :admin)
+(def show-page-id :admin-currencies-show)
 (def log-props? false)
 
 (def delete-action
@@ -57,13 +58,13 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent :admin
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
-   [u.a.c.rate-sources/index-page-key
-    u.a.c.accounts/index-page-key
-    u.a.c.rates/index-page-key]})
+   [u.a.c.rate-sources/index-page-id
+    u.a.c.accounts/index-page-id
+    u.a.c.rates/index-page-id]})
 
 (report/defsc-report Report
   [_this _props]
@@ -104,13 +105,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["currencies"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (if report
@@ -120,17 +121,17 @@
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state (fn [_]
                     {model-key           nil
-                     ::m.navlinks/id     show-page-key
+                     ::m.navlinks/id     show-page-id
                      ::m.navlinks/target {}})
    :query         (fn [_]
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["currency" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
   (if (get props model-key)
     (if target
@@ -138,19 +139,19 @@
       (u.debug/load-error props "admin show currency target"))
     (u.debug/load-error props "admin show currency")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Currencies"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Currency"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

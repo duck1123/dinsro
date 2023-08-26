@@ -13,10 +13,10 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.nostr.events :as u.n.events]
-   [lambdaisland.glogc :as log]
    [nextjournal.markdown :as md]
    [nextjournal.markdown.transform :as transform]))
 
@@ -24,9 +24,11 @@
 ;; [[../../../ui/admin/nostr/pubkeys/events.cljc]]
 ;; [[../../../ui/nostr/event_tags.cljs]]
 
-(def index-page-key :nostr-pubkeys-show-events)
+(def index-page-id :nostr-pubkeys-show-events)
 (def model-key ::m.n.events/id)
 (def parent-model-key ::m.n.pubkeys/id)
+(def parent-router-id :nostr-pubkeys-show)
+(def required-role :user)
 (def router-key :dinsro.ui.nostr.pubkeys/Router)
 
 (defsc EventListItem
@@ -83,13 +85,12 @@
 
 (defsc SubPage
   "Event subpage for events"
-  [_this {:ui/keys [report]
-          :as      props}]
+  [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-key
+                         ::m.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
@@ -97,15 +98,14 @@
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["events"]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
-  (log/info :SubPage/starting {:props props})
-  (ui-report report))
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
+  (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::SubPage
    ::m.navlinks/input-key     parent-model-key
    ::m.navlinks/label         "Events"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :nostr-pubkeys-show
-   ::m.navlinks/router        :nostr-pubkeys
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

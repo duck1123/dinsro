@@ -16,8 +16,9 @@
 ;; [[../../joins/ln/accounts.cljc]]
 ;; [[../../model/ln/accounts.cljc]]
 
-(def index-page-key :ln-accounts)
+(def index-page-id :ln-accounts)
 (def model-key ::m.ln.accounts/id)
+(def required-role :user)
 
 (report/defsc-report Report
   [_this _props]
@@ -37,13 +38,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["accounts"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/info :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))

@@ -19,9 +19,11 @@
 ;; [[../../model/core/mnemonics.cljc]]
 ;; [[../../ui/admin/core/mnemonics.cljs]]
 
-(def index-page-key :core-mnemonics)
+(def index-page-id :core-mnemonics)
 (def model-key ::m.c.mnemonics/id)
-(def show-page-key :core-mnemonics-show)
+(def parent-router-id :core)
+(def required-role :user)
+(def show-page-id :core-mnemonics-show)
 
 (report/defsc-report Report
   [_this _props]
@@ -65,13 +67,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/report      {}}
    :query         [::m.navlinks/id
                    {:ui/report (comp/get-query Report)}]
    :route-segment ["categories"]
-   :will-enter    (u.loader/page-loader index-page-key)}
+   :will-enter    (u.loader/page-loader index-page-id)}
   (log/info :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -80,16 +82,33 @@
   [_this {::m.c.mnemonics/keys [id]
           ::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.c.mnemonics/id nil
-                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/id     show-page-id
                    ::m.navlinks/target {}}
    :query         [::m.c.mnemonics/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["mnemonic" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (u.debug/load-error props "core show mnemonic")))
+
+(m.navlinks/defroute index-page-id
+  {::m.navlinks/control       ::IndexPage
+   ::m.navlinks/label         "Mnemonics"
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
+
+(m.navlinks/defroute show-page-id
+  {::m.navlinks/control       ::ShowPage
+   ::m.navlinks/label         "Show Mnemonic"
+   ::m.navlinks/input-key     model-key
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

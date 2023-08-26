@@ -19,8 +19,11 @@
 ;; [[../../../joins/ln/invoices.cljc]]
 ;; [[../../../model/ln/invoices.cljc]]
 
-(def index-page-key :admin-ln-invoices)
+(def index-page-id :admin-ln-invoices)
 (def model-key ::m.ln.invoices/id)
+(def parent-router-id :admin-ln)
+(def required-role :admin)
+(def show-page-id :admin-ln-invoices-show)
 
 (def submit-button
   {:type   :button
@@ -81,28 +84,28 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["invoices"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
-(m.navlinks/defroute :admin-ln-invoices
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Invoices"
-   ::m.navlinks/model-key     ::m.ln.invoices/id
-   ::m.navlinks/parent-key    :admin-ln
-   ::m.navlinks/required-role :admin
-   ::m.navlinks/router        :admin-ln})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/required-role required-role
+   ::m.navlinks/router        parent-router-id})
 
-(m.navlinks/defroute :admin-ln-invoices-show
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Invoice"
-   ::m.navlinks/model-key     ::m.ln.invoices/id
-   ::m.navlinks/parent-key    :admin-ln-invoices
-   ::m.navlinks/router        :admin-ln
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/model-key     model-key
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/required-role required-role
+   ::m.navlinks/router        parent-router-id})

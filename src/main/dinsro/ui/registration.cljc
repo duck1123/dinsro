@@ -9,15 +9,16 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.ui.forms.registration :as u.f.registration]))
 
-(def index-page-key :registration)
+(def index-page-id :registration)
 (def parent-router :root)
+(def required-role :guest)
 
 (defsc IndexPage
   [_this {:ui/keys [allow-registration? form]}]
-  {:ident          (fn [_] [::m.navlinks/id index-page-key])
+  {:ident          (fn [_] [::m.navlinks/id index-page-id])
    :initial-state  {:ui/allow-registration? true
                     :ui/form                {}
-                    ::m.navlinks/id         index-page-key}
+                    ::m.navlinks/id         index-page-id}
    ::m.navlinks/id :registration
    :query          [:ui/allow-registration?
                     {:ui/form (comp/get-query u.f.registration/RegistrationForm)}
@@ -31,9 +32,9 @@
     (dom/div {}
       (dom/p {} "Registrations are not enabled"))))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Registration"
    ::m.navlinks/parent-key    parent-router
    ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/required-role required-role})

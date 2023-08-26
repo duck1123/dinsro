@@ -11,7 +11,9 @@
    [dinsro.ui.settings.core.dashboards :as u.s.c.dashboards]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :settings-core)
+(def index-page-id :settings-core)
+(def parent-router-id :settings)
+(def required-role :user)
 
 (defrouter Router
   [_this {:keys [current-state pending-path-segment]
@@ -38,8 +40,8 @@
 
 (defsc Page
   [_this {:ui/keys [router] :as props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-key])
-   :initial-state {::m.navlinks/id index-page-key
+  {:ident         (fn [] [::m.navlinks/id index-page-id])
+   :initial-state {::m.navlinks/id index-page-id
                    :ui/router      {}}
    :pre-merge     (u.loader/page-merger nil {:ui/router [Router {}]})
    :query         [::m.navlinks/id
@@ -50,10 +52,10 @@
     (ui-router router)
     (u.debug/load-error props "settings core page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::Page
    ::m.navlinks/label         "Core"
-   ::m.navlinks/navigate-key  u.s.c.dashboards/index-page-key
-   ::m.navlinks/parent-key    :settings
-   ::m.navlinks/router        :settings
-   ::m.navlinks/required-role :user})
+   ::m.navlinks/navigate-key  u.s.c.dashboards/index-page-id
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

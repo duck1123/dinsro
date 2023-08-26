@@ -45,11 +45,12 @@
 ;; [[../../../ui/admin/ln/nodes/accounts.cljs]]
 ;; [[../../../ui/admin/ln/nodes/addresses.cljc]]
 
-(def index-page-key :admin-ln-nodes)
+(def index-page-id :admin-ln-nodes)
 (def model-key ::m.ln.nodes/id)
 (def override-create-form false)
-(def show-menu-id :admin-ln-nodes)
-(def show-page-key :admin-ln-nodes-show)
+(def parent-router-id :admin-ln)
+(def required-role :admin)
+(def show-page-id :admin-ln-nodes-show)
 
 (form/defsc-form NewForm
   [this props]
@@ -152,11 +153,11 @@
                        ::m.ln.nodes/hasMacaroon? false
                        :ui/admin-router          (comp/get-initial-state Router)
                        :ui/admin-nav-menu        (comp/get-initial-state u.menus/NavMenu
-                                                   {::m.navbars/id show-menu-id
+                                                   {::m.navbars/id show-page-id
                                                     :id            id})}))
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/admin-router   [Router {}]
-                     :ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]})
+                     :ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]})
    :query         [::m.ln.nodes/id
                    ::m.ln.nodes/host
                    ::m.ln.nodes/port
@@ -215,13 +216,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["nodes"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/info :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -230,33 +231,33 @@
   [_this {::m.ln.nodes/keys [id]
           ::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.ln.nodes/id     nil
-                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/id     show-page-id
                    ::m.navlinks/target {}}
    :query         [::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}
                    ::m.ln.nodes/id]
    :route-segment ["node" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (u.debug/load-error props "admin show ln node")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Nodes"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-ln
-   ::m.navlinks/router        :admin-ln
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/input-key     model-key
    ::m.navlinks/label         "Show Node"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin-ln
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

@@ -10,6 +10,7 @@
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.core.transactions :as j.c.transactions]
    [dinsro.model.core.transactions :as m.c.transactions]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.transactions :as mu.c.transactions]
    [dinsro.ui.admin.core.transactions.inputs :as u.a.c.t.inputs]
@@ -17,15 +18,17 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]))
+   [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.menus :as u.menus]))
 
 ;; [[../../../joins/core/transactions.cljc]]
 ;; [[../../../model/core/transactions.cljc]]
 
-(def index-page-key :admin-core-transactions)
+(def index-page-id :admin-core-transactions)
 (def model-key ::m.c.transactions/id)
 (def parent-router-id :admin-core)
-(def show-page-key :admin-core-transactions-show)
+(def required-role :admin)
+(def show-page-id :admin-core-transactions-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.transactions/delete!))
@@ -47,6 +50,10 @@
                    ::m.c.transactions/tx-id    nil
                    :ui/admin-inputs            {}
                    :ui/admin-outputs           {}}
+   :pre-merge     (u.loader/page-merger model-key
+                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
+                     :ui/admin-inputs   [u.a.c.t.inputs/SubSection {}]
+                     :ui/admin-outputs   [u.a.c.t.outputs/SubSection {}]})
    :query         [[df/marker-table '_]
                    {::m.c.transactions/block (comp/get-query u.links/BlockHeightLinkForm)}
                    ::m.c.transactions/fetched?
@@ -109,39 +116,39 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["transactions"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id show-page-key
-                   ::m.navlinks/target      {}}
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
+   :initial-state {::m.navlinks/id     show-page-id
+                   ::m.navlinks/target {}}
    :query         [::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["transaction" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (ui-show target))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Transactions"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin-core
+   ::m.navlinks/parent-key    parent-router-id
    ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Transaction"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
+   ::m.navlinks/parent-key    index-page-id
    ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/required-role required-role})

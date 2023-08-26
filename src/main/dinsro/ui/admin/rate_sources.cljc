@@ -27,10 +27,11 @@
 ;; [[../../mutations/rate_sources.cljc]]
 ;; [[../../ui/settings/rate_sources.cljs]]
 
-(def index-page-key :admin-rate-sources)
+(def index-page-id :admin-rate-sources)
 (def model-key ::m.rate-sources/id)
-(def show-menu-id :admin-rate-sources)
-(def show-page-key :admin-rate-sources-show)
+(def parent-router-id :admin)
+(def required-role :admin)
+(def show-page-id :admin-rate-sources-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.rate-sources/delete!))
@@ -60,6 +61,11 @@
 
 (def ui-router (comp/factory Router))
 
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
+   ::m.navbars/children
+   [u.a.rs.accounts/index-page-id]})
+
 (defsc Show
   [_this {::m.rate-sources/keys [id name url active currency]
           :ui/keys              [nav-menu router]
@@ -74,11 +80,11 @@
                            ::m.rate-sources/currency {}
                            ::m.rate-sources/url      ""
                            :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
-                                                       {::m.navbars/id show-menu-id
+                                                       {::m.navbars/id show-page-id
                                                         :id            id})
                            :ui/router                (comp/get-initial-state Router)}))
    :pre-merge         (u.loader/page-merger model-key
-                        {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-menu-id}]
+                        {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
                          :ui/router   [Router {}]})
    :query             [::m.rate-sources/name
                        ::m.rate-sources/url
@@ -110,13 +116,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id index-page-id
                        :ui/report      {}}
    :query             [::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
    :route-segment     ["rate-sources"]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
@@ -124,32 +130,32 @@
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
+   :initial-state {::m.navlinks/id     show-page-id
                    ::m.navlinks/target {}}
    :query         [::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["rate-source" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
   (if target
     (ui-show target)
     (u.debug/load-error props "admin show rate source page")))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Rate Sources"
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    :admin
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/description   "Admin show page for rate sources"
    ::m.navlinks/label         "Show Rate Source"
    ::m.navlinks/input-key     model-key
    ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-key
-   ::m.navlinks/router        :admin
-   ::m.navlinks/required-role :admin})
+   ::m.navlinks/parent-key    index-page-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

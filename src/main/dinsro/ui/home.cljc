@@ -21,7 +21,9 @@
    [dinsro.ui.transactions :as u.transactions]
    [lambdaisland.glogc :as log]))
 
-(def index-page-key :home)
+(def index-page-id :home)
+(def parent-router-id :root)
+(def required-role :guest)
 
 (defn get-username
   [authenticator]
@@ -43,8 +45,8 @@
    :css               [[:.container {:background-color "white"
                                      :margin-bottom    "30px"}]
                        [:.title {:color "blue" :font-weight "bold"}]]
-   :ident             (fn [] [::m.navlinks/id index-page-key])
-   :initial-state     {::m.navlinks/id         index-page-key
+   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :initial-state     {::m.navlinks/id         index-page-id
                        :ui/accounts            {}
                        :ui/ln-nodes            {}
                        :ui/nodes               {}
@@ -58,7 +60,7 @@
                        {:ui/recent-transactions (comp/get-query u.transactions/RecentReport)}
                        {:root/authenticator (comp/get-query u.authenticator/UserAuthenticator)}]
    :route-segment     [""]
-   :will-enter        (u.loader/page-loader index-page-key)}
+   :will-enter        (u.loader/page-loader index-page-id)}
   (log/info :IndexPage/starting {:props props})
   (let [{:keys [container title]} (css/get-classnames IndexPage)
         username                  (get-username authenticator)]
@@ -86,9 +88,9 @@
                     (ui-grid-column {:width 8}
                       (u.h.ln-nodes/ui-report ln-nodes))))))))))))
 
-(m.navlinks/defroute index-page-key
+(m.navlinks/defroute index-page-id
   {::m.navlinks/control       ::IndexPage
    ::m.navlinks/label         "Home"
-   ::m.navlinks/parent-key    :root
-   ::m.navlinks/router        :root
-   ::m.navlinks/required-role :guest})
+   ::m.navlinks/parent-key    parent-router-id
+   ::m.navlinks/router        parent-router-id
+   ::m.navlinks/required-role required-role})

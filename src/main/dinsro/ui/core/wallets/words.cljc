@@ -18,9 +18,10 @@
 ;; [[../../../joins/core/words.cljc]]
 ;; [[../../../model/core/words.cljc]]
 
-(def index-page-key :core-wallets-show-words)
+(def index-page-id :core-wallets-show-words)
 (def model-key ::m.c.words/id)
 (def parent-model-key ::m.c.wallets/id)
+(def required-role :user)
 
 (report/defsc-report Report
   [_this _props]
@@ -41,14 +42,14 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-key
+                       ::m.navlinks/id  index-page-id
                        :ui/report       {}}
    :query             [::m.c.wallets/id
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (let [{:ui/keys [current-rows]} report
         sorted-rows               (sort-by ::m.c.words/position current-rows)
         groups                    (partition 12 sorted-rows)]
@@ -63,14 +64,12 @@
                   words)))
              groups)))))
 
-(def ui-sub-page (comp/factory SubPage))
-
 (defsc SubSection
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-key
+                       ::m.navlinks/id  index-page-id
                        :ui/report       {}}
    :query             [::m.c.wallets/id
                        ::m.navlinks/id

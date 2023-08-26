@@ -23,9 +23,10 @@
 ;; [[../../../joins/core/addresses.cljc]]
 ;; [[../../../model/core/addresses.cljc]]
 
-(def index-page-key :core-wallets-show-addresses)
+(def index-page-id :core-wallets-show-addresses)
 (def model-key ::m.c.wallet-addresses/id)
 (def parent-model-key ::m.c.wallets/id)
+(def required-role :user)
 
 (def generate-action
   (u.buttons/row-action-button "Generate" model-key mu.c.wallet-addresses/generate!))
@@ -103,14 +104,14 @@
 (defsc SubPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-key
+                       ::m.navlinks/id  index-page-id
                        :ui/report       {}}
    :query             [::m.c.wallets/id
                        ::m.navlinks/id
                        {:ui/report (comp/get-query Report)}]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-key parent-model-key ::SubPage)}
+   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (ui-report report))
 
 (def ui-sub-page (comp/factory SubPage))
@@ -120,9 +121,9 @@
           :ui/keys           [report]
           :as                props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-key])
+   :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-key
+                       ::m.navlinks/id  index-page-id
                        :ui/report       {}}
    :query             [::m.c.wallets/id
                        ::m.navlinks/id
