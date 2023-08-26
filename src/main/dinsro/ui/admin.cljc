@@ -28,6 +28,7 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../ui.cljc]]
+;; [[../ui/admin/ln.cljc]]
 ;; [[../ui/admin/nostr.cljc]]
 
 (def debug-route false)

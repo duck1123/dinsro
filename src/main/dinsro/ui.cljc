@@ -46,6 +46,8 @@
    [dinsro.ui.transactions :as u.transactions]
    [lambdaisland.glogc :as log]))
 
+;; [[./ui/admin.cljc]]
+
 (def show-breadcrumbs true)
 
 (defsc GlobalErrorDisplay [this {:ui/keys [global-error]}]
