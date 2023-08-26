@@ -199,38 +199,40 @@
     (dom/div {:classes [:.ui root-container]}
       (if loaded?
         (if initialized?
-          (comp/fragment
-           (ui-grid {}
-             (ui-grid-row {:only "computer tablet"}
-               (ui-grid-column {:width 16}
-                 (ui-container {:fluid true}
-                   (u.navbars/ui-navbar navbar))))
-             (ui-grid-row {:only "mobile"}
-               (ui-grid-column {:width 16}
-                 (ui-container {:fluid true}
-                   (if authenticated?
-                     (u.navbars/ui-minimal-navbar navbar)
-                     (u.navbars/ui-navbar navbar))))))
-           (ui-sidebar-pushable {}
-             (u.navbars/ui-navbar-sidebar navbar)
-             (ui-sidebar-pusher {:className (string/join " " [pusher])}
-               (dom/div {:className (string/join " " [pushed])}
-                 (when show-breadcrumbs (ui-breadcrumbs-link-grid breadcrumbs-grid))
-                 (ui-grid {:className (string/join "" [primary-grid])}
-                   (ui-grid-row {:centered  true
-                                 :className primary-row}
-                     (ui-grid-column {}
-                       (if (= :initial top-router-state)
-                         (dom/div :.loading "Loading...")
-                         (comp/fragment
-                          (ui-global-error-display global-error)
-                          (u.authenticator/ui-authenticator authenticator)
-                          (when-not gathering-credentials?
-                            (dom/div {:classes [router-wrapper]}
-                              (if router
-                                (ui-root-router router)
-                                (ui-segment {}
-                                  "Failed to load router")))))))))))))
+          (dom/div {}
+            (ui-grid {}
+              (ui-grid-row {:only "computer tablet"}
+                (ui-grid-column {:width 16}
+                  (ui-container {:fluid true}
+                    (u.navbars/ui-navbar navbar))))
+              (ui-grid-row {:only "mobile"}
+                (ui-grid-column {:width 16}
+                  (ui-container {:fluid true}
+                    (if authenticated?
+                      (u.navbars/ui-minimal-navbar navbar)
+                      (u.navbars/ui-navbar navbar))))))
+            (ui-sidebar-pushable {}
+              (u.navbars/ui-navbar-sidebar navbar)
+              (ui-sidebar-pusher {:className (string/join " " [pusher])}
+                (dom/div {:className (string/join " " [pushed])}
+                  (dom/div {}
+                    (when show-breadcrumbs (ui-breadcrumbs-link-grid breadcrumbs-grid)))
+                  (dom/div {}
+                    (ui-grid {:className (string/join "" [primary-grid])}
+                      (ui-grid-row {:centered  true
+                                    :className primary-row}
+                        (ui-grid-column {}
+                          (if (= :initial top-router-state)
+                            (dom/div :.loading "Loading...")
+                            (comp/fragment
+                             (ui-global-error-display global-error)
+                             (u.authenticator/ui-authenticator authenticator)
+                             (when-not gathering-credentials?
+                               (dom/div {:classes [router-wrapper]}
+                                 (if router
+                                   (ui-root-router router)
+                                   (ui-segment {}
+                                     "Failed to load router"))))))))))))))
           (u.initialize/ui-init-form init-form))
         (ui-segment {}
           (dom/p "Not loaded")))

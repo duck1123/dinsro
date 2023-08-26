@@ -1,6 +1,9 @@
 (ns dinsro.ui.admin.ln
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro-css.css :as css]
+   #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
+   #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
@@ -53,7 +56,10 @@
 
 (defsc IndexPage
   [_this {:ui/keys [router vertical-menu] :as props}]
-  {:ident         (fn [] [::m.navlinks/id :admin-ln])
+  {:css           [[:.content {:display "block" :flex "1 1 auto"}]
+                   [:.menu-container {:display "block" :flex "0 0 auto"}]
+                   [:.page-container {:display "flex" :flex-flow "row nowrap"}]]
+   :ident         (fn [] [::m.navlinks/id :admin-ln])
    :initial-state (fn [_]
                     {::m.navlinks/id   index-page-key
                      :ui/router        (comp/get-initial-state Router)
@@ -66,16 +72,19 @@
                    {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}]
    :route-segment ["ln"]}
   (log/info :IndexPage/starting {:props props})
-  (ui-grid {}
-    (ui-grid-row {}
-      (ui-grid-column {:width 4}
+  (let [{:keys [content menu-container page-container]} (css/get-classnames IndexPage)]
+    (dom/div {:classes [page-container]}
+      (dom/div {:classes [menu-container]}
         (if vertical-menu
           (u.menus/ui-vertical-menu vertical-menu)
           (ui-segment {} "Failed to load menu")))
-      (ui-grid-column {:width 12}
-        (if router
-          (ui-router router)
-          (ui-segment {} "Failed to load router"))))))
+      (dom/div {:classes [content]}
+        (ui-grid {}
+          (ui-grid-row {}
+            (ui-grid-column {:width 16}
+              (if router
+                (ui-router router)
+                (ui-segment {} "Failed to load router")))))))))
 
 (m.navlinks/defroute index-page-key
   {::m.navlinks/control       ::IndexPage
