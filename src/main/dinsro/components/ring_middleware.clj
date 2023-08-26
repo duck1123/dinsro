@@ -39,6 +39,9 @@
      [:script {:src "/css/semantic.min.js"}]
      [:link {:rel "manifest" :href "/app.webmanifest"}]
      [:link {:rel "icon" :type "image/x-icon" :href "/images/favicon.ico"}]
+     [:link {:rel "icon" :type "image/png" :href "/images/favicon-16x16.png"}]
+     [:link {:rel "icon" :type "image/png" :href "/images/favicon-32x32.png"}]
+     [:link {:rel "apple-touch-icon" :type "image/png" :href "/images/apple-touch-icon.png"}]
      [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
     [:body {}
