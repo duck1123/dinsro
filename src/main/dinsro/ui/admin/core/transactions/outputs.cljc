@@ -16,7 +16,6 @@
 ;; [[../../../../model/core/tx_out.cljc]]
 
 (def index-page-id :admin-core-transactions-show-outputs)
-(def model-key ::m.c.tx-out/id)
 (def parent-model-key ::m.c.transactions/id)
 
 (report/defsc-report Report

@@ -15,6 +15,7 @@
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.peers :as mu.ln.peers]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -114,18 +115,18 @@
     (ui-report report)))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Peers"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Peers"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/label         "Peers"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/input-key     model-key
+   o.navlinks/label         "Peers"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

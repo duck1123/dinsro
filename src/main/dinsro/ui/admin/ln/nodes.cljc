@@ -25,6 +25,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.ln.nodes.accounts :as u.a.ln.n.accounts]
    [dinsro.ui.admin.ln.nodes.addresses :as u.a.ln.n.addresses]
    [dinsro.ui.admin.ln.nodes.channels :as u.a.ln.n.channels]
@@ -246,18 +247,18 @@
     (u.debug/load-error props "admin show ln node")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Nodes"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Nodes"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/label         "Show Node"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/input-key     model-key
+   o.navlinks/label         "Show Node"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

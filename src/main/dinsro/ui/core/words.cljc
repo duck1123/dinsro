@@ -9,6 +9,7 @@
    [dinsro.joins.core.words :as j.c.words]
    [dinsro.model.core.words :as m.c.words]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -50,3 +51,11 @@
   (log/info :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
+
+(m.navlinks/defroute index-page-id
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Index Words"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

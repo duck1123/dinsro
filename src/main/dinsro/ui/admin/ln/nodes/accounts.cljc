@@ -9,6 +9,7 @@
    [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
@@ -54,10 +55,10 @@
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::SubPage
-   ::m.navlinks/input-key     parent-model-key
-   ::m.navlinks/label         "Accounts"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::SubPage
+   o.navlinks/input-key     parent-model-key
+   o.navlinks/label         "Accounts"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

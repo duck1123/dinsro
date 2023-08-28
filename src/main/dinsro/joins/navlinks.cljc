@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
+   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
@@ -40,6 +41,17 @@
          (log/debug :path/finished {:id id :idents idents})
          {::path idents})))})
 
+(defattr menu ::menu :ref
+  {ao/identities #{::m.navlinks/id}
+   ao/pc-input   #{::m.navlinks/id}
+   ao/target     ::m.navbars/id
+   ao/pc-output  [{::menu [::m.navbars/id]}]
+   ao/pc-resolve
+   (fn [_env {::m.navlinks/keys [id]}]
+     (if (get @m.navbars/menus-atom id)
+       {::menu {::m.navbars/id id}}
+       {::menu nil}))})
+
 (defattr index ::index :ref
   {ao/pc-output  [{::index [::m.navlinks/id]}]
    ao/pc-resolve (fn [_env _props]
@@ -48,7 +60,7 @@
                      {::index idents}))
    ao/target     ::m.navlinks/id})
 
-(def attributes [path index])
+(def attributes [path index menu])
 
 (comment
 

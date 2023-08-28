@@ -7,6 +7,7 @@
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.accounts :as u.a.accounts]
    [dinsro.ui.admin.categories :as u.a.categories]
    [dinsro.ui.admin.contacts :as u.a.contacts]
@@ -135,10 +136,10 @@
       (u.debug/log-props props))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/description   "Admin root page"
-   ::m.navlinks/label         "Admin"
-   ::m.navlinks/navigate-key  u.a.users/index-page-id
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/description   "Admin root page"
+   o.navlinks/label         "Admin"
+   o.navlinks/navigate-key  u.a.users/index-page-id
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

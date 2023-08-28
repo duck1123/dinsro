@@ -12,6 +12,7 @@
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.core.networks.addresses :as u.a.c.n.addresses]
    [dinsro.ui.admin.core.networks.blocks :as u.a.c.n.blocks]
    [dinsro.ui.admin.core.networks.ln-nodes :as u.a.c.n.ln-nodes]
@@ -148,21 +149,21 @@
     (u.debug/load-error props)))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/description   "Admin index networks"
-   ::m.navlinks/label         "Networks"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/required-role required-role
-   ::m.navlinks/router        parent-router-id})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/description   "Admin index networks"
+   o.navlinks/label         "Networks"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/required-role required-role
+   o.navlinks/router        parent-router-id})
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/description   "Admin Show Network"
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/label         "Show Network"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/navigate-key  u.a.c.n.addresses/index-page-id
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/required-role required-role
-   ::m.navlinks/router        parent-router-id})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/description   "Admin Show Network"
+   o.navlinks/input-key     model-key
+   o.navlinks/label         "Show Network"
+   o.navlinks/model-key     model-key
+   o.navlinks/navigate-key  u.a.c.n.addresses/index-page-id
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/required-role required-role
+   o.navlinks/router        parent-router-id})

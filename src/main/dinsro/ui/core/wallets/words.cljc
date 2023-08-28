@@ -19,9 +19,7 @@
 ;; [[../../../model/core/words.cljc]]
 
 (def index-page-id :core-wallets-show-words)
-(def model-key ::m.c.words/id)
 (def parent-model-key ::m.c.wallets/id)
-(def required-role :user)
 
 (report/defsc-report Report
   [_this _props]

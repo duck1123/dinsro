@@ -6,6 +6,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.core.addresses :as u.a.c.addresses]
    [dinsro.ui.admin.core.blocks :as u.a.c.blocks]
    [dinsro.ui.admin.core.chains :as u.a.c.chains]
@@ -100,10 +101,10 @@
       (u.debug/load-error props "admin core page router"))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/description   "Router page for core admin"
-   ::m.navlinks/label         "Core"
-   ::m.navlinks/navigate-key  u.a.c.dashboard/index-page-id
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/description   "Router page for core admin"
+   o.navlinks/label         "Core"
+   o.navlinks/navigate-key  u.a.c.dashboard/index-page-id
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

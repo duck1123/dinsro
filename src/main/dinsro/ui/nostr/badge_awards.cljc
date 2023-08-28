@@ -13,13 +13,16 @@
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 (def index-page-id :nostr-badge-awards)
 (def model-key ::m.n.badge-awards/id)
-(def show-page-key :nostr-badge-awards-show)
+(def parent-router-id :nostr)
+(def required-role :user)
+(def show-page-id :nostr-badge-awards-show)
 
 (def fetch-button
   {:type   :button
@@ -76,16 +79,32 @@
   [_this {::m.n.badge-awards/keys [id]
           ::m.navlinks/keys       [target]
           :as                     props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.n.badge-awards/id nil
-                   ::m.navlinks/id       show-page-key
+                   ::m.navlinks/id       show-page-id
                    ::m.navlinks/target   {}}
    :query         [::m.n.badge-awards/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["badge-award" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (ui-show target)
     (ui-segment {} "Failed to load record")))
+
+(m.navlinks/defroute index-page-id
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Index Badge Awards"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
+
+(m.navlinks/defroute show-page-id
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Show Badge Awards"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

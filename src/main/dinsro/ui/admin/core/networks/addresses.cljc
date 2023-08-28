@@ -10,6 +10,7 @@
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.addresses :as mu.c.addresses]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
@@ -70,10 +71,10 @@
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::SubPage
-   ::m.navlinks/input-key     parent-model-key
-   ::m.navlinks/label         "Addresses"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-show-id
-   ::m.navlinks/router        parent-show-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::SubPage
+   o.navlinks/input-key     parent-model-key
+   o.navlinks/label         "Addresses"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-show-id
+   o.navlinks/router        parent-show-id
+   o.navlinks/required-role required-role})

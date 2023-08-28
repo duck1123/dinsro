@@ -25,4 +25,4 @@
   (dom/div {} (u.links/ui-admin-run-link props))
   (u.n.connections/ui-connection-display connection))
 
-(def ui-run-display (comp/factory RunDisplay {:keyfn ::m.n.runs/id}))
+(def ui-run-display (comp/factory RunDisplay {:keyfn model-key}))

@@ -10,6 +10,7 @@
    [dinsro.joins.nostr.witnesses :as j.n.witnesses]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -19,6 +20,9 @@
 ;; [[../../queries/nostr/witnesses.clj]]
 
 (def index-page-id :nostr-witnesses)
+(def model-key ::m.n.witnesses/id)
+(def parent-router-id :nostr)
+(def required-role :user)
 
 (def log-witness-props false)
 
@@ -66,3 +70,11 @@
    :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
+
+(m.navlinks/defroute index-page-id
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Index Witnesses"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

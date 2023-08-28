@@ -24,6 +24,7 @@
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -344,18 +345,18 @@
     (u.debug/load-error props "show nostr event page")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Events"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Events"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/label         "Show Event"
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Show Event"
+   o.navlinks/input-key     model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

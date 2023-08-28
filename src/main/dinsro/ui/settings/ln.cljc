@@ -8,6 +8,7 @@
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
@@ -71,9 +72,9 @@
           (u.debug/load-error props "settings ln router"))))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::Page
-   ::m.navlinks/label         "Lightning"
-   ::m.navlinks/navigate-key  u.s.ln.dashboard/index-page-id
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::Page
+   o.navlinks/label         "Lightning"
+   o.navlinks/navigate-key  u.s.ln.dashboard/index-page-id
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

@@ -11,6 +11,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
    [dinsro.mutations.nostr.filter-items :as mu.n.filter-items]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -121,18 +122,18 @@
     (u.debug/load-error props "admin filter items")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Items"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Items"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-key
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/label         "Items"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/input-key     model-key
+   o.navlinks/label         "Items"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

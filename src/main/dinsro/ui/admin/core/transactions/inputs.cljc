@@ -16,9 +16,7 @@
 ;; [[../../../../model/core/tx_out.cljc]]
 
 (def index-page-id :admin-core-transactions-show-inputs)
-(def model-key ::m.c.tx-in/id)
 (def parent-model-key ::m.c.transactions/id)
-(def router-key :dinsro.ui.admin.core.transactions/Router)
 
 (report/defsc-report Report
   [_this _props]

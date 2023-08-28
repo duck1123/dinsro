@@ -28,6 +28,7 @@
    [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks :refer [defroute]]
    [dinsro.model.transactions :as m.transactions]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
@@ -299,12 +300,12 @@
                    ::j.transactions/debit-count 0
                    :ui/debits                   {}}
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/debits [u.t.debits/SubPage {}]})
+                    {:ui/debits [u.t.debits/SubSection {}]})
    :query         [::m.transactions/description
                    ::m.transactions/id
                    ::m.transactions/date
                    ::j.transactions/debit-count
-                   {:ui/debits (comp/get-query u.t.debits/SubPage)}]}
+                   {:ui/debits (comp/get-query u.t.debits/SubSection)}]}
   (log/debug :Show/starting {:props props})
   (if id
     (dom/div {}
@@ -317,7 +318,7 @@
         (u.buttons/form-edit-button this model-key "Edit" NewTransaction))
       (if debits
         (ui-segment {}
-          (u.t.debits/ui-sub-page debits))
+          (u.t.debits/ui-sub-section debits))
         (u.debug/load-error props "show transaction debits")))
     (u.debug/load-error props "show transaction record")))
 
@@ -359,18 +360,18 @@
     (u.debug/load-error props "show transaction page")))
 
 (defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Transactions"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Transactions"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (defroute show-page-key
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/label         "Show Transaction"
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Show Transaction"
+   o.navlinks/input-key     model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

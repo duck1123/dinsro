@@ -16,7 +16,6 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
    [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
@@ -25,8 +24,6 @@
 
 (def index-page-id :core-wallets-show-addresses)
 (def model-key ::m.c.wallet-addresses/id)
-(def parent-model-key ::m.c.wallets/id)
-(def required-role :user)
 
 (def generate-action
   (u.buttons/row-action-button "Generate" model-key mu.c.wallet-addresses/generate!))
@@ -100,21 +97,6 @@
    ro/title             "Addresses"})
 
 (def ui-report (comp/factory Report))
-
-(defsc SubPage
-  [_this {:ui/keys [report]}]
-  {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-id
-                       :ui/report       {}}
-   :query             [::m.c.wallets/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
-   :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
-  (ui-report report))
-
-(def ui-sub-page (comp/factory SubPage))
 
 (defsc SubSection
   [_this {::m.c.wallets/keys [id]

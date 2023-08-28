@@ -6,6 +6,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.nostr.badge-acceptance :as u.n.badge-acceptance]
    [dinsro.ui.nostr.badge-awards :as u.n.badge-awards]
@@ -75,8 +76,8 @@
     (u.debug/load-error "Nostr router")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::Page
-   ::m.navlinks/label         "Nostr"
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/required-role required-role
-   ::m.navlinks/router        parent-router-id})
+  {o.navlinks/control       ::Page
+   o.navlinks/label         "Nostr"
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/required-role required-role
+   o.navlinks/router        parent-router-id})

@@ -16,7 +16,6 @@
 ;; [[../../../model/core/tx_in.cljc]]
 
 (def index-page-id :core-transactions-show-inputs)
-(def model-key ::m.c.tx-in/id)
 (def parent-model-key ::m.c.transactions/id)
 
 (report/defsc-report Report
@@ -38,20 +37,17 @@
 
 (def ui-report (comp/factory Report))
 
-(defsc SubPage
+(defsc SubSection
   [_this {:ui/keys [report]
           :as props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   ;; :ident             (fn [] [::m.navlinks/id index-page-id)
    :initial-state     {::m.c.transactions/id nil
                        ::m.navlinks/id       index-page-id
                        :ui/report            {}}
    :query             [::m.c.transactions/id
                        ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
-   ;; :will-enter        (u.loader/targeted-subpage-loader index-page-idparent-model-key ::SubPage)
-   }
-  (log/debug :SubPage/starting {:props props})
+                       {:ui/report (comp/get-query Report)}]}
+  (log/debug :SubSection/starting {:props props})
   (if (get props parent-model-key)
     (ui-report report)
     (u.debug/load-error props "core transactions inputs")))

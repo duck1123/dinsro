@@ -14,6 +14,7 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.core.wallets.accounts :as u.a.c.w.accounts]
    [dinsro.ui.admin.core.wallets.addresses :as u.a.c.w.addresses]
    [dinsro.ui.admin.core.wallets.words :as u.a.c.w.words]
@@ -187,19 +188,19 @@
     (u.debug/load-error props "admin show wallet page")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/description   "Admin index of wallets"
-   ::m.navlinks/label         "Wallets"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/description   "Admin index of wallets"
+   o.navlinks/label         "Wallets"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/description   "Admin Show Wallet"
-   ::m.navlinks/label         "Show Wallet"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/description   "Admin Show Wallet"
+   o.navlinks/label         "Show Wallet"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

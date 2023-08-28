@@ -10,6 +10,7 @@
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -66,20 +67,20 @@
     (ui-report report)))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Wallet Addresses"
-   ::m.navlinks/description   "Admin index of wallet addresses"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Wallet Addresses"
+   o.navlinks/description   "Admin index of wallet addresses"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-key
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/description   "Admin show page for wallet address"
-   ::m.navlinks/label         "Show Wallet Address"
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/description   "Admin show page for wallet address"
+   o.navlinks/label         "Show Wallet Address"
+   o.navlinks/input-key     model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

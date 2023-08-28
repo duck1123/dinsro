@@ -12,6 +12,7 @@
    [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
@@ -78,10 +79,10 @@
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::SubPage
-   ::m.navlinks/input-key     parent-model-key
-   ::m.navlinks/label         "Tags"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::SubPage
+   o.navlinks/input-key     parent-model-key
+   o.navlinks/label         "Tags"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

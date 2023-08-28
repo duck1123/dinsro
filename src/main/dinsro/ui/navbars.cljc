@@ -18,6 +18,7 @@
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.navbars :as mu.navbars]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -52,7 +53,7 @@
    :initial-state {::m.navlinks/id         nil
                    ::m.navlinks/label      ""
                    ::m.navlinks/auth-link? false
-                   ::m.navlinks/navigate     {}
+                   ::m.navlinks/navigate   {}
                    ::j.navlinks/path       []}
    :query         [::m.navlinks/id
                    ::m.navlinks/label
@@ -125,10 +126,12 @@
 (defsc MenuItem
   [_this _props]
   {:initial-state {::m.navbars/id       nil
-                   ::m.navbars/children []}
+                   ::m.navbars/children []
+                   ::j.navbars/menu     {}}
    :ident         ::m.navbars/id
    :query         [::m.navbars/id
-                   {::m.navbars/children (comp/get-query NavLink)}]})
+                   {::m.navbars/children (comp/get-query NavLink)}
+                   ::j.navbars/menu]})
 
 (defsc NavbarSidebar
   [this {:ui/keys         [inverted?]
@@ -306,9 +309,9 @@
   (ui-report report))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Navbars"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Navbars"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

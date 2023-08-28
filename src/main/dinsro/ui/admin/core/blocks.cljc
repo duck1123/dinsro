@@ -12,6 +12,7 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.core.blocks.transactions :as u.a.c.b.transactions]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
@@ -153,21 +154,21 @@
     (u.debug/load-error props "admin show block")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/description   "Admin index blocks"
-   ::m.navlinks/label         "Blocks"
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/description   "Admin index blocks"
+   o.navlinks/label         "Blocks"
+   o.navlinks/input-key     model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/description   "Admin show block"
-   ::m.navlinks/label         "Show Block"
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/description   "Admin show block"
+   o.navlinks/label         "Show Block"
+   o.navlinks/input-key     model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

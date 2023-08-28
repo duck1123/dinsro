@@ -15,6 +15,7 @@
    [dinsro.model.core.peers :as m.c.peers]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.peers :as mu.c.peers]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -27,7 +28,7 @@
 (def model-key ::m.c.peers/id)
 (def parent-router-id :core)
 (def required-role :user)
-(def show-page-key :core-peers-show)
+(def show-page-id :core-peers-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!))
@@ -130,11 +131,27 @@
 
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id show-page-key
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
+   :initial-state {::m.navlinks/id show-page-id
                    ::m.navlinks/target      {}}
    :query         [::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["peer" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (ui-show target))
+
+(m.navlinks/defroute index-page-id
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Index peers"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
+
+(m.navlinks/defroute show-page-id
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Show Peer"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

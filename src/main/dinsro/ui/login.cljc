@@ -14,7 +14,8 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations]
-   [dinsro.mutations.session :as mu.session]))
+   [dinsro.mutations.session :as mu.session]
+   [dinsro.options.navlinks :as o.navlinks]))
 
 (def index-page-id :login)
 (def parent-router-id :root)
@@ -68,9 +69,9 @@
               (uism/trigger! this ::auth/auth-machine :event/cancel))}))))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/auth-link?    true
-   ::m.navlinks/label         "Login"
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/required-role required-role
-   ::m.navlinks/router        parent-router-id})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/auth-link?    true
+   o.navlinks/label         "Login"
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/required-role required-role
+   o.navlinks/router        parent-router-id})

@@ -6,6 +6,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.loader :as u.loader]))
 
 (def index-page-id :admin-core-dashboard)
@@ -26,9 +27,9 @@
     (dom/p "TODO: Admin Core Dashboard")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::Page
-   ::m.navlinks/description   "Admin Core Dashboard"
-   ::m.navlinks/label         "Dashboard"
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/required-role required-role
-   ::m.navlinks/router        parent-router-id})
+  {o.navlinks/control       ::Page
+   o.navlinks/description   "Admin Core Dashboard"
+   o.navlinks/label         "Dashboard"
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/required-role required-role
+   o.navlinks/router        parent-router-id})

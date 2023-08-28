@@ -10,6 +10,7 @@
    [dinsro.joins.nostr.badge-acceptances :as j.n.badge-acceptances]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.badge-acceptances :as m.n.badge-acceptances]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -55,9 +56,9 @@
         "Failed to load report"))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::SubPage
-   ::m.navlinks/label         "Badge Acceptances"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::SubPage
+   o.navlinks/label         "Badge Acceptances"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

@@ -7,6 +7,7 @@
    [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -16,9 +17,10 @@
 ;; [[../joins/debits.cljc]]
 
 (def model-key ::m.debits/id)
-(def show-page-key :debits-show)
-
-(def show-props false)
+(def parent-router-id :root)
+(def show-page-id :debits-show)
+(def show-props? false)
+(def required-role :user)
 
 (defsc Show
   [_this {::m.debits/keys [value transaction account]
@@ -59,7 +61,7 @@
         (if current-rate
           (u.links/ui-rate-value-link current-rate)
           "Missing"))
-      (when show-props
+      (when show-props?
         (dom/div {} (u.debug/log-props props)))
       (dom/div {} (str positive?)))))
 
@@ -68,14 +70,22 @@
 (defsc ShowPage
   [_this {::m.navlinks/keys [target]
           :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.debits/id       nil
-                   ::m.navlinks/id     show-page-key
+                   ::m.navlinks/id     show-page-id
                    ::m.navlinks/target {}}
    :query         [::m.debits/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["debit" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
   (ui-show target))
+
+(m.navlinks/defroute show-page-id
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Show Node"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

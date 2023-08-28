@@ -9,11 +9,15 @@
    [dinsro.joins.nostr.badge-definitions :as j.n.badge-definitions]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 (def index-page-id :nostr-badge-definitions)
+(def model-key ::m.n.badge-definitions/id)
+(def parent-router-id :nostr)
+(def required-role :user)
 
 (report/defsc-report Report
   [_this _props]
@@ -47,3 +51,11 @@
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
+
+(m.navlinks/defroute index-page-id
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Index Badge Definitions"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

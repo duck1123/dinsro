@@ -13,6 +13,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.mutations.nostr.connections :as mu.n.connections]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.nostr.connections.runs :as u.a.n.c.runs]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
@@ -153,18 +154,18 @@
     (u.debug/load-error props "Admin show nostr connection page")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Connections"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Connections"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/label         "Show Connection"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/navigate-key  u.a.n.c.runs/index-page-id
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Show Connection"
+   o.navlinks/model-key     model-key
+   o.navlinks/navigate-key  u.a.n.c.runs/index-page-id
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

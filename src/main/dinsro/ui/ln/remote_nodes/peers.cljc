@@ -8,6 +8,7 @@
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
@@ -63,10 +64,10 @@
 (def ui-sub-page (comp/factory SubPage))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::SubPage
-   ::m.navlinks/label         "Peers"
-   ::m.navlinks/input-key     parent-model-key
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::SubPage
+   o.navlinks/label         "Peers"
+   o.navlinks/input-key     parent-model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

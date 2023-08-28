@@ -10,8 +10,6 @@
    [dinsro.ui.charts :as u.charts]
    [dinsro.ui.links :as u.links]))
 
-(def router-key :dinsro.ui.settings.rate-sources/Router)
-
 (report/defsc-report Report
   [this props]
   {ro/columns           [m.rates/rate

@@ -14,6 +14,7 @@
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.core.chains.networks :as u.c.c.networks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -139,10 +140,10 @@
     (u.debug/load-error props "show chains")))
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/label         "Show Chain"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/navigate-key  u.c.c.networks/index-page-id
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Show Chain"
+   o.navlinks/model-key     model-key
+   o.navlinks/navigate-key  u.c.c.networks/index-page-id
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

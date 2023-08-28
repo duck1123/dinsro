@@ -11,6 +11,7 @@
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.menus :as u.menus]
    [dinsro.ui.settings.categories :as u.s.categories]
@@ -95,9 +96,9 @@
           (u.debug/load-error props "settings router"))))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Settings"
-   ::m.navlinks/navigate-key  u.s.dashboard/index-page-id
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Settings"
+   o.navlinks/navigate-key  u.s.dashboard/index-page-id
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

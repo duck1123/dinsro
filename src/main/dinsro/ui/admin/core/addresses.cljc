@@ -13,6 +13,7 @@
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.addresses :as mu.c.addresses]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -118,20 +119,20 @@
     (u.debug/load-error props "admin show address")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/description   "Admin index for core addresses"
-   ::m.navlinks/label         "Addresses"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/description   "Admin index for core addresses"
+   o.navlinks/label         "Addresses"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-key
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/description   "Admin core address"
-   ::m.navlinks/label         "Show Address"
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/description   "Admin core address"
+   o.navlinks/label         "Show Address"
+   o.navlinks/input-key     model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

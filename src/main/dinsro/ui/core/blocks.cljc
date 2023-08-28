@@ -13,6 +13,7 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.blocks.transactions :as u.c.b.transactions]
    [dinsro.ui.debug :as u.debug]
@@ -77,7 +78,7 @@
                    ::m.c.blocks/network        {}
                    :ui/transactions            {}}
    :pre-merge         (u.loader/page-merger model-key
-                        {:ui/transactions   [u.c.b.transactions/SubPage {}]})
+                        {:ui/transactions   [u.c.b.transactions/SubSection {}]})
    :query         [::m.c.blocks/id
                    ::m.c.blocks/height
                    ::m.c.blocks/hash
@@ -87,7 +88,7 @@
                    {::m.c.blocks/network (comp/get-query u.links/NetworkLinkForm)}
                    {::m.c.blocks/previous-block (comp/get-query u.links/BlockHeightLinkForm)}
                    {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
-                   {:ui/transactions (comp/get-query u.c.b.transactions/SubPage)}
+                   {:ui/transactions (comp/get-query u.c.b.transactions/SubSection)}
                    [df/marker-table '_]]}
   (log/debug :Show/creating {:props props})
   (if id
@@ -128,7 +129,7 @@
         (u.debug/load-error props "record"))
       (if id
         (dom/div {}
-          (u.c.b.transactions/ui-subpage transactions))
+          (u.c.b.transactions/ui-sub-section transactions))
         (u.debug/load-error props "no id")))
     (u.debug/load-error props "no id")))
 
@@ -184,10 +185,10 @@
       "Failed to load record")))
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/label         "Show Block"
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Show Block"
+   o.navlinks/input-key     model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

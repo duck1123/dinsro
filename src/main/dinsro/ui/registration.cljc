@@ -7,8 +7,10 @@
    [com.fulcrologic.semantic-ui.elements.header.ui-header :refer [ui-header]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.forms.registration :as u.f.registration]))
 
+(def index-label "Registration")
 (def index-page-id :registration)
 (def parent-router :root)
 (def required-role :guest)
@@ -33,8 +35,8 @@
       (dom/p {} "Registrations are not enabled"))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Registration"
-   ::m.navlinks/parent-key    parent-router
-   ::m.navlinks/router        parent-router
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control         ::IndexPage
+   o.navlinks/label         index-label
+   o.navlinks/parent-key    parent-router
+   o.navlinks/router        parent-router
+   o.navlinks/required-role required-role})

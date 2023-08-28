@@ -10,6 +10,7 @@
    [dinsro.model.instances :as m.instances]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.instances :as mu.instances]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
@@ -71,10 +72,10 @@
       (u.debug/load-error props "admin index instances page"))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/description   "Admin page of all instances"
-   ::m.navlinks/label         "Instances"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/description   "Admin page of all instances"
+   o.navlinks/label         "Instances"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

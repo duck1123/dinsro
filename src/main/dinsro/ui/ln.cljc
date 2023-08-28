@@ -6,6 +6,7 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.ln.accounts :as u.ln.accounts]
    [dinsro.ui.ln.channels :as u.ln.channels]
    [dinsro.ui.ln.invoices :as u.ln.invoices]
@@ -47,9 +48,9 @@
       (ui-router router))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "LN Router"
-   ::m.navlinks/navigate-key  u.ln.nodes/index-page-id
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "LN Router"
+   o.navlinks/navigate-key  u.ln.nodes/index-page-id
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

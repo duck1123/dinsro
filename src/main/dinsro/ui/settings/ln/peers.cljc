@@ -1,8 +1,6 @@
 (ns dinsro.ui.settings.ln.peers
   (:require
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
-   #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.fulcro.components :as comp]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.picker-options :as picker-options]
@@ -13,13 +11,9 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
-   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.peers :as mu.ln.peers]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
-
-(def index-page-id :settings-ln-peers)
 
 (def submit-button
   {:type   :button
@@ -90,17 +84,3 @@
    ro/title             "Lightning Peers"})
 
 (def ui-report (comp/factory Report))
-
-(defsc Page
-  [_this {:ui/keys [report]
-          :as      props}]
-  {:ident         (fn [] [::m.navlinks/id index-page-id])
-   :initial-state {::m.navlinks/id index-page-id
-                   :ui/report      {}}
-   :query         [::m.navlinks/id
-                   {:ui/report (comp/get-query Report)}]
-   :route-segment ["peers"]
-   :will-enter    (u.loader/page-loader index-page-id)}
-  (log/debug :Page/starting {:props props})
-  (dom/div {}
-    (ui-report report)))

@@ -36,7 +36,7 @@
 
 (def ui-report (comp/factory Report))
 
-(defsc SubPage
+(defsc SubSection
   [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-id])
@@ -48,4 +48,4 @@
                        {:ui/report (comp/get-query Report)}]}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
-(def ui-sub-page (comp/factory SubPage))
+(def ui-sub-section (comp/factory SubSection))

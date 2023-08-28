@@ -12,6 +12,7 @@
    [dinsro.model.core.addresses :as m.c.addresses]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.addresses :as mu.c.addresses]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.loader :as u.loader]))
 
@@ -66,3 +67,11 @@
    :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
+
+(m.navlinks/defroute index-page-id
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Index Addresses"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

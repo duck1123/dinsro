@@ -25,6 +25,7 @@
    [dinsro.model.settings :as m.settings]
    [dinsro.mutations.navbars :as mu.navbars]
    [dinsro.mutations.ui :as mu.ui]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.accounts :as u.accounts]
    [dinsro.ui.admin :as u.admin]
    [dinsro.ui.authenticator :as u.authenticator]
@@ -242,7 +243,7 @@
       (inj/style-element {:component Root}))))
 
 (m.navlinks/defroute :root
-  {::m.navlinks/control       ::Page
-   ::m.navlinks/label         "Home"
-   ::m.navlinks/parent-key    nil
-   ::m.navlinks/required-role :guest})
+  {o.navlinks/control       ::Page
+   o.navlinks/label         "Home"
+   o.navlinks/parent-key    nil
+   o.navlinks/required-role :guest})

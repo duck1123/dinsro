@@ -6,6 +6,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.core.addresses :as u.c.addresses]
    [dinsro.ui.core.blocks :as u.c.blocks]
    [dinsro.ui.core.chains :as u.c.chains]
@@ -80,10 +81,10 @@
   (ui-router router))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/description   "Router for core"
-   ::m.navlinks/label         "Core"
-   ::m.navlinks/navigate-key  u.c.nodes/index-page-id
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/description   "Router for core"
+   o.navlinks/label         "Core"
+   o.navlinks/navigate-key  u.c.nodes/index-page-id
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

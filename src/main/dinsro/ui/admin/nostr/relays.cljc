@@ -16,6 +16,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.nostr.relays.connections :as u.a.n.r.connections]
    [dinsro.ui.admin.nostr.relays.events :as u.a.n.r.events]
    [dinsro.ui.admin.nostr.relays.pubkeys :as u.a.n.r.pubkeys]
@@ -204,20 +205,20 @@
     (u.debug/load-error props "admin relays page")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Relays"
-   ::m.navlinks/description   "Admin index of relays"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Relays"
+   o.navlinks/description   "Admin index of relays"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/label         "Show Relay"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/navigate-key  u.a.n.r.connections/index-page-id
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/input-key     model-key
+   o.navlinks/label         "Show Relay"
+   o.navlinks/model-key     model-key
+   o.navlinks/navigate-key  u.a.n.r.connections/index-page-id
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

@@ -12,6 +12,7 @@
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.transactions :as mu.c.transactions]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.transactions.inputs :as u.c.t.inputs]
    [dinsro.ui.core.transactions.outputs :as u.c.t.outputs]
@@ -51,15 +52,15 @@
                    :ui/outputs                 {}
                    ::m.c.transactions/fetched? false}
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/inputs  [u.c.t.inputs/SubPage {}]
-                     :ui/outputs [u.c.t.outputs/SubPage {}]})
+                    {:ui/inputs  [u.c.t.inputs/SubSection {}]
+                     :ui/outputs [u.c.t.outputs/SubSection {}]})
    :query         [::m.c.transactions/id
                    ::m.c.transactions/tx-id
                    ::m.c.transactions/hash
                    ::m.c.transactions/size
                    ::m.c.transactions/fetched?
-                   {:ui/inputs (comp/get-query u.c.t.inputs/SubPage)}
-                   {:ui/outputs (comp/get-query u.c.t.outputs/SubPage)}
+                   {:ui/inputs (comp/get-query u.c.t.inputs/SubSection)}
+                   {:ui/outputs (comp/get-query u.c.t.outputs/SubSection)}
                    {::m.c.transactions/block (comp/get-query u.links/BlockHeightLinkForm)}
                    [df/marker-table '_]]}
   (log/info :Show/starting {:props props})
@@ -82,8 +83,8 @@
           (dom/dd {} (str size))))
       (if id
         (dom/div {}
-          (when inputs ((comp/factory u.c.t.inputs/SubPage) inputs))
-          (when outputs ((comp/factory u.c.t.outputs/SubPage) outputs)))
+          (when inputs ((comp/factory u.c.t.inputs/SubSection) inputs))
+          (when outputs ((comp/factory u.c.t.outputs/SubSection) outputs)))
         (ui-segment {:color "red" :inverted true}
           "id not set")))
     (ui-segment {:color "red" :inverted true}
@@ -147,10 +148,10 @@
     (u.debug/load-error props "core transactions page")))
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/label         "Show Transaction"
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Show Transaction"
+   o.navlinks/input-key     model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

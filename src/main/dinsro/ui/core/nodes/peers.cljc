@@ -13,6 +13,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
    [dinsro.mutations.core.peers :as mu.c.peers]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.core.peers :as u.c.peers]
@@ -100,9 +101,9 @@
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::SubPage
-   ::m.navlinks/label         "Peers"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::SubPage
+   o.navlinks/label         "Peers"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

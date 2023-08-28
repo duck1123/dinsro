@@ -53,7 +53,7 @@
 
 (ws/defcard SubPage
   (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.t.debits/SubPage
+   {::ct.fulcro3/root u.t.debits/SubSection
     ::ct.fulcro3/app  {:client-will-mount client/setup-RAD}
     ::ct.fulcro3/initial-state
     (fn [] (make-sub-page))}))

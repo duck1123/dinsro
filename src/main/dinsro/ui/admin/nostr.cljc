@@ -10,6 +10,7 @@
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.nostr.badge-acceptances :as u.a.n.badge-acceptances]
    [dinsro.ui.admin.nostr.badge-awards :as u.a.n.badge-awards]
    [dinsro.ui.admin.nostr.badge-definitions :as u.a.n.badge-definitions]
@@ -147,9 +148,9 @@
                 (u.debug/load-error props "admin nostr router")))))))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Nostr"
-   ::m.navlinks/navigate-key  u.a.n.dashboard/index-page-id
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Nostr"
+   o.navlinks/navigate-key  u.a.n.dashboard/index-page-id
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

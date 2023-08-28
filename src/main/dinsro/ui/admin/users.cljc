@@ -15,6 +15,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.users :as mu.users]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.users.accounts :as u.a.u.accounts]
    [dinsro.ui.admin.users.categories :as u.a.u.categories]
    [dinsro.ui.admin.users.debits :as u.a.u.debits]
@@ -208,19 +209,19 @@
     (u.debug/load-error props "Admin Show User Page")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Users"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Users"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-id
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/label         "Admin Show User"
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/navigate-key  u.a.u.accounts/index-page-id
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Admin Show User"
+   o.navlinks/input-key     model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/navigate-key  u.a.u.accounts/index-page-id
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

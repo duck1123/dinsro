@@ -13,6 +13,7 @@
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -125,9 +126,9 @@
     (u.debug/load-error props "settings show remote node")))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Remote Nodes"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Remote Nodes"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

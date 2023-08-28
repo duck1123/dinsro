@@ -16,7 +16,6 @@
 ;; [[../../../model/core/tx_in.cljc]]
 
 (def index-page-id :core-transactions-show-outputs)
-(def model-key ::m.c.tx-out/id)
 (def parent-model-key ::m.c.transactions/id)
 
 (report/defsc-report Report
@@ -38,7 +37,7 @@
 
 (def ui-report (comp/factory Report))
 
-(defsc SubPage
+(defsc SubSection
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
@@ -51,10 +50,8 @@
    :query             (fn [_props]
                         [::m.navlinks/id
                          parent-model-key
-                         {:ui/report (comp/get-query Report)}])
-   ;; :will-enter        (u.loader/targeted-subpage-loader index-page-idparent-model-key ::SubPage)
-   }
-  (log/info :SubPage/starting {:props props})
+                         {:ui/report (comp/get-query Report)}])}
+  (log/info :SubSection/starting {:props props})
   (if (get props parent-model-key)
     (ui-report report)
     (u.debug/load-error props "core transactions outputs")))

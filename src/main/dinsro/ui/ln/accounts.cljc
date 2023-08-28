@@ -9,6 +9,7 @@
    [dinsro.joins.ln.accounts :as j.ln.accounts]
    [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -18,6 +19,7 @@
 
 (def index-page-id :ln-accounts)
 (def model-key ::m.ln.accounts/id)
+(def parent-router-id :ln)
 (def required-role :user)
 
 (report/defsc-report Report
@@ -48,3 +50,11 @@
   (log/info :IndexPage/starting {:props props})
   (dom/div {}
     (ui-report report)))
+
+(m.navlinks/defroute index-page-id
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/label         "Index LN Accounts"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

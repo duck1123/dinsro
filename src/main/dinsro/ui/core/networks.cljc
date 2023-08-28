@@ -12,6 +12,7 @@
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.core.networks.addresses :as u.c.n.addresses]
    [dinsro.ui.core.networks.blocks :as u.c.n.blocks]
    [dinsro.ui.core.networks.ln-nodes :as u.c.n.ln-nodes]
@@ -139,10 +140,10 @@
     (u.debug/load-error props "show network")))
 
 (m.navlinks/defroute   :core-networks-show
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/label         "Show Network"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    u.c.n.addresses/index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/input-key     model-key
+   o.navlinks/label         "Show Network"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    u.c.n.addresses/index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

@@ -9,6 +9,7 @@
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
@@ -36,8 +37,8 @@
             (dom/h2 "Core Nodes")))))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::Page
-   ::m.navlinks/label         "Dashboard"
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::Page
+   o.navlinks/label         "Dashboard"
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

@@ -22,6 +22,7 @@
 
 (def model-key ::m.c.nodes/id)
 
+(def show-item? false)
 (def override-report false)
 
 (defsc BodyItem-Item
@@ -36,6 +37,8 @@
   (dom/div :.ui.item
     (dom/div {} (u.links/ui-core-node-link props))
     (dom/div {} (u.links/ui-network-link network))))
+
+(def ui-body-item-item (comp/factory BodyItem-Item {:keyfn model-key}))
 
 (defsc BodyItem-Table
   [_this {::m.c.nodes/keys [network]
@@ -53,8 +56,8 @@
 
 (def BodyItem BodyItem-Table)
 
-(def ui-body-table-item (comp/factory BodyItem-Table {:keyfn ::m.c.nodes/id}))
-(def ui-body-item (comp/factory BodyItem {:keyfn ::m.c.nodes/id}))
+(def ui-body-item-table (comp/factory BodyItem-Table {:keyfn ::m.c.nodes/id}))
+(def ui-body-item (if show-item? ui-body-item-item ui-body-item-table))
 
 (defsc ReportBody-List
   [_this props]
@@ -75,7 +78,7 @@
             (ui-table-header-cell {} "Name")
             (ui-table-header-cell {} "Network")))
         (ui-table-body {}
-          (map ui-body-table-item current-rows))))))
+          (map ui-body-item-table current-rows))))))
 
 (def use-table? true)
 (def ReportBody (if use-table? ReportBody-Table ReportBody-List))

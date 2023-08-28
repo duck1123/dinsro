@@ -11,6 +11,7 @@
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.ln.accounts :as u.a.ln.accounts]
    [dinsro.ui.admin.ln.channels :as u.a.ln.channels]
    [dinsro.ui.admin.ln.dashboard :as u.a.ln.dashboard]
@@ -90,8 +91,8 @@
                 (ui-segment {} "Failed to load router")))))))))
 
 (m.navlinks/defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "LN"
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role required-role})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "LN"
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})

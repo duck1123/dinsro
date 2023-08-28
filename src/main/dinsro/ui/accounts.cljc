@@ -26,6 +26,7 @@
    [dinsro.model.navlinks :as m.navlinks :refer [defroute]]
    [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.accounts.transactions :as u.a.transactions]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
@@ -258,20 +259,20 @@
     (ui-report report)))
 
 (defroute index-page-id
-  {::m.navlinks/control       ::IndexPage
-   ::m.navlinks/label         "Accounts"
-   ::m.navlinks/description   "An index of all accounts for a user"
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    parent-router-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role :user})
+  {o.navlinks/control       ::IndexPage
+   o.navlinks/label         "Accounts"
+   o.navlinks/description   "An index of all accounts for a user"
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role :user})
 
 (defroute show-page-key
-  {::m.navlinks/control       ::ShowPage
-   ::m.navlinks/description   "Show page for an account"
-   ::m.navlinks/label         "Show Accounts"
-   ::m.navlinks/input-key     model-key
-   ::m.navlinks/model-key     model-key
-   ::m.navlinks/parent-key    index-page-id
-   ::m.navlinks/router        parent-router-id
-   ::m.navlinks/required-role :user})
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/description   "Show page for an account"
+   o.navlinks/label         "Show Accounts"
+   o.navlinks/input-key     model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role :user})
