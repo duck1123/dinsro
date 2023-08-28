@@ -32,9 +32,9 @@
                          m.ln.peers/sat-sent
                          m.ln.peers/inbound?]
    ro/control-layout    {:action-buttons [::refresh]
-                         :inputs         [[::m.ln.remote-nodes/id]]}
-   ro/controls          {::m.ln.remote-nodes/id {:type :uuid :label "Nodes"}
-                         ::refresh              u.links/refresh-control}
+                         :inputs         [[parent-model-key]]}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -49,11 +49,13 @@
   [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     (fn [_]
-                        {::m.navlinks/id index-page-id
-                         :ui/report      {}})
-   :query             (fn [_]
-                        [::m.navlinks/id
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [parent-model-key
+                         ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
