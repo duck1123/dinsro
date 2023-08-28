@@ -41,7 +41,6 @@
 (def model-key ::m.n.pubkeys/id)
 (def parent-router-id :nostr)
 (def required-role :user)
-(def show-menu-id :nostr-pubkeys)
 (def show-page-id :nostr-pubkeys-show)
 
 (def add-action
@@ -61,8 +60,8 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-menu-id
-  {::m.navbars/parent :nostr
+(m.navbars/defmenu show-page-id
+  {::m.navbars/parent parent-router-id
    ::m.navbars/router ::Router
    ::m.navbars/children
    [u.n.p.events/index-page-id
@@ -159,11 +158,11 @@
           :as                props}]
   {:ident         ::m.n.pubkeys/id
    :initial-state (fn [props]
-                    (let [id (::m.n.pubkeys/id props)]
+                    (let [id (model-key props)]
                       {::m.n.pubkeys/about        ""
                        ::m.n.pubkeys/display-name ""
                        ::m.n.pubkeys/hex          ""
-                       ::m.n.pubkeys/id           nil
+                       ::m.n.pubkeys/id           model-key
                        ::m.n.pubkeys/lud06        ""
                        ::m.n.pubkeys/name         ""
                        ::m.n.pubkeys/nip05        ""
@@ -219,11 +218,11 @@
           ::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-id])
-   :initial-state (fn [_props]
-                    {model-key           nil
+   :initial-state (fn [props]
+                    {model-key           (model-key props)
                      ::m.navlinks/id     show-page-id
                      ::m.navlinks/target (comp/get-initial-state Show {})})
-   :query         (fn [_props]
+   :query         (fn []
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show {})}])
@@ -242,7 +241,7 @@
    ::m.navlinks/router        parent-router-id
    ::m.navlinks/required-role required-role})
 
-(m.navlinks/defroute   :nostr-pubkeys-show
+(m.navlinks/defroute show-page-id
   {::m.navlinks/control       ::ShowPage
    ::m.navlinks/label         "Show Pubkey"
    ::m.navlinks/input-key     model-key
