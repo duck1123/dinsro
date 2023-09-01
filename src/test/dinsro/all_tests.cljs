@@ -10,6 +10,8 @@
    dinsro.ui.core.wallets-test
    dinsro.ui.core.words-test
    dinsro.ui.forms.registration-test
+   dinsro.ui.home-test
+   dinsro.ui.menus-test
    dinsro.ui.navbars-test
    dinsro.ui.nostr.event-tags-test
    dinsro.ui.nostr.events-test

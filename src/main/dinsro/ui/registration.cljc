@@ -10,6 +10,8 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.forms.registration :as u.f.registration]))
 
+;; [[../mocks/ui/registration.cljc]]
+
 (def index-label "Registration")
 (def index-page-id :registration)
 (def parent-router :root)

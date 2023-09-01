@@ -22,6 +22,8 @@
    [dinsro.ui.transactions :as u.transactions]
    [lambdaisland.glogc :as log]))
 
+;; [[../mocks/ui/home.cljc]]
+
 (def index-page-id :home)
 (def parent-router-id :root)
 (def required-role :guest)

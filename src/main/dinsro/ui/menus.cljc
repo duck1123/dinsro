@@ -11,6 +11,8 @@
    [dinsro.ui.debug :as u.debug]
    [lambdaisland.glogc :as log]))
 
+;; [[../../../test/dinsro/ui/menus_test.cljc]]
+
 (def log-id? false)
 (def log-props? false)
 

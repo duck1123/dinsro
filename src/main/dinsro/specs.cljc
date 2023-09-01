@@ -52,3 +52,9 @@
 
 (s/def ::id-string (s/with-gen (s/and string? #(re-matches #"\d+" %))
                      #(gen/fmap str (s/gen pos-int?))))
+
+(defn make-rows
+  [opts f]
+  (let [max-rows  (:max-rows opts 8)
+        row-count (:row-count opts (inc (rand-int max-rows)))]
+    (mapv (fn [_] (f)) (range row-count))))

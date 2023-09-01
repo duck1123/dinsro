@@ -1,20 +1,16 @@
 (ns dinsro.ui.registration-test
   (:require
+   [dinsro.mocks.ui.registration :as mo.u.registration]
+   [dinsro.test-helpers :as th]
    [dinsro.ui.registration :as u.registration]
-   [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
+;; [[../../../main/dinsro/mocks/ui/registration.cljc]]
+;; [[../../../main/dinsro/ui/registration.cljc]]
+
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard IndexPage
+(ws/defcard RegistrationIndexPage
   {::wsm/card-height 12
    ::wsm/card-width  4}
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.registration/IndexPage
-    ::ct.fulcro3/initial-state
-    (fn []
-      {::u.registration/allow-registration true
-       ::u.registration/form
-       {:username         ""
-        :password         ""
-        :confirm-password ""}})}))
+  (th/fulcro-card u.registration/IndexPage mo.u.registration/IndexPage-data {}))
