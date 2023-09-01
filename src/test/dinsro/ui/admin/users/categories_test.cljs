@@ -16,13 +16,13 @@
    ::m.categories/id                (ds/gen-key ::m.categories/id)
    ::j.categories/transaction-count (ds/gen-key ::j.categories/transaction-count)})
 
-(ws/defcard BodyItem
+(ws/defcard AdminUserCategoriesBodyItem
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root          u.a.u.categories/BodyItem
     ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
     ::ct.fulcro3/initial-state (fn [] (make-body-item))}))
 
-(ws/defcard NewForm
+(ws/defcard AdminUserCategoriesNewForm
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root          u.a.u.categories/NewForm
     ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}

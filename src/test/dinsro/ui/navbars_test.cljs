@@ -17,17 +17,17 @@
    {::ct.fulcro3/root u.navbars/NavLink
     ::ct.fulcro3/initial-state
     (fn [] {::m.navlinks/id         "foo"
-            ::m.navlinks/name       (ds/gen-key ::m.navlinks/name)
+            ::m.navlinks/label      (ds/gen-key ::m.navlinks/label)
             ::m.navlinks/auth-link? false
             ::m.navlinks/target     nil
-            :ui/router           {}})}))
+            :ui/router              {}})}))
 
 (def unauth-links
   [{::m.navlinks/id         :foo
-    ::m.navlinks/name       (ds/gen-key ::m.navlinks/name)
+    ::m.navlinks/label      (ds/gen-key ::m.navlinks/label)
     ::m.navlinks/auth-link? false
     ::m.navlinks/target     nil
-    :ui/router           {}}])
+    :ui/router              {}}])
 
 (def menu-links
   [])

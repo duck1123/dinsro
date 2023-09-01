@@ -9,6 +9,7 @@
 
 ;; [[../model/navlinks.cljc]]
 ;; [[../ui/navlinks.cljs]]
+;; [[../../../notebooks/dinsro/notebooks/navlinks_notebook.clj]]
 
 (defn find-path
   ([router]

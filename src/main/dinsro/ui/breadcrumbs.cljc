@@ -9,7 +9,12 @@
    [com.fulcrologic.semantic-ui.collections.breadcrumb.ui-breadcrumb-section :refer [ui-breadcrumb-section]]
    [dinsro.joins.navlinks :as j.navlinks]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.ui.debug :as u.debug]
    [lambdaisland.glogc :as log]))
+
+;; [[../../../test/dinsro/ui/breadcrumbs_test.cljs]]
+
+(def log-props? false)
 
 (defsc NavTarget
   [_this _props]
@@ -73,7 +78,9 @@
   (dom/div {}
     (ui-breadcrumb {}
       (map ui-breadcrumb-divided-link path)
-      (ui-breadcrumb-link props))))
+      (ui-breadcrumb-link props))
+    (when log-props?
+      (u.debug/log-props props))))
 
 (def ui-breadcrumbs-inner (comp/factory BreadcrumbsInner))
 

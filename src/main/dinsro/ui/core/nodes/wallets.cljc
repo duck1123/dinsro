@@ -18,6 +18,7 @@
 
 ;; [[../../../joins/core/wallets.cljc]]
 ;; [[../../../model/core/wallets.cljc]]
+;; [[../../../../../test/dinsro/ui/core/node_wallets_test.cljs]]
 
 (def index-page-id :core-nodes-show-wallets)
 (def model-key ::m.c.wallets/id)

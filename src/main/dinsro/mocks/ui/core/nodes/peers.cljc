@@ -1,4 +1,4 @@
-(ns dinsro.ui.core.node-peers-test
+(ns dinsro.mocks.ui.core.nodes.peers
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    [dinsro.model.core.nodes :as m.c.nodes]

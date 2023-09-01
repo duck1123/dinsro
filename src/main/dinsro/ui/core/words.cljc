@@ -16,6 +16,7 @@
 
 ;; [[../../joins/core/words.cljc]]
 ;; [[../../model/core/words.cljc]]
+;; [[../../../../test/dinsro/ui/core/words_test.cljs]]
 
 (def index-page-id :core-words)
 (def model-key ::m.c.words/id)

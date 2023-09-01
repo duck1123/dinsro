@@ -1,31 +1,22 @@
 (ns dinsro.ui.core.nodes-test
   (:require
    [dinsro.client :as client]
+   [dinsro.mocks.ui.core.nodes :as mo.u.c.nodes]
+   [dinsro.mocks.ui.core.nodes.peers :as mo.u.c.n.peers]
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.specs :as ds]
-   [dinsro.ui.core.node-peers-test :as u.c.node-peers-test]
+   [dinsro.test-helpers :as th]
    [dinsro.ui.core.nodes :as u.c.nodes]
    [dinsro.ui.core.nodes.peers :as u.c.node-peers]
-   [lambdaisland.glogc :as log]
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
-(defn Show-data
-  []
-  (let [data {::m.c.nodes/id          (ds/gen-key ::m.c.nodes/id)
-              ::m.c.nodes/chain       "regtest"
-              ::m.c.nodes/block-count 73
-              ::m.c.nodes/name        "main node"
-              ::m.c.nodes/fetched?    true
-              ::m.c.nodes/height      6
-              ::m.c.nodes/hash        "yes"
-              :peers                  (u.c.node-peers-test/SubPage-data)}]
-    (log/info :Show-data/response {:data data})
-    data))
+;; [[../../../../main/dinsro/mocks/ui/core/nodes.cljc]]
+;; [[../../../../main/dinsro/ui/core/nodes.cljc]]
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard ActionsMenu
+(ws/defcard CoreNodesActionsMenu
   {::wsm/card-width 2 ::wsm/card-height 9}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.c.nodes/ActionsMenu
@@ -35,17 +26,11 @@
       {::m.c.nodes/id (ds/gen-key ::m.c.nodes/id)})}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard SubPage
+(ws/defcard CoreNodesSubPage
   {::wsm/card-width 7 ::wsm/card-height 20}
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root          u.c.node-peers/SubPage
-    ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state u.c.node-peers-test/SubPage-data}))
+  (th/fulcro-card u.c.node-peers/SubPage mo.u.c.n.peers/SubPage-data {}))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard Show
+(ws/defcard CoreNodesShow
   {::wsm/card-width 7 ::wsm/card-height 14}
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root          u.c.nodes/Show
-    ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state Show-data}))
+  (th/fulcro-card u.c.nodes/Show mo.u.c.nodes/Show-data {}))

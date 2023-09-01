@@ -4,6 +4,7 @@
    [dinsro.actions.core.wallets :as a.c.wallets]
    [dinsro.client.bitcoin-s :as c.bitcoin-s]
    [dinsro.client.converters.ext-private-key :as cc.ext-privat-key]
+   [dinsro.mocks.ui.core.nodes.wallets :as mo.u.c.n.wallets]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.notebook-utils :as nu]
    [dinsro.queries.core.wallets :as q.c.wallets]
@@ -121,6 +122,10 @@ wallet-a-tpriv
 (def wallet-a-vpriv "vprv9MzYTyxDsS6wiGT8r3gLJN3mathoRdA2SPnTXaymAUFknU5oDnsn22ntkFm4455LQM726qF33xWDJrywAmxk2XGYp2X3mmZzH32Y3SHGqib")
 
 wallet-a-vpriv
+
+;; Core Node Wallets
+
+(mo.u.c.n.wallets/SubPage-data)
 
 (comment
   {:type        "wpkh"

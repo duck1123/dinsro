@@ -41,6 +41,7 @@
 ;; [[../joins/transactions.cljc]]
 ;; [[../model/transactions.cljc]]
 ;; [[../ui/admin/transactions.cljs]]
+;; [[../../../test/dinsro/ui/transactions_test.cljs]]
 
 (def index-page-id :transactions)
 (def model-key ::m.transactions/id)

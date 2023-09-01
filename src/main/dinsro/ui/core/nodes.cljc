@@ -31,6 +31,7 @@
 
 ;; [[../../joins/core/nodes.cljc]]
 ;; [[../../model/core/nodes.cljc]]
+;; [[../../../../test/dinsro/ui/core/nodes_test.cljs]]
 
 (def index-page-id :core-nodes)
 (def model-key ::m.c.nodes/id)

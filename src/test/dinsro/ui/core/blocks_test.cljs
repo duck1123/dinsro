@@ -9,8 +9,10 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
+;; [[../../../../main/dinsro/ui/core/blocks.cljc]]
+
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard RefRow
+(ws/defcard CoreBlocksRefRow
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.c.blocks/RefRow
     ::ct.fulcro3/initial-state
@@ -31,7 +33,7 @@
    :ui/parameters   {}})
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard Report
+(ws/defcard CoreBlocksReport
   {::wsm/card-width 6 ::wsm/card-height 13}
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root          u.c.blocks/Report

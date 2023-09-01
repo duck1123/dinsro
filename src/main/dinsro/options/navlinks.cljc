@@ -14,6 +14,9 @@
   "A long-form description of the target"
   ::m.navlinks/description)
 
+(def id
+  ::m.navlinks/id)
+
 (def input-key
   "The model key of the required input"
   ::m.navlinks/input-key)
