@@ -1,6 +1,7 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns dinsro.notebooks.instances-notebook
   (:require
+   [dinsro.actions.current-instance :as a.current-instance]
    [dinsro.actions.instances :as a.instances]
    [dinsro.model.instances :as m.instances]
    [dinsro.notebook-utils :as nu]
@@ -24,7 +25,7 @@
 
 (ds/gen-key ::m.instances/item)
 
-a.instances/*current-instance-id*
+a.current-instance/*current-instance-id*
 
 (map q.instances/read-record (q.instances/index-ids))
 

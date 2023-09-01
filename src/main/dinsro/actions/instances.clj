@@ -1,6 +1,10 @@
 (ns dinsro.actions.instances
   (:require
+   [dinsro.actions.current-instance :as a.current-instance]
+   [dinsro.actions.nostr.connections :as a.n.connections]
+   [dinsro.model.instances :as m.instances]
    [dinsro.queries.instances :as q.instances]
+   [dinsro.queries.nostr.connections :as q.n.connections]
    [lambdaisland.glogc :as log]
    [manifold.time :as mt]
    [mount.core :as mount]))
@@ -8,9 +12,11 @@
 ;; [[../joins/instances.cljc]]
 ;; [[../model/instances.cljc]]
 ;; [[../queries/instances.clj]]
+;; [[../ui/admin/instances.cljc]]
 ;; [[../../../notebooks/dinsro/notebooks/instances_notebook.clj]]
 
-(defonce ^:dynamic *current-instance-id* (atom nil))
+(def model-key ::m.instances/id)
+
 (declare ^:dynamic *scheduler*)
 (def scheduler-enabled true)
 (def schedule-rate (mt/minutes 5))
@@ -28,15 +34,17 @@
 (defn delete!
   [id]
   (log/info :delete!/starting {:id id})
+  (doseq [id (q.n.connections/index-ids {model-key id})]
+    (a.n.connections/delete! id))
   (q.instances/delete! id))
 
 (defn register!
   []
-  (if-let [instance-id @*current-instance-id*]
+  (if-let [instance-id (a.current-instance/get-current)]
     instance-id
     (let [created-id (create! {})]
       (log/info :register/created {:created-id created-id})
-      (reset! *current-instance-id* created-id)
+      (reset! a.current-instance/*current-instance-id* created-id)
       created-id)))
 
 (defn heartbeat!

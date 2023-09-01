@@ -6,6 +6,8 @@
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
+   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.instances :as j.instances]
    [dinsro.model.instances :as m.instances]
    [dinsro.model.navlinks :as m.navlinks]
@@ -27,6 +29,7 @@
 (def model-key ::m.instances/id)
 (def parent-router-id :admin)
 (def required-role :admin)
+(def show-page-id :admin-instances-show)
 
 (def beat-action
   (u.buttons/row-action-button "Beat" model-key mu.instances/beat!))
@@ -42,7 +45,8 @@
    ro/columns           [m.instances/id
                          m.instances/created-time
                          m.instances/last-heartbeat
-                         j.instances/alive?]
+                         j.instances/alive?
+                         j.instances/connection-count]
    ro/controls          {::refresh u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
@@ -54,6 +58,21 @@
    ro/title             "Instances"})
 
 (def ui-report (comp/factory Report))
+
+(defsc Show
+  [_this {::m.instances/keys [last-heartbeat]}]
+  {:ident          ::m.instances/id
+   :initial-state  {::m.instances/id   nil
+                    ::m.instances/last-heartbeat nil}
+   ::m.navlinks/id :show-category
+   :pre-merge      (u.loader/page-merger model-key {})
+   :query          [::m.instances/id
+                    ::m.instances/last-heartbeat]}
+  (ui-container {}
+    (ui-segment {}
+      (str last-heartbeat))))
+
+(def ui-show (comp/factory Show))
 
 (defsc IndexPage
   [_this {:ui/keys [report] :as props}]
@@ -71,11 +90,39 @@
       (ui-report report)
       (u.debug/load-error props "admin index instances page"))))
 
+(defsc ShowPage
+  [_this {::m.navlinks/keys [target]
+          :as props}]
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     ::m.navlinks/id     show-page-id
+                     ::m.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                    ::m.navlinks/id
+                    {::m.navlinks/target (comp/get-query Show)}])
+   :route-segment ["instance" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
+  (if (and target (model-key props))
+    (ui-show target)
+    (u.debug/load-error props "admin show category")))
+
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage
    o.navlinks/description   "Admin page of all instances"
    o.navlinks/label         "Instances"
    o.navlinks/model-key     model-key
    o.navlinks/parent-key    parent-router-id
+   o.navlinks/router        parent-router-id
+   o.navlinks/required-role required-role})
+
+(m.navlinks/defroute show-page-id
+  {o.navlinks/control       ::ShowPage
+   o.navlinks/description   "Admin page for instances"
+   o.navlinks/label         "Show Instance"
+   o.navlinks/input-key     model-key
+   o.navlinks/model-key     model-key
+   o.navlinks/parent-key    index-page-id
    o.navlinks/router        parent-router-id
    o.navlinks/required-role required-role})

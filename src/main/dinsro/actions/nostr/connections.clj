@@ -4,7 +4,7 @@
    [clojure.data.json :as json]
    [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>def >defn ? =>]]
-   [dinsro.actions.instances :as a.instances]
+   [dinsro.actions.current-instance :as a.current-instance]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.runs :as m.n.runs]
@@ -153,11 +153,12 @@
   [relay-id]
   [::m.n.relays/id => ::m.n.connections/id]
   (log/info :create-connection!/starting {:relay-id relay-id})
-  (let [instance-id (a.instances/register!)]
+  (if-let [instance-id (a.current-instance/get-current)]
     (q.n.connections/create-record
      {::m.n.connections/relay    relay-id
       ::m.n.connections/instance instance-id
-      ::m.n.connections/status   :initial})))
+      ::m.n.connections/status   :initial})
+    (throw (ex-info "Failed to read instance" {}))))
 
 (>defn handle-event
   [type req-id evt]
