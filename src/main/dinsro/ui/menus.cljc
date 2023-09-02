@@ -4,7 +4,7 @@
    [com.fulcrologic.fulcro.data-fetch :as df]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
-   [com.fulcrologic.rad.routing :as rroute]
+   #?(:cljs [com.fulcrologic.rad.routing :as rroute])
    [com.fulcrologic.semantic-ui.collections.menu.ui-menu :refer [ui-menu]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
@@ -90,18 +90,21 @@
 (defn on-menu-click
   [this id _e d]
   (log/info :on-menu-click/starting {:d d})
-  (if-let [route-name #?(:clj nil :cljs (get (js->clj d) "route"))]
-    (let [route-kw (keyword route-name)
-          route    (comp/registry-key->class route-kw)]
-      (log/info :on-menu-click/clicked {:route-kw route-kw :route route :id id})
-      (if id
-        (do
-          (log/debug :NavMenu/click-with-id {:id id})
-          (rroute/route-to! this route {:id (str id)}))
-        (do
-          (log/debug :NavMenu/click-no-id {})
-          (rroute/route-to! this route {}))))
-    (throw (ex-info "no route" {}))))
+  #?(:clj
+     (let [_props [this id d]] nil)
+     :cljs
+     (if-let [route-name (get (js->clj d) "route")]
+       (let [route-kw (keyword route-name)
+             route    (comp/registry-key->class route-kw)]
+         (log/info :on-menu-click/clicked {:route-kw route-kw :route route :id id})
+         (if id
+           (do
+             (log/debug :NavMenu/click-with-id {:id id})
+             (rroute/route-to! this route {:id (str id)}))
+           (do
+             (log/debug :NavMenu/click-no-id {})
+             (rroute/route-to! this route {}))))
+       (throw (ex-info "no route" {})))))
 
 (defsc NavMenu
   [this {:keys        [id]
