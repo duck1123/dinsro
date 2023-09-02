@@ -100,8 +100,8 @@
                      ::m.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
-                    ::m.navlinks/id
-                    {::m.navlinks/target (comp/get-query Show)}])
+                     ::m.navlinks/id
+                     {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["instance" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (if (and target (model-key props))

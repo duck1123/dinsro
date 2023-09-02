@@ -25,6 +25,15 @@
      ;; no more items
      path)))
 
+(defn find-path2
+  ([navlink-id] (find-path2 navlink-id []))
+  ([navlink-id path]
+   (if-let [item (@m.navlinks/routes-atom navlink-id)]
+     (if-let [parent-id (::m.navlinks/parent-id item)]
+       (find-path2 parent-id (concat path [navlink-id]))
+       (conj path navlink-id))
+     (throw (ex-info "Failed to find item" {:navlink-id navlink-id})))))
+
 ;; the list of parent pages to the root
 (defattr path ::path :ref
   {ao/identities #{::m.navlinks/id}

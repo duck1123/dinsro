@@ -37,7 +37,7 @@
   {fo/attributes     [m.c.chains/name]
    fo/cancel-route   ["chains"]
    fo/id             m.c.chains/id
-   fo/route-prefix   "chain"
+   fo/route-prefix   "edit-chain"
    fo/title          "Chain"}
   (if override-form
     (form/render-layout this props)

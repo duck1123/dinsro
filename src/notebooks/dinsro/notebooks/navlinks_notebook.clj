@@ -11,5 +11,6 @@
 ;; ## Path (join)
 
 (j.navlinks/find-path :admin-core-chains-show-networks)
+(j.navlinks/find-path2 :admin-core-chains-show-networks)
 
 ((::pc/resolve j.navlinks/path) {} {::m.navlinks/id :admin-core-chains-show-networks})

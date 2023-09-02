@@ -252,7 +252,7 @@
    fo/route-prefix "admin-instance-link"
    fo/attributes   [m.instances/id]}
   (log/trace :NodeLinkForm/starting {:id id :name name :props props})
-  (form-link this id (str id) :dinsro.ui.admin.instances/IndexPage))
+  (form-link this id (str id) :dinsro.ui.admin.instances/ShowPage))
 
 (def ui-admin-instance-link (comp/factory AdminInstanceLinkForm {:keyfn ::m.instances/id}))
 
@@ -382,7 +382,7 @@
   {fo/id           m.n.runs/id
    fo/route-prefix "admin-run-link"
    fo/attributes   [m.n.runs/status]}
-  (form-link this id (name status) :dinsro.ui.admin.nostr.runs/ShowPage))
+  (form-link this id (name status) :dinsro.ui.admin.nostr.runs.witnesses/SubPage))
 
 (def ui-admin-run-link (comp/factory AdminRunLinkForm {:keyfn ::m.n.runs/id}))
 

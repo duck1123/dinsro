@@ -28,6 +28,7 @@
 ;; [[../model/navbars.cljc]]
 ;; [[../mutations/navbars.cljc]]
 
+(def force-link-shown? true)
 (def index-page-id :navbars)
 (def model-key ::m.navlinks/id)
 (def parent-router-id :root)
@@ -45,29 +46,48 @@
    :query         [::m.navlinks/id
                    ::m.navlinks/control]})
 
+;; Navlink data for menus
+(defsc MenuNavLink
+  [_this _props]
+  {:ident         ::m.navlinks/id
+   :initial-state {::m.navlinks/id         nil
+                   ::m.navlinks/label      ""
+                   ::m.navlinks/auth-link? false
+                   ::m.navlinks/navigate   {}
+                   :ui/link-loaded         false}
+   :query         [::m.navlinks/id
+                   ::m.navlinks/label
+                   {::m.navlinks/navigate (comp/get-query RouteTarget)}
+                   ::m.navlinks/auth-link?
+                   :ui/link-loaded]})
+
 (defsc NavLink
-  [this {::j.navlinks/keys [path]
-         ::m.navlinks/keys [label]
+  [this {::m.navlinks/keys [label]
+         :ui/keys          [link-loaded]
          :as               props}]
   {:ident         ::m.navlinks/id
    :initial-state {::m.navlinks/id         nil
                    ::m.navlinks/label      ""
                    ::m.navlinks/auth-link? false
                    ::m.navlinks/navigate   {}
-                   ::j.navlinks/path       []}
+                   ::j.navlinks/path       []
+                   :ui/link-loaded         false}
    :query         [::m.navlinks/id
                    ::m.navlinks/label
                    {::m.navlinks/navigate (comp/get-query RouteTarget)}
                    ::m.navlinks/auth-link?
-                   ::j.navlinks/path]}
-  (log/trace :Navlink/starting {:props props :path path})
-  (dom/a :.item
-    {:onClick (fn [e]
-                (.preventDefault e)
-                (let [props (comp/props this)]
-                  (log/debug :NavLink/clicked {:props props})
-                  (comp/transact! this [`(mu.navbars/navigate! ~props)])))}
-    label))
+                   ::j.navlinks/path
+                   :ui/link-loaded]}
+  (log/trace :Navlink/starting {:props props})
+  (if (or force-link-shown? link-loaded)
+    (dom/a :.item
+      {:onClick (fn [e]
+                  (.preventDefault e)
+                  (let [props (comp/props this)]
+                    (log/debug :NavLink/clicked {:props props})
+                    (comp/transact! this [`(mu.navbars/navigate! ~props)])))}
+      label)
+    (dom/div {} "Not loaded")))
 
 (def ui-nav-link (comp/factory NavLink {:keyfn ::m.navlinks/id}))
 
@@ -123,6 +143,7 @@
 
 (def ui-navbar-logout-link (comp/factory NavbarLogoutLink))
 
+;; Data loaded for a menu
 (defsc MenuItem
   [_this _props]
   {:initial-state {::m.navbars/id       nil
@@ -130,7 +151,7 @@
                    ::j.navbars/menu     {}}
    :ident         ::m.navbars/id
    :query         [::m.navbars/id
-                   {::m.navbars/children (comp/get-query NavLink)}
+                   {::m.navbars/children (comp/get-query MenuNavLink)}
                    ::j.navbars/menu]})
 
 (defsc NavbarSidebar

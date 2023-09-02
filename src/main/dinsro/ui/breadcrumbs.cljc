@@ -31,12 +31,11 @@
                     (log/debug :BreadcrumbLink/initial-state {:x x})
                     (let [{::m.navlinks/keys [id]} x]
                       {::m.navlinks/id     id
-                       ::m.navlinks/label  (str "Foo-" id)
+                       ::m.navlinks/label  ""
                        ::m.navlinks/navigate (comp/get-initial-state NavTarget {})}))
    :query         [::m.navlinks/id
                    ::m.navlinks/label
                    {::m.navlinks/navigate (comp/get-query NavTarget)}]}
-
   (log/trace :BreadcrumbLink/starting {:props props})
   (ui-breadcrumb-section
     {:link    true
@@ -90,16 +89,16 @@
   {:componentDidMount  (fn [this]
                          (let [props (comp/props this)
                                id    (get-in props [:root/current-page ::m.navlinks/id])]
-                           (log/debug :Breadcrumbs/did-mount-props
+                           (log/info :Breadcrumbs/did-mount-props
                              {:this  this
                               :props props
                               :id    id})
-                           (when id
+                           (when (and id (not (::j.navlinks/path (:root/current-page props))))
                              (df/load! this [::m.navlinks/id id] BreadcrumbsInner))))
    :componentDidUpdate (fn [this]
                          (let [props (comp/props this)
                                id    (get-in props [:root/current-page ::m.navlinks/id])]
-                           (log/debug :Breadcrumbs/did-update-props
+                           (log/info :Breadcrumbs/did-update-props
                              {:this  this
                               :props props
                               :id    id})

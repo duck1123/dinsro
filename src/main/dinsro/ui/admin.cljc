@@ -52,6 +52,7 @@
                          u.a.debits/IndexPage
                          u.a.debits/ShowPage
                          u.a.instances/IndexPage
+                         u.a.instances/ShowPage
                          u.a.ln/IndexPage
                          u.a.models/IndexPage
                          u.a.navbars/IndexPage
