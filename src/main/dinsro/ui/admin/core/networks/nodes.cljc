@@ -45,12 +45,10 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/route             "nodes"
-   ro/row-actions       [fetch-action
-                         delete-action]
+   ro/row-actions       [fetch-action delete-action]
    ro/row-pk            m.c.nodes/id
    ro/run-on-mount?     true
-   ro/source-attribute  ::j.c.nodes/index
+   ro/source-attribute  ::j.c.nodes/admin-index
    ro/title             "Core Nodes"})
 
 (def ui-report (comp/factory Report))
@@ -68,7 +66,7 @@
                          parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
-   :route-segment     ["nodes"]
+   :route-segment     ["core-nodes"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id model-key ::SubPage)}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 

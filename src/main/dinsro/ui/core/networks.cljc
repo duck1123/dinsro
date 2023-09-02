@@ -64,11 +64,11 @@
                       {::m.c.networks/id    nil
                        ::m.c.networks/name  ""
                        ::m.c.networks/chain {}
-                       :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-networks :id id})
+                       :ui/nav-menu         (comp/get-initial-state u.menus/NavMenu {::m.navbars/id show-page-id :id id})
                        :ui/router           (comp/get-initial-state Router)}))
    :pre-merge         (u.loader/page-merger model-key
                         {:ui/router   [Router {}]
-                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-networks}]})
+                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]})
    :query         [::m.c.networks/id
                    ::m.c.networks/name
                    {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}

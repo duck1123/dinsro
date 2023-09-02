@@ -29,6 +29,10 @@
   "The model key of the record used by this target"
   ::m.navlinks/model-key)
 
+(def navigate
+  "The target from `navigate-key` as an object reference"
+  ::m.navlinks/navigate)
+
 (def navigate-key
   "The target to navigate to instead of this target"
   ::m.navlinks/navigate-key)

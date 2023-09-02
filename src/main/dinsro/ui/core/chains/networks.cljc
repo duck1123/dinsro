@@ -30,10 +30,10 @@
                          ::m.c.networks/chain #(u.links/ui-chain-link %2)}
    ro/columns           [m.c.networks/name
                          m.c.networks/chain]
-   ro/control-layout    {:inputs         [[::m.c.chains/id]]
+   ro/control-layout    {:inputs         [[parent-model-key]]
                          :action-buttons [::refresh]}
-   ro/controls          {::m.c.chains/id {:type :uuid :label "Chains"}
-                         ::refresh       u.links/refresh-control}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -48,11 +48,15 @@
   [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-id
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["networks"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))

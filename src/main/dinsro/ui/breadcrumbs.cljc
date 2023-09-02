@@ -9,6 +9,7 @@
    [com.fulcrologic.semantic-ui.collections.breadcrumb.ui-breadcrumb-section :refer [ui-breadcrumb-section]]
    [dinsro.joins.navlinks :as j.navlinks]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [lambdaisland.glogc :as log]))
 
@@ -16,26 +17,30 @@
 
 (def log-props? false)
 
+;; The target information for a breadcrumb
+;; This pulls the information about the control
 (defsc NavTarget
   [_this _props]
-  {:ident ::m.navlinks/id
-   :initial-state {::m.navlinks/id nil
+  {:ident         ::m.navlinks/id
+   :initial-state {::m.navlinks/id      nil
                    ::m.navlinks/control nil}
-   :query [::m.navlinks/id ::m.navlinks/control]})
+   :query         [::m.navlinks/id ::m.navlinks/control]})
 
+;; A single link in the breadcrumbs display
 (defsc BreadcrumbLink
   [this {::m.navlinks/keys [label]
          :as               props}]
   {:ident         ::m.navlinks/id
-   :initial-state (fn [x]
-                    (log/debug :BreadcrumbLink/initial-state {:x x})
-                    (let [{::m.navlinks/keys [id]} x]
+   :initial-state (fn [props]
+                    (log/debug :BreadcrumbLink/initial-state {:props props})
+                    (let [{::m.navlinks/keys [id]} props]
                       {::m.navlinks/id     id
-                       ::m.navlinks/label  ""
-                       ::m.navlinks/navigate (comp/get-initial-state NavTarget {})}))
-   :query         [::m.navlinks/id
-                   ::m.navlinks/label
-                   {::m.navlinks/navigate (comp/get-query NavTarget)}]}
+                       o.navlinks/label  ""
+                       o.navlinks/navigate (comp/get-initial-state NavTarget {})}))
+   :query         (fn []
+                    [o.navlinks/id
+                     o.navlinks/label
+                     {o.navlinks/navigate (comp/get-query NavTarget)}])}
   (log/trace :BreadcrumbLink/starting {:props props})
   (ui-breadcrumb-section
     {:link    true
@@ -51,6 +56,7 @@
   "Create a breadcrumb link to a navlink"
   (comp/factory BreadcrumbLink {:keyfn ::m.navlinks/id}))
 
+;; A link followed by a divider
 (defsc BreadcrumbDividedLink
   [_this props]
   (comp/fragment
@@ -61,6 +67,7 @@
   "Create a breadcrumb link to a navlink"
   (comp/factory BreadcrumbDividedLink {:keyfn ::m.navlinks/id}))
 
+;; A breadcrumbs control (minus loading behavior)
 (defsc BreadcrumbsInner
   [_this {::j.navlinks/keys [path]
           :as               props}]
@@ -83,27 +90,33 @@
 
 (def ui-breadcrumbs-inner (comp/factory BreadcrumbsInner))
 
+(defn Breadcrumbs-did-mount
+  [this]
+  (let [props (comp/props this)
+        id    (get-in props [:root/current-page ::m.navlinks/id])]
+    (log/info :Breadcrumbs-did-mount/starting
+      {:this  this
+       :props props
+       :id    id})
+    (when (and id (not (::j.navlinks/path (:root/current-page props))))
+      (df/load! this [::m.navlinks/id id] BreadcrumbsInner))))
+
+(defn Breadcrumbs-did-update
+  [this]
+  (let [props (comp/props this)
+        id    (get-in props [:root/current-page ::m.navlinks/id])]
+    (log/info :Breadcrumbs-did-update/starting
+      {:this  this
+       :props props
+       :id    id})
+    (when id
+      (df/load! this [::m.navlinks/id id] BreadcrumbsInner))))
+
 (defsc Breadcrumbs
   [_this {:root/keys [current-page]
           :as        props}]
-  {:componentDidMount  (fn [this]
-                         (let [props (comp/props this)
-                               id    (get-in props [:root/current-page ::m.navlinks/id])]
-                           (log/info :Breadcrumbs/did-mount-props
-                             {:this  this
-                              :props props
-                              :id    id})
-                           (when (and id (not (::j.navlinks/path (:root/current-page props))))
-                             (df/load! this [::m.navlinks/id id] BreadcrumbsInner))))
-   :componentDidUpdate (fn [this]
-                         (let [props (comp/props this)
-                               id    (get-in props [:root/current-page ::m.navlinks/id])]
-                           (log/info :Breadcrumbs/did-update-props
-                             {:this  this
-                              :props props
-                              :id    id})
-                           (when id
-                             (df/load! this [::m.navlinks/id id] BreadcrumbsInner))))
+  {:componentDidMount  Breadcrumbs-did-mount
+   :componentDidUpdate Breadcrumbs-did-update
    :ident              (fn [] [:component/id ::Breadcrumbs])
    :initial-state      {:root/current-page {}}
    :pre-merge          (fn [{:keys [data-tree] :as ctx}]

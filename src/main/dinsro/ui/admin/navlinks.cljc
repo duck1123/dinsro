@@ -16,7 +16,6 @@
 
 (def index-page-id :admin-navlinks)
 (def model-key ::m.navlinks/id)
-(def parent-router :root)
 (def parent-router-id :admin)
 (def required-role :admin)
 (def show-page-key :admin-navlinks-show)
@@ -30,10 +29,9 @@
                            ::m.navlinks/navigate-key #(str %2)
                            ::m.navlinks/parent-key   #(str %2)
                            ::m.navlinks/input-key    #(str %2)}
-   ro/columns             [m.navlinks/id
+   ro/columns             [m.navlinks/label
+                           m.navlinks/id
                            m.navlinks/parent-key
-                           m.navlinks/control
-                           m.navlinks/label
                            m.navlinks/description
                            m.navlinks/navigate-key
                            m.navlinks/input-key

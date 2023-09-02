@@ -40,8 +40,8 @@
                          m.c.nodes/initial-block-download?
                          m.c.nodes/block-count]
    ro/control-layout    {:action-buttons [::refresh]}
-   ro/controls          {::refresh         u.links/refresh-control
-                         ::m.c.networks/id {:type :uuid :label "Nodes"}}
+   ro/controls          {::refresh        u.links/refresh-control
+                         parent-model-key {:type :uuid :label "id"}}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -58,11 +58,15 @@
   [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-id
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["nodes"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))

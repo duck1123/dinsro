@@ -38,7 +38,7 @@
   {fo/attributes   [m.c.chains/name]
    fo/cancel-route ["chains"]
    fo/id           m.c.chains/id
-   fo/route-prefix "chain"
+   fo/route-prefix "edit-chain"
    fo/title        "Chain"}
   (if override-form
     (form/render-layout this props)
@@ -67,12 +67,12 @@
                       {::m.c.chains/id   nil
                        ::m.c.chains/name ""
                        :ui/nav-menu
-                       (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :core-chains
+                       (comp/get-initial-state u.menus/NavMenu {::m.navbars/id show-page-id
                                                                 :id            id})
                        :ui/router        (comp/get-initial-state Router)}))
    :pre-merge         (u.loader/page-merger model-key
                         {:ui/router   [Router {}]
-                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id :core-chains}]})
+                         :ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]})
    :query         [::m.c.chains/id
                    ::m.c.chains/name
                    {:ui/nav-menu (comp/get-query u.menus/NavMenu)}

@@ -102,7 +102,7 @@
   [_this {::m.rate-sources/keys [id name url active currency]
           :ui/keys              [nav-menu rates router]
           :as                   props}]
-  {:componentDidMount #(report/start-report! % Report {})
+  {:componentDidMount #(report/start-report! % u.s.rs.rates/Report {})
    :ident             ::m.rate-sources/id
    :initial-state     (fn [props]
                         (let [id (::m.rate-sources/id props)]
@@ -129,6 +129,7 @@
                        {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
                        {:ui/rates (comp/get-query u.s.rs.rates/Report)}
                        {:ui/router (comp/get-query Router)}]}
+  (log/info :Show/starting {:props props})
   (if id
     (dom/div {}
       (ui-container {:fluid true}

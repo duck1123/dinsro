@@ -63,7 +63,7 @@
                          m.accounts/user]
    ro/control-layout    {:action-buttons [::refresh]
                          :inputs         [[parent-model-key]]}
-   ro/controls          {parent-model-key {:type :uuid :label "id"}
+   ro/controls          {parent-model-key {:type :text :label "id"}
                          ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
@@ -72,6 +72,7 @@
    ro/run-on-mount?     true
    ro/source-attribute  ::j.accounts/admin-index
    ro/title             "Accounts"}
+  (log/info :Report/starting {:props props})
   (let [{::m.accounts/keys [name]
          :ui/keys          [current-rows]} props]
     (if override-report

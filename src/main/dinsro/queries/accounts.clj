@@ -22,12 +22,13 @@
               [::m.rate-sources/id '?rate-source-id]
               [::m.c.wallets/id    '?wallet-id]
               [::m.currencies/id   '?currency-id]
-              [::m.rates/id        '?rate-id]]
+              [::m.rates/id        '?rate-id]
+              [::m.users/id        '?user-id]]
    :order-by [['?account-date :desc]]
    ;; :additional-clauses ['?account-date]
    ;; :additional-rules [['?account-id ::m.accounts/date '?account-date]]
    :rules
-   (fn [[actor-id admin? rate-source-id wallet-id currency-id rate-id] rules]
+   (fn [[actor-id admin? rate-source-id wallet-id currency-id rate-id user-id] rules]
      (->> rules
           (concat-when (and (not admin?) actor-id)
             [['?account-id ::m.accounts/user     '?actor-id]])
@@ -39,7 +40,9 @@
             [['?account-id ::m.accounts/currency '?currency-id]])
           (concat-when rate-id
             [['?account-id ::m.accounts/source   '?rate-rate-source-id]
-             ['?rate-id    ::m.rates/source      '?rate-rate-source-id]])))})
+             ['?rate-id    ::m.rates/source      '?rate-rate-source-id]])
+          (concat-when user-id
+            [['?account-id ::m.accounts/user      '?user-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))

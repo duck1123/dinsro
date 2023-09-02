@@ -35,7 +35,7 @@
    ro/control-layout    {:action-buttons [::fetch ::refresh]}
    ro/controls          {::fetch          (u.buttons/fetch-button parent-model-key mu.c.blocks/fetch-transactions!)
                          ::refresh        u.links/refresh-control
-                         parent-model-key {:type :uuid :label "Block"}}
+                         parent-model-key {:type :uuid :label "id"}}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -52,11 +52,10 @@
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
-                        (let [id (get props parent-model-key)]
-                          {parent-model-key id
-                           ::m.navlinks/id index-page-id
-                           :ui/report      (comp/get-initial-state Report {})}))
-   :query             (fn [_props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-id
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
                         [parent-model-key
                          ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])}

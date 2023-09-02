@@ -18,7 +18,7 @@
    ro/controls          {::m.rate-sources/id {:type :uuid :label "id"}
                          ::refresh           u.links/refresh-control}
    ro/machine           spr/machine
-   ro/page-size         10
+   ro/page-size         20
    ro/paginate?         true
    ro/row-pk            m.rates/id
    ro/run-on-mount?     true

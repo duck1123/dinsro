@@ -16,6 +16,7 @@
    [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.rate-sources.accounts :as u.a.rs.accounts]
+   [dinsro.ui.admin.rate-sources.rates :as u.a.rs.rates]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -58,14 +59,16 @@
 (defrouter Router
   [_this _props]
   {:router-targets
-   [u.a.rs.accounts/SubPage]})
+   [u.a.rs.accounts/SubPage
+    u.a.rs.rates/SubPage]})
 
 (def ui-router (comp/factory Router))
 
 (m.navbars/defmenu show-page-id
   {::m.navbars/parent parent-router-id
    ::m.navbars/children
-   [u.a.rs.accounts/index-page-id]})
+   [u.a.rs.accounts/index-page-id
+    u.a.rs.rates/index-page-id]})
 
 (defsc Show
   [_this {::m.rate-sources/keys [id name url active currency]

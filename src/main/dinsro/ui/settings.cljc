@@ -61,39 +61,49 @@
    ::m.navbars/router ::Router
    ::m.navbars/children
    [u.s.dashboard/index-page-id
-    u.s.core/index-page-id
     u.s.ln/index-page-id
     u.s.rate-sources/index-page-id
     u.s.categories/index-page-id]})
 
+(def use-grid? false)
+(def debug-props? false)
+
 (defsc IndexPage
-  [_this {:ui/keys [nav-menu router vertical-menu]
+  [_this {:ui/keys [nav-menu router]
           :as props}]
   {:ident          (fn [_] [::m.navlinks/id index-page-id])
    :initial-state  (fn [_]
                      {::m.navlinks/id   index-page-id
                       :ui/nav-menu      (comp/get-initial-state u.menus/NavMenu {::m.navbars/id :settings})
-                      :ui/vertical-menu (comp/get-initial-state u.menus/VerticalMenu {::m.navbars/id :settings})
                       :ui/router        (comp/get-initial-state Router)})
    :query          (fn [_]
                      [{:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                      {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}
                       {:ui/router (comp/get-query Router)}])
    :route-segment  ["settings"]}
-  (ui-grid {}
-    (ui-grid-row {:only "tablet mobile"}
-      (ui-grid-column {:width 16}
-        (ui-container {:fluid true}
-          (if nav-menu
-            (u.menus/ui-nav-menu nav-menu)
-            (dom/div :.ui-segment "Failed to load menu")))))
-    (ui-grid-row {:centered true}
-      (ui-grid-column {:width 4 :only "computer" :floated "left"}
-        (u.menus/ui-vertical-menu vertical-menu))
-      (ui-grid-column {:mobile 16 :tablet 16 :computer 12}
-        (if router
-          (ui-router router)
-          (u.debug/load-error props "settings router"))))))
+  (if use-grid?
+    (ui-grid {}
+      (ui-grid-row {:only "tablet mobile"}
+        (ui-grid-column {:width 16}
+          (ui-container {:fluid true}
+            (if nav-menu
+              (u.menus/ui-nav-menu nav-menu)
+              (dom/div :.ui-segment "Failed to load menu")))))
+      (ui-grid-row {:centered true}
+        (ui-grid-column {:width 4 :only "computer" :floated "left"}
+          (u.menus/ui-vertical-menu nav-menu))
+        (ui-grid-column {:mobile 16 :tablet 16 :computer 12}
+          (if router
+            (ui-router router)
+            (u.debug/load-error props "settings router")))))
+    (dom/div :.settings-page
+      (if nav-menu
+        (u.menus/ui-nav-menu nav-menu)
+        (u.debug/load-error props "settings nav menu"))
+      (if router
+        (ui-router router)
+        (u.debug/load-error props "settings router"))
+      (when debug-props?
+        (u.debug/log-props props)))))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

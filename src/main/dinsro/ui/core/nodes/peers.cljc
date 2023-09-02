@@ -91,11 +91,15 @@
   [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}
-                       [::dr/id router-key]]
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         ::m.navlinks/id  index-page-id
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [[::dr/id router-key]
+                         parent-model-key
+                         ::m.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["peers"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))

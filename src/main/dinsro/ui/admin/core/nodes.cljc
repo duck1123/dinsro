@@ -260,7 +260,7 @@
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["node" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (model-key props)
     (if target

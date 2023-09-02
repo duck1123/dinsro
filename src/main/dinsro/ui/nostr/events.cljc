@@ -1,5 +1,6 @@
 (ns dinsro.ui.nostr.events
   (:require
+   [com.fulcrologic.fulcro-css.css :as css]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
@@ -119,7 +120,10 @@
 (defsc EventBox
   [_this {::m.n.events/keys [content pubkey kind]
           ::j.n.events/keys [created-date tags witnesses]}]
-  {:ident         ::m.n.events/id
+  {:css           [[:.header {:width "100%"}]
+                   [:.meta {:width "100%"}]
+                   [:.kind0-div {:width "100%" :overflow "auto"}]]
+   :ident         ::m.n.events/id
    :initial-state {::m.n.events/id           nil
                    ::m.n.events/pubkey       {}
                    ::m.n.events/content      ""
@@ -136,21 +140,22 @@
                    {::j.n.events/witnesses (comp/get-query u.n.witnesses/WitnessDisplay)}
                    {::m.n.events/pubkey (comp/get-query EventAuthor)}
                    {::j.n.events/tags (comp/get-query u.n.event-tags/TagDisplay)}]}
-  (let [pubkey-tags (filter
-                     (fn [tag] (= "p" (::m.n.event-tags/type tag)))
-                     (sort-by ::m.n.event-tags/index tags))]
+  (let [{:keys [header meta kind0-div]} (css/get-classnames EventBox)
+        pubkey-tags                     (filter
+                                         (fn [tag] (= "p" (::m.n.event-tags/type tag)))
+                                         (sort-by ::m.n.event-tags/index tags))]
     (dom/div :.ui.item.segment.event-box
       (dom/div :.ui.tiny.image
         (ui-event-author-image pubkey))
       (dom/div :.content
-        (dom/div {:classes [:.header] :style {:width "100%"}}
+        (dom/div {:classes [header]}
           (ui-grid {}
             (ui-grid-row {}
               (ui-grid-column {:stretched true :width 10}
                 (u.links/ui-pubkey-name-link pubkey))
               (ui-grid-column {:textAlign "right" :width 6}
                 (str (::m.n.pubkeys/nip05 pubkey))))))
-        (dom/div {:classes [:.meta] :style {:width "100%"}}
+        (dom/div {:classes [meta]}
           (ui-grid {}
             (ui-grid-row {}
               (ui-grid-column {:width 13}
@@ -159,13 +164,13 @@
                 (str kind)))))
         (dom/div {:classes [:.description]}
           (when (seq pubkey-tags)
-            (ui-segment {}
+            (ui-segment {:className [:.pubkey-tags]}
               (dom/div :.ui.relaxed.divided.list
                 (map u.n.event-tags/ui-tag-display pubkey-tags))))
           (ui-container {}
             (condp = kind
-              0 (ui-container {}
-                  (dom/div {:style {:width "100%" :overflow "auto"}}
+              0 (ui-container {:className [:kind0]}
+                  (dom/div {:classes [kind0-div]}
                     (dom/code {}
                       (dom/pre {} content))))
               (let [ast (replace-images (md/parse content))]
@@ -182,8 +187,8 @@
                      (str content))))))))
         (dom/div :.extra.content
           (when (> (- (count tags) (count pubkey-tags)) 0)
-            (ui-segment {}
-              (ui-list-list {:divided true :relaxed true}
+            (ui-segment {:className [:tag-content]}
+              (ui-list-list {}
                 (let [filtered-tags (filter
                                      (fn [tag] (not= "p" (::m.n.event-tags/type tag)))
                                      (sort-by ::m.n.event-tags/index tags))]
