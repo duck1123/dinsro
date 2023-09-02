@@ -1,6 +1,5 @@
 (ns dinsro.queries.ln.payreqs
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
@@ -45,15 +44,6 @@
                             (assoc :xt/id id))]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
-
-(>defn find-by-node
-  [node-id]
-  [::m.ln.nodes/id => (s/coll-of ::m.ln.payreqs/id)]
-  (c.xtdb/query-values
-   '{:find  [?payment-id]
-     :in    [[?node-id]]
-     :where [[?payment-id ::m.ln.payreqs/node ?node-id]]}
-   [node-id]))
 
 (>defn delete!
   [id]

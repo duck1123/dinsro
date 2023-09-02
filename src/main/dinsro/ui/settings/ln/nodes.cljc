@@ -6,7 +6,6 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -18,18 +17,17 @@
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]
    [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-menu :refer [ui-dropdown-menu]]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
-   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.users :as m.users]
    [dinsro.mutations.ln.nodes :as mu.ln]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
+   [dinsro.ui.pickers :as u.pickers]
    [dinsro.ui.settings.ln.nodes.accounts :as u.s.ln.n.accounts]
    [dinsro.ui.settings.ln.nodes.addresses :as u.s.ln.n.addresses]
    [dinsro.ui.settings.ln.nodes.channels :as u.s.ln.n.channels]
@@ -121,26 +119,8 @@
                      m.ln.nodes/core-node
                      m.ln.nodes/user]
    fo/cancel-route  ["nodes"]
-   fo/field-options {::m.ln.nodes/core-node
-                     {::picker-options/query-key       ::m.c.nodes/index
-                      ::picker-options/query-component u.links/CoreNodeLinkForm
-                      ::picker-options/options-xform
-                      (fn [_ options]
-                        (mapv
-                         (fn [{::m.c.nodes/keys [id name]}]
-                           {:text  (str name)
-                            :value [::m.c.nodes/id id]})
-                         (sort-by ::m.c.nodes/name options)))}
-                     ::m.ln.nodes/user
-                     {::picker-options/query-key       ::m.users/index
-                      ::picker-options/query-component u.links/UserLinkForm
-                      ::picker-options/options-xform
-                      (fn [_ options]
-                        (mapv
-                         (fn [{::m.users/keys [id name]}]
-                           {:text  (str name)
-                            :value [::m.users/id id]})
-                         (sort-by ::m.users/name options)))}}
+   fo/field-options {::m.ln.nodes/core-node u.pickers/core-node-picker
+                     ::m.ln.nodes/user      u.pickers/user-picker}
    fo/field-styles  {::m.ln.nodes/core-node :pick-one
                      ::m.ln.nodes/user      :pick-one}
    fo/id            m.ln.nodes/id

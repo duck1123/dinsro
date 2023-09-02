@@ -1,6 +1,5 @@
 (ns dinsro.queries.ln.invoices
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
@@ -45,25 +44,6 @@
                             (assoc :xt/id id))]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
-
-(>defn find-by-node
-  [node-id]
-  [::m.ln.nodes/id => (s/coll-of ::m.ln.invoices/id)]
-  (c.xtdb/query-values
-   '{:find  [?invoice-id]
-     :in    [[?node-id]]
-     :where [[?invoice-id ::m.ln.invoices/node ?node-id]]}
-   [node-id]))
-
-(>defn find-by-node-and-index
-  [node-id index]
-  [::m.ln.nodes/id number? => (? ::m.ln.invoices/id)]
-  (c.xtdb/query-value
-   '{:find  [?invoice-id]
-     :in    [[?node-id ?index]]
-     :where [[?invoice-id ::m.ln.invoices/node ?node-id]
-             [?invoice-id ::m.ln.invoices/add-index ?index]]}
-   [node-id index]))
 
 (>defn delete!
   [id]

@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -54,16 +53,7 @@
                       m.c.wallet-addresses/wallet]
    fo/controls       {::generate generate-button}
    fo/field-styles   {::m.c.wallet-addresses/wallet :pick-one}
-   fo/field-options  {::m.c.wallet-addresses/wallet
-                      {::picker-options/query-key       ::m.c.wallets/index
-                       ::picker-options/query-component u.links/WalletLinkForm
-                       ::picker-options/options-xform
-                       (fn [_ options]
-                         (mapv
-                          (fn [{::m.c.wallets/keys [id name]}]
-                            {:text  (str name)
-                             :value [::m.c.wallets/id id]})
-                          (sort-by ::m.c.wallets/name options)))}}
+   fo/field-options  {::m.c.wallet-addresses/wallet u.pickers/wallet-picker}
    fo/id             m.c.wallet-addresses/id
    fo/route-prefix   "wallet-address"
    fo/title          "Wallet Address"})

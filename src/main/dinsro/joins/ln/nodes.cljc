@@ -21,11 +21,20 @@
 
 ;; [../../queries/ln/nodes.clj]
 
+(def model-key ::m.ln.nodes/id)
+
 (def join-info
   (merge
    {:idents m.ln.nodes/idents}
    #?(:clj {:indexer q.ln.nodes/index-ids
             :counter q.ln.nodes/count-ids})))
+
+(defattr admin-flat-index ::admin-flat-index :ref
+  {ao/target    model-key
+   ao/pc-output [{::admin-flat-index [model-key]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-flat-index (:results (j/make-admin-indexer join-info env props))})})
 
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.ln.nodes/id
@@ -33,6 +42,13 @@
    ao/pc-resolve
    (fn [env props]
      {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr flat-index ::flat-index :ref
+  {ao/target    model-key
+   ao/pc-output [{::flat-index [model-key]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::flat-index (j/make-flat-indexer join-info env props)})})
 
 (defattr index ::index :ref
   {ao/target    ::m.ln.nodes/id
@@ -48,7 +64,7 @@
    ao/target      ::m.ln.channels/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.channels/find-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.channels/index-ids {model-key id}) :cljs []) [])]
        {::channels (m.ln.channels/idents ids)}))})
 
 (defattr channel-count ::channel-count :number
@@ -62,7 +78,7 @@
    ao/target      ::m.ln.invoices/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.invoices/find-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.invoices/index-ids {model-key id}) :cljs []) [])]
        {::invoices (m.ln.invoices/idents ids)}))})
 
 (defattr invoice-count ::invoice-count :number
@@ -76,7 +92,7 @@
    ao/target      ::m.ln.payments/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.payments/find-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.payments/index-ids {model-key id}) :cljs []) [])]
        {::payments (m.ln.payments/idents ids)}))})
 
 (defattr payment-count ::payment-count :number
@@ -90,7 +106,7 @@
    ao/target      ::m.ln.payreqs/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.payreqs/find-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.payreqs/index-ids {model-key id}) :cljs []) [])]
        {::payreqs (m.ln.payreqs/idents ids)}))})
 
 (defattr peers ::peers :ref
@@ -100,7 +116,7 @@
    ao/target      ::m.ln.peers/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.peers/find-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.peers/index-ids {model-key id}) :cljs []) [])]
        {::peers (m.ln.peers/idents ids)}))})
 
 (defattr transactions ::transactions :ref
@@ -110,14 +126,16 @@
    ao/target      ::m.c.transactions/id
    ao/pc-resolve
    (fn [_env {::m.ln.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.c.transactions/find-by-ln-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.c.transactions/index-ids {model-key id}) :cljs []) [])]
        {::transactions (m.c.transactions/idents (take 3 ids))}))})
 
 (def attributes
-  [admin-index
+  [admin-flat-index
+   admin-index
    index
    channel-count
    channels
+   flat-index
    invoice-count
    invoices
    payment-count

@@ -1,6 +1,5 @@
 (ns dinsro.queries.core.networks
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb  :refer [concat-when]]
@@ -52,26 +51,6 @@
         record (xt/pull db '[*] id)]
     (when (get record ::m.c.networks/id)
       (dissoc record :xt/id))))
-
-(>defn find-by-name
-  [network-name]
-  [::m.c.networks/name => (? ::m.c.networks/id)]
-  (log/trace :find-by-name/starting {:network-name network-name})
-  (c.xtdb/query-value
-   '{:find  [?network-id]
-     :in    [[?network-name]]
-     :where [[?network-id ::m.c.networks/name ?network-name]]}
-   [network-name]))
-
-(>defn find-by-chain-id
-  [chain-id]
-  [::m.c.chains/id => (s/coll-of ::m.c.networks/id)]
-  (log/trace :find-by-chain/starting {:chain-id chain-id})
-  (c.xtdb/query-values
-   '{:find  [?network-id]
-     :in    [[?chain-id]]
-     :where [[?network-id ::m.c.networks/chain ?chain-id]]}
-   [chain-id]))
 
 (>defn find-by-node-id
   "Returns the id of the network the node with the provided id belongs to."

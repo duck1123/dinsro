@@ -80,7 +80,7 @@
    ao/pc-resolve
    (fn [_env {::m.accounts/keys [id]}]
      #?(:clj  (if id
-                (let [ids (q.transactions/find-by-account id)]
+                (let [ids (q.transactions/index-ids {model-key id})]
                   {::transactions (m.transactions/idents ids)})
                 {::transactions []})
         :cljs (comment id)))})

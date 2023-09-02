@@ -15,11 +15,20 @@
    #?(:clj [dinsro.queries.rates :as q.rates])
    [dinsro.specs]))
 
+(def model-key ::m.currencies/id)
+
 (def join-info
   (merge
    {:idents m.currencies/idents}
    #?(:clj {:indexer q.currencies/index-ids
             :counter q.currencies/count-ids})))
+
+(defattr admin-flat-index ::admin-flat-index :ref
+  {ao/target    model-key
+   ao/pc-output [{::admin-flat-index [model-key]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-flat-index (:results (j/make-admin-indexer join-info env props))})})
 
 (defattr admin-index ::admin-index :ref
   {ao/target     ::m.currencies/id
@@ -27,6 +36,13 @@
    ao/pc-resolve
    (fn [env props]
      {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr flat-index ::flat-index :ref
+  {ao/target    model-key
+   ao/pc-output [{::flat-index [model-key]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::flat-index (j/make-flat-indexer join-info env props)})})
 
 (defattr index ::index :ref
   {ao/target    ::m.currencies/id
@@ -45,6 +61,10 @@
      (let [id (if id #?(:clj (q.rates/find-top-by-currency id) :cljs []) [])]
        {::current-rate (m.rates/ident id)}))})
 
+(defattr account-count ::account-count :number
+  {ao/pc-input    #{::accounts}
+   ao/pc-resolve  (fn [_ {::keys [accounts]}] {::account-count (count accounts)})})
+
 (defattr accounts ::accounts :ref
   {ao/cardinality :many
    ao/pc-input    #{::m.currencies/id}
@@ -52,7 +72,7 @@
    ao/target      ::m.accounts/id
    ao/pc-resolve
    (fn [_env {::m.currencies/keys [id]}]
-     (let [ids (if id #?(:clj (q.accounts/find-by-currency id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.accounts/index-ids {model-key id}) :cljs []) [])]
        {::accounts (m.accounts/idents ids)}))})
 
 (defattr rates ::rates :ref
@@ -62,7 +82,7 @@
    ao/target      ::m.rates/id
    ao/pc-resolve
    (fn [_env {::m.currencies/keys [id]}]
-     (let [ids (if id #?(:clj (q.rates/find-by-currency id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.rates/index-ids {model-key id}) :cljs []) [])]
        {::rates (m.rates/idents ids)}))})
 
 (defattr rate-count ::rate-count :number
@@ -76,7 +96,7 @@
    ao/target      ::m.rate-sources/id
    ao/pc-resolve
    (fn [_env {::m.currencies/keys [id]}]
-     (let [ids (if id  #?(:clj (q.rate-sources/index-ids {::m.currencies/id id}) :cljs []) [])]
+     (let [ids (if id  #?(:clj (q.rate-sources/index-ids {model-key id}) :cljs []) [])]
        {::sources (m.rate-sources/idents ids)}))})
 
 (defattr source-count ::source-count :number
@@ -90,7 +110,7 @@
    ao/target      ::m.transactions/id
    ao/pc-resolve
    (fn [_env {::m.currencies/keys [id]}]
-     (let [ids (if id #?(:clj (q.transactions/find-by-currency id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.transactions/index-ids {model-key id}) :cljs []) [])]
        {::transactions (m.transactions/ident ids)}))})
 
 (defattr transaction-count ::transaction-count :number
@@ -98,7 +118,12 @@
    ao/pc-resolve  (fn [_ {::keys [transactions]}] {::transaction-count (count transactions)})})
 
 (def attributes
-  [accounts admin-index current-rate index
+  [account-count accounts
+   admin-flat-index
+   admin-index
+   current-rate
+   flat-index
+   index
    rate-count rates
    transactions transaction-count
    source-count sources])

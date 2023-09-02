@@ -59,17 +59,6 @@
     (xt/await-tx node resp)
     id))
 
-(defn find-by-ln-node
-  [node-id]
-  []
-  (c.xtdb/query-values
-   '{:find  [?wallet-address-id]
-     :in    [[?node-id]]
-     :where [[?account-id ::m.ln.accounts/node ?node-id]
-             [?account-id ::m.ln.accounts/wallet ?wallet-id]
-             [?wallet-address-id ::m.c.wallet-addresses/wallet ?wallet-id]]}
-   [node-id]))
-
 (defn find-by-address
   [address]
   (c.xtdb/query-value

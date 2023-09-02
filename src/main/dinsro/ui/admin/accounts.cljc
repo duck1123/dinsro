@@ -5,22 +5,20 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/accounts.cljc]]
@@ -44,24 +42,8 @@
                      m.accounts/user
                      m.accounts/initial-value]
    fo/cancel-route  ["accounts"]
-   fo/field-options {::m.accounts/currency {::picker-options/query-key       ::m.currencies/index
-                                            ::picker-options/query-component u.links/CurrencyLinkForm
-                                            ::picker-options/options-xform
-                                            (fn [_ options]
-                                              (mapv
-                                               (fn [{::m.currencies/keys [id name]}]
-                                                 {:text  (str name)
-                                                  :value [::m.currencies/id id]})
-                                               (sort-by ::m.currencies/name options)))}
-                     ::m.accounts/user     {::picker-options/query-key       ::m.users/index
-                                            ::picker-options/query-component u.links/UserLinkForm
-                                            ::picker-options/options-xform
-                                            (fn [_ options]
-                                              (mapv
-                                               (fn [{::m.users/keys [id name]}]
-                                                 {:text  (str name)
-                                                  :value [::m.users/id id]})
-                                               (sort-by ::m.users/name options)))}}
+   fo/field-options {::m.accounts/currency u.pickers/admin-currency-picker
+                     ::m.accounts/user     u.pickers/admin-user-picker}
    fo/field-styles  {::m.accounts/currency :pick-one
                      ::m.accounts/user     :pick-one}
    fo/id            m.accounts/id

@@ -9,11 +9,20 @@
    #?(:clj [dinsro.queries.ln.remote-nodes :as q.ln.remote-nodes])
    [dinsro.specs]))
 
+(def model-key ::m.ln.remote-nodes/id)
+
 (def join-info
   (merge
    {:idents m.ln.remote-nodes/idents}
    #?(:clj {:indexer q.ln.remote-nodes/index-ids
             :counter q.ln.remote-nodes/count-ids})))
+
+(defattr admin-flat-index ::admin-flat-index :ref
+  {ao/target    model-key
+   ao/pc-output [{::admin-flat-index [model-key]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-flat-index (:results (j/make-admin-indexer join-info env props))})})
 
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.ln.remote-nodes/id
@@ -21,6 +30,13 @@
    ao/pc-resolve
    (fn [env props]
      {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr flat-index ::flat-index :ref
+  {ao/target    model-key
+   ao/pc-output [{::flat-index [model-key]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::flat-index (j/make-flat-indexer join-info env props)})})
 
 (defattr index ::index :ref
   {ao/target    ::m.ln.remote-nodes/id
@@ -31,12 +47,12 @@
 
 (defattr peers ::peers :ref
   {ao/cardinality :many
-   ao/pc-input    #{::m.ln.remote-nodes/id}
+   ao/pc-input    #{model-key}
    ao/pc-output   [{::peers [::m.ln.peers/id]}]
    ao/target      ::m.ln.peers/id
    ao/pc-resolve
    (fn [_env {::m.ln.remote-nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.peers/find-by-remote-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.peers/index-ids {model-key id}) :cljs []) [])]
        {::peers (m.ln.peers/idents ids)}))})
 
-(def attributes [admin-index index peers])
+(def attributes [admin-flat-index admin-index flat-index index peers])

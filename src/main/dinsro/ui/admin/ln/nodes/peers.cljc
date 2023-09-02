@@ -4,19 +4,18 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
-   [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../../ui/admin/ln/nodes.cljc]]
@@ -47,26 +46,8 @@
    fo/attributes     [m.ln.peers/node
                       m.ln.peers/remote-node]
    fo/controls       {::submit submit-button}
-   fo/field-options  {::m.ln.peers/node
-                      {::picker-options/query-key       ::m.ln.nodes/index
-                       ::picker-options/query-component u.links/NodeLinkForm
-                       ::picker-options/options-xform
-                       (fn [_ options]
-                         (mapv
-                          (fn [{::m.ln.nodes/keys [id name]}]
-                            {:text  (str name)
-                             :value [::m.ln.nodes/id id]})
-                          (sort-by ::m.ln.nodes/name options)))}
-                      ::m.ln.peers/remote-node
-                      {::picker-options/query-key       ::m.ln.remote-nodes/index
-                       ::picker-options/query-component u.links/RemoteNodeLinkForm
-                       ::picker-options/options-xform
-                       (fn [_ options]
-                         (mapv
-                          (fn [{::m.ln.remote-nodes/keys [id pubkey]}]
-                            {:text  (str pubkey)
-                             :value [::m.ln.remote-nodes/id id]})
-                          (sort-by ::m.ln.remote-nodes/pubkey options)))}}
+   fo/field-options  {::m.ln.peers/node        u.pickers/admin-ln-node-picker
+                      ::m.ln.peers/remote-node u.pickers/admin-remote-node-picker}
    fo/field-styles   {::m.ln.peers/node        :pick-one
                       ::m.ln.peers/remote-node :pick-one}
    fo/id             m.ln.peers/id

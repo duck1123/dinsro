@@ -15,17 +15,23 @@
 (def query-info
   {:ident   ::m.c.blocks/id
    :pk      '?block-id
-   :clauses [[:actor/id         '?actor-id]
-             [:height           '?height]
-             [::m.c.nodes/id    '?node-id]
-             [::m.c.networks/id '?network-id]]
+   :clauses [[:actor/id             '?actor-id]
+             [:height               '?height]
+             [::m.c.nodes/id        '?node-id]
+             [::m.c.networks/id     '?network-id]
+             [::m.c.transactions/id '?core-tx-id]]
    :rules
-   (fn [[_actor-id height _node-id network-id] rules]
+   (fn [[_actor-id height node-id network-id core-tx-id] rules]
      (->> rules
           (concat-when height
-            [['?block-id ::m.c.blocks/height '?height]])
+            [['?block-id   ::m.c.blocks/height      '?height]])
+          (concat-when node-id
+            [['?node-id    ::m.c.nodes/network      '?node-network-id]
+             ['?block-id   ::m.c.blocks/network     '?node-network-id]])
           (concat-when network-id
-            [['?block-id ::m.c.blocks/network '?network-id]])))})
+            [['?block-id   ::m.c.blocks/network     '?network-id]])
+          (concat-when core-tx-id
+            [['?core-tx-id ::m.c.transactions/block '?block-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))
@@ -98,15 +104,6 @@
   (let [node   (c.xtdb/get-node)
         tx     (xt/submit-tx node [[::xt/evict id]])]
     (xt/await-tx node tx)))
-
-(>defn find-by-tx
-  [tx-id]
-  [::m.c.transactions/id => (? ::m.c.blocks/id)]
-  (c.xtdb/query-value
-   '{:find  [?block-id]
-     :in    [[?tx-id]]
-     :where [[?tx-id ::m.c.transactions/block ?block-id]]}
-   [tx-id]))
 
 (>defn find-by-node
   "Returns all blocks belonging to the network this node belongs to"

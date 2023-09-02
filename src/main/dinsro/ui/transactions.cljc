@@ -54,11 +54,6 @@
 (def use-table true)
 (def use-moment true)
 
-(defsc AccountQuery
-  [_this _props]
-  {:query [::m.accounts/id ::m.accounts/name]
-   :ident ::m.accounts/id})
-
 (form/defsc-form NewDebit
   [_this _props]
   {fo/attributes    [m.debits/value

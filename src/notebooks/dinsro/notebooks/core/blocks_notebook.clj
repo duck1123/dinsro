@@ -71,7 +71,7 @@ m.c.blocks/attributes
 (def node node-alice)
 (def alice-id (::m.c.nodes/id node-alice))
 
-(def alice-block-ids (q.c.blocks/find-by-node alice-id))
+(def alice-block-ids (q.c.blocks/index-ids {::m.c.nodes/id alice-id}))
 
 (def all-ids (q.c.blocks/index-ids))
 

@@ -7,6 +7,7 @@
    [dinsro.model.ln.info :as m.ln.info]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
+   [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
@@ -14,12 +15,15 @@
 (def query-info
   {:ident   ::m.ln.peers/id
    :pk      '?peer-id
-   :clauses [[::m.ln.nodes/id '?node-id]]
+   :clauses [[::m.ln.nodes/id        '?node-id]
+             [::m.ln.remote-nodes/id '?remote-node-id]]
    :rules
-   (fn [[node-id] rules]
+   (fn [[node-id remote-node-id] rules]
      (->> rules
           (concat-when node-id
-            [['?peer-id ::m.ln.peers/node '?node-id]])))})
+            [['?peer-id ::m.ln.peers/node        '?node-id]])
+          (concat-when remote-node-id
+            [['?peer-id ::m.ln.peers/remote-node '?remote-node-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))
@@ -71,23 +75,6 @@
   (log/debug :add-peer!/starting {:node-id node-id})
   (let [peer-id (create-record (merge peer {::m.ln.peers/node node-id}))]
     (read-record peer-id)))
-
-(>defn find-by-node
-  [node-id]
-  [::m.ln.nodes/id => (s/coll-of ::m.ln.peers/id)]
-  (c.xtdb/query-values '{:find  [?peer-id]
-                         :in    [[?node-id]]
-                         :where [[?peer-id ::m.ln.peers/node ?node-id]]}
-                       [node-id]))
-
-(>defn find-by-remote-node
-  [remote-node-id]
-  [::m.ln.peers/remote-node => (s/coll-of ::m.ln.peers/id)]
-  (c.xtdb/query-values
-   '{:find  [?peer-id]
-     :in    [[?remote-node-id]]
-     :where [[?peer-id ::m.ln.peers/remote-node ?remote-node-id]]}
-   [remote-node-id]))
 
 (>defn delete
   [id]

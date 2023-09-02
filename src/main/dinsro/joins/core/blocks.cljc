@@ -13,6 +13,8 @@
 
 (comment ::m.c.nodes/_ ::log/_)
 
+(def model-key ::m.c.blocks/id)
+
 (def join-info
   (merge
    {:idents m.c.blocks/idents}
@@ -40,7 +42,7 @@
    ao/target      ::m.c.transactions/id
    ao/pc-resolve
    (fn [_env {::m.c.blocks/keys [id]}]
-     (let [ids (if id #?(:clj (q.c.transactions/find-by-block id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.c.transactions/index-ids {model-key id}) :cljs []) [])]
        {::transactions (m.c.transactions/idents ids)}))})
 
 (def attributes [index admin-index transactions])

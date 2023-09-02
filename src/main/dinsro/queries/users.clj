@@ -20,18 +20,26 @@
 (def query-info
   {:ident   model-key
    :pk      '?user-id
-   :clauses [[:actor/id       '?actor-id]
-             [:actor/admin?   '?admin?]
-             [::m.accounts/id '?account-id]]
+   :clauses [[:actor/id           '?actor-id]
+             [:actor/admin?       '?admin?]
+             [::m.accounts/id     '?account-id]
+             [::m.n.pubkeys/id    '?pubkey-id]
+             [::m.transactions/id '?transaction-id]]
    :sort-columns
    {::m.users/name '?user-name}
    :rules
-   (fn [[actor-id admin? account-id] rules]
+   (fn [[actor-id admin? account-id pubkey-id transaction-id] rules]
      (->> rules
           (concat-when (and (not admin?) actor-id)
-            [['?user-id ::m.users/id '?actor-id]])
+            [['?user-id               ::m.users/id              '?actor-id]])
           (concat-when account-id
-            [['?account-id ::m.accounts/user '?user-id]])))})
+            [['?account-id            ::m.accounts/user         '?user-id]])
+          (concat-when pubkey-id
+            [['?pubkey-user-pubkey-id ::m.n.user-pubkeys/pubkey '?pubkey-id]
+             ['?pubkey-user-pubkey-id ::m.n.user-pubkeys/user   '?user-id]])
+          (concat-when transaction-id
+            [['?transaction-id        ::m.transactions/account  '?user-account-id]
+             ['?user-account-id       ::m.accounts/user         '?user-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))
@@ -54,40 +62,6 @@
      :in    [[?name]]
      :where [[?id ::m.users/name ?name]]}
    [name]))
-
-(>defn find-by-pubkey
-  [hex]
-  [::m.n.pubkeys/hex => (s/coll-of ::m.users/id)]
-  (log/info :find-by-pubkey/starting {:hex hex})
-  (c.xtdb/query-values
-   '{:find  [?user-id]
-     :in    [[?hex]]
-     :where [[?pubkey-id ::m.n.pubkeys/hex ?hex]
-             [?uk-id ::m.n.user-pubkeys/pubkey ?pubkey-id]
-             [?uk-id ::m.n.user-pubkeys/user ?user-id]]}
-   [hex]))
-
-(>defn find-by-pubkey-id
-  [pubkey-id]
-  [::m.n.pubkeys/id => (s/coll-of ::m.users/id)]
-  (log/info :find-by-pubkey/starting {:pubkey-id pubkey-id})
-  (c.xtdb/query-values
-   '{:find  [?user-id]
-     :in    [[?pubkey-id]]
-     :where [[?uk-id ::m.n.user-pubkeys/pubkey ?pubkey-id]
-             [?uk-id ::m.n.user-pubkeys/user ?user-id]]}
-   [pubkey-id]))
-
-(>defn find-by-transaction
-  [transaction-id]
-  [::m.transactions/id => (? ::m.users/id)]
-  (log/info :find-by-transaction/starting {:transaction-id transaction-id})
-  (c.xtdb/query-value
-   '{:find  [?user-id]
-     :in    [[?transaction-id]]
-     :where [[?transaction-id ::m.transactions/account ?account-id]
-             [?account-id ::m.accounts/user ?user-id]]}
-   [transaction-id]))
 
 (>defn create-record
   "Create a user record"

@@ -19,8 +19,6 @@
 ;; [[../../../../notebooks/dinsro/notebooks/nostr/filter_items_notebook.clj]]
 
 (def model-key ::m.n.filter-items/id)
-(def params-key ::m.n.filter-items/params)
-(def item-key ::m.n.filter-items/item)
 
 (def query-info
   {:ident   ::m.n.filter-items/id

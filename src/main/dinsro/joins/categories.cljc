@@ -16,6 +16,8 @@
 ;; [../mutations/categories.cljc]
 ;; [../queries/categories.clj]
 
+(def model-key ::m.categories/id)
+
 (def join-info
   (merge
    {:idents m.categories/idents}
@@ -44,7 +46,7 @@
    ao/target      ::m.transactions/id
    ao/pc-resolve
    (fn [_env {::m.categories/keys [id]}]
-     (let [ids (if id #?(:clj (q.transactions/find-by-category id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.transactions/index-ids {model-key id}) :cljs []) [])]
        {::transactions (m.categories/idents ids)}))})
 
 (>def ::transaction-count number?)

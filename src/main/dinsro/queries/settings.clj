@@ -10,11 +10,6 @@
 
 (>def ::settings (s/keys))
 
-(>defn index-ids
-  []
-  [=> (s/coll-of :xt/id)]
-  (c.xtdb/query-values '{:find [?e] :where [[?e ::id _]]}))
-
 (defn find-by-key
   [key]
   (let [db (c.xtdb/get-db)]

@@ -17,11 +17,20 @@
    #?(:clj [dinsro.queries.core.wallets :as q.c.wallets])
    [dinsro.specs]))
 
+(def model-key ::m.c.nodes/id)
+
 (def join-info
   (merge
    {:idents m.c.nodes/idents}
    #?(:clj {:indexer q.c.nodes/index-ids
             :counter q.c.nodes/count-ids})))
+
+(defattr admin-flat-index ::admin-flat-index :ref
+  {ao/target    model-key
+   ao/pc-output [{::admin-flat-index [model-key]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-flat-index (:results (j/make-admin-indexer join-info env props))})})
 
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.c.nodes/id
@@ -29,6 +38,13 @@
    ao/pc-resolve
    (fn [env props]
      {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr flat-index ::flat-index :ref
+  {ao/target    model-key
+   ao/pc-output [{::flat-index [model-key]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::flat-index (j/make-flat-indexer join-info env props)})})
 
 (defattr index ::index :ref
   {ao/target    ::m.c.nodes/id
@@ -44,7 +60,7 @@
    ao/target      ::m.c.blocks/id
    ao/pc-resolve
    (fn [_env {::m.c.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.c.blocks/find-by-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.c.blocks/index-ids {model-key id}) :cljs []) [])]
        {::blocks (m.c.blocks/idents ids)}))})
 
 (defattr ln-nodes ::ln-nodes :ref
@@ -54,7 +70,7 @@
    ao/target      ::m.ln.nodes/id
    ao/pc-resolve
    (fn [_env {::m.c.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.ln.nodes/find-by-core-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.ln.nodes/index-ids {model-key id}) :cljs []) [])]
        {::ln-nodes (m.ln.nodes/idents ids)}))})
 
 (defattr peers ::peers :ref
@@ -64,7 +80,7 @@
    ao/target      ::m.c.peers/id
    ao/pc-resolve
    (fn [_env {::m.c.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.c.peers/find-by-core-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.c.peers/index-ids {model-key id}) :cljs []) [])]
        {::peers (m.c.peers/idents ids)}))})
 
 (defattr transactions ::transactions :ref
@@ -74,7 +90,7 @@
    ao/target      ::m.c.transactions/id
    ao/pc-resolve
    (fn [_env {::m.c.nodes/keys [id]}]
-     (let [ids (if id  #?(:clj (q.c.transactions/find-by-node id) :cljs []) [])]
+     (let [ids (if id  #?(:clj (q.c.transactions/index-ids {model-key id}) :cljs []) [])]
        {::transactions (m.c.transactions/idents ids)}))})
 
 (defattr wallets ::wallets :ref
@@ -84,7 +100,16 @@
    ao/target      ::m.c.wallets/id
    ao/pc-resolve
    (fn [_env {::m.c.nodes/keys [id]}]
-     (let [ids (if id #?(:clj (q.c.wallets/find-by-core-node id) :cljs []) [])]
+     (let [ids (if id #?(:clj (q.c.wallets/index-ids {model-key id}) :cljs []) [])]
        {::wallets (m.c.wallets/idents ids)}))})
 
-(def attributes [admin-index index blocks ln-nodes peers transactions wallets])
+(def attributes
+  [admin-flat-index
+   admin-index
+   flat-index
+   index
+   blocks
+   ln-nodes
+   peers
+   transactions
+   wallets])

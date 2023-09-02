@@ -13,6 +13,8 @@
    #?(:clj [dinsro.queries.users :as q.users])
    [dinsro.specs]))
 
+(def model-key ::m.transactions/id)
+
 (def join-info
   (merge
    {:idents m.transactions/idents}
@@ -85,7 +87,7 @@
    ao/pc-output        [{::user [::m.users/id]}]
    ao/pc-resolve
    (fn [_env {::m.transactions/keys [id]}]
-     (let [user-id (if id #?(:clj (q.users/find-by-transaction id) :cljs nil) nil)
+     (let [user-id (if id #?(:clj (q.users/index-ids {model-key id}) :cljs nil) nil)
            ident (when user-id (m.users/ident user-id))]
        {::user ident}))
    ::report/column-EQL {::user [::m.users/id ::m.users/name]}})

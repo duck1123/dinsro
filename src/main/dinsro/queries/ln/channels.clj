@@ -1,6 +1,5 @@
 (ns dinsro.queries.ln.channels
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
@@ -45,15 +44,6 @@
                             (assoc :xt/id id))]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
-
-(>defn find-by-node
-  [node-id]
-  [::m.ln.nodes/id => (s/coll-of ::m.ln.channels/id)]
-  (c.xtdb/query-values
-   '{:find  [?channel-id]
-     :in    [[?node-id]]
-     :where [[?channel-id ::m.ln.channels/node [?node-id]]]}
-   [node-id]))
 
 (>defn find-channel
   [node-id channel-point]

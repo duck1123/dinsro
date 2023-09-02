@@ -5,7 +5,6 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -18,13 +17,9 @@
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.accounts :as j.accounts]
-   [dinsro.joins.currencies :as j.currencies]
-   [dinsro.joins.users :as j.users]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks :refer [defroute]]
-   [dinsro.model.users :as m.users]
    [dinsro.mutations.accounts :as mu.accounts]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.accounts.transactions :as u.a.transactions]
@@ -32,6 +27,7 @@
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../joins/accounts.cljc]]
@@ -40,7 +36,7 @@
 (def index-page-id :accounts)
 (def model-key ::m.accounts/id)
 (def override-form true)
-(def override-report false)
+(def override-report true)
 (def parent-router-id :root)
 (def show-controls false)
 (def show-transactions true)
@@ -50,7 +46,7 @@
   (u.buttons/row-action-button "Delete" model-key mu.accounts/delete!))
 
 (form/defsc-form NewForm
-  [this {::m.accounts/keys [currency name initial-value user]
+  [this {::m.accounts/keys [currency name initial-value]
          :as               props}]
   {fo/attributes     [m.accounts/name
                       m.accounts/currency
@@ -58,24 +54,8 @@
                       m.accounts/initial-value]
    fo/cancel-route   ["accounts"]
    fo/default-values {::m.accounts/initial-value 0}
-   fo/field-options  {::m.accounts/currency {::picker-options/query-key       ::j.currencies/index
-                                             ::picker-options/query-component u.links/CurrencyLinkForm
-                                             ::picker-options/options-xform
-                                             (fn [_ options]
-                                               (mapv
-                                                (fn [{::m.currencies/keys [id name]}]
-                                                  {:text  (str name)
-                                                   :value [::m.currencies/id id]})
-                                                (sort-by ::m.currencies/name options)))}
-                      ::m.accounts/user     {::picker-options/query-key       ::j.users/index
-                                             ::picker-options/query-component u.links/UserLinkForm
-                                             ::picker-options/options-xform
-                                             (fn [_ options]
-                                               (mapv
-                                                (fn [{::m.users/keys [id name]}]
-                                                  {:text  (str name)
-                                                   :value [::m.users/id id]})
-                                                (sort-by ::m.users/name options)))}}
+   fo/field-options  {::m.accounts/currency u.pickers/currency-picker
+                      ::m.accounts/user     u.pickers/user-picker}
    fo/field-styles   {::m.accounts/currency :pick-one
                       ::m.accounts/user     :pick-one}
    fo/id             m.accounts/id
@@ -84,10 +64,12 @@
   (if override-form
     (form/render-layout this props)
     (ui-segment {}
-      (dom/p {} (str "Account: " name))
-      (dom/p {} (str "Initial Value: " initial-value))
-      (dom/p {} "Currency: " (u.links/ui-currency-link currency))
-      (dom/p {} (str "User: " user)))))
+      (dom/div {}
+        (str "Account: " name))
+      (dom/div {}
+        (str "Initial Value: " initial-value))
+      (dom/div {}
+        "Currency: " (u.links/ui-currency-link currency)))))
 
 (def new-button
   {:type   :button

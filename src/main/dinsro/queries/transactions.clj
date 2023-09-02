@@ -1,6 +1,5 @@
 (ns dinsro.queries.transactions
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.guardrails.core :refer [=> >defn ?]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
@@ -25,26 +24,33 @@
 (def query-info
   {:ident   model-key
    :pk      '?transaction-id
-   :clauses [[:actor/id       '?actor-id]
-             [:actor/admin?   '?admin?]
-             [::m.users/id    '?user-id]
-             [::m.accounts/id '?account-id]]
+   :clauses [[:actor/id         '?actor-id]
+             [:actor/admin?     '?admin?]
+             [::m.users/id      '?user-id]
+             [::m.accounts/id   '?account-id]
+             [::m.currencies/id '?currency-id]
+             [::m.categories/id '?category-id]]
    :order-by [['?date :desc]]
    :sort-columns
    {::m.transactions/date '?sort-date}
    :rules
-   (fn [[actor-id admin? user-id account-id] rules]
+   (fn [[actor-id admin? user-id account-id currency-id category-id] rules]
      (->> rules
           (concat-when (and (not admin?) actor-id)
-            [['?auth-debit-id    ::m.debits/transaction   '?transaction-id]
-             ['?auth-debit-id    ::m.debits/account       '?auth-account-id]
-             ['?auth-account-id  ::m.accounts/user        '?actor-id]])
+            [['?auth-debit-id    ::m.debits/transaction    '?transaction-id]
+             ['?auth-debit-id    ::m.debits/account        '?auth-account-id]
+             ['?auth-account-id  ::m.accounts/user         '?actor-id]])
           (concat-when account-id
-            [['?account-debit-id ::m.debits/transaction   '?transaction-id]
-             ['?account-debit-id ::m.debits/account       '?account-id]])
+            [['?account-debit-id ::m.debits/transaction    '?transaction-id]
+             ['?account-debit-id ::m.debits/account        '?account-id]])
           (concat-when user-id
-            [['?transaction-id   ::m.transactions/account '?user-account-id]
-             ['?user-account-id  ::m.accounts/user        '?user-id]])))})
+            [['?user-account-id  ::m.accounts/user         '?user-id]
+             ['?user-debit-id    ::m.debits/account        '?user-account-id]
+             ['?user-debit-id    ::m.debits/transaction    '?transaction-id]])
+          (concat-when currency-id
+            [['?transaction-id   ::m.transactions/currency '?currency-id]])
+          (concat-when category-id
+            ['?transaction-id    ::m.transactions/category '?category-id])))})
 
 (defn count-ids
   ([] (count-ids {}))
@@ -53,46 +59,6 @@
 (defn index-ids
   ([] (index-ids {}))
   ([query-params] (c.xtdb/index-ids query-info query-params)))
-
-(>defn find-by-account
-  [id]
-  [::m.accounts/id => (s/coll-of ::m.transactions/id)]
-  (log/info :find-by-account/starting {:account-id id})
-  (c.xtdb/query-values
-   '{:find  [?id]
-     :in    [[?account-id]]
-     :where [[?id ::m.transactions/account ?account-id]]}
-   [id]))
-
-(>defn find-by-category
-  [id]
-  [::m.categories/id => (s/coll-of ::m.transactions/id)]
-  (c.xtdb/query-values
-   '{:find  [?transaction-id]
-     :in    [[?category-id]]
-     :where [[?transaction-id ::m.transactions/category ?category-id]]}
-   [id]))
-
-(>defn find-by-currency
-  [id]
-  [::m.currencies/id => (s/coll-of ::m.transactions/id)]
-  (c.xtdb/query-values
-   '{:find  [?transaction-id]
-     :in    [[?user-id]]
-     :where [[?transaction-id ::m.transactions/currency ?user-id]]}
-   [id]))
-
-(>defn find-by-user
-  [user-id]
-  [::m.users/id => (s/coll-of ::m.transactions/id)]
-  (log/info :find-by-user/starting {:user-id user-id})
-  (c.xtdb/query-values
-   '{:find  [?transaction-id]
-     :in    [[?user-id]]
-     :where [[?debit-id ::m.debits/account ?account-id]
-             [?debit-id ::m.debits/transaction ?transaction-id]
-             [?account-id ::m.accounts/user ?user-id]]}
-   [user-id]))
 
 (>defn create-record
   [params]

@@ -5,23 +5,21 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.picker-options :as picker-options]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.categories :as j.categories]
-   [dinsro.joins.users :as j.users]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.users :as m.users]
    [dinsro.mutations.categories :as mu.categories]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/categories.cljc]]
@@ -38,22 +36,11 @@
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.categories/delete!))
 
-(def user-picker
-  {::picker-options/query-key       ::j.users/admin-index-flat
-   ::picker-options/query-component u.links/UserLinkForm
-   ::picker-options/options-xform
-   (fn [_ options]
-     (mapv
-      (fn [{::m.users/keys [id name]}]
-        {:text  (str name)
-         :value [::m.users/id id]})
-      (sort-by ::m.users/name options)))})
-
 (form/defsc-form NewForm
   [this props]
   {fo/attributes    [m.categories/name m.categories/user]
    fo/cancel-route  ["admin"]
-   fo/field-options {::m.categories/user user-picker}
+   fo/field-options {::m.categories/user u.pickers/admin-user-picker}
    fo/field-styles  {::m.categories/user :pick-one}
    fo/id            m.categories/id
    fo/route-prefix  "new-category"

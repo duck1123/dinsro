@@ -32,7 +32,7 @@
    ro/machine          spr/machine
    ro/page-size        10
    ro/paginate?        true
-   ro/source-attribute ::j.users/index-by-pubkey
+   ro/source-attribute ::j.users/index
    ro/title            "Users"
    ro/row-pk           m.users/id
    ro/run-on-mount?    true})

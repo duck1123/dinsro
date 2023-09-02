@@ -12,11 +12,20 @@
    #?(:clj [dinsro.queries.core.words :as q.c.words])
    [dinsro.specs]))
 
+(def model-key ::m.c.wallets/id)
+
 (def join-info
   (merge
    {:idents m.c.wallets/idents}
    #?(:clj {:indexer q.c.wallets/index-ids
             :counter q.c.wallets/count-ids})))
+
+(defattr admin-flat-index ::admin-flat-index :ref
+  {ao/target    model-key
+   ao/pc-output [{::admin-flat-index [model-key]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::admin-flat-index (:results (j/make-admin-indexer join-info env props))})})
 
 (defattr admin-index ::admin-index :ref
   {ao/target    ::m.c.wallets/id
@@ -24,6 +33,13 @@
    ao/pc-resolve
    (fn [env props]
      {::admin-index (j/make-admin-indexer join-info env props)})})
+
+(defattr flat-index ::flat-index :ref
+  {ao/target    model-key
+   ao/pc-output [{::flat-index [model-key]}]
+   ao/pc-resolve
+   (fn [env props]
+     {::flat-index (j/make-flat-indexer join-info env props)})})
 
 (defattr index ::index :ref
   {ao/target    ::m.c.wallets/id
@@ -52,4 +68,4 @@
        {::words (m.c.words/idents ids)}))
    ::report/column-EQL {::words [::m.c.words/id ::m.c.words/word]}})
 
-(def attributes [admin-index index addresses words])
+(def attributes [admin-flat-index admin-index flat-index index addresses words])

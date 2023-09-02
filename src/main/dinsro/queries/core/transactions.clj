@@ -6,12 +6,9 @@
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.core.networks :as m.c.networks]
-   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.tx-in :as m.c.tx-in]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.specs]
-   [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
 ;; [[../../joins/core/transactions.cljc]]
@@ -42,26 +39,6 @@
 (defn index-ids
   ([] (index-ids {}))
   ([query-params] (c.xtdb/index-ids query-info query-params)))
-
-(>defn find-by-node
-  [node-id]
-  [::m.c.nodes/id => (s/coll-of ::m.c.transactions/id)]
-  (log/info :find-by-node/starting {:node-id node-id})
-  (c.xtdb/query-values
-   '{:find  [?tx-id]
-     :in    [[?node-id]]
-     :where [[?tx-id ::m.c.transactions/node ?node-id]]}
-   [node-id]))
-
-(>defn find-by-block
-  [block-id]
-  [::m.c.blocks/id => (s/coll-of ::m.c.transactions/id)]
-  (log/info :find-by-block/starting {:block-id block-id})
-  (c.xtdb/query-values
-   '{:find  [?tx-id]
-     :in    [[?block-id]]
-     :where [[?tx-id ::m.c.transactions/block ?block-id]]}
-   [block-id]))
 
 (>defn fetch-by-txid
   [tx-id]
@@ -112,15 +89,3 @@
   [id]
   [::m.c.transactions/id => any?]
   (c.xtdb/delete! id))
-
-(>defn find-by-ln-node
-  [ln-node-id]
-  [::m.ln.nodes/id => (? ::m.c.transactions/id)]
-  (comment ln-node-id)
-  ;;  (c.xtdb/query-value
-  ;;   '{:find  [?id]
-  ;;     :in    [[?ln-node-id]]
-  ;;     :where [[]
-  ;;             [?id ::m.c.transactions/tx-id ?tx-id]]}
-  ;;   [ln-node-id])
-  (throw (ex-info "not implemented" {})))

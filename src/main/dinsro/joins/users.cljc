@@ -7,7 +7,6 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.model.users :as m.users]
    #?(:clj [dinsro.queries.accounts :as q.accounts])
@@ -18,10 +17,12 @@
    #?(:clj [dinsro.queries.users :as q.users])
    [dinsro.specs]))
 
-;; [[../actions/users.clj][User Actions]]
-;; [[../model/users.cljc][Users Model]]
-;; [[../queries/users.clj][User Queries]]
-;; [[../ui/users.cljs][Users UI]]
+;; [[../actions/users.clj]]
+;; [[../model/users.cljc]]
+;; [[../queries/users.clj]]
+;; [[../ui/users.cljs]]
+
+(def model-key ::m.users/id)
 
 (def join-info
   (merge
@@ -36,12 +37,12 @@
    (fn [env props]
      {::admin-index (j/make-admin-indexer join-info env props)})})
 
-(defattr admin-index-flat ::admin-index-flat :ref
+(defattr admin-flat-index ::admin-flat-index :ref
   {ao/target    ::m.users/id
-   ao/pc-output [{::admin-index-flat [::m.users/id]}]
+   ao/pc-output [{::admin-flat-index [::m.users/id]}]
    ao/pc-resolve
    (fn [env props]
-     {::admin-index-flat (:results (j/make-admin-indexer join-info env props))})})
+     {::admin-flat-index (:results (j/make-admin-indexer join-info env props))})})
 
 (defattr index ::index :ref
   {ao/target    ::m.users/id
@@ -90,17 +91,12 @@
                 :cljs (do (comment query-params) 0))]
        {::record-count n}))})
 
-;; Deprecated
-(defattr index-by-pubkey ::index-by-pubkey :ref
+(defattr flat-index ::flat-index :ref
   {ao/target    ::m.users/id
-   ao/pc-output [{::index-by-pubkey [::m.users/id]}]
+   ao/pc-output [{::flat-index [::m.users/id]}]
    ao/pc-resolve
-   (fn [{:keys [query-params] :as env} _]
-     (if-let [pubkey-id (::m.n.pubkeys/id query-params)]
-       (let [ids #?(:clj (q.users/find-by-pubkey-id pubkey-id) :cljs [])]
-         (comment env query-params pubkey-id)
-         {::index-by-pubkey (m.users/idents ids)})
-       (throw (ex-info "Missing pubkey" {}))))})
+   (fn [env props]
+     {::flat-index (j/make-flat-indexer join-info env props)})})
 
 ;; Count of ln nodes associated with user
 (defattr ln-node-count ::ln-node-count :number
@@ -130,7 +126,7 @@
    ao/pc-resolve
    (fn [_env {::m.users/keys [id]}]
      (if id
-       (let [ids #?(:clj (q.transactions/find-by-user id)
+       (let [ids #?(:clj (q.transactions/index-ids {model-key id})
                     :cljs [])]
          {::transactions (m.transactions/idents ids)})
        (throw (ex-info "ID not provided" {}))))})
@@ -153,13 +149,13 @@
 
 (def attributes [account-count
                  accounts
+                 admin-flat-index
                  admin-index
-                 admin-index-flat
                  category-count
                  categories
+                 flat-index
                  record-count
                  index
-                 index-by-pubkey
                  ln-node-count
                  ln-nodes
                  transaction-count
