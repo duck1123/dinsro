@@ -124,11 +124,7 @@ main-pipeline:
   BUILD +test
 
 all-images:
-  BUILD +cert-downloader
-  BUILD +fileserver
-  BUILD +devspace-base
-  BUILD +devcards-image
-  BUILD +docs-image
+  BUILD +support-images
   BUILD +image
 
 base-builder:
@@ -171,15 +167,8 @@ check:
   RUN bb check
 
 ci:
-  BUILD +cert-downloader
-  BUILD +fileserver
-  BUILD +check
-  BUILD +lint
-  BUILD +test
-  BUILD +image
-  BUILD +devspace-base
-  BUILD +devcards-image
-  BUILD +dev-image-sources
+  BUILD +validate
+  BUILD +all-images
 
 cert-downloader:
   FROM babashka/babashka:latest
@@ -487,6 +476,13 @@ script-builder:
 src:
   FROM +builder
 
+support-images:
+  BUILD +cert-downloader
+  BUILD +fileserver
+  BUILD +devspace-base
+  BUILD +devcards-image
+  BUILD +docs-image
+
 test:
   BUILD +test-clj
   BUILD +test-cljs
@@ -507,3 +503,8 @@ test-sources:
   COPY --dir tests.edn bin .
   COPY --dir src/test src
   DO +IMPORT_JAR_DEPS
+
+validate:
+  BUILD +check
+  BUILD +test
+  BUILD +lint

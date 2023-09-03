@@ -42,37 +42,13 @@ jobs:
           command: |
             earthly -P --remote-cache=duck1123/dinsro:cache +builder
       - run:
-          name: Check Source
+          name: Validate
           command: |
-            earthly -P +check
+            earthly -P +validate
       - run:
-          name: Lint Source
+          name: Build Support Images
           command: |
-            earthly -P +lint
-      - run:
-          name: Run Tests
-          command: |
-            earthly -P +test
-      - run:
-          name: Build Cert Downloader
-          command: |
-            earthly -P +cert-downloader
-      - run:
-          name: Build Fileserver
-          command: |
-            earthly -P +fileserver
-      - run:
-          name: Build Devspace Image
-          command: |
-            earthly -P +devspace-base
-      - run:
-          name: Build Devcards Image
-          command: |
-            earthly -P +devcards-image
-      - run:
-          name: Build Docs Image
-          command: |
-            earthly -P +docs-image
+            earthly -P +support-images
       - run:
           name: Build Jar
           command: |
@@ -81,14 +57,9 @@ jobs:
           path: target/dinsro.jar
           destination: dinsro.jar
       - run:
-          name: Build Main Image
-          command: |
-            export BUILD_VERSION=$(clojure -T:build print-version)
-            earthly -P +image --tag ${BUILD_VERSION?}
-      - run:
           name: Push Images
           command: |
             export BUILD_VERSION=$(clojure -T:build print-version)
             earthly -P --remote-cache=duck1123/dinsro:cache --push +all-images --tag ${BUILD_VERSION?}
-            earthly -P --remote-cache=duck1123/dinsro:cache --push +all-images --tag latest
-            echo "Latest version is ${BUILD_VERSION}"
+            docker tag duck1123/dinsro:${BUILD_VERSION} duck1123/dinsro:latest
+            docker push duck1123/dinsro:latest
