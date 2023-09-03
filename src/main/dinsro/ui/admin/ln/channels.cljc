@@ -11,6 +11,7 @@
    [dinsro.joins.ln.channels :as j.ln.channels]
    [dinsro.model.ln.channels :as m.ln.channels]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.ln.channels :as o.ln.channels]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
@@ -42,8 +43,8 @@
   {ro/columns          [m.ln.channels/id
                         m.ln.channels/channel-point
                         m.ln.channels/node]
-   ro/field-formatters {::m.ln.channels/node #(u.links/ui-node-link %2)
-                        ::m.ln.channels/id   #(u.links/ui-channel-link %3)}
+   ro/field-formatters {o.ln.channels/node #(u.links/ui-node-link %2)
+                        o.ln.channels/id   #(u.links/ui-channel-link %3)}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -67,11 +68,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["channels"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
@@ -86,7 +89,7 @@
    o.navlinks/required-role required-role})
 
 (m.navlinks/defroute show-page-id
-  {o.navlinks/control       ::IndexPage
+  {o.navlinks/control       ::ShowPage
    o.navlinks/input-key     model-key
    o.navlinks/label         "Show Channel"
    o.navlinks/model-key     model-key

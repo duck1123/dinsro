@@ -6,9 +6,10 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.debits :as j.debits]
-   [dinsro.model.accounts :as m.accounts]
    [dinsro.model.debits :as m.debits]
-   [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.accounts :as o.accounts]
+   [dinsro.options.debits :as o.debits]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
@@ -17,8 +18,8 @@
 ;; [[../../model/debits.cljc]]
 
 (def index-page-id :accounts-show-debits)
-(def model-key ::m.debits/id)
-(def parent-model-key ::m.accounts/id)
+(def model-key o.debits/id)
+(def parent-model-key o.accounts/id)
 (def router-key :dinsro.ui.accounts/Router)
 
 (report/defsc-report Report
@@ -27,7 +28,7 @@
    ro/control-layout   {:inputs         [[parent-model-key]]
                         :action-buttons [::refresh]}
    ro/controls         {parent-model-key {:type :uuid :label "id"}
-                        ::refresh       u.links/refresh-control}
+                        ::refresh        u.links/refresh-control}
    ro/machine          spr/machine
    ro/page-size        10
    ro/paginate?        true
@@ -41,12 +42,15 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [[::dr/id router-key]
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         o.navlinks/id    index-page-id
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [[::dr/id router-key]
+                         o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["debits"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))

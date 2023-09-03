@@ -196,9 +196,7 @@
 (def ui-show (comp/factory Show))
 
 (defsc ShowPage
-  [_this {::m.n.event-tags/keys [id]
-          ::m.navlinks/keys     [target]
-          :as                   props}]
+  [_this props]
   {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.n.event-tags/id nil
                    ::m.navlinks/id     show-page-id
@@ -208,10 +206,7 @@
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["event-tag" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "event tags")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage

@@ -9,6 +9,7 @@
    [dinsro.joins.ln.payments :as j.ln.payments]
    [dinsro.model.ln.payments :as m.ln.payments]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.ln.payments :as o.ln.payments]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
@@ -27,8 +28,8 @@
   {ro/columns          [m.ln.payments/payment-hash
                         m.ln.payments/node
                         m.ln.payments/status]
-   ro/field-formatters {::m.ln.payments/node         #(u.links/ui-node-link %2)
-                        ::m.ln.payments/payment-hash #(u.links/ui-payment-link %3)}
+   ro/field-formatters {o.ln.payments/node         #(u.links/ui-node-link %2)
+                        o.ln.payments/payment-hash #(u.links/ui-payment-link %3)}
    ro/machine          spr/machine
    ro/page-size        10
    ro/paginate?        true
@@ -44,8 +45,10 @@
 (defsc Show
   [_this _props]
   {:ident         ::m.ln.payments/id
-   :initial-state {::m.ln.payments/id nil}
-   :query         [::m.ln.payments/id]
+   :initial-state (fn [props]
+                    {model-key (model-key props)})
+   :query         (fn []
+                    [model-key])
    :route-segment ["payments" :id]}
   (dom/div {}
     "Show Payment"))
@@ -53,11 +56,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["payments"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}

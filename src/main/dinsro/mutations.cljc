@@ -6,7 +6,9 @@
 (s/def ::message string?)
 (s/def ::data map?)
 (s/def ::errors (s/keys :req-un [::message ::data]))
+(def errors ::errors)
 (s/def ::status #{:error :ok :initial :fail})
+(def status ::status)
 
 (defsc ErrorData
   [_ _]

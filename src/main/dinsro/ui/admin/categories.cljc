@@ -14,6 +14,7 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.categories :as mu.categories]
+   [dinsro.options.categories :as o.categories]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
@@ -27,7 +28,7 @@
 ;; [[../../ui/categories.cljs]]
 
 (def index-page-id :admin-categories)
-(def model-key ::m.categories/id)
+(def model-key o.categories/id)
 (def override-admin-form true)
 (def parent-router-id :admin)
 (def required-role :admin)
@@ -40,8 +41,8 @@
   [this props]
   {fo/attributes    [m.categories/name m.categories/user]
    fo/cancel-route  ["admin"]
-   fo/field-options {::m.categories/user u.pickers/admin-user-picker}
-   fo/field-styles  {::m.categories/user :pick-one}
+   fo/field-options {o.categories/user u.pickers/admin-user-picker}
+   fo/field-styles  {o.categories/user :pick-one}
    fo/id            m.categories/id
    fo/route-prefix  "new-category"
    fo/title         "Category"}
@@ -56,8 +57,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.categories/name #(u.links/ui-admin-category-link %3)
-                         ::m.categories/user #(u.links/ui-admin-user-link %2)}
+  {ro/column-formatters {o.categories/name #(u.links/ui-admin-category-link %3)
+                         o.categories/user #(u.links/ui-admin-user-link %2)}
    ro/columns           [m.categories/name
                          m.categories/user
                          j.categories/transaction-count]
@@ -78,12 +79,12 @@
   [_this {::m.categories/keys [id name]
           :as                 props}]
   {:ident          ::m.categories/id
-   :initial-state  {::m.categories/id   nil
-                    ::m.categories/name ""}
-   ::m.navlinks/id :show-category
-   ;; :pre-merge      (u.loader/page-merger model-key {})
-   :query          [::m.categories/id
-                    ::m.categories/name]}
+   :initial-state  (fn [props]
+                     {model-key (model-key props)
+                      o.categories/name ""})
+   :query          (fn []
+                     [o.categories/id
+                      o.categories/name])}
   (if id
     (ui-container {}
       (ui-segment {}
@@ -95,11 +96,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["categories"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (log/info :Page/starting {:props props})
@@ -109,24 +112,19 @@
       (u.debug/load-error props "admin index categories page"))))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state (fn [_]
-                    {model-key           nil
-                     ::m.navlinks/id     show-page-key
-                     ::m.navlinks/target (comp/get-initial-state Show {})})
-   :query         (fn [_]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-key])
+   :initial-state (fn [props]
+                    {model-key           (model-key props)
+                     o.navlinks/id     show-page-key
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
                     [model-key
-                     ::m.navlinks/id
-                     {::m.navlinks/target (comp/get-query Show)}])
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["category" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (if (model-key props)
-    (if target
-      (ui-show target)
-      (u.debug/load-error props "admin show category"))
-    (u.debug/load-error props "admin show category")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

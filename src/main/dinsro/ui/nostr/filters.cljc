@@ -8,17 +8,18 @@
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.filters :as m.n.filters]
+   [dinsro.options.navbars :as o.navbars]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.nostr.filters :as o.n.filters]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
-   [dinsro.ui.nostr.filters.filter-items :as u.n.f.filter-items]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.nostr.filters.filter-items :as u.n.f.filter-items]))
 
 ;; [[../../ui/admin/nostr/filters.cljc]]
 
-(def model-key ::m.n.filters/id)
+(def model-key o.n.filters/id)
 (def parent-router-id :nostr)
 (def required-role :user)
 (def show-page-id :nostr-filters-show)
@@ -42,22 +43,23 @@
           :as                props}]
   {:ident         ::m.n.filters/id
    :initial-state (fn [props]
-                    (let [id (::m.n.filters/id props)]
-                      {::m.n.filters/id      nil
-                       ::m.n.filters/index   nil
-                       ::m.n.filters/request {}
+                    (let [id (o.n.filters/id props)]
+                      {o.n.filters/id      nil
+                       o.n.filters/index   nil
+                       o.n.filters/request {}
                        :ui/nav-menu          (comp/get-initial-state u.menus/NavMenu
-                                               {::m.navbars/id show-page-id
+                                               {o.navbars/id show-page-id
                                                 :id            id})
                        :ui/router            (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
+                    {:ui/nav-menu [u.menus/NavMenu {o.navbars/id show-page-id}]
                      :ui/router   [Router {}]})
-   :query         [::m.n.filters/id
-                   ::m.n.filters/index
-                   {::m.n.filters/request (comp/get-query u.links/RequestLinkForm)}
-                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]}
+   :query         (fn []
+                    [model-key
+                     o.n.filters/index
+                     {o.n.filters/request (comp/get-query u.links/RequestLinkForm)}
+                     {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
+                     {:ui/router (comp/get-query Router)}])}
   (if id
     (ui-segment {}
       (dom/div {} (str id))
@@ -77,9 +79,7 @@
 (def ui-show (comp/factory Show))
 
 (defsc ShowPage
-  [_this {::m.n.filters/keys [id]
-          ::m.navlinks/keys  [target]
-          :as                props}]
+  [_this props]
   {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state (fn [_props]
                     {model-key           nil
@@ -91,10 +91,7 @@
                      {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["filter" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (ui-segment {} "Failed to load record")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage

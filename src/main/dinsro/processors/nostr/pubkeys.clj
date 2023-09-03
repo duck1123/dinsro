@@ -24,9 +24,9 @@
 (def model-key ::m.n.pubkeys/id)
 
 (defn add-contact!
-  [_env props]
+  [{:keys [query-params]} props]
   (let [pubkey-id (model-key props)
-        actor-id nil]
+        actor-id  (:actor/id query-params)]
     (when actor-id
       (q.contacts/create!
        {o.contacts/pubkey pubkey-id

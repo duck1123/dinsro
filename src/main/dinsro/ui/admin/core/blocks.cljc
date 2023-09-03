@@ -12,10 +12,10 @@
    [dinsro.model.core.blocks :as m.c.blocks]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.blocks :as mu.c.blocks]
+   [dinsro.options.core.blocks :as o.c.blocks]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.core.blocks.transactions :as u.a.c.b.transactions]
    [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -25,7 +25,7 @@
 
 (def force-fetch-button false)
 (def index-page-id :admin-core-blocks)
-(def model-key ::m.c.blocks/id)
+(def model-key o.c.blocks/id)
 (def parent-router-id :admin-core)
 (def required-role :admin)
 (def show-page-id :admin-core-blocks-show)
@@ -36,7 +36,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.blocks/hash #(u.links/ui-admin-block-link %3)}
+  {ro/column-formatters {o.c.blocks/hash #(u.links/ui-admin-block-link %3)}
 
    ro/columns           [m.c.blocks/hash
                          m.c.blocks/height
@@ -60,29 +60,31 @@
          :ui/keys          [transactions]
          :as               props}]
   {:ident         ::m.c.blocks/id
-   :initial-state {::m.c.blocks/id             nil
-                   ::m.c.blocks/height         ""
-                   ::m.c.blocks/hash           ""
-                   ::m.c.blocks/previous-block {}
-                   ::m.c.blocks/next-block     {}
-                   ::m.c.blocks/weight         0
-                   ::m.c.blocks/nonce          ""
-                   ::m.c.blocks/fetched?       false
-                   ::m.c.blocks/network        {}
-                   :ui/transactions            {}}
+   :initial-state (fn [props]
+                    {o.c.blocks/id             (model-key props)
+                     o.c.blocks/height         ""
+                     o.c.blocks/hash           ""
+                     o.c.blocks/previous-block  (comp/get-initial-state u.links/BlockHeightLinkForm {})
+                     o.c.blocks/next-block     (comp/get-initial-state u.links/BlockHeightLinkForm {})
+                     o.c.blocks/weight         0
+                     o.c.blocks/nonce          ""
+                     o.c.blocks/fetched?       false
+                     o.c.blocks/network        (comp/get-initial-state u.links/NetworkLinkForm {})
+                     :ui/transactions           (comp/get-initial-state u.a.c.b.transactions/SubPage {})})
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/transactions [u.a.c.b.transactions/SubPage {}]})
-   :query         [::m.c.blocks/id
-                   ::m.c.blocks/height
-                   ::m.c.blocks/hash
-                   ::m.c.blocks/nonce
-                   ::m.c.blocks/weight
-                   ::m.c.blocks/fetched?
-                   {::m.c.blocks/network (comp/get-query u.links/NetworkLinkForm)}
-                   {::m.c.blocks/previous-block (comp/get-query u.links/BlockHeightLinkForm)}
-                   {::m.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
-                   {:ui/transactions (comp/get-query u.a.c.b.transactions/SubPage)}
-                   [df/marker-table '_]]}
+   :query         (fn []
+                    [o.c.blocks/id
+                     o.c.blocks/height
+                     o.c.blocks/hash
+                     o.c.blocks/nonce
+                     o.c.blocks/weight
+                     o.c.blocks/fetched?
+                     {o.c.blocks/network (comp/get-query u.links/NetworkLinkForm)}
+                     {o.c.blocks/previous-block (comp/get-query u.links/BlockHeightLinkForm)}
+                     {o.c.blocks/next-block (comp/get-query u.links/BlockHeightLinkForm)}
+                     {:ui/transactions (comp/get-query u.a.c.b.transactions/SubPage)}
+                     [df/marker-table '_]])}
   (log/trace :Show/creating {:id id :props props :this this})
   (dom/div {}
     (ui-segment {}
@@ -129,29 +131,31 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["blocks"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
-   :initial-state {::m.navlinks/id     show-page-id
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [_props]
+                    {o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["block" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
-  (if target
-    (ui-show target)
-    (u.debug/load-error props "admin show block")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

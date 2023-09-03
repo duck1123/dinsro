@@ -10,7 +10,6 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.rates :as m.rates]
    [dinsro.options.navlinks :as o.navlinks]
-   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
@@ -55,29 +54,32 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["rates"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-key])
+   :initial-state (fn [props]
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-key
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["rate-sources" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (if target
-    (ui-show target)
-    (u.debug/load-error props "admin show rate")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

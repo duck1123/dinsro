@@ -9,10 +9,11 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.peers :as j.ln.peers]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.peers :as mu.ln.peers]
+   [dinsro.options.ln.nodes :as o.ln.nodes]
+   [dinsro.options.ln.peers :as o.ln.peers]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -23,7 +24,7 @@
 ;; [[../../../model/ln/peers.cljc]]
 
 (def index-page-id :admin-ln-peers)
-(def model-key ::m.ln.peers/id)
+(def model-key o.ln.peers/id)
 (def parent-router-id :admin-ln)
 (def required-role :admin)
 (def show-page-id :admin-ln-peers-id)
@@ -34,11 +35,11 @@
    :label  "Submit"
    :action (fn [this _key]
              (let [{::m.ln.peers/keys [address id]
-                    node             ::m.ln.peers/node} (comp/props this)
-                   {node-id ::m.ln.nodes/id}            node
-                   props                               {::m.ln.peers/id   id
-                                                        ::m.ln.peers/address address
-                                                        ::m.ln.peers/node node-id}]
+                    node             o.ln.peers/node} (comp/props this)
+                   {node-id o.ln.nodes/id}            node
+                   props                               {o.ln.peers/id   id
+                                                        o.ln.peers/address address
+                                                        o.ln.peers/node node-id}]
                (log/info :submit-action/clicked props)
                (comp/transact! this [`(mu.ln.peers/create! ~props)])))})
 
@@ -47,10 +48,10 @@
    fo/attributes     [m.ln.peers/node
                       m.ln.peers/remote-node]
    fo/controls       {::submit submit-button}
-   fo/field-options  {::m.ln.peers/node        u.pickers/admin-ln-node-picker
-                      ::m.ln.peers/remote-node u.pickers/admin-remote-node-picker}
-   fo/field-styles   {::m.ln.peers/node        :pick-one
-                      ::m.ln.peers/remote-node :pick-one}
+   fo/field-options  {o.ln.peers/node        u.pickers/admin-ln-node-picker
+                      o.ln.peers/remote-node u.pickers/admin-remote-node-picker}
+   fo/field-styles   {o.ln.peers/node        :pick-one
+                      o.ln.peers/remote-node :pick-one}
    fo/id             m.ln.peers/id
    fo/route-prefix   "new-peer"
    fo/title          "New Peer"})
@@ -67,9 +68,8 @@
                         m.ln.peers/remote-node
                         m.ln.peers/inbound?]
    ro/controls         {::new new-button}
-   ro/field-formatters {::m.ln.peers/node        #(u.links/ui-node-link %2)
-                        ::m.ln.peers/pubkey      #(u.links/ui-ln-peer-link %3)
-                        ::m.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
+   ro/field-formatters {o.ln.peers/node        #(u.links/ui-node-link %2)
+                        o.ln.peers/remote-node #(u.links/ui-remote-node-link %2)}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -84,11 +84,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query            (fn []
+                       [o.navlinks/id
+                        {:ui/report (comp/get-query Report)}])
    :route-segment     ["peers"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})

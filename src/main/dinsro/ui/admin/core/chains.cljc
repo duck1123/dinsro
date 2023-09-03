@@ -14,6 +14,8 @@
    [dinsro.model.core.chains :as m.c.chains]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.core.chains :as o.c.chains]
+   [dinsro.options.navbars :as o.navbars]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.core.chains.networks :as u.a.c.c.networks]
    [dinsro.ui.debug :as u.debug]
@@ -26,7 +28,7 @@
 ;; [[../../../model/core/chains.cljc]]
 
 (def index-page-id :admin-core-chains)
-(def model-key ::m.c.chains/id)
+(def model-key o.c.chains/id)
 (def override-form false)
 (def parent-router-id :admin-core)
 (def required-role :admin)
@@ -64,18 +66,19 @@
    :initial-state (fn [props]
                     (let [id (model-key props)]
                       {model-key         id
-                       ::m.c.chains/name ""
+                       o.c.chains/name ""
                        :ui/nav-menu      (comp/get-initial-state u.menus/NavMenu
-                                           {::m.navbars/id show-page-id
+                                           {o.navbars/id show-page-id
                                             :id            id})
                        :ui/router        (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
+                    {:ui/nav-menu [u.menus/NavMenu {o.navbars/id show-page-id}]
                      :ui/router   [Router {}]})
-   :query         [::m.c.chains/id
-                   ::m.c.chains/name
-                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]}
+   :query         (fn []
+                    [o.c.chains/id
+                     o.c.chains/name
+                     {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
+                     {:ui/router (comp/get-query Router)}])}
   (log/info :ShowPage/starting {:props props})
   (if (get props model-key)
     (dom/div {}
@@ -96,7 +99,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.chains/name #(u.links/ui-admin-chain-link %3)}
+  {ro/column-formatters {o.c.chains/name #(u.links/ui-admin-chain-link %3)}
    ro/columns           [m.c.chains/name]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
@@ -113,34 +116,32 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["chains"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
                     {model-key           (model-key props)
-                     ::m.navlinks/id     show-page-id
-                     ::m.navlinks/target (comp/get-initial-state Show {})})
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
-                     ::m.navlinks/id
-                     {::m.navlinks/target (comp/get-query Show)}])
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["chain" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (get props model-key)
-    (ui-show target)
-    (u.debug/load-error props "admin show chains")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

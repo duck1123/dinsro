@@ -9,20 +9,22 @@
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.transactions :as m.transactions]
+   [dinsro.options.accounts :as o.accounts]
+   [dinsro.options.transactions :as o.transactions]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.transactions :as u.transactions]))
 
 (report/defsc-report Report
   [_this props]
   {ro/BodyItem          u.transactions/BodyItem
-   ro/column-formatters {::m.transactions/description #(u.links/ui-transaction-link %3)}
+   ro/column-formatters {o.transactions/description #(u.links/ui-transaction-link %3)}
    ro/columns           [m.transactions/description
                          j.transactions/debit-count
                          m.transactions/date]
    ro/control-layout    {:inputs         [[::m.accounts/id]]
                          :action-buttons [::refresh]}
-   ro/controls          {::m.accounts/id {:type :uuid :label "id"}
-                         ::refresh       u.links/refresh-control}
+   ro/controls          {o.accounts/id {:type :uuid :label "id"}
+                         ::refresh     u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true

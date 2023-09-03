@@ -8,8 +8,9 @@
    [dinsro.joins.debits :as j.debits]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.users :as m.users]
+   [dinsro.options.debits :as o.debits]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.users :as o.users]
    [dinsro.ui.controls :as u.controls]
 
    [dinsro.ui.links :as u.links]
@@ -19,8 +20,8 @@
 ;; [[../../../model/debits.cljc]]
 
 (def index-page-id :admin-users-show-debits)
-(def model-key ::m.debits/id)
-(def parent-model-key ::m.users/id)
+(def model-key o.debits/id)
+(def parent-model-key o.users/id)
 (def parent-router-id :admin-users-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.admin.users/Router)
@@ -28,17 +29,16 @@
 (report/defsc-report Report
   ;; "Debits belonging to a user"
   [_this _props]
-  {ro/column-formatters {::m.debits/description #(u.links/ui-transaction-link %3)
-                         ::m.debits/account     #(u.links/ui-account-link %2)
-                         ::m.debits/transaction #(u.links/ui-transaction-link %2)
-                         ::j.debits/currency    #(u.links/ui-currency-link %2)}
+  {ro/column-formatters {o.debits/account     #(u.links/ui-account-link %2)
+                         o.debits/transaction #(u.links/ui-transaction-link %2)
+                         ::j.debits/currency  #(u.links/ui-currency-link %2)}
    ro/columns           [m.debits/account
                          m.debits/transaction
                          m.debits/value
                          j.debits/currency]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
-                         ::refresh    u.links/refresh-control}
+                         ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -54,13 +54,13 @@
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
    :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
-                        {::m.navlinks/id  index-page-id
+                        {o.navlinks/id  index-page-id
                          parent-model-key (parent-model-key props)
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
+                         o.navlinks/id
                          parent-model-key
-                         ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["debits"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}

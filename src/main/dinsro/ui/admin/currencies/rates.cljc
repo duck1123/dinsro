@@ -6,10 +6,11 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.rates :as j.rates]
-   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.rates :as m.rates]
+   [dinsro.options.currencies :as o.currencies]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.rates :as o.rates]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
@@ -18,15 +19,15 @@
 ;; [[../../model/rates.cljc]]
 
 (def index-page-id :currencies-show-rates)
-(def model-key ::m.rates/id)
-(def parent-model-key ::m.currencies/id)
+(def model-key o.rates/id)
+(def parent-model-key o.currencies/id)
 (def parent-router-id :admin-currencies-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.currencies/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.rates/value #(u.links/ui-rate-link %3)}
+  {ro/column-formatters {o.rates/rate #(u.links/ui-rate-link %3)}
    ro/columns           [m.rates/rate]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
@@ -44,15 +45,15 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-id
+                         o.navlinks/id    index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["rates"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}

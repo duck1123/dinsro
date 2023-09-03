@@ -218,9 +218,7 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {id                model-key
-          ::m.navlinks/keys [target]
-          :as               props}]
+  [_this props]
   {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state (fn [props]
                     {model-key           (model-key props)
@@ -232,10 +230,7 @@
                      {::m.navlinks/target (comp/get-query Show {})}])
    :route-segment ["pubkey" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
-  (log/debug :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "show pubkeys page")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

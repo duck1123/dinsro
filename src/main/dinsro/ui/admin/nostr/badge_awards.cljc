@@ -11,7 +11,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.badge-awards :as m.n.badge-awards]
    [dinsro.options.navlinks :as o.navlinks]
-   [dinsro.ui.debug :as u.debug]
+   [dinsro.options.nostr.badge-awards :as o.n.badge-awards]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -20,7 +20,7 @@
 ;; [[../../../model/nostr/badge_awards.cljc]]
 
 (def index-page-id :admin-nostr-badge-awards)
-(def model-key ::m.n.badge-awards/id)
+(def model-key o.n.badge-awards/id)
 (def parent-router-id :admin-nostr)
 (def required-role :admin)
 (def show-page-key :admin-nostr-badge-awards-show)
@@ -45,9 +45,9 @@
           :as                     props}]
   {:ident         ::m.n.badge-awards/id
    :initial-state (fn [props]
-                    (let [id (model-key props)]
-                      {model-key id}))
-   :query         [::m.n.badge-awards/id]}
+                    {model-key (model-key props)})
+   :query         (fn []
+                    [o.n.badge-awards/id])}
   (log/info :Show/starting {:props props})
   (if id
     (ui-segment {} "TODO: Show badge award")
@@ -60,11 +60,13 @@
   [_this {:ui/keys [report]
           :as props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["badge-awards"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
@@ -72,22 +74,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.n.badge-awards/keys [id]
-          ::m.navlinks/keys       [target]
-          :as                     props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.n.badge-awards/id nil
-                   ::m.navlinks/id       show-page-key
-                   ::m.navlinks/target   {}}
-   :query         [::m.n.badge-awards/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-key])
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     o.navlinks/id       show-page-key
+                     o.navlinks/target   (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["badge-award" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "admin show badge awards")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

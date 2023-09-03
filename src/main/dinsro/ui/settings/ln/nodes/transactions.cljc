@@ -51,12 +51,12 @@
    :ident             (fn [] [::m.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-id
+                         o.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["transactions"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}

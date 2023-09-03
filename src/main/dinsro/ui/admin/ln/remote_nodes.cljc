@@ -13,6 +13,7 @@
    [dinsro.model.ln.remote-nodes :as m.ln.remote-nodes]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.remote-nodes :as mu.ln.remote-nodes]
+   [dinsro.options.ln.remote-nodes :as o.ln.remote-nodes]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.links :as u.links]
@@ -43,18 +44,20 @@
   [_this {:ui/keys                 [peers router]
           ::m.ln.remote-nodes/keys [id pubkey]}]
   {:ident         ::m.ln.remote-nodes/id
-   :initial-state {::m.ln.remote-nodes/id     nil
-                   ::m.ln.remote-nodes/pubkey ""
-                   :ui/peers                  {}
-                   :ui/router                 {}}
+   :initial-state (fn [props]
+                    {o.ln.remote-nodes/id     (model-key props)
+                     o.ln.remote-nodes/pubkey ""
+                     :ui/peers                (comp/get-initial-state u.ln.rn.peers/SubPage {})
+                     :ui/router               (comp/get-initial-state Router {})})
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/peers  [u.ln.rn.peers/SubPage {}]
                      :ui/router [Router {}]})
-   :query         [::m.ln.remote-nodes/id
-                   ::m.ln.remote-nodes/pubkey
-                   {:ui/peers (comp/get-query u.ln.rn.peers/SubPage)}
-                   {:ui/router (comp/get-query Router)}
-                   [df/marker-table '_]]}
+   :query         (fn []
+                    [o.ln.remote-nodes/id
+                     o.ln.remote-nodes/pubkey
+                     {:ui/peers (comp/get-query u.ln.rn.peers/SubPage)}
+                     {:ui/router (comp/get-query Router)}
+                     [df/marker-table '_]])}
   (dom/div {}
     (ui-segment {}
       (dom/h1 {} "Remote Node")
@@ -70,17 +73,18 @@
   {ro/columns          [m.ln.remote-nodes/pubkey
                         m.ln.remote-nodes/alias]
    ro/controls         {::refresh u.links/refresh-control}
-   ro/field-formatters {::m.ln.remote-nodes/pubkey (fn [this value]
-                                                     (let [{:ui/keys [current-rows] :as props} (comp/props this)]
-                                                       (log/info :Report/formatting-name {:value value :props props})
-                                                       (if-let [row (first (filter #(= (::m.ln.remote-nodes/pubkey %) value) current-rows))]
-                                                         (do
-                                                           (log/info :Report/row {:row row})
-                                                           (let [{::m.ln.remote-nodes/keys [id pubkey]} row]
-                                                             (u.links/ui-remote-node-link
-                                                              {::m.ln.remote-nodes/id     id
-                                                               ::m.ln.remote-nodes/pubkey pubkey})))
-                                                         (dom/p {} "not found"))))}
+   ro/field-formatters {o.ln.remote-nodes/pubkey
+                        (fn [this value]
+                          (let [{:ui/keys [current-rows] :as props} (comp/props this)]
+                            (log/info :Report/formatting-name {:value value :props props})
+                            (if-let [row (first (filter #(= (o.ln.remote-nodes/pubkey %) value) current-rows))]
+                              (do
+                                (log/info :Report/row {:row row})
+                                (let [{::m.ln.remote-nodes/keys [id pubkey]} row]
+                                  (u.links/ui-remote-node-link
+                                   {o.ln.remote-nodes/id     id
+                                    o.ln.remote-nodes/pubkey pubkey})))
+                              (dom/p {} "not found"))))}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -95,26 +99,31 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report    (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["remote-nodes"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
-   :initial-state {::m.navlinks/id     show-page-id
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["remote-node" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
-  (ui-show target))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

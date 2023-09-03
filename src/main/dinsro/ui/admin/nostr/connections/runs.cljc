@@ -7,10 +7,11 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.runs :as j.n.runs]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.runs :as m.n.runs]
    [dinsro.mutations.nostr.runs :as mu.n.runs]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.nostr.connections :as o.n.connections]
+   [dinsro.options.nostr.runs :as o.n.runs]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
@@ -25,8 +26,8 @@
 ;; [[../../../../ui/nostr/runs.cljc]]
 
 (def index-page-id :nostr-connections-show-runs)
-(def model-key ::m.n.runs/id)
-(def parent-model-key ::m.n.connections/id)
+(def model-key o.n.runs/id)
+(def parent-model-key o.n.connections/id)
 (def parent-router-id :nostr-connections-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.nostr.connections/Router)
@@ -39,12 +40,12 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::j.n.runs/relay      #(when %2 (u.links/ui-admin-relay-link %2))
-                         ::m.n.runs/connection #(when %2 (u.links/ui-admin-connection-link %2))
-                         ::m.n.runs/request    #(when %2 (u.links/ui-admin-request-link %2))
-                         ::m.n.runs/status     #(u.links/ui-admin-run-link %3)
-                         ::m.n.runs/start-time u.controls/date-formatter
-                         ::m.n.runs/end-time   u.controls/date-formatter}
+  {ro/column-formatters {::j.n.runs/relay    #(when %2 (u.links/ui-admin-relay-link %2))
+                         o.n.runs/connection #(when %2 (u.links/ui-admin-connection-link %2))
+                         o.n.runs/request    #(when %2 (u.links/ui-admin-request-link %2))
+                         o.n.runs/status     #(u.links/ui-admin-run-link %3)
+                         o.n.runs/start-time u.controls/date-formatter
+                         o.n.runs/end-time   u.controls/date-formatter}
    ro/columns           [m.n.runs/status
                          m.n.runs/request
                          m.n.runs/connection
@@ -70,15 +71,15 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-id
+                         o.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["runs"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}

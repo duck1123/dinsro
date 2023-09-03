@@ -6,9 +6,10 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.nodes :as j.ln.nodes]
-   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.core.networks :as o.c.networks]
+   [dinsro.options.ln.nodes :as o.ln.nodes]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
@@ -17,17 +18,17 @@
 ;; [[../../../../joins/ln/nodes.cljc]]
 
 (def index-page-id :admin-core-networks-show-ln-nodes)
-(def model-key ::m.ln.nodes/id)
+(def model-key o.ln.nodes/id)
 (def page-size 10)
-(def parent-model-key ::m.c.networks/id)
+(def parent-model-key o.c.networks/id)
 (def parent-router-id :admin-core-networks-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.admin.core.networks/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.ln.nodes/name #(u.links/ui-node-link %3)
-                         ::m.ln.nodes/user #(u.links/ui-user-link %2)}
+  {ro/column-formatters {o.ln.nodes/name #(u.links/ui-node-link %3)
+                         o.ln.nodes/user #(u.links/ui-user-link %2)}
    ro/columns           [m.ln.nodes/name
                          m.ln.nodes/user]
    ro/control-layout    {:action-buttons [::refresh]}
@@ -46,15 +47,15 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-id
+                         o.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report {})}])
    :route-segment     ["ln-nodes"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}

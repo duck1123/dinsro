@@ -10,8 +10,9 @@
    [dinsro.joins.nostr.filter-items :as j.n.filter-items]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.filter-items :as m.n.filter-items]
-   [dinsro.model.nostr.filters :as m.n.filters]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.nostr.filter-items :as o.n.filter-items]
+   [dinsro.options.nostr.filters :as o.n.filters]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
@@ -22,8 +23,8 @@
 ;; [[../../../ui/nostr/requests/filter_items.cljs]]
 
 (def index-page-id :nostr-filters-show-filter-items)
-(def model-key ::m.n.filter-items/id)
-(def parent-model-key ::m.n.filters/id)
+(def model-key o.n.filter-items/id)
+(def parent-model-key o.n.filters/id)
 (def parent-router-id :nostr-filters-show)
 (def required-role :user)
 (def router-key :dinsro.ui.nostr.filters/Router)
@@ -49,8 +50,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.filter-items/filter #(u.links/ui-filter-link %2)
-                         ::m.n.filter-items/pubkey #(and %2 (u.links/ui-pubkey-link %2))}
+  {ro/column-formatters {o.n.filter-items/filter #(u.links/ui-filter-link %2)
+                         o.n.filter-items/pubkey #(and %2 (u.links/ui-pubkey-link %2))}
    ro/columns           [m.n.filter-items/filter
                          m.n.filter-items/index
                          m.n.filter-items/kind
@@ -58,7 +59,7 @@
                          m.n.filter-items/event
                          m.n.filter-items/pubkey]
    ro/control-layout    {:action-buttons [::add ::refresh]}
-   ro/controls          {::m.n.filters/id {:type :uuid :label "id"}
+   ro/controls          {parent-model-key {:type :uuid :label "id"}
                          ::add            new-item-button
                          ::refresh        u.links/refresh-control}
    ro/machine           spr/machine
@@ -74,15 +75,15 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-id
+                         o.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["items"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}

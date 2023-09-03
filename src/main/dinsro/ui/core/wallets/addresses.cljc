@@ -9,9 +9,11 @@
    [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
    [dinsro.model.core.wallets :as m.c.wallets]
-   [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
+   [dinsro.options.core.wallet-addresses :as o.c.wallet-addresses]
+   [dinsro.options.core.wallets :as o.c.wallets]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -22,7 +24,8 @@
 ;; [[../../../model/core/addresses.cljc]]
 
 (def index-page-id :core-wallets-show-addresses)
-(def model-key ::m.c.wallet-addresses/id)
+(def model-key o.c.wallet-addresses/id)
+(def parent-model-key o.c.wallets/id)
 
 (def generate-action
   (u.buttons/row-action-button "Generate" model-key mu.c.wallet-addresses/generate!))
@@ -31,8 +34,8 @@
   [_this _props]
   {fo/attributes    [m.c.wallet-addresses/address
                      m.c.wallet-addresses/wallet]
-   fo/field-styles  {::m.c.wallet-addresses/wallet :pick-one}
-   fo/field-options {::m.c.wallet-addresses/wallet u.pickers/wallet-picker}
+   fo/field-styles  {o.c.wallet-addresses/wallet :pick-one}
+   fo/field-options {o.c.wallet-addresses/wallet u.pickers/wallet-picker}
    fo/id            m.c.wallet-addresses/id
    fo/route-prefix  "new-wallet-address"
    fo/title         "New Wallet Address"})
@@ -52,8 +55,8 @@
    fo/attributes     [m.c.wallet-addresses/address
                       m.c.wallet-addresses/wallet]
    fo/controls       {::generate generate-button}
-   fo/field-styles   {::m.c.wallet-addresses/wallet :pick-one}
-   fo/field-options  {::m.c.wallet-addresses/wallet u.pickers/wallet-picker}
+   fo/field-styles   {o.c.wallet-addresses/wallet :pick-one}
+   fo/field-options  {o.c.wallet-addresses/wallet u.pickers/wallet-picker}
    fo/id             m.c.wallet-addresses/id
    fo/route-prefix   "wallet-address"
    fo/title          "Wallet Address"})
@@ -66,13 +69,13 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.wallet-addresses/address #(u.links/ui-admin-address-link %2)
-                         ::m.c.wallet-addresses/wallet  #(u.links/ui-wallet-link %2)}
+  {ro/column-formatters {o.c.wallet-addresses/address #(u.links/ui-admin-address-link %2)
+                         o.c.wallet-addresses/wallet  #(u.links/ui-wallet-link %2)}
    ro/columns           [m.c.wallet-addresses/path-index
                          m.c.wallet-addresses/address]
    ro/control-layout    {:inputs         [[::m.c.wallets/id]]
                          :action-buttons [::new ::calculate ::refresh]}
-   ro/controls          {::m.c.wallets/id {:type :uuid :label "id"}
+   ro/controls          {o.c.wallets/id {:type :uuid :label "id"}
                          ::new            new-action-button
                          ::refresh        u.links/refresh-control
                          ::calculate      (u.buttons/report-action-button "Calculate" model-key mu.c.wallets/calculate-addresses!)}
@@ -93,13 +96,15 @@
           :ui/keys           [report]
           :as                props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-id
-                       :ui/report       {}}
-   :query             [::m.c.wallets/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]}
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         o.navlinks/id    index-page-id
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [parent-model-key
+                         o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])}
   (log/debug :SubSection/starting {:props props})
   (if (and report id)
     (ui-report report)

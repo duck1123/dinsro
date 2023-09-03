@@ -35,9 +35,11 @@
   [_this _props]
   {:router-targets [u.a.ln.dashboard/IndexPage
                     u.a.ln.accounts/IndexPage
+                    u.a.ln.accounts/ShowPage
                     u.a.ln.channels/IndexPage
                     u.a.ln.invoices/IndexPage
                     u.a.ln.nodes/IndexPage
+                    u.a.ln.nodes/ShowPage
                     u.a.ln.payments/IndexPage
                     u.a.ln.payreqs/IndexPage
                     u.a.ln.peers/IndexPage

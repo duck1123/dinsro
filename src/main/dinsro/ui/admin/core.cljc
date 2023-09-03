@@ -6,6 +6,7 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navbars :as o.navbars]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.core.addresses :as u.a.c.addresses]
    [dinsro.ui.admin.core.blocks :as u.a.c.blocks]
@@ -81,15 +82,16 @@
 (defsc IndexPage
   [_this {:ui/keys [nav-menu router]
           :as      props}]
-  {:ident         (fn [] [::m.navlinks/id menu-key])
+  {:ident         (fn [] [o.navlinks/id menu-key])
    :initial-state (fn [_props]
-                    {::m.navbars/id menu-key
+                    {o.navbars/id menu-key
                      :ui/nav-menu   (comp/get-initial-state u.menus/NavMenu
-                                      {::m.navbars/id menu-key})
+                                      {o.navbars/id menu-key})
                      :ui/router     (comp/get-initial-state Router)})
-   :query         [::m.navlinks/id
-                   {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                   {:ui/router (comp/get-query Router)}]
+   :query         (fn []
+                    [o.navlinks/id
+                     {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
+                     {:ui/router (comp/get-query Router)}])
    :route-segment ["core"]}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}

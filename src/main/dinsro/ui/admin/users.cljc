@@ -186,27 +186,19 @@
     (u.debug/load-error props "admin index users report")))
 
 (defsc ShowPage
-  [_this {::m.users/keys    [id]
-          ::m.navlinks/keys [target]
-          :as               props}]
-  {:ident             (fn [] [::m.navlinks/id show-page-id])
+  [_this props]
+  {:ident             (fn [] [o.navlinks/id show-page-id])
    :initial-state     (fn [props]
-                        (log/info :ShowPage/initial-state {:props props})
-                        {::m.navlinks/id     show-page-id
-                         ::m.users/id        nil
-                         ::m.navlinks/target (comp/get-initial-state Show {})})
-   :query             [::m.navlinks/id
-                       ::m.users/id
-                       {::m.navlinks/target (comp/get-query Show)}]
+                        {model-key (model-key props)
+                         o.navlinks/id     show-page-id
+                         o.navlinks/target (comp/get-initial-state Show {})})
+   :query             (fn []
+                        [model-key
+                         o.navlinks/id
+                         {o.navlinks/target (comp/get-query Show)}])
    :route-segment     ["user" :id]
    :will-enter        (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if id
-    (dom/div :.show-page
-      (if target
-        (ui-show target)
-        (u.debug/load-error props "Admin Show User Page target")))
-    (u.debug/load-error props "Admin Show User Page")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

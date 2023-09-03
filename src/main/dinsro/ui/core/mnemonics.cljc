@@ -80,22 +80,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.c.mnemonics/keys [id]
-          ::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
-   :initial-state {::m.c.mnemonics/id nil
-                   ::m.navlinks/id     show-page-id
-                   ::m.navlinks/target {}}
-   :query         [::m.c.mnemonics/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["mnemonic" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "core show mnemonic")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

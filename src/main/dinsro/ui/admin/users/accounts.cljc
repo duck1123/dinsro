@@ -11,8 +11,9 @@
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.users :as m.users]
+   [dinsro.options.accounts :as o.accounts]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.users :as o.users]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -22,8 +23,8 @@
 ;; [[../../../model/accounts.cljc]]
 
 (def index-page-id :admin-users-show-accounts)
-(def model-key ::m.accounts/id)
-(def parent-model-key ::m.users/id)
+(def model-key o.accounts/id)
+(def parent-model-key o.users/id)
 (def parent-router-id :admin-users-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.admin.users/Router)
@@ -35,11 +36,14 @@
 
 (defsc AccountRow
   [this {::m.accounts/keys [name currency] :as props}]
-  {:query         [::m.accounts/id ::m.accounts/name
-                   {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}]
-   :initial-state {::m.accounts/id       nil
-                   ::m.accounts/name     ""
-                   ::m.accounts/currency {}}}
+  {:initial-state (fn [_props]
+                    {o.accounts/id       nil
+                     o.accounts/name     ""
+                     o.accounts/currency (comp/get-initial-state u.links/CurrencyLinkForm {})})
+   :query         (fn []
+                    [o.accounts/id
+                     o.accounts/name
+                     {o.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}])}
   (log/info :AccountRow/starting {:props props})
   (if override-row
     (report/render-row this Report props)
@@ -55,9 +59,9 @@
 (report/defsc-report Report
   [this props]
   {;; ro/BodyItem          AccountRow
-   ro/column-formatters {::m.accounts/name     #(u.links/ui-account-link %3)
-                         ::m.accounts/currency #(u.links/ui-currency-link %2)
-                         ::m.accounts/user     #(when %2 (u.links/ui-admin-user-link %2))}
+   ro/column-formatters {o.accounts/name     #(u.links/ui-account-link %3)
+                         o.accounts/currency #(u.links/ui-currency-link %2)
+                         o.accounts/user     #(when %2 (u.links/ui-admin-user-link %2))}
    ro/columns           [m.accounts/name
                          m.accounts/currency
                          m.accounts/user]
@@ -90,15 +94,15 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
-                        {::m.navlinks/id  index-page-id
+                        {o.navlinks/id  index-page-id
                          parent-model-key (parent-model-key props)
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
+                         o.navlinks/id
                          parent-model-key
-                         ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["accounts"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}

@@ -19,6 +19,7 @@
    [dinsro.model.nostr.requests :as m.n.requests]
    [dinsro.mutations.nostr.requests :as mu.n.requests]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.nostr.requests :as o.n.requests]
    [dinsro.ui.admin.nostr.filters :as u.a.n.filters]
    [dinsro.ui.admin.nostr.requests.connections :as u.a.n.rq.connections]
    [dinsro.ui.admin.nostr.requests.filter-items :as u.a.n.rq.filter-items]
@@ -28,8 +29,7 @@
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.menus :as u.menus]))
 
 ;; [[../../../joins/nostr/requests.cljc]]
 ;; [[../../../model/nostr/requests.cljc]]
@@ -38,7 +38,7 @@
 ;; [[../../../ui/nostr/requests.cljc]]
 
 (def index-page-id :admin-nostr-requests)
-(def model-key ::m.n.requests/id)
+(def model-key o.n.requests/id)
 (def parent-router-id :admin-nostr)
 (def required-role :admin)
 (def show-page-id :admin-nostr-requests-show)
@@ -183,25 +183,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
                     {model-key           (model-key props)
-                     ::m.navlinks/id     show-page-id
-                     ::m.navlinks/target (comp/get-initial-state Show {})})
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
-                     ::m.navlinks/id
-                     {::m.navlinks/target (comp/get-query Show)}])
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["request" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
-  (log/debug :ShowPage/starting {:props props})
-  (if (model-key props)
-    (if (seq target)
-      (ui-show target)
-      (u.debug/load-error props "Admin show request target"))
-    (u.debug/load-error props "Admin show request")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

@@ -11,6 +11,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.witnesses :as m.n.witnesses]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.nostr.witnesses :as o.n.witnesses]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -20,7 +21,7 @@
 ;; [[../../queries/nostr/witnesses.clj]]
 
 (def index-page-id :nostr-witnesses)
-(def model-key ::m.n.witnesses/id)
+(def model-key o.n.witnesses/id)
 (def parent-router-id :nostr)
 (def required-role :user)
 
@@ -40,7 +41,7 @@
       (u.n.relays/ui-relay-display relay)
       (u.debug/load-error props "witness display"))))
 
-(def ui-witness-display (comp/factory WitnessDisplay {:keyfn ::m.n.witnesses/id}))
+(def ui-witness-display (comp/factory WitnessDisplay {:keyfn o.n.witnesses/id}))
 
 (report/defsc-report Report
   [_this _props]
@@ -61,11 +62,13 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-id])
-   :initial-state {::m.navlinks/id index-page-id
-                   :ui/report      {}}
-   :query         [::m.navlinks/id
-                   {:ui/report (comp/get-query Report)}]
+  {:ident         (fn [] [o.navlinks/id index-page-id])
+   :initial-state (fn [_props]
+                    {o.navlinks/id index-page-id
+                     :ui/report      (comp/get-initial-state Report {})})
+   :query         (fn []
+                    [o.navlinks/id
+                     {:ui/report (comp/get-query Report)}])
    :route-segment ["witnesses"]
    :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}

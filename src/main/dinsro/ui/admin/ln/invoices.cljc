@@ -12,6 +12,7 @@
    [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.invoices :as mu.ln.invoices]
+   [dinsro.options.ln.invoices :as o.ln.invoices]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -21,7 +22,7 @@
 ;; [[../../../model/ln/invoices.cljc]]
 
 (def index-page-id :admin-ln-invoices)
-(def model-key ::m.ln.invoices/id)
+(def model-key o.ln.invoices/id)
 (def parent-router-id :admin-ln)
 (def required-role :admin)
 (def show-page-id :admin-ln-invoices-show)
@@ -61,8 +62,8 @@
                         m.ln.invoices/node]
    ro/control-layout   {:action-buttons [::new]}
    ro/controls         {::new new-button}
-   ro/field-formatters {::m.ln.invoices/node #(u.links/ui-node-link %2)
-                        ::m.ln.invoices/id #(u.links/ui-invoice-link %3)}
+   ro/field-formatters {o.ln.invoices/node #(u.links/ui-node-link %2)
+                        o.ln.invoices/id #(u.links/ui-invoice-link %3)}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -77,19 +78,23 @@
 (defsc Show
   [_this _props]
   {:ident         ::m.ln.invoices/id
-   :initial-state {::m.ln.invoices/id nil}
-   :query         [::m.ln.invoices/id]
+   :initial-state (fn [props]
+                    {o.ln.invoices/id (model-key props)})
+   :query         (fn []
+                    [o.ln.invoices/id])
    :route-segment ["invoices" :id]}
   (dom/div {}))
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["invoices"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}

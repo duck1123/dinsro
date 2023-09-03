@@ -15,6 +15,7 @@
    [dinsro.model.rate-sources :as m.rate-sources]
    [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.rate-sources :as o.rate-sources]
    [dinsro.ui.admin.rate-sources.accounts :as u.a.rs.accounts]
    [dinsro.ui.admin.rate-sources.rates :as u.a.rs.rates]
    [dinsro.ui.buttons :as u.buttons]
@@ -77,12 +78,12 @@
   {:componentDidMount #(report/start-report! % Report {})
    :ident             ::m.rate-sources/id
    :initial-state     (fn [props]
-                        (let [id (::m.rate-sources/id props)]
-                          {::m.rate-sources/name     ""
-                           ::m.rate-sources/id       nil
-                           ::m.rate-sources/active   false
-                           ::m.rate-sources/currency {}
-                           ::m.rate-sources/url      ""
+                        (let [id (o.rate-sources/id props)]
+                          {o.rate-sources/name     ""
+                           o.rate-sources/id       id
+                           o.rate-sources/active   false
+                           o.rate-sources/currency (comp/get-initial-state u.links/CurrencyLinkForm {})
+                           o.rate-sources/url      ""
                            :ui/nav-menu              (comp/get-initial-state u.menus/NavMenu
                                                        {::m.navbars/id show-page-id
                                                         :id            id})
@@ -90,13 +91,14 @@
    :pre-merge         (u.loader/page-merger model-key
                         {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
                          :ui/router   [Router {}]})
-   :query             [::m.rate-sources/name
-                       ::m.rate-sources/url
-                       {::m.rate-sources/currency (comp/get-query u.links/CurrencyLinkForm)}
-                       ::m.rate-sources/active
-                       ::m.rate-sources/id
-                       {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
-                       {:ui/router (comp/get-query Router)}]}
+   :query             (fn []
+                        [o.rate-sources/name
+                         o.rate-sources/url
+                         {o.rate-sources/currency (comp/get-query u.links/CurrencyLinkForm)}
+                         o.rate-sources/active
+                         o.rate-sources/id
+                         {:ui/nav-menu (comp/get-query u.menus/NavMenu)}
+                         {:ui/router (comp/get-query Router)}])}
   (if id
     (dom/div {}
       (ui-container {:fluid true}
@@ -120,11 +122,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["rate-sources"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
@@ -132,19 +136,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
-   :initial-state {::m.navlinks/id     show-page-id
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["rate-source" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
-  (log/debug :ShowPage/starting {:props props})
-  (if target
-    (ui-show target)
-    (u.debug/load-error props "admin show rate source page")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

@@ -12,6 +12,8 @@
    [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.core.networks :as o.c.networks]
+   [dinsro.options.navbars :as o.navbars]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.admin.core.networks.addresses :as u.a.c.n.addresses]
    [dinsro.ui.admin.core.networks.blocks :as u.a.c.n.blocks]
@@ -28,7 +30,7 @@
 ;; [[../../../model/core/networks.cljc]]
 
 (def index-page-id :admin-core-networks)
-(def model-key ::m.c.networks/id)
+(def model-key o.c.networks/id)
 (def parent-router-id :admin-core)
 (def required-role :admin)
 (def show-page-id :admin-core-networks-show)
@@ -60,22 +62,22 @@
           :as                 props}]
   {:ident         ::m.c.networks/id
    :initial-state (fn [props]
-                    (let [id (::m.c.networks/id props)]
+                    (let [id (o.c.networks/id props)]
                       {model-key            nil
-                       ::m.c.networks/name  ""
-                       ::m.c.networks/chain (comp/get-initial-state u.links/ChainLinkForm {})
+                       o.c.networks/name  ""
+                       o.c.networks/chain (comp/get-initial-state u.links/ChainLinkForm {})
                        :ui/admin-nav-menu   (comp/get-initial-state u.menus/NavMenu
-                                              {::m.navbars/id show-page-id
+                                              {o.navbars/id show-page-id
                                                :id            id})
                        :ui/admin-router     (comp/get-initial-state Router)
                        :ui/admin-editing?   false}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
+                    {:ui/admin-nav-menu [u.menus/NavMenu {o.navbars/id show-page-id}]
                      :ui/admin-router   [Router {}]})
    :query         (fn []
-                    [::m.c.networks/id
-                     ::m.c.networks/name
-                     {::m.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
+                    [o.c.networks/id
+                     o.c.networks/name
+                     {o.c.networks/chain (comp/get-query u.links/ChainLinkForm)}
                      {:ui/admin-nav-menu (comp/get-query u.menus/NavMenu)}
                      {:ui/admin-router (comp/get-query Router)}
                      :ui/admin-editing?])}
@@ -100,8 +102,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.networks/chain #(u.links/ui-admin-chain-link %2)
-                         ::m.c.networks/name  #(u.links/ui-admin-network-link %3)}
+  {ro/column-formatters {o.c.networks/chain #(u.links/ui-admin-chain-link %2)
+                         o.c.networks/name  #(u.links/ui-admin-network-link %3)}
    ro/columns           [m.c.networks/name
                          m.c.networks/chain]
    ro/control-layout    {:action-buttons [::refresh]}
@@ -119,36 +121,32 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report    (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["networks"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
-                    {model-key           (model-key props)
-                     ::m.navlinks/id     show-page-id
-                     ::m.navlinks/target (comp/get-initial-state Show {})})
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
-                     ::m.navlinks/id
-                     {::m.navlinks/target (comp/get-query Show {})}])
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show {})}])
    :route-segment ["network" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (model-key props)
-    (if target
-      (ui-show target)
-      (u.debug/load-error props "Admin show core network target"))
-    (u.debug/load-error props "Admin show core network page")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

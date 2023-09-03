@@ -15,6 +15,8 @@
    [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.core.words :as m.c.words]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.core.wallets :as o.c.wallets]
+   [dinsro.options.core.words :as o.c.words]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -25,15 +27,15 @@
 ;; [[../../../../model/core/words.cljc]]
 
 (def index-page-id :admin-core-wallets-show-words)
-(def model-key ::m.c.words/id)
-(def parent-model-key ::m.c.wallets/id)
+(def model-key o.c.words/id)
+(def parent-model-key o.c.wallets/id)
 (def parent-router-id :admin-core-wallets-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.admin.core.wallets/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.words/wallet #(u.links/ui-admin-wallet-link %2)}
+  {ro/column-formatters {o.c.words/wallet #(u.links/ui-admin-wallet-link %2)}
    ro/columns           [m.c.words/word
                          m.c.words/position]
    ro/control-layout    {:action-buttons [::refresh]}
@@ -52,21 +54,21 @@
           :ui/keys           [report]
           :as                props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-id
+                         o.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (log/info :SubPage/starting {:props props})
   (if (and report id)
     (let [{:ui/keys [current-rows]} report
-          sorted-rows               (sort-by ::m.c.words/position current-rows)
+          sorted-rows               (sort-by o.c.words/position current-rows)
           groups                    (partition 12 sorted-rows)]
       (ui-grid {}
         (ui-grid-row {}
@@ -75,7 +77,8 @@
                    (ui-grid-column {:width 8}
                      (map
                       (fn [row]
-                        (let [{::m.c.words/keys [position word]} row]
+                        (let [{position o.c.words/position
+                               word o.c.words/word} row]
                           (dom/div :.eight.wide.column (str position) ". " (str word))))
                       words)))
                  groups)

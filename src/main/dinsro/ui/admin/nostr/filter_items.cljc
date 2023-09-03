@@ -104,22 +104,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.n.filter-items/keys [id]
-          ::m.navlinks/keys       [target]
-          :as                     props}]
+  [_this props]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.n.filter-items/id nil
-                   ::m.navlinks/id       show-page-key
-                   ::m.navlinks/target   {}}
-   :query         [::m.n.filter-items/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     o.navlinks/id       show-page-key
+                     o.navlinks/target   (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["filter-item" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "admin filter items")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

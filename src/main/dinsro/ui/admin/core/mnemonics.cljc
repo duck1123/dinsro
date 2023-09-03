@@ -10,6 +10,7 @@
    [dinsro.joins.core.mnemonics :as j.c.mnemonics]
    [dinsro.model.core.mnemonics :as m.c.mnemonics]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.core.mnemonics :as o.c.mnemonics]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -21,14 +22,14 @@
 ;; [[../../../ui/core/mnemonics.cljs]]
 
 (def index-page-id :admin-core-mnemonics)
-(def model-key ::m.c.mnemonics/id)
+(def model-key o.c.mnemonics/id)
 (def parent-router-id :admin-core)
 (def required-role :admin)
 (def show-page-key :admin-core-mnemonics-show)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.mnemonics/user #(u.links/ui-user-link %2)}
+  {ro/column-formatters {o.c.mnemonics/user #(u.links/ui-user-link %2)}
    ro/columns           [m.c.mnemonics/name
                          m.c.mnemonics/entropy
                          m.c.mnemonics/user]
@@ -45,16 +46,17 @@
 (def ui-report (comp/factory Report))
 
 (defsc Show
-  [_this {::m.c.mnemonics/keys [id entropy]
+  [_this {id o.c.mnemonics/id
+          entropy o.c.mnemonics/entropy
           :as                  props}]
   {:ident         ::m.c.mnemonics/id
    :initial-state (fn [props]
-                    (let [id (model-key props)]
-                      {model-key               id
-                       ::m.c.mnemonics/entorpy ""}))
+                    {model-key               (model-key props)
+                     o.c.mnemonics/entropy ""})
    :pre-merge     (u.loader/page-merger model-key {})
-   :query         [::m.c.mnemonics/id
-                   ::m.c.mnemonics/entropy]}
+   :query         (fn []
+                    [o.c.mnemonics/id
+                     o.c.mnemonics/entropy])}
   (log/info :Show/starting {:props props})
   (if id
     (dom/div {}
@@ -67,35 +69,34 @@
 (def ui-show (comp/factory Show))
 
 (defsc IndexPage
-  [_this {:ui/keys [report]}]
+  [_this {report :ui/report}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["mnemonics"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.c.mnemonics/keys [id]
-          ::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.c.mnemonics/id nil
-                   ::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.c.mnemonics/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-key])
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     o.navlinks/id     show-page-key
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [o.c.mnemonics/id
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["mnemonic" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "admin show mnemonic")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

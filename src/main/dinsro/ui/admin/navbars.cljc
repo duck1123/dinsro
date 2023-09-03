@@ -6,13 +6,14 @@
    [dinsro.joins.navbars :as j.navbars]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navbars :as o.navbars]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
 (def index-page-id :admin-navbars)
-(def model-key ::m.navbars/id)
+(def model-key o.navbars/id)
 (def parent-router-id :admin)
 (def required-role :admin)
 (def show-page-id :admin-navbars-show)
@@ -24,8 +25,8 @@
                            m.navbars/child-count]
    ro/control-layout      {:action-buttons [::refresh]}
    ro/controls            {::refresh u.links/refresh-control}
-   ro/initial-sort-params {:sort-by          ::m.navbars/date
-                           :sortable-columns #{::m.navbars/date}
+   ro/initial-sort-params {:sort-by          o.navbars/id
+                           :sortable-columns #{o.navbars/id}
                            :ascending?       false}
    ro/row-pk              m.navbars/id
    ro/run-on-mount?       true
@@ -37,12 +38,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [_] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   ::m.navlinks/id    :navbars
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [_] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report    (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["navbars"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (log/trace :Page/starting {:props props})

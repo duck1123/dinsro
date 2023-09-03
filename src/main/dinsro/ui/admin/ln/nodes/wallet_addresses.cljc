@@ -7,9 +7,10 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
+   [dinsro.options.core.wallet-addresses :as o.c.wallet-addresses]
+   [dinsro.options.ln.nodes :as o.ln.nodes]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
@@ -17,8 +18,8 @@
    [dinsro.ui.loader :as u.loader]))
 
 (def index-page-id :admin-ln-nodes-show-wallet-addresses)
-(def model-key ::m.c.wallet-addresses/id)
-(def parent-model-key ::m.ln.nodes/id)
+(def model-key o.c.wallet-addresses/id)
+(def parent-model-key o.ln.nodes/id)
 (def parent-router-id :admin-ln-nodes-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.admin.ln.nodes/Router)
@@ -31,8 +32,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.wallet-addresses/address #(u.links/ui-admin-address-link %2)
-                         ::m.c.wallet-addresses/wallet  #(u.links/ui-admin-wallet-link %2)}
+  {ro/column-formatters {o.c.wallet-addresses/address #(u.links/ui-admin-address-link %2)
+                         o.c.wallet-addresses/wallet  #(u.links/ui-admin-wallet-link %2)}
    ro/columns           [m.c.wallet-addresses/path-index
                          m.c.wallet-addresses/address
                          m.c.wallet-addresses/wallet]
@@ -50,14 +51,14 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key props
-                         ::m.navlinks/id  index-page-id})
+                         o.navlinks/id  index-page-id})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))

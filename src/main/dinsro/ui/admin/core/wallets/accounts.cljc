@@ -7,8 +7,9 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.accounts :as o.accounts]
+   [dinsro.options.core.wallets :as o.c.wallets]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]))
@@ -17,16 +18,16 @@
 ;; [[../../../../model/accounts.cljc]]
 
 (def index-page-id :admin-core-wallets-show-accounts)
-(def model-key ::m.accounts/id)
-(def parent-model-key ::m.c.wallets/id)
+(def model-key o.accounts/id)
+(def parent-model-key o.c.wallets/id)
 (def parent-router-id :admin-core-wallets-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.admin.core.wallets/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.accounts/name #(u.links/ui-account-link %3)
-                         ::m.accounts/user #(u.links/ui-user-link %2)}
+  {ro/column-formatters {o.accounts/name #(u.links/ui-account-link %3)
+                         o.accounts/user #(u.links/ui-user-link %2)}
    ro/columns           [m.accounts/name
                          m.accounts/user]
    ro/control-layout    {:inputs         [[parent-model-key]]
@@ -46,15 +47,15 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-id
+                         o.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn [_props]
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 

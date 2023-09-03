@@ -5,9 +5,9 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.tx-in :as j.c.tx-in]
-   [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.core.tx-in :as m.c.tx-in]
-   [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.core.transactions :as o.c.transactions]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [lambdaisland.glogc :as log]))
@@ -16,7 +16,7 @@
 ;; [[../../../../model/core/tx_out.cljc]]
 
 (def index-page-id :admin-core-transactions-show-inputs)
-(def parent-model-key ::m.c.transactions/id)
+(def parent-model-key o.c.transactions/id)
 
 (report/defsc-report Report
   [_this _props]
@@ -41,14 +41,14 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [_props]
                         {parent-model-key nil
-                         ::m.navlinks/id  index-page-id
+                         o.navlinks/id  index-page-id
                          :ui/report       {}})
    :query             (fn [_props]
                         [parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])}
   (log/info :SubSection/starting {:props props})
   (if (get props parent-model-key)

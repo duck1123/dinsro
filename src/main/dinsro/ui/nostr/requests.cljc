@@ -86,23 +86,19 @@
 (def ui-show (comp/factory Show))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state (fn [_props]
-                    {model-key nil
-                     ::m.navlinks/id     show-page-key
-                     ::m.navlinks/target (comp/get-initial-state Show {})})
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-key])
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     o.navlinks/id     show-page-key
+                     o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn [_props]
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["request" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (get props model-key)
-    (ui-show target)
-    (u.debug/load-error props "request show")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute show-page-key
   {o.navlinks/control       ::ShowPage

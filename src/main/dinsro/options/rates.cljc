@@ -5,3 +5,7 @@
 (def id ::m.rates/id)
 
 (def source ::m.rates/source)
+
+(def rate ::m.rates/rate)
+
+(def date ::m.rates/date)

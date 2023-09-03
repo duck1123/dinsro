@@ -12,6 +12,7 @@
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.payreqs :as mu.ln.payreqs]
+   [dinsro.options.ln.payreqs :as o.ln.payreqs]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -21,7 +22,7 @@
 ;; [[../../../model/ln/payreqs.cljc]]
 
 (def index-page-id :admin-ln-payreqs)
-(def model-key ::m.ln.payreqs/id)
+(def model-key o.ln.payreqs/id)
 (def parent-router-id :admin-ln)
 (def required-role :admin)
 (def show-page-id :admin-ln-payreqs-show)
@@ -51,8 +52,8 @@
                         m.ln.payreqs/payment-request
                         m.ln.payreqs/num-satoshis
                         m.ln.payreqs/node]
-   ro/field-formatters {::m.ln.payreqs/node #(u.links/ui-node-link %2)
-                        ::m.ln.payreqs/payment-hash #(u.links/ui-payreq-link %3)}
+   ro/field-formatters {o.ln.payreqs/node #(u.links/ui-node-link %2)
+                        o.ln.payreqs/payment-hash #(u.links/ui-payreq-link %3)}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
@@ -64,26 +65,28 @@
 
 (def ui-report (comp/factory Report))
 
+(defsc Show
+  [_this _props]
+  {:ident         ::m.ln.payreqs/id
+   :initial-state (fn [props] {model-key (model-key props)})
+   :query         (fn [] [model-key])
+   :route-segment ["payreqs" :id]}
+  (dom/div {}))
+
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["requests"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
-
-(defsc Show
-  [_this _props]
-  {:ident         ::m.ln.payreqs/id
-   :initial-state {::m.ln.payreqs/id nil}
-   :query         [::m.ln.payreqs/id]
-   :route-segment ["payreqs" :id]}
-  (dom/div {}))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

@@ -9,10 +9,11 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.nostr.relays :as j.n.relays]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.nostr.event-tags :as m.n.event-tags]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.event-tags :as mu.n.event-tags]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.nostr.event-tags :as o.n.event-tags]
+   [dinsro.options.nostr.relays :as o.n.relays]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
@@ -26,14 +27,14 @@
 ;; [[../../../ui/nostr/relays.cljc]]
 
 (def index-page-id :nostr-event-tags-show-relays)
-(def model-key ::m.n.relays/id)
-(def parent-model-key ::m.n.event-tags/id)
+(def model-key o.n.relays/id)
+(def parent-model-key o.n.event-tags/id)
 (def parent-router-id :nostr-event-tags-show)
 (def required-role :user)
 (def router-key :dinsro.ui.nostr.event-tags/Router)
 
 (def fetch-pubkey-action
-  (u.buttons/subrow-action-button "Fetch Pubkey" ::m.n.event-tags/id parent-model-key  mu.n.event-tags/fetch!))
+  (u.buttons/subrow-action-button "Fetch Pubkey" model-key parent-model-key mu.n.event-tags/fetch!))
 
 (form/defsc-form NewForm
   [_this _props]
@@ -51,7 +52,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.relays/address #(u.links/ui-relay-link %3)}
+  {ro/column-formatters {o.n.relays/address #(u.links/ui-relay-link %3)}
    ro/columns           [m.n.relays/address
                          j.n.relays/active-connection-count
                          j.n.relays/connection-count
@@ -74,17 +75,17 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount (partial u.loader/subpage-loader parent-model-key router-key Report)
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-id
+                         o.navlinks/id    index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])
-   :route-segment     ["items"]
+   :route-segment     ["relays"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 

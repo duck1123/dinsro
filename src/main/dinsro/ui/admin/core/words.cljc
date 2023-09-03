@@ -10,6 +10,7 @@
    [dinsro.joins.core.words :as j.c.words]
    [dinsro.model.core.words :as m.c.words]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.core.words :as o.c.words]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -27,7 +28,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.words/wallet #(u.links/ui-wallet-link %2)}
+  {ro/column-formatters {o.c.words/wallet #(u.links/ui-wallet-link %2)}
    ro/columns           [m.c.words/word
                          m.c.words/position
                          m.c.words/mnemonic]
@@ -46,12 +47,12 @@
           :as              props}]
   {:ident         ::m.c.words/id
    :initial-state (fn [props]
-                    (let [id (model-key props)]
-                      {model-key        id
-                       ::m.c.words/word ""}))
+                    {model-key      (model-key props)
+                     o.c.words/word ""})
    :pre-merge     (u.loader/page-merger model-key {})
-   :query         [::m.c.words/id
-                   ::m.c.words/word]}
+   :query         (fn []
+                    [o.c.words/id
+                     o.c.words/word])}
   (log/info :Show/starting {:props props})
   (if id
     (dom/div {}
@@ -66,33 +67,32 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report    (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["words"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.c.words/keys  [id]
-          ::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
-   :initial-state {::m.c.words/id      nil
-                   ::m.navlinks/id     show-page-id
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   ::m.c.words/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["word" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "admin show word")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

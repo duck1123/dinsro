@@ -19,15 +19,14 @@
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.nodes :as mu.c.nodes]
+   [dinsro.options.core.nodes :as o.c.nodes]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.nodes.blocks :as u.c.n.blocks]
    [dinsro.ui.core.nodes.peers :as u.c.n.peers]
-   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.menus :as u.menus]))
 
 ;; [[../../joins/core/nodes.cljc]]
 ;; [[../../model/core/nodes.cljc]]
@@ -179,22 +178,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.c.nodes/keys  [id]
-          ::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
-   :initial-state {::m.c.nodes/id      nil
-                   ::m.navlinks/id     show-page-id
-                   ::m.navlinks/target {}}
-   :query         [::m.c.nodes/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [o.c.nodes/id
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["node" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "show core nodes")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

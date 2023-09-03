@@ -16,10 +16,12 @@
 
 (defsc Page
   [_this _props]
-  {:ident         (fn [] [::m.navlinks/id index-page-id])
-   :initial-state {::m.navlinks/id index-page-id}
-   :query         [[::dr/id router-key]
-                   ::m.navlinks/id]
+  {:ident         (fn [] [o.navlinks/id index-page-id])
+   :initial-state (fn [_props]
+                    {o.navlinks/id index-page-id})
+   :query         (fn []
+                    [[::dr/id router-key]
+                     o.navlinks/id])
    :route-segment ["dashboard"]
    :will-enter    (u.loader/page-loader index-page-id)}
   (ui-segment {}

@@ -11,6 +11,8 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.ln.accounts :as m.ln.accounts]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.accounts :as o.accounts]
+   [dinsro.options.ln.accounts :as o.ln.accounts]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -22,8 +24,7 @@
 ;; [[../../../ui/admin/ln.cljc]]
 
 (def index-page-id :admin-ln-accounts)
-(def model-key ::m.ln.accounts/id)
-(def show-page-key :admin-ln-accounts-show)
+(def model-key o.ln.accounts/id)
 (def parent-router-id :admin-ln)
 (def required-role :admin)
 (def show-page-id :admin-ln-accounts-show)
@@ -36,7 +37,6 @@
    ro/machine          spr/machine
    ro/page-size        10
    ro/paginate?        true
-   ro/route            "accounts"
    ro/row-pk           m.ln.accounts/id
    ro/run-on-mount?    true
    ro/source-attribute ::j.ln.accounts/index
@@ -47,17 +47,19 @@
 (defsc Show
   [_this {::m.accounts/keys [id name currency source wallet]
           :as               props}]
-  {:ident             ::m.accounts/id
-   :initial-state     {::m.accounts/name     ""
-                       ::m.accounts/id       nil
-                       ::m.accounts/currency {}
-                       ::m.accounts/source   {}
-                       ::m.accounts/wallet   {}}
-   :query             [::m.accounts/name
-                       ::m.accounts/id
-                       {::m.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
-                       {::m.accounts/source (comp/get-query u.links/RateSourceLinkForm)}
-                       {::m.accounts/wallet (comp/get-query u.links/WalletLinkForm)}]}
+  {:ident         ::m.accounts/id
+   :initial-state (fn [_props]
+                    {o.accounts/name     ""
+                     o.accounts/id       nil
+                     o.accounts/currency (comp/get-initial-state u.links/CurrencyLinkForm)
+                     o.accounts/source   (comp/get-initial-state u.links/RateSourceLinkForm)
+                     o.accounts/wallet   (comp/get-initial-state u.links/WalletLinkForm)})
+   :query         (fn []
+                    [o.accounts/name
+                     o.accounts/id
+                     {o.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
+                     {o.accounts/source (comp/get-query u.links/RateSourceLinkForm)}
+                     {o.accounts/wallet (comp/get-query u.links/WalletLinkForm)}])}
   (log/info :Show/starting {:props props})
   (if id
     (dom/div {}
@@ -83,32 +85,32 @@
 (defsc IndexPage
   [_this {:ui/keys [report]}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["accounts"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [id target]
-          :as               props}]
-  {:ident             (fn [] [::m.navlinks/id show-page-key])
-   :initial-state     {::m.accounts/id     nil
-                       ::m.navlinks/id     show-page-key
-                       ::m.navlinks/target {}}
-   :query             [::m.accounts/id
-                       ::m.navlinks/id
-                       {::m.navlinks/target (comp/get-query Show)}]
-   :route-segment     ["account" :id]
-   :will-enter        (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (log/debug :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "admin show account page")))
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
+   :route-segment ["account" :id]
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage
@@ -118,7 +120,7 @@
    o.navlinks/router        parent-router-id
    o.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/input-key     model-key
    o.navlinks/label         "Show Account"

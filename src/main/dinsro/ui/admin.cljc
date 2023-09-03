@@ -57,6 +57,7 @@
                          u.a.models/IndexPage
                          u.a.navbars/IndexPage
                          u.a.navlinks/IndexPage
+                         u.a.navlinks/ShowPage
                          u.a.nostr/IndexPage
                          u.a.rates/IndexPage
                          u.a.rates/ShowPage

@@ -4,12 +4,16 @@
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.navbars :as o.navbars]
+   [dinsro.options.navlinks :as o.navlinks]
    [dinsro.specs]
    [lambdaisland.glogc :as log]))
 
 ;; [[../model/navlinks.cljc]]
 ;; [[../ui/navlinks.cljs]]
 ;; [[../../../notebooks/dinsro/notebooks/navlinks_notebook.clj]]
+
+(def model-key o.navlinks/id)
 
 (defn find-path
   ([router]
@@ -19,7 +23,7 @@
    (if router
      (do
        (log/trace :find-path/current {:path path :router router})
-       (let [next-router (get-in @m.navlinks/routes-atom [router ::m.navlinks/router])]
+       (let [next-router (get-in @m.navlinks/routes-atom [router o.navlinks/router])]
          (log/trace :find-path/next {:next-router next-router})
          (recur next-router (vec (concat [router] path)))))
      ;; no more items
@@ -29,21 +33,21 @@
   ([navlink-id] (find-path2 navlink-id []))
   ([navlink-id path]
    (if-let [item (@m.navlinks/routes-atom navlink-id)]
-     (if-let [parent-id (::m.navlinks/parent-id item)]
+     (if-let [parent-id (o.navlinks/parent-key item)]
        (find-path2 parent-id (concat path [navlink-id]))
        (conj path navlink-id))
      (throw (ex-info "Failed to find item" {:navlink-id navlink-id})))))
 
 ;; the list of parent pages to the root
 (defattr path ::path :ref
-  {ao/identities #{::m.navlinks/id}
-   ao/pc-input   #{::m.navlinks/id}
-   ao/target     ::m.navlinks/id
-   ao/pc-output  [{::path [::m.navlinks/id]}]
+  {ao/identities #{model-key}
+   ao/pc-input   #{model-key}
+   ao/target     model-key
+   ao/pc-output  [{::path [model-key]}]
    ao/pc-resolve
-   (fn [_env {::m.navlinks/keys [id]}]
+   (fn [_env {id model-key}]
      (log/trace :path/starting {:id id})
-     (let [router (get-in @m.navlinks/routes-atom [id ::m.navlinks/router])
+     (let [router (get-in @m.navlinks/routes-atom [id o.navlinks/router])
            path   (find-path router)]
        (log/trace :path/path-found {:path path})
        (let [homed-path (if (#{:home} id) [] path)
@@ -52,37 +56,22 @@
          {::path idents})))})
 
 (defattr menu ::menu :ref
-  {ao/identities #{::m.navlinks/id}
-   ao/pc-input   #{::m.navlinks/id}
-   ao/target     ::m.navbars/id
-   ao/pc-output  [{::menu [::m.navbars/id]}]
+  {ao/identities #{model-key}
+   ao/pc-input   #{model-key}
+   ao/target     o.navbars/id
+   ao/pc-output  [{::menu [o.navbars/id]}]
    ao/pc-resolve
-   (fn [_env {::m.navlinks/keys [id]}]
+   (fn [_env {id model-key}]
      (if (get @m.navbars/menus-atom id)
-       {::menu {::m.navbars/id id}}
+       {::menu {o.navbars/id id}}
        {::menu nil}))})
 
 (defattr index ::index :ref
-  {ao/pc-output  [{::index [::m.navlinks/id]}]
+  {ao/pc-output  [{::index [model-key]}]
    ao/pc-resolve (fn [_env _props]
                    (let [ids    (sort (keys @m.navlinks/routes-atom))
                          idents (m.navlinks/idents ids)]
                      {::index idents}))
-   ao/target     ::m.navlinks/id})
+   ao/target     model-key})
 
 (def attributes [path index menu])
-
-(comment
-
-  ((:com.wsscode.pathom.connect/resolve path)
-   {}
-   {::m.navlinks/id :admin-ln-remote-nodes})
-
-  ((:com.wsscode.pathom.connect/resolve path)
-   {}
-   {::m.navlinks/id :admin})
-
-  (find-path :admin-ln-remote-nodes)
-  (find-path :admin)
-
-  nil)

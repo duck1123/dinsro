@@ -50,3 +50,7 @@
 (def router
   "The navlink id of the page holding the router this control belongs to"
   ::m.navlinks/router)
+
+(def target ::m.navlinks/target)
+
+(defn ident-fn [page-id] (fn [] [id page-id]))

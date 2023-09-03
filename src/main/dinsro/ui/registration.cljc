@@ -19,14 +19,15 @@
 
 (defsc IndexPage
   [_this {:ui/keys [allow-registration? form]}]
-  {:ident          (fn [_] [::m.navlinks/id index-page-id])
-   :initial-state  {:ui/allow-registration? true
-                    :ui/form                {}
-                    ::m.navlinks/id         index-page-id}
-   ::m.navlinks/id :registration
-   :query          [:ui/allow-registration?
-                    {:ui/form (comp/get-query u.f.registration/RegistrationForm)}
-                    ::m.navlinks/id]
+  {:ident          (fn [] [o.navlinks/id index-page-id])
+   :initial-state  (fn [_props]
+                     {o.navlinks/id           index-page-id
+                      :ui/allow-registration? true
+                      :ui/form                (comp/get-initial-state u.f.registration/RegistrationForm {})})
+   :query          (fn []
+                     [o.navlinks/id
+                      :ui/allow-registration?
+                      {:ui/form (comp/get-query u.f.registration/RegistrationForm)}])
    :route-segment  ["register"]}
   (if allow-registration?
     (ui-container {:textAlign "center"}
@@ -37,7 +38,7 @@
       (dom/p {} "Registrations are not enabled"))))
 
 (m.navlinks/defroute index-page-id
-  {o.navlinks/control         ::IndexPage
+  {o.navlinks/control       ::IndexPage
    o.navlinks/label         index-label
    o.navlinks/parent-key    parent-router
    o.navlinks/router        parent-router

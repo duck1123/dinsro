@@ -7,8 +7,9 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.accounts :as j.ln.accounts]
    [dinsro.model.ln.accounts :as m.ln.accounts]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.ln.accounts :as o.ln.accounts]
+   [dinsro.options.ln.nodes :as o.ln.nodes]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
@@ -17,8 +18,8 @@
 ;; [[../../../../ui/admin/ln/nodes.cljc]]
 
 (def index-page-id :admin-ln-nodes-show-accounts)
-(def model-key ::m.ln.accounts/id)
-(def parent-model-key ::m.ln.nodes/id)
+(def model-key o.ln.accounts/id)
+(def parent-model-key o.ln.nodes/id)
 (def parent-router-id :admin-ln-nodes-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.admin.ln.nodes/Router)
@@ -27,7 +28,7 @@
   [_this _props]
   {ro/columns          [m.ln.accounts/id
                         m.ln.accounts/node]
-   ro/field-formatters {::m.ln.accounts/node #(u.links/ui-node-link %2)}
+   ro/field-formatters {o.ln.accounts/node #(u.links/ui-node-link %2)}
    ro/machine          spr/machine
    ro/page-size        10
    ro/paginate?        true
@@ -42,14 +43,14 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
-                        {parent-model-key props
-                         ::m.navlinks/id  index-page-id})
+                        {parent-model-key (parent-model-key props)
+                         o.navlinks/id    index-page-id})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))

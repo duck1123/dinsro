@@ -11,7 +11,6 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.badge-definitions :as m.n.badge-definitions]
    [dinsro.options.navlinks :as o.navlinks]
-   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -74,22 +73,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.n.badge-definitions/keys [id]
-          ::m.navlinks/keys            [target]
-          :as                          props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.n.badge-definitions/id nil
-                   ::m.navlinks/id            show-page-key
-                   ::m.navlinks/target        {}}
-   :query         [::m.n.badge-definitions/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-key])
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     o.navlinks/id            show-page-key
+                     o.navlinks/target        (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["badge-definition" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "admin badge definition")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

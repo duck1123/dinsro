@@ -13,6 +13,7 @@
    [dinsro.model.accounts :as m.accounts]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.accounts :as mu.accounts]
+   [dinsro.options.accounts :as o.accounts]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
@@ -25,7 +26,7 @@
 ;; [[../../model/accounts.cljc]]
 
 (def index-page-id :admin-accounts)
-(def model-key ::m.accounts/id)
+(def model-key o.accounts/id)
 (def override-form true)
 (def parent-router-id :admin)
 (def required-role :admin)
@@ -42,10 +43,10 @@
                      m.accounts/user
                      m.accounts/initial-value]
    fo/cancel-route  ["accounts"]
-   fo/field-options {::m.accounts/currency u.pickers/admin-currency-picker
-                     ::m.accounts/user     u.pickers/admin-user-picker}
-   fo/field-styles  {::m.accounts/currency :pick-one
-                     ::m.accounts/user     :pick-one}
+   fo/field-options {o.accounts/currency u.pickers/admin-currency-picker
+                     o.accounts/user     u.pickers/admin-user-picker}
+   fo/field-styles  {o.accounts/currency :pick-one
+                     o.accounts/user     :pick-one}
    fo/id            m.accounts/id
    fo/route-prefix  "new-account"
    fo/title         "Create Account"}
@@ -65,11 +66,11 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.accounts/currency #(u.links/ui-admin-currency-link %2)
-                         ::m.accounts/user     #(u.links/ui-admin-user-link %2)
-                         ::m.accounts/name     #(u.links/ui-admin-account-link %3)
-                         ::m.accounts/source   #(u.links/ui-admin-rate-source-link %2)
-                         ::m.accounts/wallet   #(and %2 (u.links/ui-admin-wallet-link %2))}
+  {ro/column-formatters {o.accounts/currency #(u.links/ui-admin-currency-link %2)
+                         o.accounts/user     #(u.links/ui-admin-user-link %2)
+                         o.accounts/name     #(u.links/ui-admin-account-link %3)
+                         o.accounts/source   #(u.links/ui-admin-rate-source-link %2)
+                         o.accounts/wallet   #(and %2 (u.links/ui-admin-wallet-link %2))}
    ro/columns           [m.accounts/name
                          m.accounts/currency
                          m.accounts/user
@@ -95,11 +96,12 @@
   [_this {::m.accounts/keys [name currency source wallet]
           :as               props}]
   {:ident         ::m.accounts/id
-   :initial-state {::m.accounts/name     ""
-                   ::m.accounts/id       nil
-                   ::m.accounts/currency {}
-                   ::m.accounts/source   {}
-                   ::m.accounts/wallet   {}}
+   :initial-state (fn [props]
+                    {o.accounts/name     ""
+                     o.accounts/id       (model-key props)
+                     o.accounts/currency (comp/get-initial-state u.links/CurrencyLinkForm {})
+                     o.accounts/source   (comp/get-initial-state u.links/RateSourceLinkForm {})
+                     o.accounts/wallet   (comp/get-initial-state u.links/WalletLinkForm {})})
    :pre-merge     (u.loader/page-merger model-key {})
    :query         [::m.accounts/name
                    ::m.accounts/id
@@ -129,11 +131,13 @@
 (defsc IndexPage
   [_this {:ui/keys [report] :as props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["accounts"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (log/info :Page/starting {:props props})
@@ -142,19 +146,18 @@
     (u.debug/load-error props "index page")))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-key])
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     o.navlinks/id     show-page-key
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["account" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if target
-    (ui-show target)
-    (u.debug/load-error props "admin show account")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

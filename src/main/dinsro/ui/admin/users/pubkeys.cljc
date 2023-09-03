@@ -8,8 +8,9 @@
    [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
-   [dinsro.model.users :as m.users]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.nostr.pubkeys :as o.n.pubkeys]
+   [dinsro.options.users :as o.users]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
@@ -20,15 +21,15 @@
 ;; [[../model/user_pubkeys.cljc]]
 
 (def index-page-id :admin-users-show-pubkeys)
-(def model-key ::m.n.pubkeys/id)
-(def parent-model-key ::m.users/id)
+(def model-key o.n.pubkeys/id)
+(def parent-model-key o.users/id)
 (def parent-router-id :admin-users-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.admin.users/Router)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
+  {ro/column-formatters {o.n.pubkeys/hex #(u.links/ui-pubkey-link %3)}
    ro/columns           [m.n.pubkeys/hex]
    ro/control-layout    {:action-buttons [::refresh]}
    ro/controls          {parent-model-key {:type :uuid :label "id"}
@@ -46,15 +47,15 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
-                        {::m.navlinks/id  index-page-id
+                        {o.navlinks/id    index-page-id
                          parent-model-key (parent-model-key props)
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
+                         o.navlinks/id
                          parent-model-key
-                         ::m.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["pubkeys"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}

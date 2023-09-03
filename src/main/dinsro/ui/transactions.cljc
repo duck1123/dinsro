@@ -29,6 +29,7 @@
    [dinsro.model.navlinks :as m.navlinks :refer [defroute]]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.transactions :as o.transactions]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
@@ -269,9 +270,9 @@
    ro/control-layout      {:action-buttons [::new-transaction ::refresh]}
    ro/controls            {::new-transaction new-button
                            ::refresh         u.links/refresh-control}
-   ro/field-formatters    {::m.transactions/description #(u.links/ui-transaction-link %3)}
-   ro/initial-sort-params {:sort-by          ::m.transactions/date
-                           :sortable-columns #{::m.transactions/date}
+   ro/field-formatters    {o.transactions/description #(u.links/ui-transaction-link %3)}
+   ro/initial-sort-params {:sort-by          o.transactions/date
+                           :sortable-columns #{o.transactions/date}
                            :ascending?       false}
    ro/machine             spr/machine
    ro/page-size           10
@@ -290,18 +291,20 @@
          :ui/keys              [debits]
          :as                   props}]
   {:ident         ::m.transactions/id
-   :initial-state {::m.transactions/description ""
-                   ::m.transactions/id          nil
-                   ::m.transactions/date        ""
-                   ::j.transactions/debit-count 0
-                   :ui/debits                   {}}
+   :initial-state (fn [props]
+                    {o.transactions/description ""
+                     o.transactions/id          (model-key props)
+                     o.transactions/date        ""
+                     ::j.transactions/debit-count 0
+                     :ui/debits                   {}})
    :pre-merge     (u.loader/page-merger model-key
                     {:ui/debits [u.t.debits/SubSection {}]})
-   :query         [::m.transactions/description
-                   ::m.transactions/id
-                   ::m.transactions/date
-                   ::j.transactions/debit-count
-                   {:ui/debits (comp/get-query u.t.debits/SubSection)}]}
+   :query         (fn []
+                    [o.transactions/description
+                     o.transactions/id
+                     o.transactions/date
+                     ::j.transactions/debit-count
+                     {:ui/debits (comp/get-query u.t.debits/SubSection)}])}
   (log/debug :Show/starting {:props props})
   (if id
     (dom/div {}
@@ -324,11 +327,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [_] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [_] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["transactions"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
@@ -338,22 +343,19 @@
       "Failed to load page")))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys     [target]
-          ::m.transactions/keys [id]
-          :as                   props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}
-                   ::m.transactions/id nil}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}
-                   ::m.transactions/id]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-key])
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     o.navlinks/id     show-page-key
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["transaction" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (log/debug :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "show transaction page")))
+  (u.loader/show-page props model-key ui-show))
 
 (defroute index-page-id
   {o.navlinks/control       ::IndexPage

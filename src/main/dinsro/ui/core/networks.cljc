@@ -122,22 +122,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.c.networks/keys [id]
-          ::m.navlinks/keys [target]
-          :as props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
-   :initial-state {::m.c.networks/id nil
-                   ::m.navlinks/id show-page-id
-                   ::m.navlinks/target      {}}
-   :query         [::m.c.networks/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key (model-key props)
+                     o.navlinks/id show-page-id
+                     o.navlinks/target      (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["network" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "show network")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute   :core-networks-show
   {o.navlinks/control       ::ShowPage

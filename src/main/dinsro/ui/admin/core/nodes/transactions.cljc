@@ -6,10 +6,11 @@
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.transactions :as j.c.transactions]
-   [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.transactions :as mu.c.transactions]
+   [dinsro.options.core.nodes :as o.c.nodes]
+   [dinsro.options.core.transactions :as o.c.transactions]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
@@ -20,8 +21,8 @@
 ;; [[../../../../model/core/transactions.cljc]]
 
 (def index-page-id :admin-core-nodes-show-transactions)
-(def model-key ::m.c.transactions/id)
-(def parent-model-key ::m.c.nodes/id)
+(def model-key o.c.transactions/id)
+(def parent-model-key o.c.nodes/id)
 (def parent-router-id :admin-core-nodes-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.admin.core.nodes/Router)
@@ -34,9 +35,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.transactions/block #(u.links/ui-admin-block-height-link %2)
-                         ::m.c.transactions/node  #(u.links/ui-admin-core-node-link %2)
-                         ::m.c.tx-id              #(u.links/ui-admin-core-tx-link %3)}
+  {ro/column-formatters {o.c.transactions/block #(u.links/ui-admin-block-height-link %2)
+                         o.c.transactions/node  #(u.links/ui-admin-core-node-link %2)
+                         o.c.transactions/tx-id #(u.links/ui-admin-core-tx-link %3)}
    ro/columns           [m.c.transactions/tx-id
                          j.c.transactions/node
                          m.c.transactions/fetched?
@@ -47,8 +48,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [fetch-action
-                         delete-action]
+   ro/row-actions       [fetch-action delete-action]
    ro/row-pk            m.c.transactions/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.transactions/index
@@ -59,15 +59,15 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
+   :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-id
+                         o.navlinks/id  index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["transactions"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}

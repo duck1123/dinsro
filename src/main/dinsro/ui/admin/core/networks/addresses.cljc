@@ -7,9 +7,10 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.addresses :as j.c.addresses]
    [dinsro.model.core.addresses :as m.c.addresses]
-   [dinsro.model.core.networks :as m.c.networks]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.addresses :as mu.c.addresses]
+   [dinsro.options.core.addresses :as o.c.addresses]
+   [dinsro.options.core.networks :as o.c.networks]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
@@ -21,8 +22,8 @@
 ;; [[../../../../ui/core/addresses.cljc]]
 
 (def index-page-id :admin-core-networks-show-addresses)
-(def model-key ::m.c.addresses/id)
-(def parent-model-key ::m.c.networks/id)
+(def model-key o.c.addresses/id)
+(def parent-model-key o.c.networks/id)
 (def parent-show-id :admin-core-networks-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.admin.core.networks/Router)
@@ -35,8 +36,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.addresses/height #(u.links/ui-block-height-link %3)}
-   ro/columns           [m.c.addresses/address]
+  {ro/columns           [m.c.addresses/address]
    ro/control-layout    {:inputs         [[parent-model-key]]
                          :action-buttons [::refresh]}
    ro/controls          {::refresh         u.links/refresh-control
@@ -44,8 +44,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
-   ro/row-actions       [fetch-action
-                         delete-action]
+   ro/row-actions       [fetch-action delete-action]
    ro/row-pk            m.c.addresses/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.c.addresses/admin-index
@@ -59,12 +58,12 @@
    :ident             ::m.navlinks/id
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
-                         ::m.navlinks/id  index-page-id
+                         o.navlinks/id    index-page-id
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
-                         ::m.navlinks/id
+                         o.navlinks/id
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["addresses"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}

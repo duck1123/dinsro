@@ -15,20 +15,20 @@
    [lambdaisland.glogc :as log]))
 
 (def index-page-id :admin-navlinks)
-(def model-key ::m.navlinks/id)
+(def model-key o.navlinks/id)
 (def parent-router-id :admin)
 (def required-role :admin)
 (def show-page-key :admin-navlinks-show)
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters   {::m.navlinks/id           #(str %2)
-                           ::m.navlinks/control      #(str %2)
-                           ::m.navlinks/router       #(and %2 (u.links/ui-navbar-link %2))
-                           ::m.navlinks/model-key    #(str %2)
-                           ::m.navlinks/navigate-key #(str %2)
-                           ::m.navlinks/parent-key   #(str %2)
-                           ::m.navlinks/input-key    #(str %2)}
+  {ro/column-formatters   {o.navlinks/id           #(str %2)
+                           o.navlinks/control      #(str %2)
+                           o.navlinks/router       #(and %2 (u.links/ui-navbar-link %2))
+                           o.navlinks/model-key    #(str %2)
+                           o.navlinks/navigate-key #(str %2)
+                           o.navlinks/parent-key   #(str %2)
+                           o.navlinks/input-key    #(str %2)}
    ro/columns             [m.navlinks/label
                            m.navlinks/id
                            m.navlinks/parent-key
@@ -38,10 +38,10 @@
                            m.navlinks/required-role]
    ro/control-layout      {:action-buttons [::refresh]}
    ro/controls            {::refresh u.links/refresh-control}
-   ro/initial-sort-params {:sort-by          ::m.navlinks/control
-                           :sortable-columns #{::m.navlinks/label
-                                               ::m.navlinks/parent-key
-                                               ::m.navlinks/control}
+   ro/initial-sort-params {:sort-by          o.navlinks/control
+                           :sortable-columns #{o.navlinks/label
+                                               o.navlinks/parent-key
+                                               o.navlinks/control}
                            :ascending?       false}
    ro/row-pk              m.navlinks/id
    ro/run-on-mount?       true
@@ -51,16 +51,17 @@
 (def ui-report (comp/factory Report))
 
 (defsc Show
-  [_this {::m.navlinks/keys [id label]
-          :as                 props}]
+  [_this {id    o.navlinks/id
+          label o.navlinks/label
+          :as   props}]
   {:ident         ::m.navlinks/id
    :initial-state (fn [props]
-                    (let [id (::m.navlinks/id props)]
-                      {::m.navlinks/id id
-                       ::m.navlinks/label ""}))
+                    {o.navlinks/id    (o.navlinks/id props)
+                     o.navlinks/label ""})
    :pre-merge     (u.loader/page-merger model-key {})
-   :query         [::m.navlinks/id
-                   ::m.navlinks/label]}
+   :query         (fn []
+                    [o.navlinks/id
+                     o.navlinks/label])}
   (if id
     (dom/div {}
       (ui-segment {}
@@ -71,31 +72,32 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]
-          :as props}]
+          :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [_] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [_] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report    (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["navlinks"]}
   (log/trace :Page/starting {:props props})
   (ui-report report))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys   [id target]
-          :as                 props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-key])
+   :initial-state (fn [props]
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-key
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["currency" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "show navlink page")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

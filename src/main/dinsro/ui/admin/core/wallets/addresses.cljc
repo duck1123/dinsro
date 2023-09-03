@@ -8,10 +8,11 @@
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.core.wallet-addresses :as j.c.wallet-addresses]
    [dinsro.model.core.wallet-addresses :as m.c.wallet-addresses]
-   [dinsro.model.core.wallets :as m.c.wallets]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.wallet-addresses :as mu.c.wallet-addresses]
    [dinsro.mutations.core.wallets :as mu.c.wallets]
+   [dinsro.options.core.wallet-addresses :as o.c.wallet-addresses]
+   [dinsro.options.core.wallets :as o.c.wallets]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
@@ -25,8 +26,8 @@
 ;; [[../../../../model/core/addresses.cljc]]
 
 (def index-page-id :admin-core-wallets-show-addresses)
-(def model-key ::m.c.wallet-addresses/id)
-(def parent-model-key ::m.c.wallets/id)
+(def model-key o.c.wallet-addresses/id)
+(def parent-model-key o.c.wallets/id)
 (def parent-router-id :admin-core-wallets-show)
 (def required-role :admin)
 (def router-key :dinsro.ui.admin.core.wallets/Router)
@@ -38,8 +39,8 @@
   [_this _props]
   {fo/attributes    [m.c.wallet-addresses/address
                      m.c.wallet-addresses/wallet]
-   fo/field-styles  {::m.c.wallet-addresses/wallet :pick-one}
-   fo/field-options {::m.c.wallet-addresses/wallet u.pickers/admin-wallet-picker}
+   fo/field-styles  {o.c.wallet-addresses/wallet :pick-one}
+   fo/field-options {o.c.wallet-addresses/wallet u.pickers/admin-wallet-picker}
    fo/id            m.c.wallet-addresses/id
    fo/route-prefix  "new-wallet-address"
    fo/title         "New Wallet Address"})
@@ -59,8 +60,8 @@
    fo/attributes     [m.c.wallet-addresses/address
                       m.c.wallet-addresses/wallet]
    fo/controls       {::generate generate-button}
-   fo/field-styles   {::m.c.wallet-addresses/wallet :pick-one}
-   fo/field-options  {::m.c.wallet-addresses/wallet u.pickers/wallet-picker}
+   fo/field-styles   {o.c.wallet-addresses/wallet :pick-one}
+   fo/field-options  {o.c.wallet-addresses/wallet u.pickers/wallet-picker}
    fo/id             m.c.wallet-addresses/id
    fo/route-prefix   "wallet-address"
    fo/title          "Wallet Address"})
@@ -73,8 +74,8 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.wallet-addresses/address #(u.links/ui-admin-address-link %2)
-                         ::m.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
+  {ro/column-formatters {o.c.wallet-addresses/address #(u.links/ui-admin-address-link %2)
+                         o.c.wallet-addresses/wallet #(u.links/ui-wallet-link %2)}
    ro/columns           [m.c.wallet-addresses/path-index
                          m.c.wallet-addresses/address]
    ro/control-layout    {:inputs         [[parent-model-key]]
@@ -98,13 +99,15 @@
 (defsc SubPage
   [_this props]
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.c.wallets/id nil
-                       ::m.navlinks/id  index-page-id
-                       :ui/report       {}}
-   :query             [::m.c.wallets/id
-                       ::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [props]
+                        {parent-model-key (parent-model-key props)
+                         o.navlinks/id    index-page-id
+                         :ui/report       (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.c.wallets/id
+                         o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))
 

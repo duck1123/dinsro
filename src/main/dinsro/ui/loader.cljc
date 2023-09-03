@@ -9,6 +9,8 @@
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.navlinks :as mu.navlinks]
+   [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.ui.debug :as u.debug]
    [lambdaisland.glogc :as log]))
 
 (def skip-loaded false)
@@ -146,9 +148,10 @@
             (throw (ex-info "Failed to determine parent control" {}))))
         (throw (ex-info "No id" {}))))))
 
-(defn targeted-router-loader
+(>defn targeted-router-loader
   "will enter handler for a show page that contains a router"
   [page-id model-key control-key]
+  [keyword? keyword? keyword? => any?]
   (fn [app props]
     (let [{::app/keys [state-atom]} app
           {:keys [id]}              props
@@ -180,9 +183,10 @@
                                             :page-id   page-id
                                             :record-id record-id}}))))))
 
-(defn targeted-subpage-loader
+(>defn targeted-subpage-loader
   "will enter handler for sub-pages of a targeted router"
   [page-id model-key control-key]
+  [keyword? keyword? keyword? => any?]
   (log/trace :target-subpage-loader/initializing
     {:page-id     page-id
      :model-key   model-key
@@ -215,3 +219,15 @@
                      :post-mutation-params {:model-key model-key
                                             :page-id   page-id
                                             :record-id record-id}}))))))
+
+(>defn show-page
+  [props model-key ui-show]
+  [any? keyword? fn? => any?]
+  (log/info :ShowPage/starting {:model-key model-key :props props})
+  (let [target  (o.navlinks/target props)
+        page-id (o.navlinks/id props)]
+    (if (model-key props)
+      (if target
+        (ui-show target)
+        (u.debug/load-error props (str page-id " target")))
+      (u.debug/load-error props (str page-id " page")))))

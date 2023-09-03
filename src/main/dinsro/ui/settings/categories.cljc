@@ -13,6 +13,7 @@
    [dinsro.joins.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.options.categories :as o.categories]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -23,7 +24,7 @@
 ;; [[../model/categories.cljc]]
 
 (def index-page-id :settings-categories)
-(def model-key ::m.categories/id)
+(def model-key o.categories/id)
 (def parent-router-id :settings)
 (def required-role :user)
 (def show-page-key :settings-categories-show)
@@ -32,7 +33,7 @@
   [_this _props]
   {fo/attributes   [m.categories/name]
    fo/cancel-route ["categories"]
-   fo/field-styles {::m.categories/user :link}
+   fo/field-styles {o.categories/user :link}
    fo/id           m.categories/id
    fo/route-prefix "new-category"
    fo/title        "New Category"})
@@ -44,7 +45,7 @@
   {fo/attributes   [m.categories/name
                     m.categories/user]
    fo/cancel-route ["categories"]
-   fo/field-styles {::m.categories/user :link}
+   fo/field-styles {o.categories/user :link}
    fo/id           m.categories/id
    fo/route-prefix "category"
    fo/title        "Edit Category"}
@@ -60,13 +61,15 @@
 
 (defsc Show
   [_this {::m.categories/keys [id name]
-          :as props}]
+          :as                 props}]
   {:ident         ::m.categories/id
-   :initial-state {::m.categories/id   nil
-                   ::m.categories/name ""}
-   :pre-merge     (u.loader/page-merger ::m.categories/id {})
-   :query         [::m.categories/id
-                   ::m.categories/name]}
+   :initial-state (fn [props]
+                    {o.categories/id   (model-key props)
+                     o.categories/name ""})
+   :pre-merge     (u.loader/page-merger o.categories/id {})
+   :query         (fn []
+                    [o.categories/id
+                     o.categories/name])}
   (log/debug :Show/starting {:props props})
   (if id
     (ui-container {}
@@ -78,7 +81,7 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.categories/name #(u.links/ui-category-link %3)}
+  {ro/column-formatters {o.categories/name #(u.links/ui-category-link %3)}
    ro/columns           [m.categories/name]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::new     new-button
@@ -97,11 +100,13 @@
   [_this {:ui/keys [report]
           :as      props}]
   {:componentDidMount #(report/start-report! % Report {})
-   :ident             (fn [] [::m.navlinks/id index-page-id])
-   :initial-state     {::m.navlinks/id index-page-id
-                       :ui/report      {}}
-   :query             [::m.navlinks/id
-                       {:ui/report (comp/get-query Report)}]
+   :ident             (fn [] [o.navlinks/id index-page-id])
+   :initial-state     (fn [_props]
+                        {o.navlinks/id index-page-id
+                         :ui/report      (comp/get-initial-state Report {})})
+   :query             (fn []
+                        [o.navlinks/id
+                         {:ui/report (comp/get-query Report)}])
    :route-segment     ["categories"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
@@ -115,12 +120,14 @@
           ::m.navlinks/keys [target]
           :as               props}]
   {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.categories/id nil
-                   ::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.categories/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+   :initial-state (fn [_props]
+                    {o.categories/id nil
+                     o.navlinks/id     show-page-key
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["category" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
   (log/debug :ShowPage/starting {:props props})
