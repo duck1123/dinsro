@@ -11,8 +11,8 @@
 
 (defn create!
   [props]
-  (log/info :create/starting {:props props})
-  (q.contacts/create-record props))
+  (log/info :create!/starting {:props props})
+  (q.contacts/create! props))
 
 (defn delete!
   [id]

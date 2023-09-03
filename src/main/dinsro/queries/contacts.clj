@@ -4,21 +4,23 @@
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
    [dinsro.model.contacts :as m.contacts]
-   [dinsro.model.users :as m.users]))
+   [dinsro.options.contacts :as o.contacts]
+   [dinsro.options.users :as o.users]))
 
 ;; [[../actions/contacts.clj]]
+;; [[../../../notebooks/dinsro/notebooks/contacts_notebook.clj]]
 
-(def model-key ::m.contacts/id)
+(def model-key o.contacts/id)
 
 (def query-info
   {:ident   model-key
    :pk      '?contacts-id
-   :clauses [[::m.users/id '?user-id]]
+   :clauses [[o.users/id '?user-id]]
    :rules
    (fn [[user-id] rules]
      (->> rules
           (concat-when user-id
-            [['?category-id ::m.contacts/user '?user-id]])))})
+            [['?category-id o.contacts/user '?user-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))
@@ -28,7 +30,7 @@
   ([] (index-ids {}))
   ([query-params] (c.xtdb/index-ids query-info query-params)))
 
-(>defn create-record
+(>defn create!
   "Create a contact record"
   [params]
   [::m.contacts/params => :xt/id]
@@ -45,7 +47,7 @@
   (c.xtdb/query-values
    '{:find  [?id]
      :in    [[?user-id]]
-     :where [[?id ::m.contacts/user ?user-id]]}
+     :where [[?id o.contacts/user ?user-id]]}
    [user-id]))
 
 (defn delete!

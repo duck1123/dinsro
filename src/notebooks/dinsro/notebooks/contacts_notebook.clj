@@ -3,6 +3,7 @@
   (:require
    [dinsro.model.contacts :as m.contacts]
    [dinsro.notebook-utils :as nu]
+   [dinsro.options.contacts :as o.contacts]
    [dinsro.queries.contacts :as q.contacts]
    [dinsro.queries.users :as q.users]
    [dinsro.specs :as ds]
@@ -35,14 +36,14 @@
   (q.contacts/find-by-user (q.users/find-by-name "alice"))
   (q.contacts/find-by-user (q.users/find-by-name "bob"))
 
-  (q.contacts/create-record
-   {::m.contacts/name "Matt O'Dell"
-    ::m.contacts/pubkey matt-odell
-    ::m.contacts/user   (q.users/find-by-name "alice")})
+  (q.contacts/create!
+   {o.contacts/name   "Matt O'Dell"
+    o.contacts/pubkey matt-odell
+    o.contacts/user   (q.users/find-by-name "alice")})
 
-  (q.contacts/create-record
-   {::m.contacts/name   "Duck Nebuchadnezzar"
-    ::m.contacts/pubkey duck
-    ::m.contacts/user   (q.users/find-by-name "alice")})
+  (q.contacts/create!
+   {o.contacts/name   "Duck Nebuchadnezzar"
+    o.contacts/pubkey duck
+    o.contacts/user   (q.users/find-by-name "alice")})
 
   nil)

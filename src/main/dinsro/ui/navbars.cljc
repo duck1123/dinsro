@@ -54,9 +54,11 @@
                    ::m.navlinks/label      ""
                    ::m.navlinks/auth-link? false
                    ::m.navlinks/navigate   {}
+                   ::m.navlinks/menu       {}
                    :ui/link-loaded         false}
    :query         [::m.navlinks/id
                    ::m.navlinks/label
+                   ::m.navlinks/menu
                    {::m.navlinks/navigate (comp/get-query RouteTarget)}
                    ::m.navlinks/auth-link?
                    :ui/link-loaded]})
@@ -66,18 +68,20 @@
          :ui/keys          [link-loaded]
          :as               props}]
   {:ident         ::m.navlinks/id
-   :initial-state {::m.navlinks/id         nil
-                   ::m.navlinks/label      ""
-                   ::m.navlinks/auth-link? false
-                   ::m.navlinks/navigate   {}
-                   ::j.navlinks/path       []
-                   :ui/link-loaded         false}
-   :query         [::m.navlinks/id
-                   ::m.navlinks/label
-                   {::m.navlinks/navigate (comp/get-query RouteTarget)}
-                   ::m.navlinks/auth-link?
-                   ::j.navlinks/path
-                   :ui/link-loaded]}
+   :initial-state (fn [_props]
+                    {o.navlinks/id         nil
+                     o.navlinks/label      ""
+                     o.navlinks/auth-link? false
+                     o.navlinks/navigate   {}
+                     ::j.navlinks/path     []
+                     :ui/link-loaded       false})
+   :query         (fn []
+                    [o.navlinks/id
+                     o.navlinks/label
+                     {o.navlinks/navigate (comp/get-query RouteTarget)}
+                     o.navlinks/auth-link?
+                     ::j.navlinks/path
+                     :ui/link-loaded])}
   (log/trace :Navlink/starting {:props props})
   (if (or force-link-shown? link-loaded)
     (dom/a :.item
@@ -147,12 +151,10 @@
 (defsc MenuItem
   [_this _props]
   {:initial-state {::m.navbars/id       nil
-                   ::m.navbars/children []
-                   ::j.navbars/menu     {}}
+                   ::m.navbars/children []}
    :ident         ::m.navbars/id
    :query         [::m.navbars/id
-                   {::m.navbars/children (comp/get-query MenuNavLink)}
-                   ::j.navbars/menu]})
+                   {::m.navbars/children (comp/get-query MenuNavLink)}]})
 
 (defsc NavbarSidebar
   [this {:ui/keys         [inverted?]

@@ -14,6 +14,9 @@
    [dinsro.model.users :as m.users]
    [dinsro.specs]))
 
+;; [[../options/accounts.cljc]]
+;; [[../ui/accounts.cljc]]
+
 (comment ::auth/_ ::pc/_)
 
 (s/def ::id uuid?)

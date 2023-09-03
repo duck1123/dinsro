@@ -9,6 +9,8 @@
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations :as mu]
+   [dinsro.options.contacts :as o.contacts]
+   [dinsro.queries.contacts :as q.contacts]
    [dinsro.queries.nostr.pubkeys :as q.n.pubkeys]
    [dinsro.responses.nostr.pubkeys :as r.n.pubkeys]
    [dinsro.specs :as ds]
@@ -16,9 +18,20 @@
 
 ;; [[../../actions/nostr/pubkeys.clj]]
 ;; [[../../mutations/nostr/pubkeys.cljc]]
+;; [[../../queries/contacts.clj]]
 ;; [[../../responses/nostr/pubkeys.cljc]]
 
 (def model-key ::m.n.pubkeys/id)
+
+(defn add-contact!
+  [_env props]
+  (let [pubkey-id (model-key props)
+        actor-id nil]
+    (when actor-id
+      (q.contacts/create!
+       {o.contacts/pubkey pubkey-id
+        o.contacts/user   actor-id}))
+    {::mu/status :ok}))
 
 (>defn update-pubkey!
   "Fetch the kind 0 information for a pubkey"

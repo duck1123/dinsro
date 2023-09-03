@@ -7,8 +7,16 @@
    [dinsro.responses.accounts :as r.accounts]
    [lambdaisland.glogc :as log]))
 
-;; [../mutations/accounts.cljc]
-;; [../queries/accounts.clj]
+;; [[../mutations/accounts.cljc]]
+;; [[../queries/accounts.clj]]
+;; [[../responses/accounts.cljc]]
+
+(defn create!
+  [props]
+  (log/info :create!/starting {:props props})
+  (let [id (q.accounts/create! props)]
+    {::mu/status                  :ok
+     ::r.accounts/created-records (m.accounts/idents [id])}))
 
 (>defn delete!
   [props]

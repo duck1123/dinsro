@@ -21,6 +21,7 @@
    [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks :refer [defroute]]
    [dinsro.mutations.accounts :as mu.accounts]
+   [dinsro.options.accounts :as o.accounts]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.accounts.transactions :as u.a.transactions]
    [dinsro.ui.buttons :as u.buttons]
@@ -32,6 +33,7 @@
 
 ;; [[../joins/accounts.cljc]]
 ;; [[../model/accounts.cljc]]
+;; [[../options/accounts.cljc]]
 
 (def index-page-id :accounts)
 (def model-key ::m.accounts/id)
@@ -42,22 +44,30 @@
 (def show-transactions true)
 (def show-page-key :accounts-show)
 
+(def create-action
+  (u.buttons/row-action-button "Create" model-key mu.accounts/create!))
+
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.accounts/delete!))
 
+;; Create form for accounts as a user
 (form/defsc-form NewForm
-  [this {::m.accounts/keys [currency name initial-value]
-         :as               props}]
-  {fo/attributes     [m.accounts/name
+  [this {currency      o.accounts/currency
+         name          o.accounts/name
+         initial-value o.accounts/initial-value
+         :as           props}]
+  {fo/action-buttons [::create]
+   fo/attributes     [m.accounts/name
                       m.accounts/currency
                       m.accounts/user
                       m.accounts/initial-value]
    fo/cancel-route   ["accounts"]
-   fo/default-values {::m.accounts/initial-value 0}
-   fo/field-options  {::m.accounts/currency u.pickers/currency-picker
-                      ::m.accounts/user     u.pickers/user-picker}
-   fo/field-styles   {::m.accounts/currency :pick-one
-                      ::m.accounts/user     :pick-one}
+   fo/controls       (merge form/standard-controls {::create create-action})
+   fo/default-values {o.accounts/initial-value 0}
+   fo/field-options  {o.accounts/currency u.pickers/currency-picker
+                      o.accounts/user     u.pickers/user-picker}
+   fo/field-styles   {o.accounts/currency :pick-one
+                      o.accounts/user     :pick-one}
    fo/id             m.accounts/id
    fo/route-prefix   "new-account"
    fo/title          "Create Account"}

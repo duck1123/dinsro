@@ -15,6 +15,21 @@
 
 #?(:cljs (comment ::mu/_ ::pc/_))
 
+;; Create
+
+#?(:clj
+   (pc/defmutation create!
+     [_env props]
+     {::pc/params #{model-key}
+      ::pc/output [::mu/status ::mu/errors]}
+     (p.accounts/create! props))
+
+   :cljs
+   (defmutation create! [_props]
+     (action [_env] true)
+     (remote [env]
+       (fm/returning env r.accounts/CreateResponse))))
+
 ;; Delete
 
 #?(:clj
@@ -33,4 +48,4 @@
      (remote [env]
        (fm/returning env r.accounts/DeleteResponse))))
 
-#?(:clj (def resolvers [delete!]))
+#?(:clj (def resolvers [create! delete!]))

@@ -66,7 +66,7 @@
                     (assoc ::m.accounts/source source-id)
                     (assoc ::m.accounts/user username)
                     (assoc ::m.accounts/currency currency-id))
-         id     (q.accounts/create-record params)]
+         id     (q.accounts/create! params)]
      (q.accounts/read-record id))))
 
 (>defn mock-rate

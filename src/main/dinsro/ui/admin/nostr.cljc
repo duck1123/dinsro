@@ -33,10 +33,12 @@
 ;; [[../../ui/admin/nostr/relays.cljc]]
 ;; [[../../ui/admin/nostr/requests.cljc]]
 
+(def debug-props? false)
 (def debug-route false)
 (def index-page-id :admin-nostr)
 (def parent-router-id :admin)
 (def required-role :admin)
+(def use-grid? false)
 
 (defrouter Router
   [_this  {:keys [current-state route-factory route-props router-state] :as props}]
@@ -128,24 +130,34 @@
                    {:ui/vertical-menu (comp/get-query u.menus/VerticalMenu)}]
    :route-segment ["nostr"]}
   (log/debug :IndexPage/starting {:props props})
-  (ui-grid {:centered true}
-    (ui-grid-row {:only "tablet mobile"}
-      (ui-grid-column {:width 16}
-        (if nav-menu
-          (u.menus/ui-nav-menu nav-menu)
-          (u.debug/load-error props "admin nostr nav menu"))))
-    (ui-grid-row {}
-      (ui-grid-column {:only "computer" :width 3}
-        (if vertical-menu
-          (u.menus/ui-vertical-menu vertical-menu)
-          (u.debug/load-error props "admin nostr nav menu")))
-      (ui-grid-column {:tablet 16 :computer 13 :stretched true}
-        (ui-grid {:centered true}
-          (ui-grid-row {}
-            (ui-grid-column {:computer 16 :tablet 16 :mobile 16}
-              (if router
-                (ui-router router)
-                (u.debug/load-error props "admin nostr router")))))))))
+  (if use-grid?
+    (ui-grid {:centered true}
+      (ui-grid-row {:only "tablet mobile"}
+        (ui-grid-column {:width 16}
+          (if nav-menu
+            (u.menus/ui-nav-menu nav-menu)
+            (u.debug/load-error props "admin nostr nav menu"))))
+      (ui-grid-row {}
+        (ui-grid-column {:only "computer" :width 3}
+          (if vertical-menu
+            (u.menus/ui-vertical-menu vertical-menu)
+            (u.debug/load-error props "admin nostr nav menu")))
+        (ui-grid-column {:tablet 16 :computer 13 :stretched true}
+          (ui-grid {:centered true}
+            (ui-grid-row {}
+              (ui-grid-column {:computer 16 :tablet 16 :mobile 16}
+                (if router
+                  (ui-router router)
+                  (u.debug/load-error props "admin nostr router"))))))))
+    (dom/div :.nostr-page
+      (if nav-menu
+        (u.menus/ui-nav-menu nav-menu)
+        (u.debug/load-error props "admin nav menu"))
+      (if router
+        (ui-router router)
+        (u.debug/load-error props "admin router"))
+      (when debug-props?
+        (u.debug/log-props props)))))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

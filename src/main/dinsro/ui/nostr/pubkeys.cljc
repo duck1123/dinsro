@@ -70,8 +70,8 @@
     u.n.p.items/index-page-id]})
 
 (defsc PubkeyInfo
-  [_this {::j.n.pubkeys/keys [npub]
-          ::m.n.pubkeys/keys [about display-name hex lud06 name nip05 picture website]}]
+  [this {::j.n.pubkeys/keys [npub]
+         ::m.n.pubkeys/keys [about display-name hex lud06 name nip05 picture website]}]
   {:css           [[:.content-box {:overflow "hidden"}]
                    [:.info {}]
                    [:.picture-container {}]]
@@ -111,7 +111,10 @@
               (dom/div {} (str (or npub hex)))
               (dom/div {} (str about))
               (dom/div {} (when website (dom/a {:href website} (str website))))
-              (dom/div {} (str lud06)))))))))
+              (dom/div {} (str lud06))
+              (dom/div {}
+                (u.buttons/action-button
+                 `mu.n.pubkeys/add-contact! "Add to contacts" model-key this)))))))))
 
 (def ui-pubkey-info (comp/factory PubkeyInfo))
 

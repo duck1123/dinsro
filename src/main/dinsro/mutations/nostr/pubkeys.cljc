@@ -141,8 +141,10 @@
 
 #?(:clj
    (def resolvers
-     [delete!
+     [add-contact!
+      delete!
       fetch!
+      fetch-awards!
       fetch-contacts!
       fetch-definitions!
       fetch-events!]))

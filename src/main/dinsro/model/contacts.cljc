@@ -9,7 +9,8 @@
    [dinsro.model.users :as m.users]
    [dinsro.specs]))
 
-;; [[../ui/contacts.cljs][Contacts UI]]
+;; [[../options/contacts.cljc]]
+;; [[../ui/contacts.cljs]]
 
 (s/def ::id uuid?)
 (defattr id ::id :uuid

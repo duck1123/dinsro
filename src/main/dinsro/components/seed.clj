@@ -254,7 +254,7 @@
 
                             ::m.accounts/source source-id}
                            (when wallet-id {::m.accounts/wallet wallet-id}))]
-          (q.accounts/create-record params))
+          (q.accounts/create! params))
         (throw (ex-info "failed to find source" {}))))))
 
 (>defn seed-accounts!
