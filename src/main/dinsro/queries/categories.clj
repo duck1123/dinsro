@@ -44,7 +44,7 @@
      :where [[?category-id ::m.categories/user ?user-id]]}
    [user-id]))
 
-(>defn create-record
+(>defn create!
   [params]
   [::m.categories/params => :xt/id]
   (c.xtdb/create! model-key params))

@@ -3,8 +3,16 @@
   (:require
    [dinsro.model.categories :as m.categories]))
 
-(def id ::m.categories/id)
+;; [[../model/categories.cljc]]
 
-(def name ::m.categories/name)
+(def id
+  "The id of the category"
+  ::m.categories/id)
 
-(def user ::m.categories/user)
+(def name
+  "The name of the category"
+  ::m.categories/name)
+
+(def user
+  "The user this category belongs to"
+  ::m.categories/user)

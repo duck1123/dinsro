@@ -6,7 +6,8 @@
    [dinsro.model.categories :as m.categories]
    [dinsro.mutations :as mu]
    #?(:clj [dinsro.processors.categories :as p.categories])
-   [dinsro.responses.categories :as r.categories]))
+   [dinsro.responses.categories :as r.categories]
+   #?(:cljs [lambdaisland.glogc :as log])))
 
 ;; [[../joins/categories.cljc]]
 ;; [[../model/categories.cljc]]
@@ -23,14 +24,14 @@
      [env props]
      {::pc/params #{::m.categories/id}
       ::pc/output [::mu/status ::mu/errors ::r.categories/created-record]}
-     (p.categories/delete! env props))
+     (p.categories/create! env props))
 
    :cljs
-   (fm/defmutation create! [_props]
+   (fm/defmutation create! [props]
      (action [_env] true)
      (ok-action [env]
-       (let [body     (get-in env [:result :body])
-             response (get body `create!)]
+       (let [response (get-in env [:result :body `create!])]
+         (log/info :create!/ok {:response response :props props})
          response))
      (remote [env]
        (fm/returning env r.categories/CreateResponse))))

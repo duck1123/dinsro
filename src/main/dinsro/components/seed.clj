@@ -163,8 +163,8 @@
   (doseq [{:keys [categories username]} users]
     (let [user-id (q.users/find-by-name username)]
       (doseq [{:keys [name]} categories]
-        (q.categories/create-record {::m.categories/name name
-                                     ::m.categories/user user-id})))))
+        (q.categories/create! {::m.categories/name name
+                               ::m.categories/user user-id})))))
 
 (>defn initialize-ln-node!
   [node-id]

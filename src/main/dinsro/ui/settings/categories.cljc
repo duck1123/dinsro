@@ -13,15 +13,19 @@
    [dinsro.joins.categories :as j.categories]
    [dinsro.model.categories :as m.categories]
    [dinsro.model.navlinks :as m.navlinks]
+   [dinsro.mutations.categories :as mu.categories]
    [dinsro.options.categories :as o.categories]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
-;; [[../joins/categories.cljc]]
-;; [[../model/categories.cljc]]
+;; [[../../joins/categories.cljc]]
+;; [[../../model/categories.cljc]]
+;; [[../../mutations/categories.cljc]]
+;; [[../../options/categories.cljc]]
 
 (def index-page-id :settings-categories)
 (def model-key o.categories/id)
@@ -29,14 +33,24 @@
 (def required-role :user)
 (def show-page-id :settings-categories-show)
 
+(def create-action
+  (u.buttons/form-action-button
+   "Create" mu.categories/create!
+   #{o.categories/name}))
+
+(def delete-action
+  (u.buttons/row-action-button "Delete" model-key mu.categories/delete!))
+
 (form/defsc-form NewForm
   [_this _props]
-  {fo/attributes   [m.categories/name]
-   fo/cancel-route ["categories"]
-   fo/field-styles {o.categories/user :link}
-   fo/id           m.categories/id
-   fo/route-prefix "new-category"
-   fo/title        "New Category"})
+  {fo/action-buttons [::create]
+   fo/attributes     [m.categories/name]
+   fo/cancel-route   ["categories"]
+   fo/field-styles   {o.categories/user :link}
+   fo/controls       (merge form/standard-controls {::create create-action})
+   fo/id             m.categories/id
+   fo/route-prefix   "new-category"
+   fo/title          "New Category"})
 
 (def override-form true)
 
@@ -89,6 +103,7 @@
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true
+   ro/row-actions       [delete-action]
    ro/row-pk            m.categories/id
    ro/run-on-mount?     true
    ro/source-attribute  ::j.categories/index

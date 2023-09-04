@@ -3,7 +3,12 @@
    [dinsro.queries.categories :as q.categories]
    [lambdaisland.glogc :as log]))
 
-;; [../queries/categories.clj]
+;; [[../queries/categories.clj]]
+
+(defn create!
+  [params]
+  (log/info :create!/starting {:params params})
+  (q.categories/create! params))
 
 (defn delete!
   [id]

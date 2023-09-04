@@ -83,7 +83,7 @@
                      {model-key (model-key props)
                       o.categories/name ""})
    :query          (fn []
-                     [o.categories/id
+                     [model-key
                       o.categories/name])}
   (if id
     (ui-container {}
