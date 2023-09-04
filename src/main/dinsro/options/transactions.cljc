@@ -4,6 +4,8 @@
 
 (def id ::m.transactions/id)
 
+(def category ::m.transactions/category)
+
 (def description ::m.transactions/description)
 
 (def date ::m.transactions/date)

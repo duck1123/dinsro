@@ -17,6 +17,7 @@
    [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
+   [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.accounts :as j.accounts]
@@ -212,9 +213,9 @@
               (ui-grid-row {}
                 (ui-grid-column {:width 8}
                   (dom/span {} "Accounts"))
-                (ui-grid-column {:width 8}
+                (ui-grid-column {:floated "right" :width 8}
                   (when-not override-controls?
-                    (dom/div {:style {:width "100%"}}
+                    (ui-button-group {:compact true :floated "right"}
                       (u.buttons/create-button this NewForm)
                       (u.buttons/refresh-button this))))))))
 

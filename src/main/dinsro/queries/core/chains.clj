@@ -17,7 +17,7 @@
    (fn [[network-id] rules]
      (->> rules
           (concat-when network-id
-            ['?network-id ::m.c.networks/chain '?chain-id])))})
+            [['?network-id ::m.c.networks/chain '?chain-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))

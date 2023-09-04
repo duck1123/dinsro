@@ -21,7 +21,7 @@
    (fn [[pubkey-id] rules]
      (->> rules
           (concat-when pubkey-id
-            ['?pubkey-contacts-id ::m.n.pubkey-contacts/actor '?pubkey-actor-id])))})
+            [['?pubkey-contacts-id ::m.n.pubkey-contacts/actor '?pubkey-actor-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))

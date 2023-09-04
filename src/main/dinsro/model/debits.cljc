@@ -1,11 +1,12 @@
 (ns dinsro.model.debits
   (:require
    [clojure.spec.alpha :as s]
-   [com.fulcrologic.guardrails.core :refer [>def >defn =>]]
+   [com.fulcrologic.guardrails.core :refer [? >def >defn =>]]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [com.fulcrologic.rad.report :as report]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.categories :as m.categories]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.specs :as ds]))
 
@@ -24,6 +25,13 @@
    ao/schema           :production
    ao/target           ::m.accounts/id
    ::report/column-EQL {::account [::m.accounts/id ::m.accounts/name]}})
+
+(>def ::category (? ::m.categories/id))
+(defattr category ::category :ref
+  {ao/identities       #{::id}
+   ao/schema           :production
+   ao/target           ::m.categories/id
+   ::report/column-EQL {::category [::m.categories/id ::m.categories/name]}})
 
 (>def ::transaction ::m.transactions/id)
 (defattr transaction ::transaction :ref

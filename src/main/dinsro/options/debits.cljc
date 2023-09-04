@@ -6,6 +6,8 @@
 
 (def account ::m.debits/account)
 
+(def category ::m.debits/category)
+
 (def transaction ::m.debits/transaction)
 
 (def value ::m.debits/value)

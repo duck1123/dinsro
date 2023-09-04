@@ -8,6 +8,8 @@
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.model.nostr.runs :as m.n.runs]
+   [dinsro.options.nostr.connections :as o.n.connections]
+   [dinsro.options.nostr.relays :as o.n.relays]
    [dinsro.queries.nostr.connections :as q.n.connections]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.runs :as q.n.runs]
@@ -81,9 +83,9 @@
 (defn create-client
   "Create and associate client for connection"
   [connection-id]
-  (if-let [relay-id (q.n.relays/find-by-connection connection-id)]
+  (if-let [relay-id (first (q.n.relays/index-ids {o.n.connections/id connection-id}))]
     (if-let [relay (q.n.relays/read-record relay-id)]
-      (let [address     (::m.n.relays/address relay)
+      (let [address     (o.n.relays/address relay)
             chan        (async/chan)
             result-atom (atom "")
             params      {:on-message (on-message result-atom chan)
@@ -155,9 +157,9 @@
   (log/info :create-connection!/starting {:relay-id relay-id})
   (if-let [instance-id (a.current-instance/get-current)]
     (q.n.connections/create-record
-     {::m.n.connections/relay    relay-id
-      ::m.n.connections/instance instance-id
-      ::m.n.connections/status   :initial})
+     {o.n.connections/relay    relay-id
+      o.n.connections/instance instance-id
+      o.n.connections/status   :initial})
     (throw (ex-info "Failed to read instance" {}))))
 
 (>defn handle-event

@@ -2,11 +2,12 @@
   (:require
    [com.fulcrologic.guardrails.core :refer [>defn ? =>]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
-   [dinsro.model.instances :as m.instances]
    [dinsro.model.nostr.connections :as m.n.connections]
-   [dinsro.model.nostr.relays :as m.n.relays]
-   [dinsro.model.nostr.requests :as m.n.requests]
+   [dinsro.options.instances :as o.instances]
    [dinsro.options.nostr.connections :as o.n.connections]
+   [dinsro.options.nostr.relays :as o.n.relays]
+   [dinsro.options.nostr.requests :as o.n.requests]
+   [dinsro.options.nostr.runs :as o.n.runs]
    [lambdaisland.glogc :as log]
    [xtdb.api :as xt]))
 
@@ -21,18 +22,19 @@
 (def query-info
   {:ident   model-key
    :pk      '?connection-id
-   :clauses [[::m.n.requests/id '?request-id]
-             [::m.n.relays/id   '?relay-id]
-             [::m.instances/id  '?instance-id]]
+   :clauses [[o.n.requests/id '?request-id]
+             [o.n.relays/id   '?relay-id]
+             [o.instances/id  '?instance-id]]
    :rules
    (fn [[request-id relay-id instance-id] rules]
      (->> rules
           (concat-when request-id
-            [['?request-id    ::m.n.requests/connection '?connection-id]])
+            [['?request-run-id o.n.runs/request         '?request-id]
+             ['?request-run-id o.n.runs/connection      '?connection-id]])
           (concat-when relay-id
-            [['?connection-id o.n.connections/relay     '?relay-id]])
+            [['?connection-id  o.n.connections/relay    '?relay-id]])
           (concat-when instance-id
-            [['?connection-id o.n.connections/instance  '?instance-id]])))})
+            [['?connection-id  o.n.connections/instance '?instance-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))
@@ -90,8 +92,8 @@
                    (let [time           (dinsro.specs/->inst)
                          entity         (some-> ctx xtdb.api/db (xtdb.api/entity eid))
                          updated-entity (merge entity
-                                               {o.n.connections/status     :connecting
-                                                o.n.connections/start-time time})]
+                                               {::m.n.connections/status     :connecting
+                                                ::m.n.connections/start-time time})]
                      [[::xt/put updated-entity]]))}]
     (xt/await-tx node (xt/submit-tx node [[::xt/put query-def]]))))
 
@@ -105,7 +107,7 @@
                    (let [time           (dinsro.specs/->inst)
                          entity         (some-> ctx xtdb.api/db (xtdb.api/entity eid))
                          updated-entity (merge entity
-                                               {o.n.connections/status   :disconnected
+                                               {::m.n.connections/status   :disconnected
                                                 ::m.n.connections/end-time time})]
                      [[::xt/put updated-entity]]))}]
     (xt/await-tx node (xt/submit-tx node [[::xt/put query-def]]))))
@@ -119,8 +121,8 @@
                    (let [time           (dinsro.specs/->inst)
                          entity         (some-> ctx xtdb.api/db (xtdb.api/entity eid))
                          updated-entity (merge entity
-                                               {o.n.connections/status   :errored
-                                                o.n.connections/end-time time})]
+                                               {::m.n.connections/status   :errored
+                                                ::m.n.connections/end-time time})]
                      [[::xt/put updated-entity]]))}]
     (xt/await-tx node (xt/submit-tx node [[::xt/put query-def]]))))
 

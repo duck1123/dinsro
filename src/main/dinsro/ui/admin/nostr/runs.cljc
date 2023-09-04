@@ -81,23 +81,23 @@
 
 (defsc Show
   [_this {::m.n.runs/keys [id]
-          :ui/keys        [nav-menu router]
+          :ui/keys        [admin-nav-menu admin-router]
           :as             props}]
   {:ident         ::m.n.runs/id
    :initial-state (fn [props]
                     (let [id (model-key props)]
-                      {model-key    id
-                       :ui/router   (comp/get-initial-state Router)
-                       :ui/nav-menu (comp/get-initial-state u.menus/NavMenu
-                                      {::m.navbars/id show-page-id
-                                       :id            id})}))
+                      {model-key          id
+                       :ui/admin-router   (comp/get-initial-state Router)
+                       :ui/admin-nav-menu (comp/get-initial-state u.menus/NavMenu
+                                            {::m.navbars/id show-page-id
+                                             :id            id})}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
-                     :ui/router   [Router {}]})
+                    {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
+                     :ui/admin-router   [Router {}]})
    :query         (fn []
                     [::m.n.runs/id
-                     {:ui/nav-menu (comp/get-query u.menus/NavMenu {})}
-                     {:ui/router (comp/get-query Router {})}])}
+                     {:ui/admin-nav-menu (comp/get-query u.menus/NavMenu {})}
+                     {:ui/admin-router (comp/get-query Router {})}])}
   (log/info :Show/starting {:props props})
   (if (model-key props)
     (let [{:keys [main _sub]} (css/get-classnames Show)]
@@ -105,8 +105,8 @@
         (ui-segment {}
           (dom/div "Run")
           (dom/div {} (str id)))
-        (u.menus/ui-nav-menu nav-menu)
-        (ui-router router)))
+        (u.menus/ui-nav-menu admin-nav-menu)
+        (ui-router admin-router)))
     (u.debug/load-error props "admin show runs")))
 
 (def ui-show (comp/factory Show))

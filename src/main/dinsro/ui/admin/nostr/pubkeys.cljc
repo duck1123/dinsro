@@ -54,7 +54,8 @@
    ro/columns           [m.n.pubkeys/picture
                          m.n.pubkeys/name
                          j.n.pubkeys/contact-count
-                         j.n.pubkeys/event-count]
+                         j.n.pubkeys/event-count
+                         j.n.pubkeys/npub]
    ro/control-layout    {:action-buttons [::new ::refresh]}
    ro/controls          {::refresh u.links/refresh-control}
    ro/machine           spr/machine

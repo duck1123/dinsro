@@ -37,6 +37,7 @@
 ;; [[../../model/nostr/pubkeys.cljc]]
 ;; [[../../mutations/nostr/pubkey_contacts.cljc]]
 ;; [[../../mutations/nostr/pubkeys.cljc]]
+;; [[../../ui/admin/nostr/pubkeys.cljc]]
 
 (def index-page-id :nostr-pubkeys)
 (def model-key ::m.n.pubkeys/id)

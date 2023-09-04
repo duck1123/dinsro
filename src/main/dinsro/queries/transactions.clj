@@ -3,12 +3,13 @@
    [com.fulcrologic.guardrails.core :refer [=> >defn ?]]
    [com.fulcrologic.rad.ids :refer [new-uuid]]
    [dinsro.components.xtdb :as c.xtdb :refer [concat-when]]
-   [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.categories :as m.categories]
-   [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.debits :as m.debits]
    [dinsro.model.transactions :as m.transactions]
-   [dinsro.model.users :as m.users]
+   [dinsro.options.accounts :as o.accounts]
+   [dinsro.options.categories :as o.categories]
+   [dinsro.options.currencies :as o.currencies]
+   [dinsro.options.debits :as o.debits]
+   [dinsro.options.transactions :as o.transactions]
+   [dinsro.options.users :as o.users]
    [dinsro.specs]
    [lambdaisland.glogc :as log]
    [tick.alpha.api :as t]
@@ -19,17 +20,17 @@
 ;; [[../model/transactions.cljc]]
 ;; [[../ui/transactions.cljs]]
 
-(def model-key ::m.transactions/id)
+(def model-key o.transactions/id)
 
 (def query-info
   {:ident   model-key
    :pk      '?transaction-id
-   :clauses [[:actor/id         '?actor-id]
-             [:actor/admin?     '?admin?]
-             [::m.users/id      '?user-id]
-             [::m.accounts/id   '?account-id]
-             [::m.currencies/id '?currency-id]
-             [::m.categories/id '?category-id]]
+   :clauses [[:actor/id       '?actor-id]
+             [:actor/admin?   '?admin?]
+             [o.users/id      '?user-id]
+             [o.accounts/id   '?account-id]
+             [o.currencies/id '?currency-id]
+             [o.categories/id '?category-id]]
    :order-by [['?date :desc]]
    :sort-columns
    {::m.transactions/date '?sort-date}
@@ -37,20 +38,22 @@
    (fn [[actor-id admin? user-id account-id currency-id category-id] rules]
      (->> rules
           (concat-when (and (not admin?) actor-id)
-            [['?auth-debit-id    ::m.debits/transaction    '?transaction-id]
-             ['?auth-debit-id    ::m.debits/account        '?auth-account-id]
-             ['?auth-account-id  ::m.accounts/user         '?actor-id]])
+            [['?auth-debit-id    o.debits/transaction    '?transaction-id]
+             ['?auth-debit-id    o.debits/account        '?auth-account-id]
+             ['?auth-account-id  o.accounts/user         '?actor-id]])
           (concat-when account-id
-            [['?account-debit-id ::m.debits/transaction    '?transaction-id]
-             ['?account-debit-id ::m.debits/account        '?account-id]])
+            [['?account-debit-id o.debits/transaction    '?transaction-id]
+             ['?account-debit-id o.debits/account        '?account-id]])
           (concat-when user-id
-            [['?user-account-id  ::m.accounts/user         '?user-id]
-             ['?user-debit-id    ::m.debits/account        '?user-account-id]
-             ['?user-debit-id    ::m.debits/transaction    '?transaction-id]])
+            [['?user-account-id  o.accounts/user         '?user-id]
+             ['?user-debit-id    o.debits/account        '?user-account-id]
+             ['?user-debit-id    o.debits/transaction    '?transaction-id]])
           (concat-when currency-id
-            [['?transaction-id   ::m.transactions/currency '?currency-id]])
+            [['?currency-debit-id o.debits/transaction '?transaction-id]
+             ['?currency-debit-id o.debits/account '?currency-account-id]
+             ['?currency-account-id o.accounts/currency '?currency-id]])
           (concat-when category-id
-            ['?transaction-id    ::m.transactions/category '?category-id])))})
+            [['?transaction-id   o.transactions/category '?category-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))
@@ -67,9 +70,9 @@
   (let [node            (c.xtdb/get-node)
         id              (new-uuid)
         prepared-params (-> params
-                            (assoc ::m.transactions/id id)
+                            (assoc o.transactions/id id)
                             (assoc :xt/id id)
-                            (update ::m.transactions/date t/inst))]
+                            (update o.transactions/date t/inst))]
     (xt/await-tx node (xt/submit-tx node [[::xt/put prepared-params]]))
     id))
 
@@ -78,9 +81,9 @@
   [:xt/id => (? ::m.transactions/item)]
   (let [db     (c.xtdb/get-db)
         record (xt/pull db '[*] id)]
-    (when (get record ::m.transactions/id)
+    (when (get record o.transactions/id)
       (-> record
-          (update ::m.transactions/date t/instant)
+          (update o.transactions/date t/instant)
           (dissoc :xt/id)))))
 
 (>defn delete!

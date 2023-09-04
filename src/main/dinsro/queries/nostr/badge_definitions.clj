@@ -21,7 +21,7 @@
    (fn [[pubkey-id] rules]
      (->> rules
           (concat-when pubkey-id
-            ['?badge-definition-id ::m.n.badge-definitions/pubkey '?pubkey-id])))})
+            [['?badge-definition-id ::m.n.badge-definitions/pubkey '?pubkey-id]])))})
 
 (defn count-ids
   ([] (count-ids {}))

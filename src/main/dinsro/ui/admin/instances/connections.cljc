@@ -1,4 +1,4 @@
-(ns dinsro.ui.admin.nostr.relays.connections
+(ns dinsro.ui.admin.instances.connections
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -8,8 +8,8 @@
    [dinsro.joins.nostr.connections :as j.n.connections]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.connections :as m.n.connections]
-   [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.connections :as mu.n.connections]
+   [dinsro.options.instances :as o.instances]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.options.nostr.connections :as o.n.connections]
    [dinsro.ui.buttons :as u.buttons]
@@ -17,19 +17,19 @@
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
-;; [[../../../../joins/nostr/connections.cljc]]
-;; [[../../../../model/nostr/connections.cljc]]
-;; [[../../../../mutations/nostr/connections.cljc]]
-;; [[../../../../ui/admin/nostr.cljc]]
-;; [[../../../../ui/admin/nostr/connections.cljc]]
-;; [[../../../../ui/admin/nostr/relays.cljc]]
+;; [[../../../joins/nostr/connections.cljc]]
+;; [[../../../model/nostr/connections.cljc]]
+;; [[../../../mutations/nostr/connections.cljc]]
+;; [[../../../ui/admin/nostr.cljc]]
+;; [[../../../ui/admin/nostr/connections.cljc]]
+;; [[../../../ui/admin/nostr/relays.cljc]]
 
-(def index-page-id :admin-nostr-relays-show-connections)
-(def model-key ::m.n.connections/id)
-(def parent-model-key ::m.n.relays/id)
-(def parent-router-id :admin-nostr-relays-show)
+(def index-page-id :admin-instances-show-connections)
+(def model-key o.n.connections/id)
+(def parent-model-key o.instances/id)
+(def parent-router-id :admin-instances-show)
 (def required-role :admin)
-(def router-key :dinsro.ui.admin.nostr.relays/Router)
+(def router-key :dinsro.ui.admin.instances/Router)
 
 (def disconnect-action
   (u.buttons/row-action-button "Disconnect" model-key mu.n.connections/disconnect!))

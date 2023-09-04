@@ -3,6 +3,7 @@
    [dinsro.actions.nostr.connections :as a.n.connections]
    [dinsro.model.nostr.connections :as m.n.connections]
    [dinsro.model.nostr.requests :as m.n.requests]
+   [dinsro.options.nostr.connections :as o.n.connections]
    [dinsro.queries.nostr.connections :as q.n.connections]
    [dinsro.queries.nostr.relays :as q.n.relays]
    [dinsro.queries.nostr.requests :as q.n.requests]
@@ -37,7 +38,8 @@
   (q.n.connections/read-record connection-id)
   (a.n.connections/disconnect! connection-id)
 
-  (some-> (q.n.relays/find-by-connection connection-id)
+  (some-> (q.n.relays/index-ids {o.n.connections/id connection-id})
+          first
           q.n.relays/read-record)
 
   (a.n.connections/start! connection-id)

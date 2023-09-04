@@ -17,6 +17,7 @@
    [dinsro.model.nostr.relays :as m.n.relays]
    [dinsro.mutations.nostr.relays :as mu.n.relays]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.nostr.relays :as o.n.relays]
    [dinsro.ui.admin.nostr.relays.connections :as u.a.n.r.connections]
    [dinsro.ui.admin.nostr.relays.events :as u.a.n.r.events]
    [dinsro.ui.admin.nostr.relays.pubkeys :as u.a.n.r.pubkeys]
@@ -38,7 +39,7 @@
 ;; [[../../../ui/nostr/relays.cljs]]
 
 (def index-page-id :admin-nostr-relays)
-(def model-key ::m.n.relays/id)
+(def model-key o.n.relays/id)
 (def parent-router-id :admin-nostr)
 (def required-role :admin)
 (def show-page-id :admin-nostr-relays-show)

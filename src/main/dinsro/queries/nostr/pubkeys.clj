@@ -21,7 +21,7 @@
    (fn [[pubkey-hex] rules]
      (->> rules
           (concat-when pubkey-hex
-            ['?pubkey-id ::m.n.pubkeys/hex '?pubkey-hex])))})
+            [['?pubkey-id ::m.n.pubkeys/hex '?pubkey-hex]])))})
 
 (defn count-ids
   ([] (count-ids {}))

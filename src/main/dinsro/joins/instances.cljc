@@ -6,7 +6,8 @@
    [dinsro.model.instances :as m.instances]
    [dinsro.model.nostr.connections :as m.n.connections]
    #?(:clj [dinsro.queries.instances :as q.instances])
-   #?(:clj [dinsro.queries.nostr.connections :as q.n.connections])))
+   #?(:clj [dinsro.queries.nostr.connections :as q.n.connections])
+   [lambdaisland.glogc :as log]))
 
 ;; [[../actions/instances.clj]]
 ;; [[../model/instances.cljc]]
@@ -32,12 +33,14 @@
 
 (defattr connections ::connections :ref
   {ao/target    ::m.n.connections/id
+   ao/pc-input  #{model-key}
    ao/pc-output [{::connections [:total {:results [model-key]}]}]
    ao/pc-resolve
-   (fn [_env props]
-     (let [id (model-key props)
-           ids        #?(:clj (q.n.connections/index-ids {model-key id})
-                         :cljs (do (comment id) []))]
+   (fn [{:keys [query-params]} props]
+     (log/info :connections/starting {:props props :query-params query-params})
+     (let [id  (model-key props)
+           ids #?(:clj (q.n.connections/index-ids {model-key id})
+                  :cljs (do (comment id) []))]
        {::connections ((:idents join-info) ids)}))})
 
 (defattr connection-count ::connection-count :int
