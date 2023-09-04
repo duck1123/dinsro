@@ -15,7 +15,6 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.options.categories :as o.categories]
    [dinsro.options.navlinks :as o.navlinks]
-   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
@@ -27,7 +26,7 @@
 (def model-key o.categories/id)
 (def parent-router-id :root)
 (def required-role :user)
-(def show-page-key :categories-show)
+(def show-page-id :categories-show)
 
 (form/defsc-form NewForm
   [_this _props]
@@ -110,24 +109,19 @@
   (dom/div {} "Index Categories"))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as                 props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
-                    {model-key           (model-key props)
-                     o.navlinks/id     show-page-key
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
                      o.navlinks/target (comp/get-initial-state Show)})
    :query         (fn []
                     [model-key
                      o.navlinks/id
                      {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["category" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (if (model-key props)
-    (if (seq target)
-      (ui-show target)
-      (u.debug/load-error props "show category record"))
-    (u.debug/load-error props "show category")))
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage
@@ -137,7 +131,7 @@
    o.navlinks/router        parent-router-id
    o.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/label         "Show Category"
    o.navlinks/input-key     model-key

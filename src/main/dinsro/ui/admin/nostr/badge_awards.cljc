@@ -23,7 +23,7 @@
 (def model-key o.n.badge-awards/id)
 (def parent-router-id :admin-nostr)
 (def required-role :admin)
-(def show-page-key :admin-nostr-badge-awards-show)
+(def show-page-id :admin-nostr-badge-awards-show)
 
 (report/defsc-report Report
   [_this _props]
@@ -75,17 +75,17 @@
 
 (defsc ShowPage
   [_this props]
-  {:ident         (fn [] [o.navlinks/id show-page-key])
+  {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
                     {model-key (model-key props)
-                     o.navlinks/id       show-page-key
+                     o.navlinks/id       show-page-id
                      o.navlinks/target   (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
                      o.navlinks/id
                      {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["badge-award" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
@@ -96,7 +96,7 @@
    o.navlinks/router        parent-router-id
    o.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/input-key     model-key
    o.navlinks/label         "Awards"

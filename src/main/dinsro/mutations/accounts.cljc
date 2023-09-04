@@ -10,6 +10,7 @@
 
 ;; [[../processors/accounts.clj]]
 ;; [[../responses/accounts.cljc]]
+;; [[../ui/accounts.cljc]]
 
 (def model-key ::m.accounts/id)
 
@@ -19,10 +20,10 @@
 
 #?(:clj
    (pc/defmutation create!
-     [_env props]
+     [env props]
      {::pc/params #{model-key}
       ::pc/output [::mu/status ::mu/errors]}
-     (p.accounts/create! props))
+     (p.accounts/create! env props))
 
    :cljs
    (defmutation create! [_props]

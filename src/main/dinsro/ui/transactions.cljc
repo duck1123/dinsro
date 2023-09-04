@@ -28,6 +28,9 @@
    [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks :refer [defroute]]
    [dinsro.model.transactions :as m.transactions]
+   [dinsro.options.accounts :as o.accounts]
+   [dinsro.options.currencies :as o.currencies]
+   [dinsro.options.debits :as o.debits]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.options.transactions :as o.transactions]
    [dinsro.ui.buttons :as u.buttons]
@@ -45,10 +48,10 @@
 ;; [[../../../test/dinsro/ui/transactions_test.cljs]]
 
 (def index-page-id :transactions)
-(def model-key ::m.transactions/id)
+(def model-key o.transactions/id)
 (def parent-router-id :root)
 (def required-role :user)
-(def show-page-key :transactions-show)
+(def show-page-id :transactions-show)
 
 (def show-controls false)
 (def show-debits-debug false)
@@ -59,8 +62,8 @@
   [_this _props]
   {fo/attributes    [m.debits/value
                      m.debits/account]
-   fo/field-options {::m.debits/account u.pickers/account-picker}
-   fo/field-styles  {::m.debits/account :pick-one}
+   fo/field-options {o.debits/account u.pickers/account-picker}
+   fo/field-styles  {o.debits/account :pick-one}
    fo/title         "Debit"
    fo/route-prefix  "new-debit"
    fo/id            m.debits/id})
@@ -70,8 +73,6 @@
                      m.transactions/date
                      j.transactions/debits]
    fo/cancel-route  ["transactions"]
-   fo/field-styles  {::m.transactions/account :pick-one}
-   fo/field-options {::m.transactions/account u.pickers/account-picker}
    fo/id            m.transactions/id
    fo/route-prefix  "new-transaction"
    fo/subforms      {::j.transactions/debits {fo/ui NewDebit}}
@@ -80,8 +81,6 @@
 (form/defsc-form EditForm [_this _props]
   {fo/attributes    [m.transactions/description]
    fo/cancel-route  ["transactions"]
-   fo/field-styles  {::m.transactions/account :pick-one}
-   fo/field-options {::m.transactions/account u.pickers/account-picker}
    fo/id            m.transactions/id
    fo/route-prefix  "edit-transaction-form"
    fo/title         "Transaction"})
@@ -89,23 +88,28 @@
 (defsc CurrencyInfo
   [_this {::m.currencies/keys [name]}]
   {:ident         ::m.currencies/id
-   :query         [::m.currencies/id
-                   ::m.currencies/name]
-   :initial-state {::m.currencies/id   nil
-                   ::m.currencies/name ""}}
+   :initial-state (fn [_props]
+                    {o.currencies/id   nil
+                     o.currencies/name ""})
+   :query         (fn []
+                    [o.currencies/id
+                     o.currencies/name])}
   (dom/div {} (str name)))
 
-(def ui-currency-info (comp/factory CurrencyInfo {:keyfn ::m.currencies/id}))
+(def ui-currency-info (comp/factory CurrencyInfo {:keyfn o.currencies/id}))
 
 (defsc AccountInfo
-  [_this {::m.accounts/keys                   [name]
-          {currency-name ::m.currencies/name} ::m.accounts/currency}]
+  [_this {name                              o.accounts/name
+          {currency-name o.currencies/name} o.accounts/currency}]
   {:ident         ::m.accounts/id
-   :query         [::m.accounts/id ::m.accounts/name
-                   {::m.accounts/currency (comp/get-query CurrencyInfo)}]
-   :initial-state {::m.accounts/id       nil
-                   ::m.accounts/name     ""
-                   ::m.accounts/currency {}}}
+   :initial-state (fn [_props]
+                    {o.accounts/currency (comp/get-initial-state CurrencyInfo {})
+                     o.accounts/id       nil
+                     o.accounts/name     ""})
+   :query         (fn []
+                    [{o.accounts/currency (comp/get-query CurrencyInfo)}
+                     o.accounts/id
+                     o.accounts/name])}
   (dom/div {}
     (dom/div {} (str name))
     (dom/div {} (str currency-name))))
@@ -344,17 +348,17 @@
 
 (defsc ShowPage
   [_this props]
-  {:ident         (fn [] [o.navlinks/id show-page-key])
+  {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
-                    {model-key (model-key props)
-                     o.navlinks/id     show-page-key
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
                      o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
                      o.navlinks/id
                      {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["transaction" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (u.loader/show-page props model-key ui-show))
 
 (defroute index-page-id
@@ -365,7 +369,7 @@
    o.navlinks/router        parent-router-id
    o.navlinks/required-role required-role})
 
-(defroute show-page-key
+(defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/label         "Show Transaction"
    o.navlinks/input-key     model-key

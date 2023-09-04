@@ -12,9 +12,11 @@
 
 (defsc CreateResponse
   [_this _props]
-  {:initial-state {::mu/status :initial
+  {:initial-state {::created-records []
+                   ::mu/status :initial
                    ::mu/errors {}}
-   :query         [{::mu/errors (comp/get-query mu/ErrorData)}
+   :query         [{::created-records [model-key]}
+                   {::mu/errors (comp/get-query mu/ErrorData)}
                    ::mu/status]})
 
 (defsc DeleteResponse

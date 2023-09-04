@@ -275,19 +275,18 @@
       (u.debug/load-error props "settings ln nodes"))))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
-   :initial-state {::m.navlinks/id     show-page-id
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["node" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
-  (log/debug :ShowPage/starting {:props props})
-  (if target
-    (ui-show target)
-    (u.debug/load-error props "setting show ln node")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

@@ -26,7 +26,7 @@
 (def model-key ::m.n.requests/id)
 (def parent-router-id :nostr)
 (def required-role :user)
-(def show-page-key :nostr-requests-show)
+(def show-page-id :nostr-requests-show)
 
 (defrouter Router
   [_this _props]
@@ -38,7 +38,7 @@
 
 (def ui-router (comp/factory Router))
 
-(m.navbars/defmenu show-page-key
+(m.navbars/defmenu show-page-id
   {::m.navbars/parent parent-router-id
    ::m.navbars/children
    [u.n.rq.filters/index-page-id
@@ -87,20 +87,20 @@
 
 (defsc ShowPage
   [_this props]
-  {:ident         (fn [] [o.navlinks/id show-page-key])
+  {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
                     {model-key (model-key props)
-                     o.navlinks/id     show-page-key
+                     o.navlinks/id     show-page-id
                      o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn [_props]
                     [model-key
                      ::m.navlinks/id
                      {::m.navlinks/target (comp/get-query Show)}])
    :route-segment ["request" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
   (u.loader/show-page props model-key ui-show))
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/label         "Show Requests"
    o.navlinks/input-key     model-key

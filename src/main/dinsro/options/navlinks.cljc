@@ -51,6 +51,6 @@
   "The navlink id of the page holding the router this control belongs to"
   ::m.navlinks/router)
 
-(def target ::m.navlinks/target)
-
-(defn ident-fn [page-id] (fn [] [id page-id]))
+(def target
+  "If the route targets a record, this is that record"
+  ::m.navlinks/target)

@@ -23,8 +23,7 @@
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.menus :as u.menus]))
 
 ;; [[../actions/currencies.clj]]
 ;; [[../joins/currencies.cljc]]
@@ -132,24 +131,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.currencies/keys [id]
-          ::m.navlinks/keys   [target]
-          :as                 props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
-                    {model-key           (model-key props)
-                     ::m.navlinks/id     show-page-id
-                     ::m.navlinks/target (comp/get-initial-state Show {})})
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
-                     ::m.navlinks/id
-                     {::m.navlinks/target (comp/get-query Show)}])
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["currency" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "show currency page")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

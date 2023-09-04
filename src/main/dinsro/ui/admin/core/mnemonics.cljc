@@ -25,7 +25,7 @@
 (def model-key o.c.mnemonics/id)
 (def parent-router-id :admin-core)
 (def required-role :admin)
-(def show-page-key :admin-core-mnemonics-show)
+(def show-page-id :admin-core-mnemonics-show)
 
 (report/defsc-report Report
   [_this _props]
@@ -85,17 +85,17 @@
 
 (defsc ShowPage
   [_this props]
-  {:ident         (fn [] [o.navlinks/id show-page-key])
+  {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
                     {model-key (model-key props)
-                     o.navlinks/id     show-page-key
+                     o.navlinks/id     show-page-id
                      o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [o.c.mnemonics/id
                      o.navlinks/id
                      {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["mnemonic" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
@@ -107,7 +107,7 @@
    o.navlinks/router        parent-router-id
    o.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/description   "Admin show mnemonic"
    o.navlinks/input-key     model-key

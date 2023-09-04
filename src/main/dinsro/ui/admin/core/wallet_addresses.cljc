@@ -24,7 +24,7 @@
 (def model-key ::m.c.wallet-addresses/id)
 (def parent-router-id :admin-core)
 (def required-role :admin)
-(def show-page-key :admin-core-wallet-addresses-show)
+(def show-page-id :admin-core-wallet-addresses-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.wallet-addresses/delete!))
@@ -77,7 +77,7 @@
    o.navlinks/router        parent-router-id
    o.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/description   "Admin show page for wallet address"
    o.navlinks/label         "Show Wallet Address"

@@ -12,11 +12,11 @@
    [dinsro.model.core.transactions :as m.c.transactions]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.core.transactions :as mu.c.transactions]
+   [dinsro.options.core.transactions :as o.c.transactions]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.transactions.inputs :as u.c.t.inputs]
    [dinsro.ui.core.transactions.outputs :as u.c.t.outputs]
-   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -26,7 +26,7 @@
 ;; [[../../ui/admin/core/transactions.cljs]]
 
 (def index-page-id :core-transactions)
-(def model-key ::m.c.transactions/id)
+(def model-key o.c.transactions/id)
 (def parent-router-id :core)
 (def required-role :user)
 (def show-page-id :core-transactions-show)
@@ -94,9 +94,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.c.transactions/block #(u.links/ui-block-height-link %2)
-                         ::m.c.transactions/tx-id #(u.links/ui-core-tx-link %3)
-                         ::m.c.transactions/node  #(u.links/ui-core-node-link %2)}
+  {ro/column-formatters {o.c.transactions/block #(u.links/ui-block-height-link %2)
+                         o.c.transactions/tx-id #(u.links/ui-core-tx-link %3)
+                         o.c.transactions/node  #(u.links/ui-core-node-link %2)}
    ro/columns           [m.c.transactions/tx-id
                          j.c.transactions/node
                          m.c.transactions/fetched?
@@ -116,36 +116,32 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
-  {:ident         (fn [] [::m.navlinks/id index-page-id])
-   :initial-state {::m.navlinks/id index-page-id
-                   :ui/report      {}}
-   :query         [::m.navlinks/id
-                   {:ui/report (comp/get-query Report)}]
+  {:ident         (fn [] [o.navlinks/id index-page-id])
+   :initial-state (fn [_props]
+                    {o.navlinks/id index-page-id
+                     :ui/report    (comp/get-initial-state Report {})})
+   :query         (fn []
+                    [o.navlinks/id
+                     {:ui/report (comp/get-query Report)}])
    :route-segment ["transactions"]
    :will-enter    (u.loader/page-loader index-page-id)}
   (dom/div {}
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
-                    (let [id (get props model-key)]
-                      {model-key           id
-                       ::m.navlinks/id     show-page-id
-                       ::m.navlinks/target {}}))
-   :query         [::m.c.transactions/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["transaction" :id]
    :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (get props model-key)
-    (if target
-      (ui-show target)
-      (u.debug/load-error props "core transactions page"))
-    (u.debug/load-error props "core transactions page")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage

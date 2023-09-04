@@ -19,7 +19,6 @@
    [dinsro.ui.core.wallets.accounts :as u.c.w.accounts]
    [dinsro.ui.core.wallets.addresses :as u.c.w.addresses]
    [dinsro.ui.core.wallets.words :as u.c.w.words]
-   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.pickers :as u.pickers]
@@ -33,7 +32,7 @@
 (def model-key ::m.c.wallets/id)
 (def parent-router-id :core)
 (def required-role :user)
-(def show-page-key :core-wallets-show)
+(def show-page-id :core-wallets-show)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.wallets/delete!))
@@ -183,26 +182,21 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.c.wallets/keys [id]
-          ::m.navlinks/keys  [target]
-          :as                props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state (fn [_props]
-                    {model-key           nil
-                     ::m.navlinks/id     show-page-key
-                     ::m.navlinks/target (comp/get-initial-state Show)})
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show)})
    :query         (fn [_props]
                     [model-key
-                     ::m.navlinks/id
-                     {::m.navlinks/target (comp/get-query Show)}])
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["wallet" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "show wallet page")))
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
+  (u.loader/show-page props model-key ui-show))
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/label         "Show Wallet"
    o.navlinks/input-key     model-key

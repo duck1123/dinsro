@@ -13,7 +13,6 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.ln.payreqs :as mu.ln.payreqs]
    [dinsro.options.navlinks :as o.navlinks]
-   [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -22,7 +21,7 @@
 (def model-key ::m.ln.payreqs/id)
 (def parent-router-id :settings-ln)
 (def required-role :user)
-(def show-page-key :settings-ln-payreqs-show)
+(def show-page-id :settings-ln-payreqs-show)
 
 (def decode-button
   {:type   :button
@@ -89,19 +88,18 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["payreqs" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (log/debug :ShowPage/starting {:props props})
-  (if target
-    (ui-show target)
-    (u.debug/load-error props "settings show payreqs")))
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

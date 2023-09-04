@@ -1,6 +1,7 @@
 (ns dinsro.ui.buttons
   (:require
    [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.guardrails.core :refer [>defn => ?]]
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
@@ -64,6 +65,19 @@
                    props {model-key id}]
                (comp/transact! this [(mutation props)])))})
 
+(>defn form-action-button
+  "Create a form button definition calling the mutation with this record's keys"
+  [button-label mutation request-keys]
+  [string? any? set? => any?]
+  {:type   :button
+   :local? true
+   :label  button-label
+   :action (fn [this]
+             (let [props         (comp/props this)
+                   request-props (select-keys props (seq request-keys))]
+               (log/info :form-action-button/clicked {:request-props request-props})
+               (comp/transact! this [(mutation request-props)])))})
+
 (defn subrow-action-button
   "Create a report row button definition calling the mutation with this record's id and the parent record's id as params"
   [label model-key parent-model-key mutation]
@@ -96,8 +110,10 @@
   (ui-button {:icon    "refresh"
               :onClick (fn [_] (control/run! this))}))
 
-(defn action-button
+(>defn action-button
+  "Create a button that fires an action"
   [mutation label model-key this]
+  [any? string? keyword? any? => any?]
   (ui-button
    {:onClick
     (fn [_]
@@ -106,11 +122,20 @@
         (comp/transact! this [`(~mutation {~model-key ~id})])))}
    label))
 
+(defn create-button
+  [this Form]
+  (ui-button {:icon "create"
+              :onClick
+              (fn [_]
+                (log/info :create-button/clicked {:this this})
+                (form/create! this Form))}))
+
 (defn delete-button
   [mutation model-key this]
   (ui-button {:icon "delete"
               :onClick
-              (fn [_]
+              (fn [p]
+                (log/info :delete-button/clicked {:p p :this this})
                 (let [props (comp/props this)
                       id (model-key props)]
                   (comp/transact! this [`(~mutation {~model-key ~id})])))}))

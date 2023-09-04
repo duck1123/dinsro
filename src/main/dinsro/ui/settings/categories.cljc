@@ -27,7 +27,7 @@
 (def model-key o.categories/id)
 (def parent-router-id :settings)
 (def required-role :user)
-(def show-page-key :settings-categories-show)
+(def show-page-id :settings-categories-show)
 
 (form/defsc-form NewForm
   [_this _props]
@@ -116,24 +116,19 @@
       (u.debug/load-error props "settings categories"))))
 
 (defsc ShowPage
-  [_this {::m.categories/keys [id]
-          ::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  [_this props]
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state (fn [_props]
                     {o.categories/id nil
-                     o.navlinks/id     show-page-key
+                     o.navlinks/id     show-page-id
                      o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
                      o.navlinks/id
                      {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["category" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (log/debug :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "settings show category")))
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage
@@ -143,7 +138,7 @@
    o.navlinks/router        parent-router-id
    o.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/label         "Show Category"
    o.navlinks/input-key     model-key

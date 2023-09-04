@@ -16,7 +16,7 @@
 (def model-key ::m.models/id)
 (def parent-router-id :admin)
 (def required-role :admin)
-(def show-page-key :admin-models-show)
+(def show-page-id :admin-models-show)
 
 (report/defsc-report Report
   [_this _props]
@@ -55,7 +55,7 @@
    o.navlinks/router        parent-router-id
    o.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/description   "Admin show page for models"
    o.navlinks/label         "Show Model"

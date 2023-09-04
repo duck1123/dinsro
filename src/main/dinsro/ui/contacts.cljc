@@ -32,7 +32,7 @@
 (def model-key ::m.contacts/id)
 (def parent-router-id :root)
 (def required-role :user)
-(def show-page-key :contacts-show)
+(def show-page-id :contacts-show)
 
 (def create-button
   {:type   :button
@@ -122,24 +122,19 @@
     (ui-report report)))
 
 (defsc ShowPage
-  [_this {::m.contacts/keys [id]
-          ::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
-   :initial-state {::m.contacts/id     nil
-                   ::m.navlinks/id     show-page-key
-                   ::m.navlinks/target {}}
-   :query         [::m.contacts/id
-                   ::m.navlinks/id
-                   {::m.navlinks/target (comp/get-query Show)}]
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
+   :query         (fn []
+                    [model-key
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
    :route-segment ["contact" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
-  (log/debug :ShowPage/starting {:props props})
-  (if id
-    (if (seq target)
-      (ui-show target)
-      (u.debug/load-error props "contacts page target"))
-    (u.debug/load-error props "contacts page")))
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage
@@ -149,7 +144,7 @@
    o.navlinks/router        parent-router-id
    o.navlinks/required-role required-role})
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/label         "Show Contact"
    o.navlinks/input-key     model-key

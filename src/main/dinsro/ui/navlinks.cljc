@@ -22,7 +22,7 @@
 (def model-key o.navlinks/id)
 (def parent-router :root)
 (def required-role :user)
-(def show-page-key :navlinks-show)
+(def show-page-id :navlinks-show)
 
 (report/defsc-report Report
   [_this _props]
@@ -91,23 +91,18 @@
   (ui-report report))
 
 (defsc ShowPage
-  [_this {id     o.navlinks/id
-          target o.navlinks/target
-          :as    props}]
-  {:ident         (fn [] [o.navlinks/id show-page-key])
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
-                    {model-key         (model-key props)
-                     o.navlinks/id     show-page-key
+                    {:navlink-id       (model-key props)
+                     o.navlinks/id     show-page-id
                      o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [o.navlinks/id
                      {o.navlinks/target (comp/get-query Show)}])
-   :route-segment ["currency" :id]
-   :will-enter    (u.loader/targeted-router-loader show-page-key model-key ::ShowPage)}
-  (log/info :ShowPage/starting {:props props})
-  (if (and target id)
-    (ui-show target)
-    (u.debug/load-error props "show navlink page")))
+   :route-segment ["navlink" :id]
+   :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

@@ -172,23 +172,19 @@
       (u.debug/load-error props "settings rate sources"))))
 
 (defsc ShowPage
-  [_this {::m.navlinks/keys [target]
-          :as               props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-id])
-   :initial-state (fn [_props]
-                    {model-key           nil
-                     ::m.navlinks/id     show-page-id
-                     ::m.navlinks/target {}})
+  [_this props]
+  {:ident         (fn [] [o.navlinks/id show-page-id])
+   :initial-state (fn [props]
+                    {model-key         (model-key props)
+                     o.navlinks/id     show-page-id
+                     o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []
                     [model-key
-                     ::m.navlinks/id
-                     {::m.navlinks/target (comp/get-query Show)}])
-   :route-segment ["rate-sources" :id]
+                     o.navlinks/id
+                     {o.navlinks/target (comp/get-query Show)}])
+   :route-segment ["rate-source" :id]
    :will-enter    (u.loader/targeted-router-loader show-page-id model-key ::ShowPage)}
-  (log/debug :ShowPage/starting {:props props})
-  (if target
-    (ui-show target)
-    (u.debug/load-error props "settings show rate source")))
+  (u.loader/show-page props model-key ui-show))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

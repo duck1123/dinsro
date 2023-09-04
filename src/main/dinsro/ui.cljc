@@ -73,6 +73,7 @@
                     u.admin/IndexPage
                     u.categories/IndexPage
                     u.categories/NewForm
+                    u.categories/ShowPage
                     u.contacts/NewContactForm
                     u.contacts/ShowPage
                     u.contacts/IndexPage

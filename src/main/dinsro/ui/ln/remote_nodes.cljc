@@ -27,7 +27,7 @@
 (def model-key ::m.ln.remote-nodes/id)
 (def parent-router-id :ln)
 (def required-role :user)
-(def show-page-key :ln-remote-nodes-show)
+(def show-page-id :ln-remote-nodes-show)
 
 (def debug-show false)
 (def debug-show-page false)
@@ -113,15 +113,15 @@
   [_this {::m.ln.remote-nodes/keys [id]
           ::m.navlinks/keys        [target]
           :as                      props}]
-  {:ident         (fn [] [::m.navlinks/id show-page-key])
+  {:ident         (fn [] [::m.navlinks/id show-page-id])
    :initial-state {::m.ln.remote-nodes/id nil
-                   ::m.navlinks/id        show-page-key
+                   ::m.navlinks/id        show-page-id
                    ::m.navlinks/target    {}}
    :query         [::m.ln.remote-nodes/id
                    ::m.navlinks/id
                    {::m.navlinks/target (comp/get-query Show)}]
    :route-segment ["remote-nodes" :id]
-   :will-enter    (u.loader/targeted-page-loader show-page-key model-key ::ShowPage)}
+   :will-enter    (u.loader/targeted-page-loader show-page-id model-key ::ShowPage)}
   (log/info :ShowPage/starting {:props props})
   (if (and target id)
     (dom/div {}
@@ -134,7 +134,7 @@
     (ui-segment {:color "red" :inverted true}
       "Failed to load page")))
 
-(m.navlinks/defroute show-page-key
+(m.navlinks/defroute show-page-id
   {o.navlinks/control       ::ShowPage
    o.navlinks/label         "Show Remote Node"
    o.navlinks/input-key     model-key
