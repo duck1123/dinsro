@@ -128,20 +128,20 @@
                      {o.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
                      ::j.accounts/debit-count
                      {::j.accounts/debits (comp/get-query DebitLine)}])}
-  (ui-grid-column {:width "4"}
+  (ui-grid-column {:computer 4 :tablet 8 :mobile 16}
     (ui-segment {}
       (dom/div {}
         (dom/div {}
           (u.links/ui-account-link props)
           " (" (u.links/ui-currency-link currency) ")")
         (dom/div {}
-          (str initial-value))
+          (str "Initial Value: " initial-value))
         (dom/div {}
           (when wallet
             (dom/span {}
               (dom/span {} "Wallet: ")
               (u.links/ui-wallet-link wallet))))
-        (dom/div {} (str debit-count)))
+        (dom/div {} "Debit count: " (str debit-count)))
       (dom/div {}
         (dom/div {} (u.buttons/delete-button `mu.accounts/delete! model-key this))))))
 

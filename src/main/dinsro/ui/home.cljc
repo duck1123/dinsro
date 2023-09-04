@@ -9,7 +9,6 @@
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
-   [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.users :as m.users]
@@ -70,26 +69,29 @@
     (dom/div {}
       (dom/div {:classes [:.ui :.inverted :.vertical :.masthead
                           :.center :.aligned :.segment container]}
-        (ui-container {}
-          (ui-segment {}
-            (dom/h1 {:classes [:.ui :.header title]}
-              (if username
-                (str "Welcome, " username)
-                "Home Page"))))
+        (ui-segment {}
+          (dom/h1 {:classes [:.ui :.header title]}
+            (if username
+              (str "Welcome, " username)
+              "Home Page")))
         (when username
           (ui-grid {:centered true :padded true}
             (ui-grid-row {}
               (ui-grid-column {:tablet 8 :mobile 16 :computer 8}
                 ((comp/factory u.transactions/RecentReport) recent-transactions))
               (ui-grid-column {:tablet 8 :mobile 16 :computer 8}
-                (ui-grid {:padded true}
+                (ui-grid {}
                   (ui-grid-row {}
-                    (ui-grid-column {:width 8}
+                    (ui-grid-column {:computer 8 :tablet 16}
                       (u.h.accounts/ui-report accounts))
-                    (ui-grid-column {:width 8}
-                      (u.h.core-nodes/ui-report nodes))
-                    (ui-grid-column {:width 8}
-                      (u.h.ln-nodes/ui-report ln-nodes))))))))))))
+                    (ui-grid-column {:computer 8 :tablet 16}
+                      (ui-grid {}
+                        (ui-grid-row {}
+                          (ui-grid-column {:width 16}
+                            (u.h.core-nodes/ui-report nodes)))
+                        (ui-grid-row {}
+                          (ui-grid-column {:width 16}
+                            (u.h.ln-nodes/ui-report ln-nodes)))))))))))))))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

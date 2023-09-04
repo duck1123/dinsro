@@ -13,7 +13,9 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
+   [dinsro.options.navbars :as o.navbars]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.options.nostr.pubkeys :as o.n.pubkeys]
    [dinsro.ui.admin.nostr.pubkeys.badge-acceptances :as u.a.n.p.badge-acceptances]
    [dinsro.ui.admin.nostr.pubkeys.badge-awards :as u.a.n.p.badge-awards]
    [dinsro.ui.admin.nostr.pubkeys.badge-definitions :as u.a.n.p.badge-definitions]
@@ -36,7 +38,7 @@
 ;; [[../../../processors/nostr/pubkeys.clj]]
 
 (def index-page-id :admin-nostr-pubkeys)
-(def model-key ::m.n.pubkeys/id)
+(def model-key o.n.pubkeys/id)
 (def parent-router-id :admin-nostr)
 (def required-role :admin)
 (def show-page-id :admin-nostr-pubkeys-show)
@@ -46,9 +48,9 @@
 
 (report/defsc-report Report
   [_this _props]
-  {ro/column-formatters {::m.n.pubkeys/hex     #(u.links/ui-admin-pubkey-link %3)
-                         ::m.n.pubkeys/name    #(u.links/ui-admin-pubkey-name-link %3)
-                         ::m.n.pubkeys/picture #(u.links/img-formatter %3)}
+  {ro/column-formatters {o.n.pubkeys/hex     #(u.links/ui-admin-pubkey-link %3)
+                         o.n.pubkeys/name    #(u.links/ui-admin-pubkey-name-link %3)
+                         o.n.pubkeys/picture #(u.links/img-formatter %3)}
    ro/columns           [m.n.pubkeys/picture
                          m.n.pubkeys/name
                          j.n.pubkeys/contact-count
@@ -98,37 +100,36 @@
           :as      props}]
   {:ident         ::m.n.pubkeys/id
    :initial-state (fn [props]
-                    (log/info :ShowPage/initial-state {:props props})
                     (let [id (model-key props)]
-                      {model-key                  id
-                       ::m.n.pubkeys/about        ""
-                       ::m.n.pubkeys/display-name ""
-                       ::m.n.pubkeys/hex          ""
-                       ::m.n.pubkeys/id           nil
-                       ::m.n.pubkeys/lud06        ""
-                       ::m.n.pubkeys/name         ""
-                       ::m.n.pubkeys/nip05        ""
-                       ::j.n.pubkeys/npub         ""
-                       ::m.n.pubkeys/picture      ""
-                       ::m.n.pubkeys/website      ""
-                       :ui/admin-nav-menu         (comp/get-initial-state u.menus/NavMenu
-                                                    {::m.navbars/id show-page-id
-                                                     :id            id})
-                       :ui/admin-router           (comp/get-initial-state Router {})}))
+                      {model-key                id
+                       o.n.pubkeys/about        ""
+                       o.n.pubkeys/display-name ""
+                       o.n.pubkeys/hex          ""
+                       o.n.pubkeys/id           nil
+                       o.n.pubkeys/lud06        ""
+                       o.n.pubkeys/name         ""
+                       o.n.pubkeys/nip05        ""
+                       ::j.n.pubkeys/npub       ""
+                       o.n.pubkeys/picture      ""
+                       o.n.pubkeys/website      ""
+                       :ui/admin-nav-menu       (comp/get-initial-state u.menus/NavMenu
+                                                  {o.navbars/id show-page-id
+                                                   :id          id})
+                       :ui/admin-router         (comp/get-initial-state Router {})}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/admin-nav-menu [u.menus/NavMenu {::m.navbars/id show-page-id}]
+                    {:ui/admin-nav-menu [u.menus/NavMenu {o.navbars/id show-page-id}]
                      :ui/admin-router   [Router {}]})
    :query         (fn []
                     [model-key
-                     ::m.n.pubkeys/about
-                     ::m.n.pubkeys/display-name
-                     ::m.n.pubkeys/hex
-                     ::m.n.pubkeys/lud06
-                     ::m.n.pubkeys/name
-                     ::m.n.pubkeys/nip05
+                     o.n.pubkeys/about
+                     o.n.pubkeys/display-name
+                     o.n.pubkeys/hex
+                     o.n.pubkeys/lud06
+                     o.n.pubkeys/name
+                     o.n.pubkeys/nip05
                      ::j.n.pubkeys/npub
-                     ::m.n.pubkeys/picture
-                     ::m.n.pubkeys/website
+                     o.n.pubkeys/picture
+                     o.n.pubkeys/website
                      {:ui/admin-nav-menu (comp/get-query u.menus/NavMenu)}
                      {:ui/admin-router (comp/get-query Router)}])}
   (log/debug :Show/starting {:props props})
@@ -149,7 +150,7 @@
    :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [_props]
                         {o.navlinks/id index-page-id
-                         :ui/report      (comp/get-initial-state Report {})})
+                         :ui/report    (comp/get-initial-state Report {})})
    :query             (fn []
                         [o.navlinks/id
                          {:ui/report (comp/get-query Report)}])
@@ -163,7 +164,7 @@
   [_this props]
   {:ident         (fn [] [o.navlinks/id show-page-id])
    :initial-state (fn [props]
-                    {model-key           (model-key props)
+                    {model-key         (model-key props)
                      o.navlinks/id     show-page-id
                      o.navlinks/target (comp/get-initial-state Show {})})
    :query         (fn []

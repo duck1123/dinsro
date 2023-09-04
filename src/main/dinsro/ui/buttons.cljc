@@ -124,11 +124,12 @@
 
 (defn create-button
   [this Form]
-  (ui-button {:icon "create"
-              :onClick
-              (fn [_]
-                (log/info :create-button/clicked {:this this})
-                (form/create! this Form))}))
+  (ui-button
+   {:onClick
+    (fn [_]
+      (log/info :create-button/clicked {:this this})
+      (form/create! this Form))}
+   "create"))
 
 (defn delete-button
   [mutation model-key this]

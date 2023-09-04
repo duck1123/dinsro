@@ -5,7 +5,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
    [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
@@ -15,7 +14,6 @@
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
-   [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-list :refer [ui-list-list]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
@@ -26,6 +24,7 @@
    [dinsro.model.nostr.events :as m.n.events]
    [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.links :as u.links]
@@ -230,8 +229,6 @@
           (ui-grid-column {}
             (ui-container {}
               (ui-segment {}
-                (ui-button {:icon    "refresh"
-                            :onClick (fn [_] (control/run! this))})
                 (when show-controls ((report/control-renderer this) this))
                 (let [page-count (report/page-count this)]
                   (sui-pagination/ui-pagination
@@ -240,6 +237,7 @@
                                     (report/goto-page! this (comp/isoget data "activePage")))
                     :totalPages   page-count
                     :size         "tiny"}))
+                (u.buttons/refresh-button this)
                 (dom/div {:classes [:.ui :.unstackable :.divided :.items :.center :.aligned]}
                   (map ui-event-box current-rows))))))))))
 

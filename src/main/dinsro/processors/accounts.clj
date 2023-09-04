@@ -1,6 +1,5 @@
 (ns dinsro.processors.accounts
   (:require
-   [com.fulcrologic.guardrails.core :refer [>defn =>]]
    [dinsro.model.accounts :as m.accounts]
    [dinsro.mutations :as mu]
    [dinsro.options.accounts :as o.accounts]
@@ -13,6 +12,8 @@
 ;; [[../queries/accounts.clj]]
 ;; [[../responses/accounts.cljc]]
 ;; [[../ui/accounts.cljc]]
+
+(def model-key o.accounts/id)
 
 (defn create!
   [env props]
@@ -29,12 +30,11 @@
        ::r.accounts/created-records (m.accounts/idents [id])}
       (mu/error-response "Failed to create"))))
 
-(>defn delete!
+(defn delete!
   [props]
-  [::r.accounts/delete!-request => ::r.accounts/delete!-response]
-  (let [{::m.accounts/keys [id]} props]
-    (log/info :delete!/starting {})
-    (let [response (q.accounts/delete! id)]
-      (log/info :delete!/finished {:response response})
-      {mu/status       :ok
-       ::r.accounts/deleted-records [id]})))
+  (log/info :delete!/starting {:props props})
+  (let [id       (model-key props)
+        response (q.accounts/delete! id)]
+    (log/info :delete!/finished {:response response})
+    {mu/status                    :ok
+     ::r.accounts/deleted-records (m.accounts/idents [id])}))

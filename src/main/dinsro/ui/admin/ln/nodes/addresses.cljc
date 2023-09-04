@@ -45,12 +45,13 @@
   {:componentDidMount #(report/start-report! % Report {:route-params (comp/props %)})
    :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [props]
-                        {parent-model-key props
-                         o.navlinks/id  index-page-id})
+                        {o.navlinks/id    index-page-id
+                         parent-model-key (parent-model-key props)
+                         :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
-                         parent-model-key
                          o.navlinks/id
+                         parent-model-key
                          {:ui/report (comp/get-query Report)}])
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
   (u.controls/sub-page-report-loader props ui-report parent-model-key :ui/report))

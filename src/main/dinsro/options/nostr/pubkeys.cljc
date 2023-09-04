@@ -9,6 +9,8 @@
   "The record id for a pubkey"
   ::m.n.pubkeys/id)
 
+(def display-name ::m.n.pubkeys/display-name)
+
 (def hex ::m.n.pubkeys/hex)
 
 (def name ::m.n.pubkeys/name)

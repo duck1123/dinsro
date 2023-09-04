@@ -1,6 +1,5 @@
 (ns dinsro.responses.accounts
   (:require
-   [clojure.spec.alpha :as s]
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [dinsro.mutations :as mu]
    [dinsro.options.accounts :as o.accounts]))
@@ -27,7 +26,3 @@
    :query         [{::deleted-records [model-key]}
                    {::mu/errors (comp/get-query mu/ErrorData)}
                    ::mu/status]})
-
-(s/def ::deleted-records (s/coll-of model-key))
-(s/def ::delete!-request (s/keys :req [model-key]))
-(s/def ::delete!-response (s/keys :opt [::mu/errors ::mu/status ::deleted-records]))
