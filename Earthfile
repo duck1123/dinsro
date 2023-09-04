@@ -10,7 +10,7 @@ ARG --global NODE_MAJOR=20
 # https://www.npmjs.com/package/npm?activeTab=versions
 ARG --global npm_version=9.8.1
 # https://github.com/tilt-dev/tilt/releases
-ARG --global tilt_version=0.33.4
+ARG --global tilt_version=0.33.5
 
 # ARG repo=duck1123
 # ARG project=dinsro
