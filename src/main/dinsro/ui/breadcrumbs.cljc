@@ -105,7 +105,7 @@
   [this]
   (let [props (comp/props this)
         id    (get-in props [:root/current-page ::m.navlinks/id])]
-    (log/info :Breadcrumbs-did-update/starting
+    (log/trace :Breadcrumbs-did-update/starting
       {:this  this
        :props props
        :id    id})

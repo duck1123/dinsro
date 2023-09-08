@@ -71,11 +71,14 @@
       merged-state)))
 
 (defn page-merger
-  "pre-merge handler for show pages"
+  "pre-merge handler for show pages.
+
+  This reads the value from `parent-model-key` and applies it to each control in
+  `mappings`."
   [parent-model-key mappings]
   (fn [ctx]
     (let [merged (merge-pages ctx parent-model-key mappings)]
-      (log/trace :page-merger/finished
+      (log/info :page-merger/finished
         {:parent-model-key parent-model-key
          :merged           merged
          :mappings         mappings
@@ -83,7 +86,10 @@
       merged)))
 
 (>defn page-loader
-  "Returns a will-enter handler for a page"
+  "Returns a will-enter handler for an index page.
+
+  A page using this loader will immediately route the page (without loading) and
+  call `target-ready`."
   [page-id]
   [keyword? => fn?]
   (fn [app props]
