@@ -4,6 +4,8 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [lambdaisland.glogc :as log]))
 
@@ -53,14 +55,28 @@
     (log/debug :log-props-line/starting
       {:k k :value value :parent-keys parent-keys})
     (dom/div {:key item-label :title item-label}
-      (dom/dt {} (str k))
-      (dom/dd {:style {:marginInlineStart "0"}}
-        (if (map? value)
-          (log-props value item-keys)
-          (if (vector? value)
-            (log-list value item-keys)
-            (ui-segment {}
-              (str value))))))))
+      (ui-segment {}
+        (if (some #(% value) [map? vector?])
+          (comp/fragment
+           (dom/dt {} (str k))
+           (dom/dd {:style {:marginInlineStart "0"}}
+             (if (map? value)
+               (log-props value item-keys)
+               (if (vector? value)
+                 (log-list value item-keys)
+                 (ui-segment {}
+                   (str value))))))
+          (comp/fragment
+           (dom/div (str k " => " value))))))))
+
+(defn log-props-table-line
+  "Display a debug of a map item"
+  [props parent-keys k]
+  (let [value      (get props k)]
+    (log/debug :log-props-line/starting {:k k :value value :parent-keys parent-keys})
+    (ui-table-row {}
+      (ui-table-cell {} (str k))
+      (ui-table-cell {} (str value)))))
 
 (defn log-props
   "Display a map for debugging purposes"
@@ -68,11 +84,11 @@
    (log-props props []))
   ([props parent-keys]
    (log/debug :log-props/starting {:props props})
-   (dom/dl :.log-props
-     (ui-segment {}
-       (->> (keys props)
-            (filter (fn [k] (not (blacklisted-keys k))))
-            (map (partial log-props-line props parent-keys)))))))
+   (let [valid-keys (->> (keys props) sort (remove blacklisted-keys))]
+     (dom/dl :.log-props
+       (ui-segment {}
+         (->> valid-keys
+              (map (partial log-props-line props parent-keys))))))))
 
 (declare ui-inner-prop-logger)
 

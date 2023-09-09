@@ -30,6 +30,7 @@
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.joins.currencies :as j.currencies]
    [dinsro.model.accounts :as m.accounts]
+   [dinsro.model.currencies :as m.currencies]
    [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks :refer [defroute]]
    [dinsro.mutations.accounts :as mu.accounts]
@@ -131,7 +132,7 @@
 
 (defsc CurrencyListItem
   [_this props]
-  {:ident         o.currencies/id
+  {:ident         ::m.currencies/id
    :initial-state (fn [_props]
                     {o.currencies/id   nil
                      o.currencies/name ""})
@@ -144,11 +145,13 @@
 
 (def ui-currency-list-item (comp/factory CurrencyListItem {:keyfn o.currencies/id}))
 
+(def currency-load-marker ::currency-load-marker)
+
 (defsc InlineForm-component
-  [this {currency      o.accounts/currency
-         initial-value o.accounts/initial-value
+  [this {initial-value o.accounts/initial-value
          name          o.accounts/name
          currencies    ::j.currencies/flat-index
+         currency-id   :ui/currency-id
          :as           props}]
   {:componentDidMount
    (fn [this]
@@ -166,62 +169,66 @@
            (do
              (log/info :InlineForm-component/loading {})
              (df/load! this ::j.currencies/flat-index CurrencyListItem
-                       {:target [:component/id ::NewForm ::j.currencies/flat-index]})
+                       {:marker currency-load-marker
+                        :target [:component/id ::NewForm ::j.currencies/flat-index]})
              nil)))))
    :ident         (fn [] [:component/id ::NewForm])
    :initial-state (fn [_props]
                     {:component/id             ::NewForm
                      ::j.currencies/flat-index []
+                     :ui/currency-id           nil
                      o.accounts/initial-value  0
                      o.accounts/name           ""
-                     o.accounts/currency       (comp/get-initial-state CurrencyListItem {})
                      :ui/currencies-loaded?    false})
    :query         (fn []
                     [:component/id
+                     [df/marker-table currency-load-marker]
                      {::j.currencies/flat-index (comp/get-query CurrencyListItem)}
                      o.accounts/initial-value
                      o.accounts/name
-                     {o.accounts/currency (comp/get-query CurrencyListItem {})}
+                     :ui/currency-id
                      :ui/currencies-loaded?])}
   (log/info :InlineForm-component/starting {:props props})
-  (let [currency-id (o.currencies/id currency)]
-    (ui-segment {}
-      (when show-form?
-        (ui-form {}
+  (ui-segment {}
+    (when show-form?
+      (ui-form {}
+        (ui-form-field {}
+          (ui-form-input {:value    (str name)
+                          :onChange (fn [evt _] (fm/set-string! this o.accounts/name :event evt))
+                          :label    "Name"}))
+        (ui-form-field {}
+          (ui-form-input {:value    (str currency-id)
+                          :onChange (fn [evt _] (fm/set-string! this :ui/currency-id :event evt))
+                          :label    "Currency Id"}))
+        (ui-form-field {}
+          (ui-dropdown
+           {:label       "Currency"
+            :onChange    (fn [evt _] (fm/set-string! this :ui/currency-id :event evt))
+            :placeholder "Currency"
+            :selection   true
+            :clearable   true
+            :options     (map
+                          (fn [currency]
+                            {:text  (o.currencies/name currency)
+                             :value (str (o.currencies/id currency))})
+                          currencies)})
+          (ui-form-input
+           {:value    (str currency-id)
+            :onChange (fn [evt _] (fm/set-string! this o.accounts/initial-value :event evt))
+            :label    "Initial Value"}))
+        (ui-form-field {}
+          (ui-button
+           {:content "Submit"
+            :primary true
+            :fluid   true
+            :size    "large"
+            :onClick
+            (fn [_ev]
+              (comp/transact! this
+                [(list `mu.accounts/create! {o.accounts/initial-value initial-value})]))}))
+        (when debug-form-props?
           (ui-form-field {}
-            (ui-form-input {:value    (str name)
-                            :onChange (fn [evt _] (fm/set-string! this o.accounts/name :event evt))
-                            :label    "Name"}))
-          (ui-form-field {}
-            (ui-form-input {:value    (str currency-id)
-                            :onChange (fn [evt _] (fm/set-string! this o.accounts/initial-value :event evt))
-                            :label    "Currency Id"}))
-          (ui-form-field {}
-            (map ui-currency-list-item currencies)
-            (ui-dropdown {:placeholder "Currency"
-                          :selection   true
-                          :clearable   true
-                          :options     (map (fn [currency]
-                                              {:text  (o.currencies/id currency)
-                                               :value (o.currencies/id currency)})
-                                            currencies)})
-            (ui-form-input {:value    (str currency-id)
-                            :onChange (fn [evt _] (fm/set-string! this o.accounts/initial-value :event evt))
-                            :label    "Initial Value"}))
-          (ui-form-field {}
-            (ui-button
-             {:content "Submit"
-              :primary true
-              :fluid   true
-              :size    "large"
-              :onClick
-              (fn [_ev]
-                (comp/transact! this
-                  [(list `mu.accounts/create! {o.accounts/initial-value initial-value})]))}))
-
-          (when debug-form-props?
-            (ui-form-field {}
-              (u.debug/log-props props))))))))
+            (u.debug/log-props props)))))))
 
 (def ui-inline-form-component (comp/factory InlineForm-component {:keyfn model-key}))
 (def ui-inline-form-form (comp/factory InlineForm-form {:keyfn model-key}))
