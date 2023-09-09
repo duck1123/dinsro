@@ -4,20 +4,17 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.peers :as j.ln.peers]
    [dinsro.model.ln.peers :as m.ln.peers]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.mutations.ln.peers :as mu.ln.peers]
-   [dinsro.options.ln.nodes :as o.ln.nodes]
    [dinsro.options.ln.peers :as o.ln.peers]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.ui.forms.admin.ln.peers :as u.f.a.ln.peers]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/ln/peers.cljc]]
@@ -29,38 +26,11 @@
 (def required-role :admin)
 (def show-page-id :admin-ln-peers-id)
 
-(def submit-button
-  {:type   :button
-   :local? true
-   :label  "Submit"
-   :action (fn [this _key]
-             (let [{::m.ln.peers/keys [address id]
-                    node             o.ln.peers/node} (comp/props this)
-                   {node-id o.ln.nodes/id}            node
-                   props                               {o.ln.peers/id   id
-                                                        o.ln.peers/address address
-                                                        o.ln.peers/node node-id}]
-               (log/info :submit-action/clicked props)
-               (comp/transact! this [`(mu.ln.peers/create! ~props)])))})
-
-(form/defsc-form NewForm [_this _props]
-  {fo/action-buttons [::submit]
-   fo/attributes     [m.ln.peers/node
-                      m.ln.peers/remote-node]
-   fo/controls       {::submit submit-button}
-   fo/field-options  {o.ln.peers/node        u.pickers/admin-ln-node-picker
-                      o.ln.peers/remote-node u.pickers/admin-remote-node-picker}
-   fo/field-styles   {o.ln.peers/node        :pick-one
-                      o.ln.peers/remote-node :pick-one}
-   fo/id             m.ln.peers/id
-   fo/route-prefix   "new-peer"
-   fo/title          "New Peer"})
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.a.ln.peers/NewForm))})
 
 (report/defsc-report Report
   [_this _props]

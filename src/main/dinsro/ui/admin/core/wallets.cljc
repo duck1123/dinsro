@@ -5,7 +5,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -20,9 +19,9 @@
    [dinsro.ui.admin.core.wallets.words :as u.a.c.w.words]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.core.wallets :as u.f.a.c.wallets]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/wallets.cljc]]
@@ -38,34 +37,11 @@
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.wallets/delete!))
 
-(def create-button
-  {:type   :button
-   :local? true
-   :label  "Create"
-   :action (fn [this _]
-             (let [props (comp/props this)]
-               (comp/transact! this [`(mu.c.wallets/create! ~props)])))})
-
-(form/defsc-form NewForm [this props]
-  {fo/action-buttons (concat [::create] form/standard-action-buttons)
-   fo/attributes     [m.c.wallets/name
-                      m.c.wallets/user]
-   fo/controls       (merge form/standard-controls {::create create-button})
-   fo/field-styles   {::m.c.wallets/node :pick-one
-                      ::m.c.wallets/user :pick-one}
-   fo/field-options  {::m.c.wallets/node u.pickers/node-picker
-                      ::m.c.wallets/user u.pickers/user-picker}
-   fo/id             m.c.wallets/id
-   fo/route-prefix   "new-wallet"
-   fo/title          "New Wallet"}
-  (log/info :NewWalletForm/creating {:props props})
-  (form/render-layout this props))
-
 (def new-action-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.a.c.wallets/NewForm))})
 
 (defsc Show
   "Show a wallet"

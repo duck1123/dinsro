@@ -1,18 +1,13 @@
 (ns dinsro.ui.admin.users.categories
   (:require
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
-   [com.fulcrologic.fulcro.mutations :as fm]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
-   [com.fulcrologic.semantic-ui.collections.form.ui-form-field :refer [ui-form-field]]
-   [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.categories :as j.categories]
@@ -22,6 +17,7 @@
    [dinsro.mutations.categories :as mu.categories]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.users.categories :as u.f.a.u.categories]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -41,49 +37,6 @@
 (def override-report false)
 (def override-row false)
 (def show-controls true)
-
-(def create!-form-button
-  {:type   :button
-   :local? true
-   :label  "Create"
-   :action (fn [this _]
-             (let [props (comp/props this)]
-               (comp/transact! this [`(mu.categories/create! ~props)])))})
-
-(form/defsc-form NewForm2
-  [_this _props]
-  {fo/action-buttons [::create!]
-   fo/attributes     [m.categories/name]
-   fo/controls       {::create! create!-form-button}
-   fo/id             m.categories/id
-   fo/route-prefix   "new-category"
-   fo/title          "Create Category"})
-
-(defsc NewForm
-  [this {::m.categories/keys [name]
-         :as                 props}]
-  {:ident         (fn [] [:component/id ::NewForm])
-   :initial-state {::m.categories/name ""}
-   :query         [::m.categories/name]}
-  (log/debug :NewForm/starting {:props props})
-  (ui-segment {}
-    (ui-form {}
-      (ui-form-field {}
-        (ui-form-input
-         {:value    name
-          :onChange (fn [evt _] (fm/set-string! this ::m.categories/name :event evt))
-          :label    "Name"}))
-      (ui-form-field {}
-        (ui-button
-         {:content "Submit"
-          :primary true
-          :fluid   true
-          :size    "large"
-          :onClick
-          (fn [_ev]
-            (comp/transact! this [`(mu.categories/create! {::m.categories/name ~name})]))})))))
-
-(def ui-new-form (comp/factory NewForm))
 
 (declare Report)
 
@@ -126,7 +79,7 @@
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.a.u.categories/NewForm))})
 
 (report/defsc-report Report
   [this props]
@@ -164,13 +117,13 @@
    :initial-state     (fn [props]
                         {parent-model-key (parent-model-key props)
                          ::m.navlinks/id  index-page-id
-                         :ui/form         (comp/get-initial-state NewForm {})
+                         :ui/form         (comp/get-initial-state u.f.a.u.categories/NewForm {})
                          :ui/report       (comp/get-initial-state Report {})})
    :query             (fn []
                         [[::dr/id router-key]
                          parent-model-key
                          ::m.navlinks/id
-                         {:ui/form (comp/get-query NewForm)}
+                         {:ui/form (comp/get-query u.f.a.u.categories/NewForm)}
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["categories"]
    :will-enter        (u.loader/targeted-subpage-loader index-page-id parent-model-key ::SubPage)}
@@ -178,7 +131,7 @@
   (if (parent-model-key props)
     (if report
       (dom/div {}
-        (ui-new-form form)
+        (u.f.a.u.categories/ui-new-form form)
         (ui-report report))
       (u.debug/load-error props "admin user categories report"))
     (u.debug/load-error props "admin user categories page")))

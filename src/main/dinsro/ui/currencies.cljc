@@ -4,8 +4,8 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
+  ;;  [com.fulcrologic.rad.form :as form]
+  ;;  [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -21,6 +21,7 @@
    [dinsro.ui.currencies.rate-sources :as u.c.rate-sources]
    [dinsro.ui.currencies.rates :as u.c.rates]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.currencies :as u.f.currencies]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]))
@@ -38,15 +39,8 @@
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.currencies/delete!))
 
-(form/defsc-form NewForm [_this _props]
-  {fo/attributes   [m.currencies/name
-                    m.currencies/code]
-   fo/id           m.currencies/id
-   fo/route-prefix "new-currency"
-   fo/title        "New Currency"})
-
 (def new-button
-  (u.buttons/form-create-button "New" NewForm))
+  (u.buttons/form-create-button "New" u.f.currencies/NewForm))
 
 (defrouter Router
   [_this _props]

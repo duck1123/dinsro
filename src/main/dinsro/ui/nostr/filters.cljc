@@ -12,6 +12,7 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.options.nostr.filters :as o.n.filters]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.nostr.filters.filter-items :as u.f.n.f.filter-items]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
@@ -28,7 +29,7 @@
   [_this _props]
   {:router-targets
    [u.n.f.filter-items/SubPage
-    u.n.f.filter-items/NewForm]})
+    u.f.n.f.filter-items/NewForm]})
 
 (def ui-router (comp/factory Router))
 

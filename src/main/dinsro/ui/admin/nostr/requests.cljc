@@ -5,8 +5,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -43,15 +41,6 @@
 (def required-role :admin)
 (def show-page-id :admin-nostr-requests-show)
 (def debug-props false)
-
-(form/defsc-form EditForm [_this _props]
-  {fo/attributes    [m.n.requests/id]
-   fo/cancel-route  ["requests"]
-   ;; fo/field-styles  {::m.transactions/account :pick-one}
-   ;; fo/field-options {::m.transactions/account u.pickers/account-picker}
-   fo/id            m.n.requests/id
-   fo/route-prefix  "edit-request-form"
-   fo/title         "Edit Request"})
 
 (defsc BodyItem
   [this {::j.n.requests/keys [filters]

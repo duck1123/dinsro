@@ -31,7 +31,7 @@
   ([] (index-ids {}))
   ([query-params] (c.xtdb/index-ids query-info query-params)))
 
-(>defn create-record
+(>defn create!
   [params]
   [::m.n.badge-awards/params => ::m.n.badge-awards/id]
   (c.xtdb/create! model-key params))

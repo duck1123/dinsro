@@ -5,7 +5,6 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -17,9 +16,9 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.core.peers :as u.f.a.c.peers]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/peers.cljc]]
@@ -33,32 +32,6 @@
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.c.peers/delete!))
-
-(def submit-button
-  {:type   :button
-   :local? true
-   :label  "Submit"
-   :action (fn [this _key]
-             (let [{::m.c.peers/keys [addr id]
-                    node             ::m.c.peers/node} (comp/props this)
-                   {node-id ::m.c.nodes/id}            node
-                   props                               {::m.c.peers/id   id
-                                                        ::m.c.peers/addr addr
-                                                        ::m.c.peers/node node-id}]
-               (comp/transact! this [`(mu.c.peers/create! ~props)])))})
-
-(form/defsc-form NewForm
-  [this props]
-  {fo/action-buttons [::submit]
-   fo/attributes     [m.c.peers/addr
-                      m.c.peers/node]
-   fo/controls       {::submit submit-button}
-   fo/field-options  {::m.c.peers/node u.pickers/node-picker}
-   fo/field-styles   {::m.c.peers/node :pick-one}
-   fo/id             m.c.peers/id
-   fo/route-prefix   "new-peer"
-   fo/title          "New Core Peer"}
-  (form/render-layout this props))
 
 (def new-peer-control
   {:type   :button
@@ -77,7 +50,7 @@
                                           :controls   controls
                                           :id-control id-control
                                           :node-id    node-id})
-               (form/create! this NewForm
+               (form/create! this u.f.a.c.peers/NewForm
                              {:initial-state {::m.c.peers/addr "foo"}})))})
 
 (report/defsc-report Report

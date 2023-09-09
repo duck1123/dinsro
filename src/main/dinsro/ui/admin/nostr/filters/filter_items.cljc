@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -14,6 +13,7 @@
    [dinsro.options.nostr.filter-items :as o.n.filter-items]
    [dinsro.options.nostr.filters :as o.n.filters]
    [dinsro.ui.controls :as u.controls]
+   [dinsro.ui.forms.admin.nostr.filters.filter-items :as u.f.a.n.f.filter-items]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
@@ -29,24 +29,11 @@
 (def required-role :admin)
 (def router-key :dinsro.ui.nostr.filters/Router)
 
-(form/defsc-form NewForm
-  [_this _props]
-  {fo/attributes    [m.n.filter-items/id
-                     m.n.filter-items/filter
-                     m.n.filter-items/type
-                     m.n.filter-items/kind
-                     m.n.filter-items/event
-                     m.n.filter-items/pubkey]
-   fo/cancel-route  ["filter-items"]
-   fo/id            m.n.filter-items/id
-   fo/route-prefix  "create-filter-item"
-   fo/title         "Filter Item"})
-
 (def new-item-button
   {:type   :button
    :local? true
    :label  "New Node"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.a.n.f.filter-items/NewForm))})
 
 (report/defsc-report Report
   [_this _props]

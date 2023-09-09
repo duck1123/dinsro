@@ -6,7 +6,6 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -19,6 +18,7 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.nostr.relays :as u.n.relays]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
@@ -46,31 +46,11 @@
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.n.relays/delete!))
 
-(def submit-button
-  {:type   :button
-   :local? true
-   :label  "Submit"
-   :action (fn [this _]
-             (let [props (comp/props this)
-                   address (::m.n.relays/address props)]
-               (log/info :submit-button/clicked {:address address})
-               (comp/transact! this
-                 [`(mu.n.relays/submit! {::m.n.relays/address ~address})])))})
-
-(form/defsc-form NewRelayForm [_this _props]
-  {fo/action-buttons [::submit]
-   fo/attributes     [m.n.relays/address]
-   fo/cancel-route   ["relays"]
-   fo/controls       {::submit submit-button}
-   fo/id             m.n.relays/id
-   fo/route-prefix   "new-relay"
-   fo/title          "Relay"})
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New Relay"
-   :action (fn [this _] (form/create! this NewRelayForm))})
+   :action (fn [this _] (form/create! this u.n.relays/NewRelayForm))})
 
 (report/defsc-report Report
   [_this _props]

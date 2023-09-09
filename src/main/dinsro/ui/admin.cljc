@@ -25,6 +25,8 @@
    [dinsro.ui.admin.transactions :as u.a.transactions]
    [dinsro.ui.admin.users :as u.a.users]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.transactions :as u.f.a.transactions]
+   [dinsro.ui.forms.admin.users :as u.f.a.users]
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
@@ -64,10 +66,11 @@
                          u.a.rate-sources/IndexPage
                          u.a.rate-sources/ShowPage
                          u.a.transactions/IndexPage
-                         u.a.transactions/NewForm
+                         u.f.a.transactions/AdminTransactionForm
                          u.a.transactions/ShowPage
                          u.a.users/IndexPage
-                         u.a.users/ShowPage]}
+                         u.a.users/ShowPage
+                         u.f.a.users/UserForm]}
   (log/debug :Router/starting {:props props})
   (dom/div :.admin-router-outer {}
     (case current-state

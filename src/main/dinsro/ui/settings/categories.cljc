@@ -4,7 +4,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -18,6 +17,7 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.settings.categories :as u.f.s.categories]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -33,45 +33,16 @@
 (def required-role :user)
 (def show-page-id :settings-categories-show)
 
-(def create-action
-  (u.buttons/form-action-button
-   "Create" mu.categories/create!
-   #{o.categories/name}))
+(def debug-props? true)
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.categories/delete!))
-
-(form/defsc-form NewForm
-  [_this _props]
-  {fo/action-buttons [::create]
-   fo/attributes     [m.categories/name]
-   fo/cancel-route   ["categories"]
-   fo/field-styles   {o.categories/user :link}
-   fo/controls       (merge form/standard-controls {::create create-action})
-   fo/id             m.categories/id
-   fo/route-prefix   "new-category"
-   fo/title          "New Category"})
-
-(def override-form true)
-
-(form/defsc-form CategoryForm
-  [this props]
-  {fo/attributes   [m.categories/name
-                    m.categories/user]
-   fo/cancel-route ["categories"]
-   fo/field-styles {o.categories/user :link}
-   fo/id           m.categories/id
-   fo/route-prefix "category"
-   fo/title        "Edit Category"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div {} (dom/p {} "Category"))))
 
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.s.categories/NewForm))})
 
 (defsc Show
   [_this {::m.categories/keys [id name]
@@ -88,7 +59,9 @@
   (if id
     (ui-container {}
       (ui-segment {}
-        (str name)))
+        (dom/div {} (str name)))
+      (when debug-props?
+        (u.debug/log-props props)))
     (u.debug/load-error props "settings show category")))
 
 (def ui-show (comp/factory Show))

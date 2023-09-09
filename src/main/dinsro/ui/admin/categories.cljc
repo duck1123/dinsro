@@ -4,7 +4,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -18,9 +17,9 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.categories :as u.f.a.categories]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/categories.cljc]]
@@ -29,7 +28,6 @@
 
 (def index-page-id :admin-categories)
 (def model-key o.categories/id)
-(def override-admin-form true)
 (def parent-router-id :admin)
 (def required-role :admin)
 (def show-page-id :admin-categories-show)
@@ -37,23 +35,10 @@
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.categories/delete!))
 
-(form/defsc-form NewForm
-  [this props]
-  {fo/attributes    [m.categories/name m.categories/user]
-   fo/cancel-route  ["admin"]
-   fo/field-options {o.categories/user u.pickers/admin-user-picker}
-   fo/field-styles  {o.categories/user :pick-one}
-   fo/id            m.categories/id
-   fo/route-prefix  "new-category"
-   fo/title         "Category"}
-  (if override-admin-form
-    (form/render-layout this props)
-    (dom/div {} (dom/p {} "Category"))))
-
 (def new-button
   {:label  "New Category"
    :type   :button
-   :action #(form/create! % NewForm)})
+   :action #(form/create! % u.f.a.categories/NewForm)})
 
 (report/defsc-report Report
   [_this _props]

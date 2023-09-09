@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -15,6 +14,7 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
+   [dinsro.ui.forms.admin.nostr.relays.requests :as u.f.a.n.r.requests]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
@@ -31,20 +31,11 @@
 (def run-action
   (u.buttons/row-action-button "Run" model-key mu.n.requests/run!))
 
-(form/defsc-form NewForm
-  [_this _props]
-  {fo/attributes   [m.n.requests/id
-                    m.n.requests/code]
-   fo/cancel-route ["requests"]
-   fo/id           m.n.requests/id
-   fo/route-prefix "new-request"
-   fo/title        "Create Request"})
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.a.n.r.requests/NewForm))})
 
 (report/defsc-report Report
   [_this _props]

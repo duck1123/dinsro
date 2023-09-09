@@ -2,6 +2,7 @@
   (:require
    [com.fulcrologic.fulcro.ui-state-machines :as uism]
    dinsro.machines
+   [dinsro.mocks.ui.navbars :refer [nav-state menu-links unauth-links]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.mutations.navbars :as mu.navbars]
@@ -21,23 +22,6 @@
             ::m.navlinks/auth-link? false
             ::m.navlinks/target     nil
             :ui/router              {}})}))
-
-(def unauth-links
-  [{::m.navlinks/id         :foo
-    ::m.navlinks/label      (ds/gen-key ::m.navlinks/label)
-    ::m.navlinks/auth-link? false
-    ::m.navlinks/target     nil
-    :ui/router              {}}])
-
-(def menu-links
-  [])
-
-(def nav-state
-  {::uism/asm-id                                          :dinsro.mutations.navbar/navbarsm,
-   ::uism/state-machine-id                                dinsro.machines/hideable,
-   ::uism/active-state                                    :state/hidden,
-   :com.fulcrologic.fulcro.ui-state-machines/ident->actor {:actor/navbar {}}
-   :com.fulcrologic.fulcro.ui-state-machines/actor->ident {:actor/navbar {}}})
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard NavbarLogoutLink

@@ -5,13 +5,9 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
-   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
-   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-header :refer [ui-list-header]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-list :refer [ui-list-list]]
@@ -31,11 +27,11 @@
    [dinsro.ui.admin.ln.nodes.transactions :as u.a.ln.n.transactions]
    [dinsro.ui.admin.ln.nodes.wallet-addresses :as u.a.ln.n.wallet-addresses]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.ln.nodes :as u.f.a.ln.nodes]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.ln.nodes :as u.ln.nodes]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
-   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/ln/nodes.cljc]]
@@ -46,39 +42,15 @@
 
 (def index-page-id :admin-ln-nodes)
 (def model-key ::m.ln.nodes/id)
-(def override-create-form false)
 (def parent-router-id :admin-ln)
 (def required-role :admin)
 (def show-page-id :admin-ln-nodes-show)
-
-(form/defsc-form NewForm
-  [this props]
-  {fo/attributes    [m.ln.nodes/name
-                     m.ln.nodes/host
-                     m.ln.nodes/port
-                     m.ln.nodes/core-node
-                     m.ln.nodes/user]
-   fo/cancel-route  ["nodes"]
-   fo/field-options {::m.ln.nodes/core-node u.pickers/admin-core-node-picker
-                     ::m.ln.nodes/user      u.pickers/admin-user-picker}
-   fo/field-styles  {::m.ln.nodes/core-node :pick-one
-                     ::m.ln.nodes/user      :pick-one}
-   fo/id            m.ln.nodes/id
-   fo/route-prefix  "create-node"
-   fo/title         "Create Lightning Node"}
-  (if override-create-form
-    (form/render-layout this props)
-    (ui-grid {}
-      (ui-grid-row {}
-        (ui-grid-column {:width 16}
-          (dom/div {}
-            (form/render-layout this props)))))))
 
 (def new-node-button
   {:type   :button
    :local? true
    :label  "New Node"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.a.ln.nodes/NewForm))})
 
 (report/defsc-report Report
   [_this _props]

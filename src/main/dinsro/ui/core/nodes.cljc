@@ -6,7 +6,6 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -24,6 +23,7 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.core.nodes.blocks :as u.c.n.blocks]
    [dinsro.ui.core.nodes.peers :as u.c.n.peers]
+   [dinsro.ui.forms.core.nodes :as u.f.c.nodes]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]))
@@ -127,22 +127,11 @@
 
 (def ui-show (comp/factory Show))
 
-(form/defsc-form NewForm [_this _props]
-  {fo/attributes   [m.c.nodes/name
-                    m.c.nodes/host
-                    m.c.nodes/port
-                    m.c.nodes/rpcuser
-                    m.c.nodes/rpcpass]
-   fo/cancel-route ["nodes"]
-   fo/id           m.c.nodes/id
-   fo/route-prefix "new-core-node"
-   fo/title        "Core Node"})
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New Node"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.c.nodes/NewForm))})
 
 (report/defsc-report Report
   [_this _props]

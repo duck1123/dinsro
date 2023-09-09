@@ -5,7 +5,6 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.control :as control]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -13,8 +12,6 @@
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
    [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
    [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
@@ -22,6 +19,7 @@
    [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.list.ui-list-list :refer [ui-list-list]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
+   [dinsro.formatters.date-time :as f.date-time]
    [dinsro.joins.debits :as j.debits]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.accounts :as m.accounts]
@@ -34,12 +32,13 @@
    [dinsro.options.debits :as o.debits]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.options.transactions :as o.transactions]
+   [dinsro.specs :as ds]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.transactions :as u.f.transactions]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.pickers :as u.pickers]
    [dinsro.ui.transactions.debits :as u.t.debits]
    [lambdaisland.glogc :as log]))
 
@@ -56,35 +55,7 @@
 
 (def show-controls false)
 (def debug-debits? false)
-(def use-table true)
 (def use-moment true)
-
-(form/defsc-form NewDebit
-  [_this _props]
-  {fo/attributes    [m.debits/value
-                     m.debits/account]
-   fo/field-options {o.debits/account u.pickers/account-picker}
-   fo/field-styles  {o.debits/account :pick-one}
-   fo/title         "Debit"
-   fo/route-prefix  "new-debit"
-   fo/id            m.debits/id})
-
-(form/defsc-form NewTransaction [_this _props]
-  {fo/attributes    [m.transactions/description
-                     m.transactions/date
-                     j.transactions/debits]
-   fo/cancel-route  ["transactions"]
-   fo/id            m.transactions/id
-   fo/route-prefix  "new-transaction"
-   fo/subforms      {::j.transactions/debits {fo/ui NewDebit}}
-   fo/title         "Transaction"})
-
-(form/defsc-form EditForm [_this _props]
-  {fo/attributes    [m.transactions/description]
-   fo/cancel-route  ["transactions"]
-   fo/id            m.transactions/id
-   fo/route-prefix  "edit-transaction-form"
-   fo/title         "Transaction"})
 
 (defsc CurrencyInfo
   [_this {::m.currencies/keys [name]}]
@@ -96,8 +67,6 @@
                     [o.currencies/id
                      o.currencies/name])}
   (dom/div {} (str name)))
-
-(def ui-currency-info (comp/factory CurrencyInfo {:keyfn o.currencies/id}))
 
 (defsc AccountInfo
   [_this {name                              o.accounts/name
@@ -114,28 +83,6 @@
   (dom/div {}
     (dom/div {} (str name))
     (dom/div {} (str currency-name))))
-
-(def ui-account-info (comp/factory AccountInfo {:keyfn ::m.accounts/id}))
-
-(defsc DebitLine-Table
-  [_this {::m.debits/keys    [value]
-          ::j.debits/keys    [current-rate]
-          {currency ::m.accounts/currency
-           :as      account} ::m.debits/account}]
-  {:ident         ::m.debits/id
-   :query         [::m.debits/id
-                   ::m.debits/value
-                   {::m.debits/account (comp/get-query AccountInfo)}
-                   {::j.debits/current-rate (comp/get-query u.links/RateValueLinkForm)}]
-   :initial-state {::m.debits/id           nil
-                   ::m.debits/value        0
-                   ::m.debits/account      {}
-                   ::j.debits/current-rate {}}}
-  (ui-table-row {}
-    (ui-table-cell {} (str value))
-    (ui-table-cell {} (u.links/ui-currency-link currency))
-    (ui-table-cell {} (u.links/ui-account-link account))
-    (ui-table-cell {} (u.links/ui-rate-value-link current-rate))))
 
 (defsc DebitLine-List
   [_this {::j.debits/keys [event-value]
@@ -184,10 +131,6 @@
 
 (def ui-debit-list-line (comp/factory DebitLine-List {:keyfn o.debits/id}))
 
-(def DebitLine (if use-table DebitLine-Table DebitLine-List))
-
-(def ui-debit-line (comp/factory DebitLine {:keyfn o.debits/id}))
-
 (defsc BodyItem
   [_this {::m.transactions/keys [date]
           ::j.transactions/keys [positive-debits negative-debits]
@@ -212,7 +155,11 @@
           (ui-grid-column {:width 8}
             (u.links/ui-transaction-link props))
           (ui-grid-column {:textAlign "right"  :width 8}
-            (if use-moment (u.controls/relative-date date) (str date)))))
+            (if use-moment
+              (when date
+                (let [iso (f.date-time/->iso (ds/->inst date))]
+                  (u.controls/relative-date iso)))
+              (str date)))))
       (ui-list-list {}
         (map ui-debit-list-line positive-debits)
         (map ui-debit-list-line negative-debits)))))
@@ -222,7 +169,7 @@
 (def new-button
   {:label  "New Transaction"
    :type   :button
-   :action (fn [this] (form/create! this NewTransaction))})
+   :action (fn [this] (form/create! this u.f.transactions/NewTransaction))})
 
 (report/defsc-report Report
   [this props]
@@ -244,18 +191,18 @@
    ro/run-on-mount?       true
    ro/source-attribute    ::j.transactions/index
    ro/title               "Transaction Report"}
-  (log/debug :Report/starting {:props props})
+  #_(log/trace :Report/starting {:props props})
   (let [{:ui/keys [current-rows]} props]
-    (ui-container {:centered true}
+    (ui-container {#_#_:centered true}
       (ui-segment {}
         (ui-grid {}
-          (ui-grid-row {:centered true}
+          (ui-grid-row {#_#_:centered true}
             (ui-grid-column {:width 12}
               (ui-header {}
                 (dom/span {} "Transactions")))
             (ui-grid-column {:width 4 :floated "right"}
               (ui-button-group {:compact true :floated "right"}
-                (ui-button {:onClick (fn [_] (form/create! this NewTransaction))} "New")
+                (ui-button {:onClick (fn [_] (form/create! this u.f.transactions/NewTransaction))} "New")
                 (ui-button {:icon "refresh" :onClick (fn [_] (control/run! this))})))))
         (when show-controls
           ((report/control-renderer this) this))
@@ -266,7 +213,7 @@
                             (report/goto-page! this (comp/isoget data "activePage")))
             :totalPages   page-count
             :size         "tiny"}))
-        (ui-container {:centered true}
+        (ui-container {#_#_:centered true}
           (map ui-body-item current-rows))))))
 
 (def ui-report
@@ -322,7 +269,7 @@
         (dom/p {}
           (dom/span {} "Date: ")
           (dom/span {} (u.controls/relative-date date)))
-        (u.buttons/form-edit-button this model-key "Edit" NewTransaction))
+        (u.buttons/form-edit-button this model-key "Edit" u.f.transactions/NewTransaction))
       (if debits
         (ui-segment {}
           (u.t.debits/ui-sub-section debits))
@@ -344,7 +291,7 @@
                          {:ui/report (comp/get-query Report)}])
    :route-segment     ["transactions"]
    :will-enter        (u.loader/page-loader index-page-id)}
-  (log/debug :IndexPage/starting {:props props})
+  (log/finest :IndexPage/starting {:props props})
   (if report
     (ui-report report)
     (ui-segment {:color "red" :inverted true}

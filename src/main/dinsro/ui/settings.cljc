@@ -13,6 +13,8 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.settings.categories :as u.f.s.categories]
+   [dinsro.ui.forms.settings.rate-sources :as u.f.s.rate-sources]
    [dinsro.ui.menus :as u.menus]
    [dinsro.ui.settings.categories :as u.s.categories]
    [dinsro.ui.settings.core :as u.s.core]
@@ -33,10 +35,10 @@
     u.s.ln/Page
     u.s.rate-sources/IndexPage
     u.s.rate-sources/ShowPage
-    u.s.rate-sources/NewForm
+    u.f.s.rate-sources/NewForm
     u.s.categories/IndexPage
     u.s.categories/ShowPage
-    u.s.categories/NewForm]}
+    u.f.s.categories/NewForm]}
   (log/info :Router/starting {:props props})
   (case current-state
     :pending

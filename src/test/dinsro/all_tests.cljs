@@ -9,7 +9,16 @@
    dinsro.ui.core.nodes.wallets-test
    dinsro.ui.core.wallets-test
    dinsro.ui.core.words-test
+   dinsro.ui.forms.accounts-test
+   dinsro.ui.forms.admin.core.wallets-test
+   dinsro.ui.forms.admin.currencies-test
+   dinsro.ui.forms.admin.transactions-test
+   dinsro.ui.forms.admin.users-test
+   dinsro.ui.forms.categories-test
+   dinsro.ui.forms.core.wallets-test
    dinsro.ui.forms.registration-test
+   dinsro.ui.forms.settings.ln.peers-test
+   dinsro.ui.forms.transactions-test
    dinsro.ui.home-test
    dinsro.ui.menus-test
    dinsro.ui.navbars-test

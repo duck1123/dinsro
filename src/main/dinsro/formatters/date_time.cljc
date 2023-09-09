@@ -1,5 +1,10 @@
 (ns dinsro.formatters.date-time
   (:refer-clojure :exclude [name])
+  (:require
+   [dinsro.specs :as ds]
+   [taoensso.timbre :as log]
+   [tick.alpha.api :as t]
+   [tick.locale-en-us])
   (:import
    #?(:clj (java.time LocalDateTime ZoneId Instant))
    #?(:clj (java.time.format DateTimeFormatter))
@@ -8,9 +13,17 @@
 
 #?(:clj (def ^:private ^:static ^ZoneId UTC (ZoneId/of "UTC")))
 
+(defn ->iso
+  [inst]
+  (let [dt  (-> inst (t/in ds/default-timezone) (t/date-time))
+        dts (str dt)]
+    (log/info :->iso/dt {:dt dt :dts dts})
+    dts))
+
 (defn date-year
   [date]
-  #?(:cljs (assert (instance? js/Date date) (str "`date` " date ": " (type date) " isn't js/Date")))
+  #?(:cljs
+     (assert (instance? js/Date date) (str "`date` " date ": " (type date) " isn't js/Date")))
   #?(:clj  (.getYear ^LocalDateTime date)
      :cljs (.getFullYear date)))
 
@@ -27,7 +40,11 @@
           (condp instance? date
             Date          (->local-date (.toInstant date))
             Instant       (LocalDateTime/ofInstant date UTC)
-            LocalDateTime date)))
+            LocalDateTime date))
+   :cljs (defn ->local-date
+           [date]
+           (.log js/console "date" #js {"date" (.toISOString date)})
+           date))
 
 (defn format-date [^Instant instant]
   (if instant
@@ -45,4 +62,7 @@
 
 (comment
   (format-date #inst "2019-08-31T22:00:00.000-00:00") ; => "Aug 31, 2019"
+
+  (->local-date #inst "2019-08-31T22:00:00.000-00:00")
+
   nil)

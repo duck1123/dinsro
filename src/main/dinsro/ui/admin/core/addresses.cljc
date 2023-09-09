@@ -4,7 +4,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -17,6 +16,7 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.core.addresses :as u.f.a.c.addresses]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -34,18 +34,11 @@
 (def fetch-action
   (u.buttons/row-action-button "Fetch" model-key mu.c.addresses/delete!))
 
-(form/defsc-form NewForm
-  [_this _props]
-  {fo/attributes   [m.c.addresses/address]
-   fo/id           m.c.addresses/id
-   fo/route-prefix "address"
-   fo/title        "Address"})
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.a.c.addresses/NewForm))})
 
 (report/defsc-report Report
   [_this _props]

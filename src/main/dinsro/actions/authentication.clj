@@ -132,7 +132,7 @@
           (q.users/read-record id))
         (catch RuntimeException ex
           (log/error :user/already-exists {:exception ex})
-          (throw "User already exists"))))))
+          (throw (ex-info "User already exists" {})))))))
 
 (>defn do-register
   "Register user with given name and password"

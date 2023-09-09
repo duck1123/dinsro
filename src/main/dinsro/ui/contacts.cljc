@@ -4,7 +4,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -19,6 +18,7 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.contacts :as u.f.contacts]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -34,33 +34,14 @@
 (def required-role :user)
 (def show-page-id :contacts-show)
 
-(def create-button
-  {:type   :button
-   :local? true
-   :label  "Create"
-   :action (fn [this _]
-             (let [props (comp/props this)]
-               (comp/transact! this [`(mu.contacts/create! ~props)])))})
-
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.contacts/delete!))
-
-(form/defsc-form NewContactForm
-  [_this _props]
-  {fo/action-buttons [::create]
-   fo/attributes     [m.contacts/name
-                      m.contacts/pubkey]
-   fo/cancel-route   ["contacts"]
-   fo/controls       (merge form/standard-controls {::create create-button})
-   fo/id             m.contacts/id
-   fo/route-prefix   "new-contact"
-   fo/title          "Edit Contact"})
 
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewContactForm))})
+   :action (fn [this _] (form/create! this u.f.contacts/NewContactForm))})
 
 (report/defsc-report Report
   [this _props]

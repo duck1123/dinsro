@@ -1,15 +1,16 @@
 (ns dinsro.ui.settings.ln
   (:require
-   [com.fulcrologic.fulcro-css.css :as css]
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.fulcro-css.css :as css]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.semantic-ui.elements.container.ui-container :refer [ui-container]]
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.settings.ln.payreqs :as u.f.s.ln.payreqs]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
    [dinsro.ui.settings.ln.dashboard :as u.s.ln.dashboard]
@@ -29,7 +30,7 @@
                     u.s.ln.nodes/ShowPage
                     u.s.ln.payments/IndexPage
                     u.s.ln.payments/ShowPage
-                    u.s.ln.payreqs/NewForm
+                    u.f.s.ln.payreqs/NewForm
                     u.s.ln.payreqs/IndexPage
                     u.s.ln.payreqs/ShowPage
                     u.s.ln.remote-nodes/IndexPage]}

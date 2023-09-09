@@ -6,7 +6,6 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -27,10 +26,10 @@
    [dinsro.ui.admin.core.nodes.wallets :as u.a.c.n.wallets]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.core.nodes :as u.f.a.c.nodes]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
-   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/nodes.cljc]]
@@ -98,24 +97,6 @@
     u.a.c.n.transactions/index-page-id
     u.a.c.n.wallets/index-page-id]})
 
-(form/defsc-form EditForm
-  [this props]
-  {fo/attributes    [m.c.nodes/name
-                     m.c.nodes/host
-                     m.c.nodes/port
-                     m.c.nodes/network
-                     m.c.nodes/rpcuser
-                     m.c.nodes/rpcpass]
-   fo/field-options {::m.c.nodes/network u.pickers/network-picker}
-   fo/field-styles  {::m.c.nodes/network :pick-one}
-   fo/id            m.c.nodes/id
-   fo/route-prefix  "edit-node"
-   fo/title         "Edit Node"}
-  (log/info :EditForm/starting {:props props})
-  (form/render-layout this props))
-
-(def ui-edit-form (comp/factory EditForm))
-
 (defsc Show
   "Show a core node"
   [_this {::m.c.nodes/keys [id name network host port rpcuser rpcpass pruned?]
@@ -135,14 +116,14 @@
                        ::m.c.nodes/size-on-disk            0
                        ::m.c.nodes/initial-block-download? true
                        ::m.c.nodes/network                 (comp/get-initial-state u.links/NetworkLinkForm)
-                       :ui/admin-edit-form                 (comp/get-initial-state EditForm)
+                       :ui/admin-edit-form                 (comp/get-initial-state u.f.a.c.nodes/EditForm)
                        :ui/admin-editing?                  false
                        :ui/admin-nav-menu                  (comp/get-initial-state u.menus/NavMenu
                                                              {::m.navbars/id show-page-id
                                                               :id            id})
                        :ui/admin-router                    (comp/get-initial-state Router)}))
    :pre-merge     (u.loader/page-merger model-key
-                    {:ui/admin-edit-form [EditForm {}]
+                    {:ui/admin-edit-form [u.f.a.c.nodes/EditForm {}]
                      :ui/admin-nav-menu  [u.menus/NavMenu {::m.navbars/id show-page-id}]
                      :ui/admin-router    [Router {}]})
    :query         [::m.c.nodes/id
@@ -156,7 +137,7 @@
                    ::m.c.nodes/size-on-disk
                    ::m.c.nodes/initial-block-download?
                    {::m.c.nodes/network (comp/get-query u.links/NetworkLinkForm)}
-                   {:ui/admin-edit-form (comp/get-query EditForm)}
+                   {:ui/admin-edit-form (comp/get-query u.f.a.c.nodes/EditForm)}
                    :ui/admin-editing?
                    {:ui/admin-nav-menu (comp/get-query u.menus/NavMenu)}
                    {:ui/admin-router (comp/get-query Router)}]}
@@ -167,7 +148,7 @@
         (ui-segment {}
           (ui-actions-menu {model-key id})
           (if admin-editing?
-            (ui-edit-form admin-edit-form)
+            (u.f.a.c.nodes/ui-edit-form admin-edit-form)
             (dom/dl {}
               (dom/dt {} "Name")
               (dom/dd {} (str name))
@@ -196,22 +177,11 @@
 
 (def ui-show (comp/factory Show))
 
-(form/defsc-form NewForm [_this _props]
-  {fo/attributes   [m.c.nodes/name
-                    m.c.nodes/host
-                    m.c.nodes/port
-                    m.c.nodes/rpcuser
-                    m.c.nodes/rpcpass]
-   fo/cancel-route ["nodes"]
-   fo/id           m.c.nodes/id
-   fo/route-prefix "new-core-node"
-   fo/title        "Core Node"})
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New Node"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.a.c.nodes/NewForm))})
 
 (report/defsc-report Report
   [_this _props]

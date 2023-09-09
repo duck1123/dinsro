@@ -5,7 +5,6 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -15,9 +14,9 @@
    [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.rate-sources :as m.rate-sources]
-   [dinsro.mutations.rate-sources :as mu.rate-sources]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.settings.rate-sources :as u.f.s.rate-sources]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
@@ -36,33 +35,11 @@
 (def required-role :user)
 (def show-page-id :settings-rate-sources-show)
 
-(def run-button
-  {:type   :button
-   :local? true
-   :label  "Run"
-   :action
-   (fn [this _key]
-     (let [{id model-key} (comp/props this)]
-       (comp/transact! this [`(mu.rate-sources/run-query! {~model-key ~id})])))})
-
-(form/defsc-form NewForm
-  [_this _props]
-  {fo/action-buttons (concat [::run] form/standard-action-buttons)
-   fo/attributes     [m.rate-sources/name
-                      m.rate-sources/url
-                      m.rate-sources/active?
-                      m.rate-sources/path]
-   fo/cancel-route   ["rate-sources"]
-   fo/controls       (merge form/standard-controls {::run run-button})
-   fo/id             m.rate-sources/id
-   fo/route-prefix   "new-rate-source"
-   fo/title          "New Rate Source"})
-
 (def new-action-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.s.rate-sources/NewForm))})
 
 (defrouter Router
   [_this _props]

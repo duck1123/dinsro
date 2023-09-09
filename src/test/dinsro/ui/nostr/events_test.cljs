@@ -41,6 +41,7 @@
    ::m.n.pubkeys/hex     "deadbeef"
    ::m.n.pubkeys/picture "https://duck1123.com/images/duck1123.png"})
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard EventAuthor
   {}
   (ct.fulcro3/fulcro-card

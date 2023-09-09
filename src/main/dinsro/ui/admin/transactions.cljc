@@ -3,14 +3,11 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.transactions :as j.transactions]
-   [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.transactions :as m.transactions]
    [dinsro.mutations.transactions :as mu.transactions]
@@ -18,9 +15,9 @@
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.transactions :as u.f.a.transactions]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/transactions.cljc]]
@@ -36,32 +33,8 @@
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.transactions/delete!))
 
-(form/defsc-form NewDebit
-  [_this _props]
-  {fo/attributes    [m.debits/value
-                     m.debits/account]
-   fo/field-options {::m.debits/account u.pickers/admin-account-picker}
-   fo/field-styles  {::m.debits/account :pick-one}
-   fo/title         "Debit"
-   fo/route-prefix  "new-debit"
-   fo/id            m.debits/id})
-
-(form/defsc-form NewForm [_this _props]
-  {fo/attributes    [m.transactions/description
-                     m.transactions/date
-                     j.transactions/debits
-                     #_m.transactions/account
-                     #_m.transactions/user]
-   fo/cancel-route  ["transactions"]
-   ;; fo/field-styles  {::m.transactions/account :pick-one}
-   ;; fo/field-options {::m.transactions/account u.pickers/account-picker}
-   fo/id            m.transactions/id
-   fo/route-prefix  "new-transaction"
-   fo/subforms      {::j.transactions/debits {fo/ui NewDebit}}
-   fo/title         "Transaction"})
-
 (def new-button
-  (u.buttons/form-create-button "New Transaction" NewForm))
+  (u.buttons/form-create-button "New Transaction" u.f.a.transactions/AdminTransactionForm))
 
 (report/defsc-report Report
   [_this _props]
@@ -105,7 +78,7 @@
         (dom/p {}
           (dom/span {} "Date: ")
           (dom/span {} (u.controls/relative-date date)))
-        (u.buttons/form-edit-button this model-key "Edit" NewForm))
+        (u.buttons/form-edit-button this model-key "Edit" u.f.a.transactions/AdminTransactionForm))
       (u.debug/load-error props "asmin show transactions"))))
 
 (def ui-show (comp/factory Show))

@@ -5,8 +5,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -54,13 +52,6 @@
 (def show-page-id :nostr-events-show)
 
 (def show-witnesses? false)
-
-(form/defsc-form NewForm [_this _props]
-  {fo/attributes   [m.n.events/id]
-   fo/cancel-route ["events"]
-   fo/id           m.n.events/id
-   fo/route-prefix "new-event"
-   fo/title        "Event"})
 
 (defsc EventAuthorImage
   [_this {::m.n.pubkeys/keys [picture]}]

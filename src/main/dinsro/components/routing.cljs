@@ -40,7 +40,7 @@
   "Mutation. Called after auth startup. Looks at the session. If the user is not logged in, it triggers authentication"
   [_]
   (action [{:keys [app] :as env}]
-    (log/info :fix-route/starting {:env env})
+    (log/finest :fix-route/starting {:env env})
     (let [logged-in (auth/verified-authorities app)]
       (if (empty? logged-in)
         (hist5/restore-route! app u.home/IndexPage {})

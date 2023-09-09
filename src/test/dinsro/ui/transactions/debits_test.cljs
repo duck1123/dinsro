@@ -6,6 +6,7 @@
    [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard TransactionDebitsReport
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.t.debits/Report
@@ -13,6 +14,7 @@
     ::ct.fulcro3/initial-state
     (fn [] (mo.debits/make-debit-report))}))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard TransactionDebitsSubPage
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.t.debits/SubSection

@@ -1,28 +1,28 @@
 (ns dinsro.ui.admin.nostr.filters
-  (:require
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
-   #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.report :as report]
-   [com.fulcrologic.rad.report-options :as ro]
-   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
-   [dinsro.joins.nostr.filters :as j.n.filters]
-   [dinsro.model.navbars :as m.navbars]
-   [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.nostr.filters :as m.n.filters]
-   [dinsro.mutations.nostr.filters :as mu.n.filters]
-   [dinsro.options.navlinks :as o.navlinks]
-   [dinsro.ui.admin.nostr.filter-items :as u.a.n.filter-items]
-   [dinsro.ui.admin.nostr.filters.filter-items :as u.a.n.f.filter-items]
-   [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.debug :as u.debug]
-   [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]
-   [lambdaisland.glogc :as log]))
+  (:require #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
+            #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+            [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+            [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+            [com.fulcrologic.rad.report :as report]
+            [com.fulcrologic.rad.report-options :as ro]
+            [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+            [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
+            [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
+            [dinsro.joins.nostr.filters :as j.n.filters]
+            [dinsro.model.navbars :as m.navbars]
+            [dinsro.model.navlinks :as m.navlinks]
+            [dinsro.model.nostr.filters :as m.n.filters]
+            [dinsro.mutations.nostr.filters :as mu.n.filters]
+            [dinsro.options.navlinks :as o.navlinks]
+            [dinsro.ui.admin.nostr.filter-items :as u.a.n.filter-items]
+            [dinsro.ui.admin.nostr.filters.filter-items :as u.a.n.f.filter-items]
+            [dinsro.ui.buttons :as u.buttons]
+            [dinsro.ui.debug :as u.debug]
+            [dinsro.ui.forms.admin.nostr.filters.filter-items :as u.f.a.n.f.filter-items]
+            [dinsro.ui.links :as u.links]
+            [dinsro.ui.loader :as u.loader]
+            [dinsro.ui.menus :as u.menus]
+            [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/nostr/filters.cljc]]
 ;; [[../../../model/nostr/filters.cljc]]
@@ -64,7 +64,7 @@
   [_this _props]
   {:router-targets
    [u.a.n.f.filter-items/SubPage
-    u.a.n.f.filter-items/NewForm]})
+    u.f.a.n.f.filter-items/NewForm]})
 
 (def ui-router (comp/factory Router))
 

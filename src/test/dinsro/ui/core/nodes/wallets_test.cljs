@@ -6,6 +6,7 @@
    [nubank.workspaces.core :as ws]
    [nubank.workspaces.model :as wsm]))
 
+;; [[../../../../../main/dinsro/mocks/ui/core/nodes/wallets.cljc]]
 ;; [[../../../../../main/dinsro/ui/core/nodes/wallets.cljc]]
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}

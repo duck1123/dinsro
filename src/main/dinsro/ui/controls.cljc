@@ -16,8 +16,10 @@
    [dinsro.ui.debug :as u.debug]
    [lambdaisland.glogc :as log]))
 
-(def ui-moment #?(:cljs (interop/react-factory Moment)
-                  :clj (fn [_this _props])))
+(def ui-moment
+  #?(:cljs (interop/react-factory Moment)
+     :clj  (fn [_this _props])))
+
 (defn ref-control
   [{:keys [value]} _attribute]
   (dom/div :.ui
@@ -80,8 +82,14 @@
       (assoc-in [::control/type->style->control :uuid :default] uuid-control-render)))
 
 (defn relative-date
+  "Convert date to a relative interval"
   [v]
-  (when v (ui-moment {:fromNow :true :withTitle true} (str v))))
+  (log/info :relative-date/starting {:v v})
+  (when v
+    (ui-moment {:date      (str v)
+                :fromNow   :true
+                :withTitle true}
+      nil)))
 
 (defn date-formatter
   [_ v _]

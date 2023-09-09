@@ -7,6 +7,9 @@
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.ui.forms.ln.channels :as u.f.ln.channels]
+   [dinsro.ui.forms.ln.invoices :as u.f.ln.invoices]
+   [dinsro.ui.forms.ln.nodes :as u.f.ln.nodes]
    [dinsro.ui.ln.accounts :as u.ln.accounts]
    [dinsro.ui.ln.channels :as u.ln.channels]
    [dinsro.ui.ln.invoices :as u.ln.invoices]
@@ -20,13 +23,13 @@
 (defrouter Router
   [_this _props]
   {:router-targets [u.ln.accounts/IndexPage
-                    u.ln.channels/NewForm
+                    u.f.ln.channels/NewForm
                     u.ln.channels/IndexPage
                     u.ln.channels/ShowPage
-                    u.ln.invoices/NewForm
+                    u.f.ln.invoices/NewForm
                     u.ln.invoices/IndexPage
                     u.ln.invoices/ShowPage
-                    u.ln.nodes/NewForm
+                    u.f.ln.nodes/NewForm
                     u.ln.nodes/IndexPage
                     u.ln.nodes/ShowPage
                     u.ln.remote-nodes/ShowPage

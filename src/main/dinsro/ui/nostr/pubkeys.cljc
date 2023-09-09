@@ -1,36 +1,35 @@
 (ns dinsro.ui.nostr.pubkeys
-  (:require
-   [com.fulcrologic.fulcro-css.css :as css]
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
-   #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.report :as report]
-   [com.fulcrologic.rad.report-options :as ro]
-   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
-   [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
-   [dinsro.model.navbars :as m.navbars]
-   [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
-   [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
-   [dinsro.options.navlinks :as o.navlinks]
-   [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.debug :as u.debug]
-   [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.menus :as u.menus]
-   [dinsro.ui.nostr.pubkeys.badge-acceptances :as u.n.p.badge-acceptances]
-   [dinsro.ui.nostr.pubkeys.badge-awards :as u.n.p.badge-awards]
-   [dinsro.ui.nostr.pubkeys.badge-definitions :as u.n.p.badge-definitions]
-   [dinsro.ui.nostr.pubkeys.contacts :as u.n.p.contacts]
-   [dinsro.ui.nostr.pubkeys.events :as u.n.p.events]
-   [dinsro.ui.nostr.pubkeys.items :as u.n.p.items]
-   [dinsro.ui.nostr.pubkeys.relays :as u.n.p.relays]
-   [dinsro.ui.nostr.pubkeys.users :as u.n.p.users]
-   [lambdaisland.glogc :as log]))
+  (:require #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
+            #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+            [com.fulcrologic.fulcro-css.css :as css]
+            [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+            [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
+            [com.fulcrologic.rad.form :as form]
+            [com.fulcrologic.rad.report :as report]
+            [com.fulcrologic.rad.report-options :as ro]
+            [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+            [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
+            [dinsro.joins.nostr.pubkeys :as j.n.pubkeys]
+            [dinsro.model.navbars :as m.navbars]
+            [dinsro.model.navlinks :as m.navlinks]
+            [dinsro.model.nostr.pubkeys :as m.n.pubkeys]
+            [dinsro.mutations.nostr.pubkeys :as mu.n.pubkeys]
+            [dinsro.options.navlinks :as o.navlinks]
+            [dinsro.ui.buttons :as u.buttons]
+            [dinsro.ui.debug :as u.debug]
+            [dinsro.ui.forms.nostr.pubkeys :as u.f.n.pubkeys]
+            [dinsro.ui.links :as u.links]
+            [dinsro.ui.loader :as u.loader]
+            [dinsro.ui.menus :as u.menus]
+            [dinsro.ui.nostr.pubkeys.badge-acceptances :as u.n.p.badge-acceptances]
+            [dinsro.ui.nostr.pubkeys.badge-awards :as u.n.p.badge-awards]
+            [dinsro.ui.nostr.pubkeys.badge-definitions :as u.n.p.badge-definitions]
+            [dinsro.ui.nostr.pubkeys.contacts :as u.n.p.contacts]
+            [dinsro.ui.nostr.pubkeys.events :as u.n.p.events]
+            [dinsro.ui.nostr.pubkeys.items :as u.n.p.items]
+            [dinsro.ui.nostr.pubkeys.relays :as u.n.p.relays]
+            [dinsro.ui.nostr.pubkeys.users :as u.n.p.users]
+            [lambdaisland.glogc :as log]))
 
 ;; [[../../actions/nostr/pubkeys.clj]]
 ;; [[../../joins/nostr/pubkeys.cljc]]
@@ -119,19 +118,11 @@
 
 (def ui-pubkey-info (comp/factory PubkeyInfo))
 
-(form/defsc-form CreateForm
-  [_this _props]
-  {fo/attributes   [m.n.pubkeys/hex]
-   fo/cancel-route ["pubkeys"]
-   fo/id           m.n.pubkeys/id
-   fo/route-prefix "create-pubkey"
-   fo/title        "Create A Pubkey"})
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this CreateForm))})
+   :action (fn [this _] (form/create! this u.f.n.pubkeys/CreateForm))})
 
 (report/defsc-report Report
   [_this _props]

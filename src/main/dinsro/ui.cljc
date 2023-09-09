@@ -35,6 +35,10 @@
    [dinsro.ui.core :as u.core]
    [dinsro.ui.currencies :as u.currencies]
    [dinsro.ui.debits :as u.debits]
+   [dinsro.ui.forms.categories :as u.f.categories]
+   [dinsro.ui.forms.contacts :as u.f.contacts]
+   [dinsro.ui.forms.currencies :as u.f.currencies]
+   [dinsro.ui.forms.transactions :as u.f.transactions]
    [dinsro.ui.home :as u.home]
    [dinsro.ui.initialize :as u.initialize]
    [dinsro.ui.ln :as u.ln]
@@ -68,18 +72,18 @@
   [_this {:keys [current-state route-factory route-props]}]
   {:css            [[:.root-router {:height "100%"}]]
    :router-targets [u.accounts/IndexPage
-                    u.accounts/NewForm
+                    ;; u.accounts/NewForm
                     u.accounts/ShowPage
                     u.admin/IndexPage
                     u.categories/IndexPage
-                    u.categories/NewForm
+                    u.f.categories/NewForm
                     u.categories/ShowPage
-                    u.contacts/NewContactForm
+                    u.f.contacts/NewContactForm
                     u.contacts/ShowPage
                     u.contacts/IndexPage
                     u.core/IndexPage
                     u.currencies/IndexPage
-                    u.currencies/NewForm
+                    u.f.currencies/NewForm
                     u.currencies/ShowPage
                     u.debits/ShowPage
                     u.home/IndexPage
@@ -90,7 +94,7 @@
                     u.nostr/IndexPage
                     u.registration/IndexPage
                     u.settings/IndexPage
-                    u.transactions/NewTransaction
+                    u.f.transactions/NewTransaction
                     u.transactions/ShowPage
                     u.transactions/IndexPage]}
   (let [{:keys [root-router]} (css/get-classnames RootRouter)]

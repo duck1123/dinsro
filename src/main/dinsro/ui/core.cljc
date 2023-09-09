@@ -16,8 +16,13 @@
    [dinsro.ui.core.peers :as u.c.peers]
    [dinsro.ui.core.transactions :as u.c.transactions]
    [dinsro.ui.core.wallets :as u.c.wallets]
-   [dinsro.ui.core.wallets.addresses :as u.c.w.addresses]
-   [dinsro.ui.core.words :as u.c.words]))
+   [dinsro.ui.core.words :as u.c.words]
+   [dinsro.ui.forms.core.addresses :as u.f.c.addresses]
+   [dinsro.ui.forms.core.chains :as u.f.c.chains]
+   [dinsro.ui.forms.core.nodes :as u.f.c.nodes]
+   [dinsro.ui.forms.core.peers :as u.f.c.peers]
+   [dinsro.ui.forms.core.wallets :as u.f.c.wallets]
+   [dinsro.ui.forms.core.wallets.addresses :as u.f.c.w.addresses]))
 
 ;; [[../ui.cljc]]
 
@@ -28,29 +33,29 @@
 (defrouter Router
   [_this {:keys [current-state pending-path-segment]
           :as props}]
-  {:router-targets [u.c.addresses/NewForm
+  {:router-targets [u.f.c.addresses/NewForm
                     u.c.addresses/IndexPage
                     u.c.blocks/ShowPage
                     u.c.blocks/IndexPage
-                    u.c.chains/NewForm
+                    u.f.c.chains/NewForm
                     u.c.chains/IndexPage
                     u.c.chains/ShowPage
                     u.c.mnemonics/IndexPage
                     u.c.networks/IndexPage
                     u.c.networks/ShowPage
-                    u.c.nodes/NewForm
+                    u.f.c.nodes/NewForm
                     u.c.nodes/IndexPage
                     u.c.nodes/ShowPage
                     u.c.peers/IndexPage
                     u.c.peers/ShowPage
-                    u.c.peers/NewForm
+                    u.f.c.peers/NewForm
                     u.c.transactions/IndexPage
                     u.c.transactions/ShowPage
-                    u.c.wallets/NewForm
+                    u.f.c.wallets/NewForm
                     u.c.wallets/ShowPage
                     u.c.wallets/IndexPage
-                    u.c.w.addresses/NewForm
-                    u.c.w.addresses/WalletAddressForm
+                    u.f.c.w.addresses/NewForm
+                    u.f.c.w.addresses/WalletAddressForm
                     u.c.words/IndexPage]}
   (case current-state
     :pending

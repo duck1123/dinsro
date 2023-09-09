@@ -15,6 +15,7 @@
    ::m.n.event-tags/raw-value (ds/gen-key ::m.n.event-tags/raw-value)
    ::m.n.event-tags/type      "e"})
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard TagDisplay
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.n.event-tags/TagDisplay

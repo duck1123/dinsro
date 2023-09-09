@@ -78,7 +78,7 @@
   [parent-model-key mappings]
   (fn [ctx]
     (let [merged (merge-pages ctx parent-model-key mappings)]
-      (log/info :page-merger/finished
+      (log/finest :page-merger/finished
         {:parent-model-key parent-model-key
          :merged           merged
          :mappings         mappings

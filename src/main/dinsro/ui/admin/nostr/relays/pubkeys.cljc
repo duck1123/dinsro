@@ -5,7 +5,6 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -18,6 +17,7 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
+   [dinsro.ui.forms.admin.nostr.relays.pubkeys :as u.f.a.n.r.pubkeys]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
@@ -47,18 +47,11 @@
 (def fetch-contacts-action
   (u.buttons/subrow-action-button "Fetch Contacts" model-key parent-model-key  mu.n.pubkeys/fetch-contacts!))
 
-(form/defsc-form AddForm
-  [_this _props]
-  {fo/attributes   [m.n.pubkeys/hex]
-   fo/id           m.n.pubkeys/id
-   fo/route-prefix "new-pubkey"
-   fo/title        "Pubkey"})
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this AddForm))})
+   :action (fn [this _] (form/create! this u.f.a.n.r.pubkeys/AddForm))})
 
 (defn picture-formatter
   [_ picture]

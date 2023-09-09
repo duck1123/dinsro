@@ -5,7 +5,6 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -26,6 +25,7 @@
    [dinsro.ui.admin.users.wallets :as u.a.u.wallets]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.users :as u.f.a.users]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [dinsro.ui.menus :as u.menus]
@@ -126,20 +126,10 @@
 
 (def ui-show (comp/factory Show))
 
-(form/defsc-form UserForm
-  [_this _props]
-  {fo/attributes   [m.users/name
-                    m.users/role
-                    m.users/password]
-   fo/cancel-route ["admin"]
-   fo/id           m.users/id
-   fo/route-prefix "admin-user"
-   fo/title        "Admin User"})
-
 (def new-button
   {:label  "New User"
    :type   :button
-   :action (fn [this] (form/create! this UserForm))})
+   :action (fn [this] (form/create! this u.f.a.users/UserForm))})
 
 (report/defsc-report Report
   [_this _props]

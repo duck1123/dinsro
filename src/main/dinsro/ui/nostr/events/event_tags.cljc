@@ -3,7 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -14,6 +13,7 @@
    [dinsro.options.nostr.event-tags :as o.n.event-tags]
    [dinsro.options.nostr.events :as o.n.events]
    [dinsro.ui.controls :as u.controls]
+   [dinsro.ui.forms.nostr.events.event-tags :as u.f.n.e.event-tags]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
@@ -27,18 +27,11 @@
 (def required-role :user)
 (def router-key :dinsro.ui.nostr.events/Router)
 
-(form/defsc-form AddForm
-  [_this _props]
-  {fo/attributes   [m.n.event-tags/index]
-   fo/id           m.n.event-tags/id
-   fo/route-prefix "new-tag"
-   fo/title        "Tags"})
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this AddForm))})
+   :action (fn [this _] (form/create! this u.f.n.e.event-tags/AddForm))})
 
 (report/defsc-report Report
   [_this _props]

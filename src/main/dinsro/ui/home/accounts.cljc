@@ -16,7 +16,7 @@
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.accounts :as j.accounts]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.ui.accounts :as u.accounts]
+   [dinsro.ui.forms.accounts :as u.f.accounts]
    [dinsro.ui.links :as u.links]))
 
 ;; [[../../joins/accounts.cljc]]
@@ -31,7 +31,7 @@
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this u.accounts/NewForm))})
+   :action (fn [this _] (form/create! this u.f.accounts/NewForm))})
 
 (defsc BodyItem
   [_this {::m.accounts/keys [currency]

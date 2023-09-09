@@ -4,7 +4,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -15,6 +14,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.options.categories :as o.categories]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.ui.forms.categories :as u.f.categories]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]))
 
@@ -28,35 +28,11 @@
 (def required-role :user)
 (def show-page-id :categories-show)
 
-(form/defsc-form NewForm
-  [_this _props]
-  {fo/attributes   [m.categories/name]
-   fo/cancel-route ["categories"]
-   fo/field-styles {o.categories/user :link}
-   fo/id           m.categories/id
-   fo/route-prefix "new-category"
-   fo/title        "New Category"})
-
-(def override-form true)
-
-(form/defsc-form CategoryForm
-  [this props]
-  {fo/attributes   [m.categories/name
-                    m.categories/user]
-   fo/cancel-route ["categories"]
-   fo/field-styles {o.categories/user :link}
-   fo/id           m.categories/id
-   fo/route-prefix "category"
-   fo/title        "Edit Category"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div {} (dom/p {} "Category"))))
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.categories/NewForm))})
 
 (report/defsc-report Report
   [_this _props]
@@ -66,7 +42,7 @@
    ro/control-layout    {:action-buttons [::new]}
    ro/controls          {::new     new-button
                          ::refresh u.links/refresh-control}
-   ro/form-links        {o.categories/name CategoryForm}
+   ro/form-links        {o.categories/name u.f.categories/CategoryForm}
    ro/machine           spr/machine
    ro/page-size         10
    ro/paginate?         true

@@ -15,8 +15,8 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
+   [dinsro.ui.forms.ln.channels :as u.f.ln.channels]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.ln.channels :as u.ln.channels]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
 
@@ -48,7 +48,7 @@
                                              :controls   controls
                                              :id-control id-control
                                              :node-id    node-id})
-               (form/create! this u.ln.channels/NewForm
+               (form/create! this u.f.ln.channels/NewForm
                              {:initial-state {::m.ln.channels/address "foo"}})))})
 
 (report/defsc-report Report

@@ -20,8 +20,7 @@
   (log/info :create!/starting {:props props})
   (let [actor-id       (get-in env [:query-params :actor/id])
         currency-id    (get-in props [o.accounts/currency o.currencies/id])
-        selected-props (select-keys props #{o.accounts/name
-                                            o.accounts/initial-value})
+        selected-props (select-keys props #{o.accounts/name o.accounts/initial-value})
         computed-props {o.accounts/user     actor-id
                         o.accounts/currency currency-id}
         account-props  (merge selected-props computed-props)]

@@ -1,48 +1,20 @@
 (ns dinsro.ui.accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.data-fetch :as df]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
-   [com.fulcrologic.fulcro.mutations :as fm]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
-   [com.fulcrologic.rad.report-options :as ro]
-   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [com.fulcrologic.semantic-ui.collections.form.ui-form :refer [ui-form]]
-   [com.fulcrologic.semantic-ui.collections.form.ui-form-field :refer [ui-form-field]]
-   [com.fulcrologic.semantic-ui.collections.form.ui-form-input :as ufi :refer [ui-form-input]]
-   [com.fulcrologic.semantic-ui.collections.grid.ui-grid :refer [ui-grid]]
-   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-column :refer [ui-grid-column]]
-   [com.fulcrologic.semantic-ui.collections.grid.ui-grid-row :refer [ui-grid-row]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table :refer [ui-table]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table-body :refer [ui-table-body]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
-   [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
-   [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
-   [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
-   [com.fulcrologic.semantic-ui.elements.list.ui-list-item :refer [ui-list-item]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
-   [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown :refer [ui-dropdown]]
-   [dinsro.joins.accounts :as j.accounts]
-   [dinsro.joins.currencies :as j.currencies]
    [dinsro.model.accounts :as m.accounts]
-   [dinsro.model.currencies :as m.currencies]
-   [dinsro.model.debits :as m.debits]
    [dinsro.model.navlinks :as m.navlinks :refer [defroute]]
-   [dinsro.mutations.accounts :as mu.accounts]
    [dinsro.options.accounts :as o.accounts]
-   [dinsro.options.currencies :as o.currencies]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.accounts.transactions :as u.a.transactions]
-   [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.accounts :as u.f.accounts]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.pickers :as u.pickers]
+   [dinsro.ui.reports.accounts :as u.r.accounts]
    [lambdaisland.glogc :as log]))
 
 ;; [[../joins/accounts.cljc]]
@@ -56,340 +28,8 @@
 (def parent-router-id :root)
 (def show-page-id :accounts-show)
 
-(def override-form? true)
-(def override-report? false)
-(def override-controls? false)
 (def show-transactions true)
-(def use-index-table? false)
-(def debug-form-props? true)
-(def show-form? true)
-
-(def create-action
-  (u.buttons/form-action-button
-   "Create" mu.accounts/create!
-   #{o.accounts/currency o.accounts/name o.accounts/initial-value}))
-
-(def delete-action
-  (u.buttons/row-action-button "Delete" model-key mu.accounts/delete!))
-
-;; Create form for accounts as a user
-(form/defsc-form NewForm
-  [this {currency      o.accounts/currency
-         name          o.accounts/name
-         initial-value o.accounts/initial-value
-         :as           props}]
-  {fo/action-buttons [::create]
-   fo/attributes     [m.accounts/name
-                      m.accounts/currency
-                      m.accounts/initial-value]
-   fo/cancel-route   ["accounts"]
-   fo/controls       (merge form/standard-controls {::create create-action})
-   fo/default-values {o.accounts/initial-value 0}
-   fo/field-options  {o.accounts/currency u.pickers/currency-picker
-                      o.accounts/user     u.pickers/user-picker}
-   fo/field-styles   {o.accounts/currency :pick-one
-                      o.accounts/user     :pick-one}
-   fo/id             m.accounts/id
-   fo/route-prefix   "new-account"
-   fo/title          "Create Account"}
-  (if override-form?
-    (form/render-layout this props)
-    (ui-segment {}
-      (dom/div {}
-        (str "Account: " name))
-      (dom/div {}
-        (str "Initial Value: " initial-value))
-      (dom/div {}
-        "Currency: " (u.links/ui-currency-link currency)))))
-
-;; Create form for accounts as a user
-(form/defsc-form InlineForm-form
-  [this {currency      o.accounts/currency
-         name          o.accounts/name
-         initial-value o.accounts/initial-value
-         :as           props}]
-  {fo/action-buttons [::create]
-   fo/attributes     [m.accounts/name
-                      m.accounts/currency
-                      m.accounts/initial-value]
-   fo/controls       (merge form/standard-controls {::create create-action})
-   fo/default-values {o.accounts/initial-value 0}
-   fo/field-options  {o.accounts/currency u.pickers/currency-picker
-                      o.accounts/user     u.pickers/user-picker}
-   fo/field-styles   {o.accounts/currency :pick-one
-                      o.accounts/user     :pick-one}
-   fo/id             m.accounts/id
-   fo/title          "Create Account"}
-  (if override-form?
-    (form/render-layout this props)
-    (ui-segment {}
-      (dom/div {}
-        (str "Account: " name))
-      (dom/div {}
-        (str "Initial Value: " initial-value))
-      (dom/div {}
-        "Currency: " (u.links/ui-currency-link currency)))))
-
-(defsc CurrencyListItem
-  [_this props]
-  {:ident         ::m.currencies/id
-   :initial-state (fn [_props]
-                    {o.currencies/id   nil
-                     o.currencies/name ""})
-   :query         (fn []
-                    [o.currencies/id
-                     o.currencies/name])}
-  (log/info :CurrencyListItem/starting {:props props})
-  (dom/div {}
-    (u.debug/log-props props)))
-
-(def ui-currency-list-item (comp/factory CurrencyListItem {:keyfn o.currencies/id}))
-
-(def currency-load-marker ::currency-load-marker)
-
-(defsc InlineForm-component
-  [this {initial-value o.accounts/initial-value
-         name          o.accounts/name
-         currencies    ::j.currencies/flat-index
-         currency-id   :ui/currency-id
-         :as           props}]
-  {:componentDidMount
-   (fn [this]
-     (let [props (comp/props this)]
-       (log/info :InlineForm-component/mounted {:props props :this this})
-       (let [currencies-loaded? (:ui/currencies-loaded? props)]
-         (log/info :InlineForm-component/mounted
-           {:props              props
-            :this               this
-            :currencies-loaded? currencies-loaded?})
-         (if currencies-loaded?
-           (do
-             (log/info :InlineForm-component/already-loaded {})
-             nil)
-           (do
-             (log/info :InlineForm-component/loading {})
-             (df/load! this ::j.currencies/flat-index CurrencyListItem
-                       {:marker currency-load-marker
-                        :target [:component/id ::NewForm ::j.currencies/flat-index]})
-             nil)))))
-   :ident         (fn [] [:component/id ::NewForm])
-   :initial-state (fn [_props]
-                    {:component/id             ::NewForm
-                     ::j.currencies/flat-index []
-                     :ui/currency-id           nil
-                     o.accounts/initial-value  0
-                     o.accounts/name           ""
-                     :ui/currencies-loaded?    false})
-   :query         (fn []
-                    [:component/id
-                     [df/marker-table currency-load-marker]
-                     {::j.currencies/flat-index (comp/get-query CurrencyListItem)}
-                     o.accounts/initial-value
-                     o.accounts/name
-                     :ui/currency-id
-                     :ui/currencies-loaded?])}
-  (log/info :InlineForm-component/starting {:props props})
-  (ui-segment {}
-    (when show-form?
-      (ui-form {}
-        (ui-form-field {}
-          (ui-form-input {:value    (str name)
-                          :onChange (fn [evt _] (fm/set-string! this o.accounts/name :event evt))
-                          :label    "Name"}))
-        (ui-form-field {}
-          (ui-form-input {:value    (str currency-id)
-                          :onChange (fn [evt _] (fm/set-string! this :ui/currency-id :event evt))
-                          :label    "Currency Id"}))
-        (ui-form-field {}
-          (ui-dropdown
-           {:label       "Currency"
-            :onChange    (fn [evt _] (fm/set-string! this :ui/currency-id :event evt))
-            :placeholder "Currency"
-            :selection   true
-            :clearable   true
-            :options     (map
-                          (fn [currency]
-                            {:text  (o.currencies/name currency)
-                             :value (str (o.currencies/id currency))})
-                          currencies)})
-          (ui-form-input
-           {:value    (str currency-id)
-            :onChange (fn [evt _] (fm/set-string! this o.accounts/initial-value :event evt))
-            :label    "Initial Value"}))
-        (ui-form-field {}
-          (ui-button
-           {:content "Submit"
-            :primary true
-            :fluid   true
-            :size    "large"
-            :onClick
-            (fn [_ev]
-              (comp/transact! this
-                [(list `mu.accounts/create! {o.accounts/initial-value initial-value})]))}))
-        (when debug-form-props?
-          (ui-form-field {}
-            (u.debug/log-props props)))))))
-
-(def ui-inline-form-component (comp/factory InlineForm-component {:keyfn model-key}))
-(def ui-inline-form-form (comp/factory InlineForm-form {:keyfn model-key}))
-
-(def InlineForm InlineForm-component)
-(def ui-inline-form ui-inline-form-component)
-
-(def new-button
-  {:type   :button
-   :local? true
-   :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
-
-(defsc DebitLine
-  [_this {::m.debits/keys [value]}]
-  {:ident         ::m.debits/id
-   :initial-state {::m.debits/id    nil
-                   ::m.debits/value 0}
-   :query         [::m.debits/id
-                   ::m.debits/value]}
-  (ui-list-item {}
-    (str value)))
-
-(def ui-debit-line (comp/factory DebitLine {:keyfn ::m.debits/id}))
-
-(defsc BodyItem-list
-  [this {::m.accounts/keys [currency initial-value wallet]
-         ::j.accounts/keys [debit-count]
-         :as               props}]
-  {:ident         ::m.accounts/id
-   :initial-state (fn [_props]
-                    {o.accounts/id            nil
-                     o.accounts/name          ""
-                     o.accounts/currency      (comp/get-initial-state u.links/CurrencyLinkForm {})
-                     o.accounts/initial-value 0
-                     o.accounts/wallet        (comp/get-initial-state u.links/WalletLinkForm {})
-                     ::j.accounts/debit-count 0
-                     ::j.accounts/debits      []})
-   :query         (fn []
-                    [o.accounts/id
-                     o.accounts/name
-                     {o.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
-                     o.accounts/initial-value
-                     {o.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
-                     ::j.accounts/debit-count
-                     {::j.accounts/debits (comp/get-query DebitLine)}])}
-  (ui-grid-column {:computer 4 :tablet 8 :mobile 16}
-    (ui-segment {}
-      (dom/div {}
-        (dom/div {}
-          (u.links/ui-account-link props)
-          " (" (u.links/ui-currency-link currency) ")")
-        (dom/div {}
-          (str "Initial Value: " initial-value))
-        (dom/div {}
-          (when wallet
-            (dom/span {}
-              (dom/span {} "Wallet: ")
-              (u.links/ui-wallet-link wallet))))
-        (dom/div {} "Debit count: " (str debit-count)))
-      (dom/div {}
-        (dom/div {} (u.buttons/delete-button `mu.accounts/delete! model-key this))))))
-
-(def ui-body-item-list (comp/factory BodyItem-list {:keyfn o.accounts/id}))
-
-(defsc BodyItem-table
-  [this {::m.accounts/keys [currency initial-value wallet]
-         ::j.accounts/keys [debit-count]
-         :as               props}]
-  {:ident         ::m.accounts/id
-   :initial-state (fn [_props]
-                    {o.accounts/id            nil
-                     o.accounts/name          ""
-                     o.accounts/currency      (comp/get-initial-state u.links/CurrencyLinkForm {})
-                     o.accounts/initial-value 0
-                     o.accounts/wallet        (comp/get-initial-state u.links/WalletLinkForm {})
-                     ::j.accounts/debit-count 0
-                     ::j.accounts/debits      []})
-   :query         (fn []
-                    [o.accounts/id
-                     o.accounts/name
-                     {o.accounts/currency (comp/get-query u.links/CurrencyLinkForm)}
-                     o.accounts/initial-value
-                     {o.accounts/wallet (comp/get-query u.links/WalletLinkForm)}
-                     ::j.accounts/debit-count
-                     {::j.accounts/debits (comp/get-query DebitLine)}])}
-  (ui-table-row {}
-    (ui-table-cell {} (u.links/ui-account-link props))
-    (ui-table-cell {} (u.links/ui-currency-link currency))
-    (ui-table-cell {} (str initial-value))
-    (ui-table-cell {} (when wallet (u.links/ui-wallet-link wallet)))
-    (ui-table-cell {} (str debit-count))
-    (ui-table-cell {} (u.buttons/delete-button `mu.accounts/delete! model-key this))))
-
-(def BodyItem BodyItem-table)
-
-(def ui-body-item-table (comp/factory BodyItem-table {:keyfn ::m.accounts/id}))
-(def ui-body-item ui-body-item-table)
-
-(report/defsc-report Report
-  [this props]
-  {ro/BodyItem          BodyItem
-   ro/column-formatters {::m.accounts/currency #(u.links/ui-currency-link %2)
-                         ::m.accounts/user     #(u.links/ui-user-link %2)
-                         ::m.accounts/name     #(u.links/ui-account-link %3)
-                         ::m.accounts/wallet   #(when %2 (u.links/ui-wallet-link %2))
-                         ::m.accounts/source   #(u.links/ui-rate-source-link %2)}
-   ro/columns           [m.accounts/name
-                         m.accounts/currency
-                         m.accounts/initial-value
-                         m.accounts/wallet
-                         j.accounts/debit-count]
-   ro/control-layout    {:action-buttons [::new ::refresh]}
-   ro/controls          {::new     new-button
-                         ::refresh u.links/refresh-control}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
-   ro/row-actions       [delete-action]
-   ro/row-pk            m.accounts/id
-   ro/run-on-mount?     true
-   ro/source-attribute  ::j.accounts/index
-   ro/title             "Accounts"}
-  (let [{:ui/keys [current-rows]} props]
-    (if override-report?
-      (report/render-layout this)
-      (dom/div {}
-        (ui-segment {}
-          (dom/h1 {}
-            (ui-grid {}
-              (ui-grid-row {}
-                (ui-grid-column {:width 8}
-                  (dom/span {} "Accounts"))
-                (ui-grid-column {:floated "right" :width 8}
-                  (when-not override-controls?
-                    (ui-button-group {:compact true :floated "right"}
-                      (u.buttons/create-button this NewForm)
-                      (u.buttons/refresh-button this))))))))
-
-        (if override-controls?
-          ((report/control-renderer this) this)
-          (comment (dom/div {}
-                     "controls")))
-
-        (if use-index-table?
-          (ui-table {}
-            (ui-table-header {}
-              (ui-table-row {}
-                (ui-table-header-cell {} "Name")
-                (ui-table-header-cell {} "Currency")
-                (ui-table-header-cell {} "Initial Value")
-                (ui-table-header-cell {} "Wallet")
-                (ui-table-header-cell {} "Debit Count")))
-            (ui-table-body {}
-              (map ui-body-item current-rows)))
-          (ui-segment {}
-            (ui-grid {}
-              (ui-grid-row {}
-                (map ui-body-item-list current-rows)))))))))
-
-(def ui-report (comp/factory Report))
+(def use-form2? false)
 
 (defsc Show
   [_this {::m.accounts/keys [id name currency source wallet]
@@ -423,7 +63,6 @@
               (dom/span {} "(")
               (u.links/ui-currency-link currency)
               (dom/span {} ")"))))
-
         (dom/dl {}
           (dom/dt {} "Source")
           (dom/dd {}
@@ -448,24 +87,37 @@
 (def ui-show (comp/factory Show))
 
 (defsc IndexPage
-  [_this {:ui/keys [form report]
+  [_this {:ui/keys [form form2 report]
           :as      props}]
-  {:componentDidMount #(report/start-report! % Report {})
+  {:componentDidMount (fn [this]
+                        (let [props (comp/props this)]
+                          (log/info :IndexPage/did-mount {:this this
+                                                          :props props})
+                          (report/start-report! this u.r.accounts/Report {})))
    :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [_props]
                         {o.navlinks/id index-page-id
-                         :ui/form     (comp/get-initial-state InlineForm {})
-                         :ui/report    (comp/get-initial-state Report {})})
+                         :ui/form      (comp/get-initial-state u.f.accounts/InlineForm {})
+                         :ui/form2     (or (comp/get-initial-state u.f.accounts/InlineForm-form {}) {})
+                         :ui/report    (comp/get-initial-state u.r.accounts/Report {})})
    :query             (fn []
                         [o.navlinks/id
-                         {:ui/form (comp/get-query InlineForm {})}
-                         {:ui/report (comp/get-query Report {})}])
+                         {:ui/form (comp/get-query u.f.accounts/InlineForm {})}
+                         {:ui/form2 (comp/get-query u.f.accounts/InlineForm-form {})}
+                         {:ui/report (comp/get-query u.r.accounts/Report {})}])
    :route-segment     [index-page-segment]
    :will-enter        (u.loader/page-loader index-page-id)}
   (log/info :Page/starting {:props props})
   (dom/div {}
-    (ui-inline-form form)
-    (ui-report report)))
+    (if-not use-form2?
+      (u.f.accounts/ui-inline-form form)
+      (if form2
+        (u.f.accounts/ui-inline-form-form form2)
+        (dom/div {} "No Form")))
+    (u.r.accounts/ui-report report)
+    #_(u.debug/log-props props)
+    #_(u.debug/log-props (comp/get-initial-state InlineForm-form))
+    #_(u.debug/log-list (or (comp/get-query InlineForm-form) {}))))
 
 (defsc ShowPage
   [_this props]

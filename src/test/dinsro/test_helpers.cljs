@@ -14,7 +14,6 @@
      {:client-will-mount client/setup-RAD
       :submit-transaction!
       (fn [app tx]
-        (log/info :submit-transaction!/creating {:app app
-                                                 :tx  tx}))}
+        (log/info :submit-transaction!/creating {:app app :tx tx}))}
      ::ct.fulcro3/initial-state state})
    opts))

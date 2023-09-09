@@ -4,8 +4,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -29,22 +27,9 @@
 
 (def index-page-id :admin-core-chains)
 (def model-key o.c.chains/id)
-(def override-form false)
 (def parent-router-id :admin-core)
 (def required-role :admin)
 (def show-page-id :admin-core-chains-show)
-
-(form/defsc-form NewForm
-  [this props]
-  {fo/attributes     [m.c.chains/name]
-   fo/cancel-route   ["chains"]
-   fo/id             m.c.chains/id
-   fo/route-prefix   "edit-chain"
-   fo/title          "Chain"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div {}
-      (form/render-layout this props))))
 
 (defrouter Router
   [_this _props]

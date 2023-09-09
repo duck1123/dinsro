@@ -10,8 +10,13 @@
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../ui/core/nodes.cljc]]
+;; [[../../../../../test/dinsro/ui/core/nodes_test.cljs]]
 
 (def gen? true)
+
+(defn actions-menu-data
+  []
+  {::m.c.nodes/id (ds/gen-key ::m.c.nodes/id)})
 
 (defn Show-data
   []

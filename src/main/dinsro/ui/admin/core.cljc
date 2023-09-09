@@ -21,6 +21,11 @@
    [dinsro.ui.admin.core.wallets :as u.a.c.wallets]
    [dinsro.ui.admin.core.words :as u.a.c.words]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.core.addresses :as u.f.a.c.addresses]
+   [dinsro.ui.forms.admin.core.chains :as u.f.a.c.chains]
+   [dinsro.ui.forms.admin.core.nodes :as u.f.a.c.nodes]
+   [dinsro.ui.forms.admin.core.peers :as u.f.a.c.peers]
+   [dinsro.ui.forms.admin.core.wallets :as u.f.a.c.wallets]
    [dinsro.ui.menus :as u.menus]
    [lambdaisland.glogc :as log]))
 
@@ -35,28 +40,28 @@
   {:router-targets
    [u.a.c.dashboard/Page
     u.a.c.addresses/IndexPage
-    u.a.c.addresses/NewForm
+    u.f.a.c.addresses/NewForm
     u.a.c.addresses/ShowPage
     u.a.c.blocks/IndexPage
     u.a.c.blocks/ShowPage
     u.a.c.chains/IndexPage
-    u.a.c.chains/NewForm
+    u.f.a.c.chains/NewForm
     u.a.c.chains/ShowPage
     u.a.c.mnemonics/IndexPage
     u.a.c.mnemonics/ShowPage
     u.a.c.networks/IndexPage
     u.a.c.networks/ShowPage
     u.a.c.nodes/IndexPage
-    u.a.c.nodes/NewForm
+    u.f.a.c.nodes/NewForm
     u.a.c.nodes/ShowPage
     u.a.c.peers/IndexPage
-    u.a.c.peers/NewForm
+    u.f.a.c.peers/NewForm
     u.a.c.peers/ShowPage
     u.a.c.transactions/IndexPage
     u.a.c.transactions/ShowPage
     u.a.c.wallet-addresses/IndexPage
     u.a.c.wallets/IndexPage
-    u.a.c.wallets/NewForm
+    u.f.a.c.wallets/NewForm
     u.a.c.wallets/ShowPage
     u.a.c.words/IndexPage
     u.a.c.words/ShowPage]})

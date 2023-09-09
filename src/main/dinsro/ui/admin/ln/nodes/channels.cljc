@@ -1,24 +1,23 @@
 (ns dinsro.ui.admin.ln.nodes.channels
-  (:require
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-   [com.fulcrologic.rad.control :as control]
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
-   [com.fulcrologic.rad.report :as report]
-   [com.fulcrologic.rad.report-options :as ro]
-   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
-   [dinsro.joins.ln.channels :as j.ln.channels]
-   [dinsro.model.ln.channels :as m.ln.channels]
-   [dinsro.model.ln.nodes :as m.ln.nodes]
-   [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.mutations.ln.channels :as mu.ln.channels]
-   [dinsro.options.navlinks :as o.navlinks]
-   [dinsro.ui.buttons :as u.buttons]
-   [dinsro.ui.controls :as u.controls]
-   [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
-   [lambdaisland.glogc :as log]))
+  (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+            [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+            [com.fulcrologic.rad.control :as control]
+            [com.fulcrologic.rad.form :as form]
+            [com.fulcrologic.rad.report :as report]
+            [com.fulcrologic.rad.report-options :as ro]
+            [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
+            [dinsro.joins.ln.channels :as j.ln.channels]
+            [dinsro.model.ln.channels :as m.ln.channels]
+            [dinsro.model.ln.nodes :as m.ln.nodes]
+            [dinsro.model.navlinks :as m.navlinks]
+            [dinsro.mutations.ln.channels :as mu.ln.channels]
+            [dinsro.options.navlinks :as o.navlinks]
+            [dinsro.ui.buttons :as u.buttons]
+            [dinsro.ui.controls :as u.controls]
+            [dinsro.ui.forms.admin.ln.nodes.channels :as u.f.a.ln.n.channels]
+            [dinsro.ui.links :as u.links]
+            [dinsro.ui.loader :as u.loader]
+            [lambdaisland.glogc :as log]))
 
 ;; [[../../../../ui/admin/ln/nodes.cljc]]
 
@@ -31,19 +30,6 @@
 
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.ln.channels/delete!))
-
-(form/defsc-form NewForm [_this _props]
-  {fo/attributes   [m.ln.channels/id
-                    m.ln.channels/active
-                    m.ln.channels/capacity
-                    m.ln.channels/chan-id
-                    m.ln.channels/channel-point
-                    m.ln.channels/chan-status-flags
-                    m.ln.channels/close-address
-                    m.ln.channels/commit-fee]
-   fo/id           m.ln.channels/id
-   fo/route-prefix "new-channel"
-   fo/title        "Channels"})
 
 (def new-button
   {:type   :button
@@ -63,7 +49,7 @@
                                              :controls   controls
                                              :id-control id-control
                                              :node-id    node-id})
-               (form/create! this NewForm
+               (form/create! this u.f.a.ln.n.channels/NewForm
                              {:initial-state {::m.ln.channels/address "foo"}})))})
 
 (report/defsc-report Report

@@ -8,6 +8,7 @@
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.nostr.relays :as u.f.n.relays]
    [dinsro.ui.nostr.badge-acceptance :as u.n.badge-acceptance]
    [dinsro.ui.nostr.badge-awards :as u.n.badge-awards]
    [dinsro.ui.nostr.badge-definitions :as u.n.badge-definitions]
@@ -39,7 +40,7 @@
     u.n.filters/ShowPage
     u.n.pubkeys/IndexPage
     u.n.pubkeys/ShowPage
-    u.n.relays/NewRelayForm
+    u.f.n.relays/NewRelayForm
     u.n.relays/IndexPage
     u.n.relays/ShowPage
     u.n.requests/ShowPage

@@ -4,7 +4,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -12,8 +11,8 @@
    [dinsro.joins.ln.invoices :as j.ln.invoices]
    [dinsro.model.ln.invoices :as m.ln.invoices]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.mutations.ln.invoices :as mu.ln.invoices]
    [dinsro.options.navlinks :as o.navlinks]
+   [dinsro.ui.forms.ln.invoices :as u.f.ln.invoices]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -27,31 +26,11 @@
 (def required-role :user)
 (def show-page-id :ln-invoices-show)
 
-(def submit-button
-  {:type   :button
-   :local? true
-   :label  "Submit"
-   :action (fn [this _key]
-             (let [props (comp/props this)]
-               (log/info :submit-button/starting {:props props})
-               (comp/transact! this [`(mu.ln.invoices/submit! ~props)])))})
-
-(form/defsc-form NewForm [this props]
-  {fo/action-buttons [::submit]
-   fo/attributes     [m.ln.invoices/memo
-                      m.ln.invoices/value]
-   fo/controls       {::submit submit-button}
-   fo/id             m.ln.invoices/id
-   fo/route-prefix   "new-invoice"
-   fo/title          "New Invoice"}
-  (dom/div {}
-    (form/render-layout this props)))
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.ln.invoices/NewForm))})
 
 (report/defsc-report Report
   [_this _props]

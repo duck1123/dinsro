@@ -4,7 +4,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -17,9 +16,9 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.accounts :as u.f.a.accounts]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/accounts.cljc]]
@@ -27,7 +26,6 @@
 
 (def index-page-id :admin-accounts)
 (def model-key o.accounts/id)
-(def override-form true)
 (def parent-router-id :admin)
 (def required-role :admin)
 (def show-page-id :admin-accounts-show)
@@ -35,34 +33,11 @@
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.accounts/delete!))
 
-(form/defsc-form NewForm
-  [this {::m.accounts/keys [currency name initial-value user]
-         :as               props}]
-  {fo/attributes    [m.accounts/name
-                     m.accounts/currency
-                     m.accounts/user
-                     m.accounts/initial-value]
-   fo/cancel-route  ["accounts"]
-   fo/field-options {o.accounts/currency u.pickers/admin-currency-picker
-                     o.accounts/user     u.pickers/admin-user-picker}
-   fo/field-styles  {o.accounts/currency :pick-one
-                     o.accounts/user     :pick-one}
-   fo/id            m.accounts/id
-   fo/route-prefix  "new-account"
-   fo/title         "Create Account"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div :.ui
-      (dom/p {} (str "Account: " name))
-      (dom/p {} (str "Initial Value: " initial-value))
-      (dom/p {} (str "Currency: " currency))
-      (dom/p {} (str "User: " user)))))
-
 (def new-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.a.accounts/NewForm))})
 
 (report/defsc-report Report
   [_this _props]

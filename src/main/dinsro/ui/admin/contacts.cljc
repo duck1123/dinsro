@@ -4,7 +4,6 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -20,14 +19,13 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.debug :as u.debug]
+   [dinsro.ui.forms.admin.contacts :as u.f.a.contacts]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.pickers :as u.pickers]
    [lambdaisland.glogc :as log]))
 
 (def index-page-id :admin-contacts)
 (def model-key o.contacts/id)
-(def override-form true)
 (def parent-router-id :admin)
 (def required-role :admin)
 (def show-page-id :admin-contacts-show)
@@ -35,23 +33,10 @@
 (def delete-action
   (u.buttons/row-action-button "Delete" model-key mu.categories/delete!))
 
-(form/defsc-form NewForm
-  [this props]
-  {fo/attributes    [m.contacts/name m.contacts/user]
-   fo/cancel-route  ["admin"]
-   fo/field-options {o.contacts/user u.pickers/admin-user-picker}
-   fo/field-styles  {o.contacts/user :pick-one}
-   fo/id            m.contacts/id
-   fo/route-prefix  "new-contact"
-   fo/title         "Contact"}
-  (if override-form
-    (form/render-layout this props)
-    (dom/div {} (dom/p {} "Contact"))))
-
 (def new-button
   {:label  "New Contact"
    :type   :button
-   :action #(form/create! % NewForm)})
+   :action #(form/create! % u.f.a.contacts/NewForm)})
 
 (report/defsc-report Report
   [_this _props]

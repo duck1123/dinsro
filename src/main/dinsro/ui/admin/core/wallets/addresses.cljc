@@ -2,7 +2,6 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -16,10 +15,9 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
+   [dinsro.ui.forms.core.wallets.addresses :as u.f.c.w.addresses]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.loader :as u.loader]
-   [dinsro.ui.pickers :as u.pickers]
-   [lambdaisland.glogc :as log]))
+   [dinsro.ui.loader :as u.loader]))
 
 ;; [[../../../../joins/core/addresses.cljc]]
 ;; [[../../../../joins/core/wallet_addresses.cljc]]
@@ -35,42 +33,11 @@
 (def generate-action
   (u.buttons/row-action-button "Generate" model-key mu.c.wallet-addresses/generate!))
 
-(form/defsc-form NewForm
-  [_this _props]
-  {fo/attributes    [m.c.wallet-addresses/address
-                     m.c.wallet-addresses/wallet]
-   fo/field-styles  {o.c.wallet-addresses/wallet :pick-one}
-   fo/field-options {o.c.wallet-addresses/wallet u.pickers/admin-wallet-picker}
-   fo/id            m.c.wallet-addresses/id
-   fo/route-prefix  "new-wallet-address"
-   fo/title         "New Wallet Address"})
-
-(def generate-button
-  {:type   :button
-   :local? true
-   :label  "Generate"
-   :action (fn [this props]
-             (let [{::m.c.wallet-addresses/keys [id]} props]
-               (log/info :generate-button/clicked {:props props})
-               (comp/transact! this [`(mu.c.wallet-addresses/generate! {~model-key ~id})])))})
-
-(form/defsc-form WalletAddressForm
-  [_this _props]
-  {fo/action-buttons [::generate]
-   fo/attributes     [m.c.wallet-addresses/address
-                      m.c.wallet-addresses/wallet]
-   fo/controls       {::generate generate-button}
-   fo/field-styles   {o.c.wallet-addresses/wallet :pick-one}
-   fo/field-options  {o.c.wallet-addresses/wallet u.pickers/wallet-picker}
-   fo/id             m.c.wallet-addresses/id
-   fo/route-prefix   "wallet-address"
-   fo/title          "Wallet Address"})
-
 (def new-action-button
   {:type   :button
    :local? true
    :label  "New"
-   :action (fn [this _] (form/create! this NewForm))})
+   :action (fn [this _] (form/create! this u.f.c.w.addresses/NewForm))})
 
 (report/defsc-report Report
   [_this _props]

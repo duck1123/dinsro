@@ -3,15 +3,12 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [dinsro.joins.ln.payreqs :as j.ln.payreqs]
    [dinsro.model.ln.payreqs :as m.ln.payreqs]
    [dinsro.model.navlinks :as m.navlinks]
-   [dinsro.mutations.ln.payreqs :as mu.ln.payreqs]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
@@ -22,23 +19,6 @@
 (def parent-router-id :settings-ln)
 (def required-role :user)
 (def show-page-id :settings-ln-payreqs-show)
-
-(def decode-button
-  {:type   :button
-   :local? true
-   :label  "Decode"
-   :action (fn [this _]
-             (let [props (comp/props this)]
-               (log/info :decode-button/clicked {:props props})
-               (comp/transact! this [`(mu.ln.payreqs/decode ~props)])))})
-
-(form/defsc-form NewForm [_this _props]
-  {fo/action-buttons [::decode]
-   fo/attributes     [m.ln.payreqs/payment-request]
-   fo/controls       {::decode decode-button}
-   fo/id             m.ln.payreqs/id
-   fo/route-prefix   "new-request"
-   fo/title          "New Payreqs"})
 
 (report/defsc-report Report
   [_this _props]

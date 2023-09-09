@@ -3,8 +3,6 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
-   [com.fulcrologic.rad.form :as form]
-   [com.fulcrologic.rad.form-options :as fo]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
    [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
@@ -25,19 +23,6 @@
 (def parent-router-id :ln)
 (def required-role :user)
 (def show-page-id :ln-channels-show)
-
-(form/defsc-form NewForm [_this _props]
-  {fo/attributes   [m.ln.channels/id
-                    m.ln.channels/active
-                    m.ln.channels/capacity
-                    m.ln.channels/chan-id
-                    m.ln.channels/channel-point
-                    m.ln.channels/chan-status-flags
-                    m.ln.channels/close-address
-                    m.ln.channels/commit-fee]
-   fo/id           m.ln.channels/id
-   fo/route-prefix "new-channel"
-   fo/title        "New Lightning Channels"})
 
 (report/defsc-report Report
   [this _props]

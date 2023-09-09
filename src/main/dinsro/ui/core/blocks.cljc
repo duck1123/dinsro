@@ -54,6 +54,15 @@
                               (comp/transact! this [`(mu.c.blocks/fetch! {::m.c.blocks/id ~id})]))}
         "Fetch"))))
 
+(defsc CoreBlocksRefRow-wrapper
+  [_this props]
+  {:ident         :ui/foo
+   :initial-state {:ui/foo 1}
+   :query         [:ui/foo]}
+  (log/info :starting {:props props})
+  (dom/div {}
+    (dom/div {} "foo")))
+
 (s/def ::row
   (s/keys
    :req [::m.c.blocks/id

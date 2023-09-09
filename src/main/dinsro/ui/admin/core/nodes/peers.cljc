@@ -17,7 +17,7 @@
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
-   [dinsro.ui.core.peers :as u.c.peers]
+   [dinsro.ui.forms.core.peers :as u.f.c.peers]
    [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
    [lambdaisland.glogc :as log]))
@@ -58,7 +58,7 @@
                                           :controls   controls
                                           :id-control id-control
                                           :node-id    node-id})
-               (form/create! this u.c.peers/NewForm
+               (form/create! this u.f.c.peers/NewForm
                              {:initial-state {o.c.peers/addr "foo"}})))})
 
 (report/defsc-report Report

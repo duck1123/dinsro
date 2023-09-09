@@ -9,18 +9,21 @@
 
 ;; [[../../../main/dinsro/ui/transactions.cljc]]
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard TransactionsDebitListLine
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root          u.transactions/DebitLine-List
     ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
     ::ct.fulcro3/initial-state (fn [] (mo.debits/make-debit-list-line))}))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard TransactionsBodyItem
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root          u.transactions/BodyItem
     ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
     ::ct.fulcro3/initial-state (fn [] (mo.transactions/make-body-item))}))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard ShowTransaction
   (ct.fulcro3/fulcro-card
    {::ct.fulcro3/root u.transactions/Show
