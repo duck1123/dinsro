@@ -20,10 +20,10 @@
           raw-response (xt/q db query key)
           response     (ffirst raw-response)]
       (log/finest :record/find-by-key-response
-                  {:db           db
-                   :key          key
-                   :raw-response raw-response
-                   :response     response})
+        {:db           db
+         :key          key
+         :raw-response raw-response
+         :response     response})
       response)))
 
 (defn get-setting
