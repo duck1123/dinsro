@@ -4,7 +4,7 @@ FROM alpine:3.15
 ARG --global base_image=cimg/clojure:1.10-node
 ARG --global clojure_version=1.10.1.727
 # https://github.com/clj-kondo/clj-kondo/releases
-ARG --global kondo_version=2023.07.13
+ARG --global kondo_version=2023.10.20
 # https://nodejs.org/en/download
 ARG --global NODE_MAJOR=20
 # https://www.npmjs.com/package/npm?activeTab=versions
