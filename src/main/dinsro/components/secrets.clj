@@ -5,8 +5,9 @@
    [lambdaisland.glogc :as log]
    [mount.core :refer [defstate]]
    [ring.util.codec :refer [base64-encode base64-decode]])
-
   (:import java.io.FileNotFoundException))
+
+(def secret-filename ".secret")
 
 (defn generate-secret
   "Create a new random secret"
@@ -16,13 +17,13 @@
 (defn write-secret
   "Generate a new secret and write it to a file"
   []
-  (spit ".secret" (base64-encode (generate-secret))))
+  (spit secret-filename (base64-encode (generate-secret))))
 
 (defn read-secret
   "Read the secret file"
   []
   (try
-    (base64-decode (slurp ".secret"))
+    (base64-decode (slurp secret-filename))
     (catch FileNotFoundException _ex
       (log/warn :read-secret/no-secret {}))))
 
