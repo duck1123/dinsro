@@ -17,7 +17,7 @@
 
   _8
   {:doc  "Summons bot"
-   :task (eight)}
+   :task (c/eight)}
 
   all
   {:depends [init install]}
