@@ -4,6 +4,8 @@
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.semantic-ui.collections.table.ui-table :refer [ui-table]]
+   [com.fulcrologic.semantic-ui.collections.table.ui-table-body :refer [ui-table-body]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
    [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
@@ -27,7 +29,7 @@
 (defn log-list-item
   "Display a debug of a list item"
   [parent-keys item-index value]
-  (log/debug :log-props-list-line/starting
+  (log/debug :log-props-list-item/starting
     {:value       value
      :item-index item-index
      :parent-keys parent-keys})
@@ -36,15 +38,23 @@
     (dom/li {:key item-label :title item-label}
       (if (or (string? value) (keyword? value) (uuid? value))
         (str value)
-        (if (vector? value)
+        (if (and (vector? value)
+                 (or (not= (count value) 2)
+                     (not (keyword? (first value)))))
+
           (log-list value item-keys)
-          (log-props value item-keys))))))
+          (if (map? value)
+            (log-props value item-keys)
+            (if (nil? value)
+              (dom/span {:style {:color "red"}} "nil")
+              (str value))))))))
 
 (defn log-list
   "Display a debug of a list"
-  [items parent-keys]
-  (dom/ul {}
-    (map-indexed (partial log-list-item parent-keys) items)))
+  ([items] (log-list items []))
+  ([items parent-keys]
+   (dom/ol {:start 0}
+           (map-indexed (partial log-list-item parent-keys) items))))
 
 (defn log-props-line
   "Display a debug of a map item"
@@ -55,28 +65,32 @@
     (log/debug :log-props-line/starting
       {:k k :value value :parent-keys parent-keys})
     (dom/div {:key item-label :title item-label}
-      (ui-segment {}
-        (if (some #(% value) [map? vector?])
-          (comp/fragment
-           (dom/dt {} (str k))
-           (dom/dd {:style {:marginInlineStart "0"}}
-             (if (map? value)
-               (log-props value item-keys)
-               (if (vector? value)
-                 (log-list value item-keys)
-                 (ui-segment {}
-                   (str value))))))
-          (comp/fragment
-           (dom/div (str k " => " value))))))))
+      (if (some #(% value) [map? vector?])
+        (comp/fragment
+         (dom/dt {} (str k))
+         (dom/dd {:style {:marginInlineStart "0"}}
+           (if (map? value)
+             (log-props value item-keys)
+             (if (vector? value)
+               (log-list value item-keys)
+               (ui-segment {}
+                 (str value))))))
+        (comp/fragment
+         (dom/div (str k " => " value)))))))
 
 (defn log-props-table-line
   "Display a debug of a map item"
   [props parent-keys k]
-  (let [value      (get props k)]
-    (log/debug :log-props-line/starting {:k k :value value :parent-keys parent-keys})
-    (ui-table-row {}
+  (let [value      (get props k)
+        item-keys  (conj parent-keys k)
+        item-label (string/join " => " item-keys)]
+    (log/debug :log-props-line/starting
+      {:k k :value value :parent-keys parent-keys})
+    (ui-table-row {:key item-label :title item-label}
       (ui-table-cell {} (str k))
-      (ui-table-cell {} (str value)))))
+      (ui-table-cell {} (if (nil? value)
+                          (dom/span {:style {:color "red"}} "nil")
+                          (str value))))))
 
 (defn log-props
   "Display a map for debugging purposes"
@@ -84,11 +98,34 @@
    (log-props props []))
   ([props parent-keys]
    (log/debug :log-props/starting {:props props})
-   (let [valid-keys (->> (keys props) sort (remove blacklisted-keys))]
-     (dom/dl :.log-props
-       (ui-segment {}
-         (->> valid-keys
-              (map (partial log-props-line props parent-keys))))))))
+   (let [ks (keys props)]
+     (log/trace :log-props/ks {:ks ks})
+     (let [valid-keys (remove blacklisted-keys ks)]
+       (log/trace :log-props/validated {:valid-keys valid-keys})
+       (let [complex?       (fn [k]
+                              (let [value (k props)]
+                                (log/trace :complex?/value {:k k :value value})
+                                (or (map? value)
+                                    (and (vector? value)
+                                         (or (not= (count value) 2)
+                                             (not (keyword? (first value))))))))
+             sub-table-keys (filter complex? valid-keys)]
+         (log/info :log-props/keyss {:sub-table-key sub-table-keys})
+         (let [value-keys (remove complex? valid-keys)]
+           (log/info :log-props/keysv {:sub-table-key sub-table-keys :value-keys value-keys})
+           (ui-segment {}
+             (when (seq value-keys)
+               (let [single-value-keys (sort (remove vector? value-keys))
+                     vector-value-keys (filter vector? value-keys)
+                     all-value-keys    (concat single-value-keys vector-value-keys)]
+                 (ui-table {:basic "very"}
+                   (ui-table-body {}
+                     (map (partial log-props-table-line props parent-keys) all-value-keys)))))
+             (when (seq sub-table-keys)
+               (let [single-table-keys (sort (remove vector? sub-table-keys))
+                     vector-table-keys (filter vector? sub-table-keys)
+                     all-table-keys    (concat single-table-keys vector-table-keys)]
+                 (map (partial log-props-line props parent-keys) all-table-keys))))))))))
 
 (declare ui-inner-prop-logger)
 
