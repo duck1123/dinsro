@@ -43,20 +43,19 @@ EXPOSE_DOCKER_PORTS:
 
 IMPORT_JAR_DEPS:
   COMMAND
-  COPY --dir --chown=circleci \
+  COPY --dir --chown=circleci --chmod=755 \
        +jar-deps/.clojure \
        +jar-deps/.deps.clj \
        +jar-deps/.gitlibs \
        +jar-deps/.m2 \
        ${USER_HOME}
-  COPY --dir --chown=root \
+  COPY --dir --chown=root --chmod=755 \
        +jar-deps/.clojure \
        +jar-deps/.deps.clj \
        +jar-deps/.gitlibs \
        +jar-deps/.m2 \
        /root
   COPY --dir --chown=circleci +jar-deps/.cpcache .
-  RUN chmod +x ~/.clojure ~/.deps.clj ~/.gitlibs ~/.m2
 
 INSTALL_BABASHKA:
   COMMAND
