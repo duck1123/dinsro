@@ -52,10 +52,10 @@
                       m.rate-sources/url
                       m.rate-sources/active?
                       m.rate-sources/path]
-   fo/cancel-route   ["new-rate-source"]
+   fo/cancel-route   ["rate-sources"]
    fo/controls       (merge form/standard-controls {::run run-button})
    fo/id             m.rate-sources/id
-   fo/route-prefix   "rate-source"
+   fo/route-prefix   "new-rate-source"
    fo/title          "New Rate Source"})
 
 (def new-action-button
