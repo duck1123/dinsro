@@ -95,6 +95,7 @@ INSTALL_NODE:
       && apt install -y nodejs \
       && rm -rf /var/lib/apt/lists/*
   RUN npm install -g npm@${npm_version}
+  RUN npm install -g yarn
 
 INSTALL_NOSCL:
   COMMAND
