@@ -56,6 +56,7 @@ IMPORT_JAR_DEPS:
        +jar-deps/.m2 \
        /root
   COPY --dir --chown=circleci +jar-deps/.cpcache .
+  RUN chmod +x ~/.clojure ~/.deps.clj ~/.gitlibs ~/.m2
 
 INSTALL_BABASHKA:
   COMMAND
