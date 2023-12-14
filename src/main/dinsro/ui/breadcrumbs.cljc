@@ -86,7 +86,7 @@
       (map ui-breadcrumb-divided-link path)
       (ui-breadcrumb-link props))
     (when log-props?
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))
 
 (def ui-breadcrumbs-inner (comp/factory BreadcrumbsInner))
 

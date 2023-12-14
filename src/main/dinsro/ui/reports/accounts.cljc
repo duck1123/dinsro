@@ -28,6 +28,8 @@
    [dinsro.ui.forms.accounts :as u.f.accounts]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../../test/dinsro/ui/reports/accounts_test.cljs]]
+
 (def model-key o.accounts/id)
 
 (def override-report? false)

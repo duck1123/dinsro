@@ -46,7 +46,7 @@
   (dom/div {}
     (u.links/ui-relay-link relay)
     (when log-item-props
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn o.n.witnesses/id}))
 

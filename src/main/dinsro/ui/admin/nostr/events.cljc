@@ -87,7 +87,8 @@
       (dom/div {} (str kind))
       (dom/div {} (str sig))
       (dom/div {} (str created-at))
-      (when log-props (u.debug/log-props props)))
+      (when log-props
+        (u.debug/ui-props-logger props)))
     (u.debug/load-error props "admin show event")))
 
 (def ui-show (comp/factory Show))

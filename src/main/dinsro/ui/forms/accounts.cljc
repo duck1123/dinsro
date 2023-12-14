@@ -51,7 +51,7 @@
                      o.currencies/name])}
   (log/info :CurrencyListItem/starting {:props props})
   (dom/div {}
-    (u.debug/log-props props)))
+    (u.debug/ui-props-logger props)))
 
 (def ui-currency-list-item (comp/factory CurrencyListItem {:keyfn o.currencies/id}))
 (def currency-load-marker ::currency-load-marker)
@@ -87,7 +87,7 @@
         (dom/div {}
           "Currency: " (u.links/ui-currency-link currency))))
     (when debug-form-props?
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))
 
 ;; Create form for accounts as a user
 (form/defsc-form InlineForm-form
@@ -144,7 +144,7 @@
         (dom/div {}
           "Currency: " (u.links/ui-currency-link currency))))
     (when debug-form-props?
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))
 
 (defsc InlineForm-component
   [this {initial-value o.accounts/initial-value
@@ -232,7 +232,7 @@
 
           (when debug-form-props?
             (ui-form-field {}
-              (u.debug/log-props props))))))))
+              (u.debug/ui-props-logger props))))))))
 
 (def ui-inline-form-component (comp/factory InlineForm-component {:keyfn model-key}))
 (def ui-inline-form-form (comp/factory InlineForm-form {:keyfn model-key}))

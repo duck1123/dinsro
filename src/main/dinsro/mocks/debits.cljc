@@ -7,6 +7,14 @@
    [dinsro.model.transactions :as m.transactions]
    [dinsro.specs :as ds]))
 
+(defn CurrencyInfo-data
+  []
+  {})
+
+(defn AccountInfo-data
+  []
+  {})
+
 (defn make-debit-list-line
   []
   {::m.debits/id      (ds/gen-key ::m.debits/id)

@@ -165,7 +165,7 @@
               (dom/dt {} "Pruned?")
               (dom/dd {} (str pruned?))))
           (when debug-props
-            (u.debug/log-props (dissoc props :ui/nav-menu)))
+            (u.debug/ui-props-logger (dissoc props :ui/nav-menu)))
           (ui-button {:onClick (fn [evt] (log/info :Show/edit-clicked {:id id :evt evt}))} "Edit"))
         (if admin-nav-menu
           (u.menus/ui-nav-menu admin-nav-menu)

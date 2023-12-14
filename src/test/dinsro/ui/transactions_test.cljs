@@ -1,31 +1,14 @@
 (ns dinsro.ui.transactions-test
   (:require
-   [dinsro.client :as client]
-   [dinsro.mocks.debits :as mo.debits]
+   ;; [dinsro.mocks.debits :as mo.debits]
    [dinsro.mocks.transactions :as mo.transactions]
+   [dinsro.test-helpers :as th]
    [dinsro.ui.transactions :as u.transactions]
-   [nubank.workspaces.card-types.fulcro3 :as ct.fulcro3]
    [nubank.workspaces.core :as ws]))
 
+;; [[../../../main/dinsro/mocks/ui/transactions.cljc]]
 ;; [[../../../main/dinsro/ui/transactions.cljc]]
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard TransactionsDebitListLine
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root          u.transactions/DebitLine-List
-    ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state (fn [] (mo.debits/make-debit-list-line))}))
-
-#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(ws/defcard TransactionsBodyItem
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root          u.transactions/BodyItem
-    ::ct.fulcro3/app           {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state (fn [] (mo.transactions/make-body-item))}))
-
-#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (ws/defcard ShowTransaction
-  (ct.fulcro3/fulcro-card
-   {::ct.fulcro3/root u.transactions/Show
-    ::ct.fulcro3/app  {:client-will-mount client/setup-RAD}
-    ::ct.fulcro3/initial-state (fn [] (mo.transactions/make-transaction))}))
+  (th/fulcro-card u.transactions/Show mo.transactions/make-transaction {}))

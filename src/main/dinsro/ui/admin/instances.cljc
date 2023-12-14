@@ -110,7 +110,8 @@
       (str last-heartbeat)
       (dom/div {}
         (str "Count: " connection-count))
-      (when debug-props? (u.debug/log-props props)))
+      (when debug-props?
+        (u.debug/ui-props-logger props)))
     (if admin-nav-menu
       (u.menus/ui-nav-menu admin-nav-menu)
       (u.debug/load-error props "admin networks show menu"))

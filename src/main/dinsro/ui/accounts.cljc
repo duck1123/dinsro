@@ -21,6 +21,8 @@
 ;; [[../model/accounts.cljc]]
 ;; [[../mutations/accounts.cljc]]
 ;; [[../options/accounts.cljc]]
+;; [[../ui/reports/accounts.cljc]]
+;; [[../../../test/dinsro/ui/accounts_test.cljs]]
 
 (def index-page-id :accounts)
 (def index-page-segment "accounts")
@@ -114,10 +116,7 @@
       (if form2
         (u.f.accounts/ui-inline-form-form form2)
         (dom/div {} "No Form")))
-    (u.r.accounts/ui-report report)
-    #_(u.debug/log-props props)
-    #_(u.debug/log-props (comp/get-initial-state InlineForm-form))
-    #_(u.debug/log-list (or (comp/get-query InlineForm-form) {}))))
+    (u.r.accounts/ui-report report)))
 
 (defsc ShowPage
   [_this props]

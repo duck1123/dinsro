@@ -138,7 +138,7 @@
             (dom/dt {} "Connections")
             (dom/dd {} (str connection-count)))
           (when log-props?
-            (u.debug/log-props props)))
+            (u.debug/ui-props-logger props)))
         (if admin-nav-menu
           (u.menus/ui-nav-menu admin-nav-menu)
           (u.debug/load-error props "admin show relay nav menu"))

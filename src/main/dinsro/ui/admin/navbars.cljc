@@ -2,14 +2,11 @@
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.rad.report :as report]
-   [com.fulcrologic.rad.report-options :as ro]
-   [dinsro.joins.navbars :as j.navbars]
-   [dinsro.model.navbars :as m.navbars]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.options.navbars :as o.navbars]
    [dinsro.options.navlinks :as o.navlinks]
-   [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.reports.admin.navbars :as u.r.a.navbars]
    [lambdaisland.glogc :as log]))
 
 (def index-page-id :admin-navbars)
@@ -18,37 +15,20 @@
 (def required-role :admin)
 (def show-page-id :admin-navbars-show)
 
-(report/defsc-report Report
-  [_this _props]
-  {ro/columns             [m.navbars/id
-                           m.navbars/parent
-                           m.navbars/child-count]
-   ro/control-layout      {:action-buttons [::refresh]}
-   ro/controls            {::refresh u.links/refresh-control}
-   ro/initial-sort-params {:sort-by          o.navbars/id
-                           :sortable-columns #{o.navbars/id}
-                           :ascending?       false}
-   ro/row-pk              m.navbars/id
-   ro/run-on-mount?       true
-   ro/source-attribute    ::j.navbars/admin-index
-   ro/title               "Navbars"})
-
-(def ui-report (comp/factory Report))
-
 (defsc IndexPage
   [_this {:ui/keys [report] :as props}]
-  {:componentDidMount #(report/start-report! % Report {})
+  {:componentDidMount #(report/start-report! % u.r.a.navbars/Report {})
    :ident             (fn [_] [o.navlinks/id index-page-id])
    :initial-state     (fn [_props]
                         {o.navlinks/id index-page-id
-                         :ui/report    (comp/get-initial-state Report {})})
+                         :ui/report    (comp/get-initial-state u.r.a.navbars/Report {})})
    :query             (fn []
                         [o.navlinks/id
-                         {:ui/report (comp/get-query Report)}])
+                         {:ui/report (comp/get-query u.r.a.navbars/Report)}])
    :route-segment     ["navbars"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (log/trace :Page/starting {:props props})
-  (ui-report report))
+  (u.r.a.navbars/ui-report report))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

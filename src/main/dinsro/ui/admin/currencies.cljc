@@ -91,7 +91,7 @@
   (ui-segment {}
     (dom/div {} (str name))
     (when log-props?
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))
 
 (def ui-show (comp/factory Show))
 

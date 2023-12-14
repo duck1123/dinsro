@@ -45,7 +45,7 @@
   (ui-segment {}
     (dom/div {} (str query-string))
     (when debug-props
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))
 
 (def ui-filter-item-item (comp/factory FilterItemItem {:keyfn ::m.n.filter-items/id}))
 

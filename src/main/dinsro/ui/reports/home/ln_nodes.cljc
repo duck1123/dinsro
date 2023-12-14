@@ -1,4 +1,4 @@
-(ns dinsro.ui.home.ln-nodes
+(ns dinsro.ui.reports.home.ln-nodes
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
@@ -13,8 +13,8 @@
    [dinsro.model.ln.nodes :as m.ln.nodes]
    [dinsro.ui.links :as u.links]))
 
-;; [[../../joins/ln/nodes.cljc]]
-;; [[../../model/ln/nodes.cljc]]
+;; [[../../../joins/ln/nodes.cljc]]
+;; [[../../../model/ln/nodes.cljc]]
 
 (def model-key ::m.ln.nodes/id)
 

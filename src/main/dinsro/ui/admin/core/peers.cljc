@@ -86,7 +86,7 @@
    :route-segment ["peer" :id]}
   (log/info :Show/starting {:props props})
   (dom/div {}
-    (u.debug/log-props props)))
+    (u.debug/ui-props-logger props)))
 
 (def ui-show (comp/factory Show))
 

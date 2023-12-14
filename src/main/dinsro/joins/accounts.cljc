@@ -1,5 +1,6 @@
 (ns dinsro.joins.accounts
   (:require
+   [clojure.spec.alpha :as s]
    [com.fulcrologic.rad.attributes :as attr :refer [defattr]]
    [com.fulcrologic.rad.attributes-options :as ao]
    [dinsro.joins :as j]
@@ -51,6 +52,7 @@
    ao/pc-output [{::index [:total {:results [model-key]}]}]
    ao/pc-resolve (fn [env props] {::index (j/make-indexer join-info env props)})})
 
+(s/def ::debit-count number?)
 (defattr debit-count
   "Count of debits associated with account"
   ::debit-count :number
@@ -85,6 +87,7 @@
                 {::transactions []})
         :cljs (comment id)))})
 
+(s/def ::transaction-count number?)
 (defattr transaction-count
   "Count of transactions associated with an account"
   ::transaction-count :number

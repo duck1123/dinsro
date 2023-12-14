@@ -4,20 +4,17 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.report :as report]
-   [com.fulcrologic.rad.report-options :as ro]
-   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
    [dinsro.joins.transactions :as j.transactions]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.model.transactions :as m.transactions]
-   [dinsro.mutations.transactions :as mu.transactions]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.buttons :as u.buttons]
    [dinsro.ui.controls :as u.controls]
    [dinsro.ui.debug :as u.debug]
    [dinsro.ui.forms.admin.transactions :as u.f.a.transactions]
-   [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.reports.admin.transactions :as u.r.a.transactions]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../joins/transactions.cljc]]
@@ -29,32 +26,6 @@
 (def parent-router-id :admin)
 (def required-role :admin)
 (def show-page-id :admin-transactions-show)
-
-(def delete-action
-  (u.buttons/row-action-button "Delete" model-key mu.transactions/delete!))
-
-(def new-button
-  (u.buttons/form-create-button "New Transaction" u.f.a.transactions/AdminTransactionForm))
-
-(report/defsc-report Report
-  [_this _props]
-  {ro/column-formatters {::m.transactions/description #(u.links/ui-admin-transaction-link %3)}
-   ro/columns           [m.transactions/description
-                         m.transactions/date
-                         j.transactions/debit-count]
-   ro/control-layout    {:action-buttons [::new-transaction ::refresh]}
-   ro/controls          {::new-transaction new-button
-                         ::refresh         u.links/refresh-control}
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
-   ro/row-actions       [delete-action]
-   ro/row-pk            m.transactions/id
-   ro/run-on-mount?     true
-   ro/source-attribute  ::j.transactions/admin-index
-   ro/title             "Admin Transaction Report"})
-
-(def ui-report (comp/factory Report))
 
 (defsc Show
   [this {::m.transactions/keys [description date id]
@@ -86,19 +57,19 @@
 (defsc IndexPage
   [_this {:ui/keys [report]
           :as      props}]
-  {:componentDidMount #(report/start-report! % Report {})
+  {:componentDidMount #(report/start-report! % u.r.a.transactions/Report {})
    :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [_props]
                         {o.navlinks/id index-page-id
-                         :ui/report      (comp/get-initial-state Report {})})
+                         :ui/report      (comp/get-initial-state u.r.a.transactions/Report {})})
    :query             (fn []
                         [o.navlinks/id
-                         {:ui/report (comp/get-query Report)}])
+                         {:ui/report (comp/get-query u.r.a.transactions/Report)}])
    :route-segment     ["transactions"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (log/debug :IndexPage/starting {:props props})
   (dom/div {}
-    (ui-report report)))
+    (u.r.a.transactions/ui-report report)))
 
 (defsc ShowPage
   [_this props]

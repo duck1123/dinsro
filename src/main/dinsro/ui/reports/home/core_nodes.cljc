@@ -1,4 +1,4 @@
-(ns dinsro.ui.home.core-nodes
+(ns dinsro.ui.reports.home.core-nodes
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
@@ -17,8 +17,8 @@
    [dinsro.model.core.nodes :as m.c.nodes]
    [dinsro.ui.links :as u.links]))
 
-;; [[../../joins/core/nodes.cljc]]
-;; [[../../model/core/nodes.cljc]]
+;; [[../../../joins/core/nodes.cljc]]
+;; [[../../../model/core/nodes.cljc]]
 
 (def model-key ::m.c.nodes/id)
 

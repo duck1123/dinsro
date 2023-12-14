@@ -87,7 +87,7 @@
       (ui-router router))
     (ui-segment {:color "red" :inverted true}
       (dom/h3 {} "Network Not loaded")
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))
 
 (def ui-show (comp/factory Show))
 

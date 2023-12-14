@@ -1,4 +1,4 @@
-(ns dinsro.ui.home.accounts
+(ns dinsro.ui.reports.home.accounts
   (:require
    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
@@ -19,8 +19,8 @@
    [dinsro.ui.forms.accounts :as u.f.accounts]
    [dinsro.ui.links :as u.links]))
 
-;; [[../../joins/accounts.cljc]]
-;; [[../../model/accounts.cljc]]
+;; [[../../../joins/accounts.cljc]]
+;; [[../../../model/accounts.cljc]]
 
 (def model-key ::m.accounts/id)
 

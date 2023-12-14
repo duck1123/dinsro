@@ -155,8 +155,7 @@
 (defsc PropsLogger
   "Log properties of a map"
   [_this props]
-  (ui-segment {}
-    (ui-inner-prop-logger props)))
+  (log-props props))
 
 (def ui-props-logger (comp/factory PropsLogger))
 

@@ -10,6 +10,8 @@
    [dinsro.ui.forms.settings.ln.peers :as u.f.s.ln.peers]
    [dinsro.ui.links :as u.links]))
 
+;; [[../../../../../test/dinsro/ui/settings/ln/peers_test.cljs]]
+
 (def new-button
   {:type   :button
    :local? true

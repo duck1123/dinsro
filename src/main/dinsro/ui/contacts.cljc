@@ -80,7 +80,7 @@
         (str "foo" name)
         (ui-button {:onClick (fn [evt] (log/info :Show/click {:evt evt}))}
                    "Click")
-        (u.debug/log-props props)))
+        (u.debug/ui-props-logger props)))
     (u.debug/load-error props "show contacts")))
 
 (def ui-show (comp/factory Show))

@@ -6,11 +6,20 @@
    [dinsro.mutations :as mu]
    [dinsro.options.transactions :as o.transactions]
    #?(:clj [dinsro.processors.transactions :as p.transactions])
-   [dinsro.responses.transactions :as r.transactions]))
+   [dinsro.responses.transactions :as r.transactions]
+   #?(:cljs [lambdaisland.glogc :as log])))
 
 (def model-key o.transactions/id)
 
 #?(:cljs (comment ::mu/_ ::pc/_))
+
+;; Add Debit Line
+
+#?(:cljs
+   (fm/defmutation add-debit-line! [props]
+     (action [env]
+       (log/info :add-debit-line!/action {:props props :env env})
+       true)))
 
 ;; Delete
 

@@ -105,7 +105,7 @@
         (ui-router router)
         (u.debug/load-error props "settings router"))
       (when debug-props?
-        (u.debug/log-props props)))))
+        (u.debug/ui-props-logger props)))))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

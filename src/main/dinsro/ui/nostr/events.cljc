@@ -1,9 +1,9 @@
 (ns dinsro.ui.nostr.events
   (:require
-   [com.fulcrologic.fulcro-css.css :as css]
-   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
+   [com.fulcrologic.fulcro-css.css :as css]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
    [com.fulcrologic.rad.report :as report]
    [com.fulcrologic.rad.report-options :as ro]
@@ -41,10 +41,12 @@
 ;; [[../../actions/nostr/events.clj]]
 ;; [[../../queries/nostr/events.clj]]
 ;; [[../../joins/nostr/events.cljc]]
+;; [[../../mocks/ui/nostr/events.cljc]]
 ;; [[../../mutations/nostr/events.cljc]]
 ;; [[../../ui/admin/nostr/events.cljc]]
 ;; [[../../ui/nostr.cljs]]
 ;; [[../../ui/nostr/pubkeys/events.cljs]]
+;; [[../../../../test/dinsro/ui/nostr/events_test.cljs]]
 
 (def index-page-id :nostr-events)
 (def model-key ::m.n.events/id)
@@ -167,7 +169,7 @@
               (let [ast (replace-images (md/parse content))]
                 (comp/fragment
                  (if show-ast
-                   (u.debug/log-props ast)
+                   (u.debug/ui-props-logger ast)
                    (if transform-markup
                      (let [hiccup (md.transform/->hiccup transformer ast)]
                        (if convert-html
@@ -221,15 +223,6 @@
           (ui-grid-column {}
             (ui-container {}
               (ui-segment {}
-                (let [page-count (report/page-count this)]
-                  (sui-pagination/ui-pagination
-                   {:activePage   (report/current-page this)
-                    :onPageChange (fn [_ data]
-                                    (report/goto-page! this (comp/isoget data "activePage")))
-                    :totalPages   page-count
-                    :size         "tiny"}))
-                (ui-button {:icon    "refresh"
-                            :onClick (fn [_] (control/run! this))})
                 (when show-controls ((report/control-renderer this) this))
                 (let [page-count (report/page-count this)]
                   (sui-pagination/ui-pagination

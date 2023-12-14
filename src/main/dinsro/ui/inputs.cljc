@@ -5,11 +5,10 @@
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])))
 
 (defsc PrimaryButton
-  [_this _props {:keys [classes onClick]}]
-  {:initial-state {}
-   :query         []}
+  [_this {:keys [content]} {:keys [classes onClick]}]
+  {:initial-state {:content "submit"}
+   :query         [:content]}
   (dom/button :.ui.button.primary.submit.fluid
-    {:classes classes
-     :onClick onClick} "submit"))
+    {:classes classes :onClick onClick} content))
 
 (def ui-primary-button (comp/computed-factory PrimaryButton))

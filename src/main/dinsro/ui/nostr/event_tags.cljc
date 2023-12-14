@@ -66,7 +66,7 @@
         has-type?  (not (or pubkey event tag? nonce? client?))]
     (ui-list-item {}
       (when log-tag-props
-        (u.debug/log-props props))
+        (u.debug/ui-props-logger props))
 
       (when display-tags?
         (dom/div {}
@@ -91,7 +91,7 @@
           (when (not (or event? pubkey? tag? client? reference?))
             (dom/div {}
               (dom/div {} (str "Unknown type: " type))
-              (u.debug/log-props props)))))
+              (u.debug/ui-props-logger props)))))
 
       (when log-tag-table
         (ui-table {}

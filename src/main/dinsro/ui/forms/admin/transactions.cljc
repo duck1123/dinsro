@@ -41,4 +41,4 @@
       (dom/div {}
         (dom/p {} "Transaction form")))
     (when debug-props?
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))

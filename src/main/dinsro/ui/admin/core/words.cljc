@@ -4,17 +4,14 @@
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
    #?(:clj [com.fulcrologic.fulcro.dom-server :as dom])
    [com.fulcrologic.rad.report :as report]
-   [com.fulcrologic.rad.report-options :as ro]
-   [com.fulcrologic.rad.state-machines.server-paginated-report :as spr]
    [com.fulcrologic.semantic-ui.elements.segment.ui-segment :refer [ui-segment]]
-   [dinsro.joins.core.words :as j.c.words]
    [dinsro.model.core.words :as m.c.words]
    [dinsro.model.navlinks :as m.navlinks]
    [dinsro.options.core.words :as o.c.words]
    [dinsro.options.navlinks :as o.navlinks]
    [dinsro.ui.debug :as u.debug]
-   [dinsro.ui.links :as u.links]
    [dinsro.ui.loader :as u.loader]
+   [dinsro.ui.reports.admin.core.words :as u.r.a.c.words]
    [lambdaisland.glogc :as log]))
 
 ;; [[../../../joins/core/words.cljc]]
@@ -25,22 +22,6 @@
 (def parent-router-id :admin-core)
 (def required-role :admin)
 (def show-page-id :admin-core-words-show)
-
-(report/defsc-report Report
-  [_this _props]
-  {ro/column-formatters {o.c.words/wallet #(u.links/ui-wallet-link %2)}
-   ro/columns           [m.c.words/word
-                         m.c.words/position
-                         m.c.words/mnemonic]
-   ro/machine           spr/machine
-   ro/page-size         10
-   ro/paginate?         true
-   ro/row-pk            m.c.words/id
-   ro/run-on-mount?     true
-   ro/source-attribute  ::j.c.words/index
-   ro/title             "Word Report"})
-
-(def ui-report (comp/factory Report))
 
 (defsc Show
   [_this {::m.c.words/keys [id word]
@@ -66,18 +47,18 @@
 
 (defsc IndexPage
   [_this {:ui/keys [report]}]
-  {:componentDidMount #(report/start-report! % Report {})
+  {:componentDidMount #(report/start-report! % u.r.a.c.words/Report {})
    :ident             (fn [] [o.navlinks/id index-page-id])
    :initial-state     (fn [_props]
                         {o.navlinks/id index-page-id
-                         :ui/report    (comp/get-initial-state Report {})})
+                         :ui/report    (comp/get-initial-state u.r.a.c.words/Report {})})
    :query             (fn []
                         [o.navlinks/id
-                         {:ui/report (comp/get-query Report)}])
+                         {:ui/report (comp/get-query u.r.a.c.words/Report)}])
    :route-segment     ["words"]
    :will-enter        (u.loader/page-loader index-page-id)}
   (dom/div {}
-    (ui-report report)))
+    (u.r.a.c.words/ui-report report)))
 
 (defsc ShowPage
   [_this props]

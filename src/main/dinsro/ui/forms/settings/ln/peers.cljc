@@ -47,4 +47,5 @@
     (if override-form?
       (form/render-layout this props)
       (dom/div {} "New Peers"))
-    (when debug-props? (u.debug/log-props props))))
+    (when debug-props?
+      (u.debug/ui-props-logger props))))

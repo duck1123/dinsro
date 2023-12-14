@@ -41,4 +41,4 @@
       (form/render-layout this props)
       (dom/div {} "form"))
     (when log-props?
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))

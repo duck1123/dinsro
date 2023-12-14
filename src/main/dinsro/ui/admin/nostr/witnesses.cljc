@@ -77,9 +77,9 @@
       (dom/div {}
         (when relay
           (dom/div {}
-            (u.debug/log-props relay)
+            (u.debug/ui-props-logger relay)
             (comment (u.links/ui-admin-relay-link relay)))))
-      (u.debug/log-props props))
+      (u.debug/ui-props-logger props))
     (u.debug/load-error props "admin show witness")))
 
 (def ui-show (comp/factory Show))

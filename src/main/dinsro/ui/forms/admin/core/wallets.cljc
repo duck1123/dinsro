@@ -44,4 +44,4 @@
       (dom/div {} "Form"))
 
     (when log-props?
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))

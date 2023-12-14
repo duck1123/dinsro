@@ -43,4 +43,4 @@
             :onChange (fn [evt _] (fm/set-string! this o.users/password :event evt))
             :label    "Password"}))))
     (when debug-props?
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))

@@ -123,6 +123,10 @@
    label))
 
 (defn create-button
+  "Create a button where clicking will navigate to the create form
+
+   * this - the parent component
+   * Form - the defform to create"
   [this Form]
   (ui-button
    {:onClick
@@ -132,6 +136,11 @@
    "create"))
 
 (defn delete-button
+  "Create a delete button
+
+   * mutation - a symbol specifying a mutation to activate on click
+   * model-key - key identifying the model to act on
+   * this - the parent component"
   [mutation model-key this]
   (ui-button {:icon "delete"
               :onClick

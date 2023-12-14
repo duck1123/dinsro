@@ -56,7 +56,7 @@
       (dom/div {} (str index))
       (map u.a.n.filter-items/ui-filter-item-item items))
     (when debug-props
-      (u.debug/log-props props))))
+      (u.debug/ui-props-logger props))))
 
 (def ui-filter-item (comp/factory FilterItem {:keyfn ::m.n.filters/id}))
 

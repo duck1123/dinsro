@@ -33,4 +33,4 @@
       (form/render-layout this props)
       (dom/div {}
         (dom/p {} "Category")))
-    (u.debug/log-props props)))
+    (u.debug/ui-props-logger props)))

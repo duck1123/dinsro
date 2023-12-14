@@ -61,7 +61,7 @@
       (ui-segment {}
         (dom/div {} (str name)))
       (when debug-props?
-        (u.debug/log-props props)))
+        (u.debug/ui-props-logger props)))
     (u.debug/load-error props "settings show category")))
 
 (def ui-show (comp/factory Show))

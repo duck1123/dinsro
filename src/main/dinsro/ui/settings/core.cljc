@@ -35,7 +35,7 @@
     (dom/div {}
       (ui-segment {}
         (dom/p {} "Core router failed to match any target")
-        (u.debug/log-props props)))))
+        (u.debug/ui-props-logger props)))))
 
 (def ui-router (comp/factory Router))
 

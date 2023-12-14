@@ -12,11 +12,11 @@
    [dinsro.options.accounts :as o.accounts]
    [dinsro.options.transactions :as o.transactions]
    [dinsro.ui.links :as u.links]
-   [dinsro.ui.transactions :as u.transactions]))
+   [dinsro.ui.reports.transactions :as u.r.transactions]))
 
 (report/defsc-report Report
   [_this props]
-  {ro/BodyItem          u.transactions/BodyItem
+  {ro/BodyItem          u.r.transactions/BodyItem
    ro/column-formatters {o.transactions/description #(u.links/ui-transaction-link %3)}
    ro/columns           [m.transactions/description
                          j.transactions/debit-count
@@ -34,6 +34,6 @@
    ro/title             "Transactions"}
   (let [{:ui/keys [current-rows]} props]
     (dom/div :.ui.items
-      (map u.transactions/ui-body-item  current-rows))))
+      (map u.r.transactions/ui-body-item current-rows))))
 
 (def ui-report (comp/factory Report))

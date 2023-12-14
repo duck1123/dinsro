@@ -1,6 +1,7 @@
 (ns dinsro.all-tests
   (:require
    dinsro.ui-test
+   dinsro.ui.accounts-test
    dinsro.ui.admin.users.categories-test
    dinsro.ui.breadcrumbs-test
    dinsro.ui.core.blocks-test
@@ -26,6 +27,9 @@
    dinsro.ui.nostr.events-test
    dinsro.ui.nostr.pubkeys-test
    dinsro.ui.registration-test
+   dinsro.ui.reports.accounts-test
+   dinsro.ui.reports.core.nodes.transactions-test
+   dinsro.ui.reports.transactions-test
    dinsro.ui.settings.ln.peers-test
    dinsro.ui.transactions-test
    dinsro.ui.transactions.debits-test))

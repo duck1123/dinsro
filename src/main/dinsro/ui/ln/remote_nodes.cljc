@@ -61,7 +61,7 @@
         (ui-segment {:color "red" :inverted true}
           "Failed to load peers"))
       (when debug-show
-        (u.debug/log-props props)))
+        (u.debug/ui-props-logger props)))
     (ui-segment {:color "red" :inverted true}
       "Failed to load record")))
 
@@ -130,7 +130,7 @@
         (ui-segment {:color "red" :inverted true}
           "Failed to load record"))
       (when debug-show-page
-        (u.debug/log-props props)))
+        (u.debug/ui-props-logger props)))
     (ui-segment {:color "red" :inverted true}
       "Failed to load page")))
 

@@ -62,7 +62,7 @@
           (u.links/ui-rate-value-link current-rate)
           "Missing"))
       (when show-props?
-        (dom/div {} (u.debug/log-props props)))
+        (dom/div {} (u.debug/ui-props-logger props)))
       (dom/div {} (str positive?)))))
 
 (def ui-show (comp/factory Show))

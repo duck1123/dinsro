@@ -138,11 +138,13 @@
           (when log-id?
             (dom/p {} (str "ID: " id)))
           (ui-menu {:items converted-items :onItemClick (partial on-menu-click this id)})
-          (when log-props? (u.debug/log-props props)))
+          (when log-props?
+            (u.debug/ui-props-logger props)))
         (u.debug/load-error props "Nav menu children"))
       (dom/div {}
         (dom/div {} (str "Not loaded: " (model-key props)))
-        (when log-error-props? (u.debug/log-props props))))))
+        (when log-error-props?
+          (u.debug/ui-props-logger props))))))
 
 (def ui-nav-menu
   "Display a nav menu for controlling subpages"
@@ -176,7 +178,8 @@
                 :onItemClick (partial on-menu-click this id)}))
     (dom/div {}
       (dom/div {} (str "Not loaded: " (model-key props)))
-      (when log-error-props? (u.debug/log-props props)))))
+      (when log-error-props?
+        (u.debug/ui-props-logger props)))))
 
 (def ui-vertical-menu
   (comp/factory VerticalMenu))

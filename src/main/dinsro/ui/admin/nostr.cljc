@@ -78,18 +78,18 @@
       :failed
       (dom/div {}
         (ui-segment {} "Failed!")
-        (u.debug/log-props props))
+        (u.debug/ui-props-logger props))
 
       :routed  (route-factory route-props)
 
       ;; default will be used when the current state isn't yet set
       (dom/div :.admin-nostr-router
         (dom/div "No route selected.")
-        (u.debug/log-props {:current-state current-state :router-state router-state})))
+        (u.debug/ui-props-logger {:current-state current-state :router-state router-state})))
     (when debug-route
       (ui-segment {}
         (dom/h3 {} "Admin Nostr Router")
-        (u.debug/log-props props)))))
+        (u.debug/ui-props-logger props)))))
 
 (def ui-router (comp/factory Router))
 
@@ -157,7 +157,7 @@
         (ui-router router)
         (u.debug/load-error props "admin router"))
       (when debug-props?
-        (u.debug/log-props props)))))
+        (u.debug/ui-props-logger props)))))
 
 (m.navlinks/defroute index-page-id
   {o.navlinks/control       ::IndexPage

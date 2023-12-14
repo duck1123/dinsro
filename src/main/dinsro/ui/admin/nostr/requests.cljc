@@ -68,7 +68,8 @@
           (u.buttons/delete-button `mu.n.requests/delete! model-key this)))
       (ui-list-list {}
         (map u.a.n.filters/ui-filter-item filters))
-      (when debug-props (u.debug/log-props props)))))
+      (when debug-props
+        (u.debug/ui-props-logger props)))))
 
 (def ui-body-item (comp/factory BodyItem {:keyfn ::m.n.requests/id}))
 
