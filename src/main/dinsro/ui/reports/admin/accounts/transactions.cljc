@@ -1,4 +1,4 @@
-(ns dinsro.ui.reports.admin.accounts.trasactions
+(ns dinsro.ui.reports.admin.accounts.transactions
   (:require
    [com.fulcrologic.fulcro.components :as comp]
    #?(:cljs [com.fulcrologic.fulcro.dom :as dom])
