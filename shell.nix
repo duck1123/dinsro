@@ -3,6 +3,7 @@
     buildInputs = with pkgs; [
       babashka
       clojure
+      devspace
       docker
       earthly
       # helm
