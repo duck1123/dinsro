@@ -29,13 +29,15 @@
   []
   (log/info :start-config!/starting {})
   (let [{:keys [config overrides]} (args)
-        resolved-path              (get-config-path)
-        config-path                (or config resolved-path "config/prod.edn")
-        loaded-config              (fserver/load-config! {:config-path config-path})
-        merged-config              (merge loaded-config overrides)]
-    (logging/configure-logging! merged-config)
-    (log/info :start-config!/finished {:config-path config-path})
-    merged-config))
+        resolved-path              (get-config-path)]
+    (log/info :start-config!/resolved {:resolved-path resolved-path})
+    (let [config-path (or config resolved-path "config/prod.edn")]
+      (log/info :start-config!/resolved {:config-path config-path})
+      (let [loaded-config (fserver/load-config! {:config-path config-path})
+            merged-config (merge loaded-config overrides)]
+        (logging/configure-logging! merged-config)
+        (log/info :start-config!/finished {:config-path config-path})
+        merged-config))))
 
 (defstate config-map
   "The overrides option in args is for overriding
