@@ -16,6 +16,8 @@ vars:
     default: devimage
   DINSRO_LOG_LEVEL:
     default: debug
+  DINSRO_QUERY_LOG_LEVEL:
+    default: debug
   NOSTREAM_PROJECT:
     default: nostream
   POSTGRESQL_ROOT_PASSWORD:
