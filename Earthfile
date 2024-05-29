@@ -1,6 +1,6 @@
 # Earthfile
 VERSION 0.7
-FROM alpine:3.15
+FROM alpine:3.20
 ARG --global base_image=cimg/clojure:1.10
 ARG --global clojure_version=1.10.1.727
 # https://github.com/clj-kondo/clj-kondo/releases
@@ -8,9 +8,9 @@ ARG --global kondo_version=2023.10.20
 # https://nodejs.org/en/download
 ARG --global NODE_MAJOR=20
 # https://www.npmjs.com/package/npm?activeTab=versions
-ARG --global npm_version=10.2.5
+ARG --global npm_version=10.8.0
 # https://github.com/tilt-dev/tilt/releases
-ARG --global tilt_version=0.33.9
+ARG --global tilt_version=0.33.14
 
 # ARG repo=duck1123
 # ARG project=dinsro
