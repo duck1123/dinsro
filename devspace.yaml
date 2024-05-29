@@ -422,6 +422,12 @@ deployments:
             - host: ${BASE_PUBLIC_DOMAIN}
               paths:
                 - path: /
+          tls:
+            - hosts:
+                - ${BASE_PUBLIC_DOMAIN}
+              paths:
+                - path: /
+              secretName: dinsro-tls
           annotations:
             cert-manager.io/cluster-issuer: letsencrypt-prod
             ingress.kubernetes.io/force-ssl-redirect: "true"
