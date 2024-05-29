@@ -268,7 +268,9 @@
   {:doc  "Build test data directory"
    :task (c/mkdir "/tmp/dinsro/data/test")}
 
-  repl (clojure.main/repl)
+  repl
+  {:override-builtin true
+   :task             (clojure.main/repl)}
 
   restart
   {:doc "Send a restart signal over nrepl"
@@ -277,8 +279,9 @@
      (run 'dispatch))}
 
   run
-  {:doc  "Run server in dev mode"
-   :task (clojure "-M:dev:notebooks:guardrails:dev-main")}
+  {:doc              "Run server in dev mode"
+   :override-builtin true
+   :task             (clojure "-M:dev:notebooks:guardrails:dev-main")}
 
   run-dev-image
   {:task
