@@ -145,25 +145,34 @@
     :display          "standalone"}))
 
 (defroutes base-app
+
+  ;; For making this available as a PWA
   (GET "/app.webmanifest" req
     (-> (resp/response (handle-manifest req))
         (resp/content-type "application/json")
         ;; (resp/content-type "application/manifest+json")
         (assoc-in [:headers "Access-Control-Allow-Origin"] "*")))
+
+  ;; For NIP-05
   (GET "/.well-known/nostr.json" []
     (-> (resp/response (nip05-response))
         (resp/content-type "application/json")
         (assoc-in [:headers "Access-Control-Allow-Origin"] "*")))
+
+  ;; websockets
   (GET  "/chsk" req
     (c.socket/ring-ajax-get-or-ws-handshake req))
   (POST "/chsk" req
     (c.socket/ring-ajax-post req))
+
+  ;; serve base page
   (GET "/" {:keys [anti-forgery-token]}
     (resp/content-type
      (resp/response (index anti-forgery-token))
      "text/html")))
 
 (defn get-session-store
+  "Create a session store for secret persistence"
   []
   (log/info :get-session-store/starting {})
   (let [store (cookie-store {:key (b/slice @c.config/secret 0 16)})]
@@ -171,6 +180,7 @@
     store))
 
 (defn get-middleware-config
+  "Read middleware settings from config"
   []
   (log/info :get-middleware-config/starting {})
   (let [defaults-config (:ring.middleware/defaults-config (c.config/get-config) {})
@@ -181,6 +191,7 @@
     defaults-config))
 
 (defn start-middleware!
+  "read the middleware config and produce a handler with middleware applied"
   []
   (log/info :start-middleware!/starting {})
   (let [defaults-config (get-middleware-config)]
