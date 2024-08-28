@@ -191,7 +191,9 @@
   :notebooks
   {:extra-paths ["src/notebooks" "src/notebook-utils"]
    :extra-deps
-   {io.github.nextjournal/clerk {:mvn/version "0.12.707"}}}
+   ;; https://github.com/nextjournal/clerk
+   {io.github.nextjournal/clerk {:git/sha "01beb0126f61558f98cccc64b84f0a6217a6dadf"
+                                 #_#_:mvn/version "0.16.1016"}}}
 
   :outdated
   {:replace-deps {olical/depot {:mvn/version "2.3.0"}}
