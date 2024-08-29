@@ -115,14 +115,6 @@ INSTALL_TILT_LATEST:
   COMMAND
   RUN curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
 
-main-pipeline:
-  PIPELINE
-  TRIGGER push master
-  TRIGGER pr master
-  TRIGGER push main
-  TRIGGER pr main
-  BUILD +test
-
 all-images:
   BUILD +support-images
   BUILD +image
