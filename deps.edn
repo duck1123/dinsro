@@ -143,8 +143,10 @@
    :extra-deps
    {;; https://github.com/binaryage/cljs-devtools
     binaryage/devtools      {:mvn/version "1.0.2"}
-    ;; https://github.com/nubank/workspaces
-    nubank/workspaces       {:mvn/version "1.1.2"}
+
+    ;; https://github.com/awkay/workspaces
+    com.github.awkay/workspaces {:mvn/version "1.0.3"}
+
     ;; https://github.com/fulcrologic/fulcro-spec
     fulcrologic/fulcro-spec {:mvn/version "3.1.12"}
 
