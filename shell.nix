@@ -6,6 +6,7 @@
       devspace
       docker
       earthly
+      geckodriver
       # helm
       helm-docs
       # kubectl
