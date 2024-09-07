@@ -194,7 +194,7 @@
   {:extra-paths ["src/notebooks" "src/notebook-utils"]
    :extra-deps
    ;; https://github.com/nextjournal/clerk
-   {io.github.nextjournal/clerk {:git/sha "01beb0126f61558f98cccc64b84f0a6217a6dadf"
+   {io.github.nextjournal/clerk {:git/sha "b79c449a1510037e5497ca3d3eafa25912a94849"
                                  #_#_:mvn/version "0.16.1016"}}}
 
   :outdated
