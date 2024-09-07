@@ -245,6 +245,7 @@ devspace-base:
   DO +INSTALL_TILT
   RUN apt update && apt install -y \
       bash-completion \
+      firefox-geckodriver \
       inetutils-ping \
       zsh \
     && rm -rf /var/lib/apt/lists/*
