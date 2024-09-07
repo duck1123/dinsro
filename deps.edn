@@ -215,7 +215,7 @@
 
   :test
   {:extra-deps
-   {etaoin/etaoin                 {:mvn/version "0.4.6"}
+   {etaoin/etaoin                 {:mvn/version "1.1.41"}
 
     ;; https://github.com/lambdaisland/chui
     lambdaisland/chui         {:mvn/version "1.1.192"}
