@@ -144,7 +144,7 @@ notebooks:
   enabled: false
   service:
     type: ClusterIP
-    port: 3693
+    port: 7777
   ingress:
     # -- deploy notebooks ingress
     enabled: true

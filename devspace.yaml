@@ -365,6 +365,19 @@ deployments:
       values:
         logLevel: ":${DINSRO_LOG_LEVEL}"
         queryLogLevel: ":${DINSRO_QUERY_LOG_LEVEL}"
+        notebooks:
+          # enabled: true
+          service:
+            port: 7777
+          ingress:
+            hosts:
+              - host: notebooks.${BASE_PUBLIC_DOMAIN}
+                paths:
+                  - path: /
+            tls:
+              - hosts:
+                  - notebooks.dinsro.localtest.me
+                secretName: dinsro-notebooks-tls
         devcards:
           enabled: false
           ingress:
