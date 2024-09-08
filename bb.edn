@@ -34,7 +34,7 @@
   {:depends [compile-production-cljs package-jar]}
 
   ci
-  {:task (c/earthly :ci {:interactive true
+  {:task (c/earthly :ci {:interactive false
                          :privileged  true})}
 
   ci-local
