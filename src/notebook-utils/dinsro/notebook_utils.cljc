@@ -37,7 +37,7 @@
         [:button.absolute.right-2.text-xl.cursor-pointer
          {:class "top-1/2 -translate-y-1/2"
           :on-click
-          #(v/clerk-eval `(reset! ~var-name ~(str/join "." (drop-last (str/split value #"\.")))))} "⏮"]]))})
+          #(`v/clerk-eval `(reset! ~var-name ~(str/join "." (drop-last (str/split value #"\.")))))} "⏮"]]))})
 
 ^{::clerk/visibility {:code :hide :result :hide}}
 (defn x
