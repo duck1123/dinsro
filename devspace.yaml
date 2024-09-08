@@ -376,7 +376,7 @@ deployments:
                   - path: /
             tls:
               - hosts:
-                  - notebooks.dinsro.localtest.me
+                  - notebooks.${BASE_PUBLIC_DOMAIN}
                 secretName: dinsro-notebooks-tls
         devcards:
           enabled: false
