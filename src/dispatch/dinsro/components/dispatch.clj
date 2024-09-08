@@ -1,7 +1,6 @@
 (ns dinsro.components.dispatch
   (:require
    [nrepl.core :as nrepl]
-   [nrepl.misc :refer [noisy-future]]
    [nrepl.transport :as transport]))
 
 (def repl-host "127.0.0.1")
@@ -11,7 +10,7 @@
   [host port cmds]
   (let [transport (nrepl/connect :host host :port port :transport-fn #'transport/bencode)
         client    (nrepl/client transport Long/MAX_VALUE)]
-    (noisy-future
+    (future
      (->> (client)
           (take-while #(nil? (:id %)))
           (run! #(when-let [msg (:out %)] (print msg)))))
