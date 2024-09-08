@@ -39,9 +39,9 @@
         (log/info :start-config!/finished {:config-path config-path})
         merged-config))))
 
-(defstate config-map
-  "The overrides option in args is for overriding
-   configuration in tests."
+(defstate
+  ^{:doc "The overrides option in args is for overriding configuration in tests."}
+  config-map
   :start (start-config!))
 
 (defn get-config

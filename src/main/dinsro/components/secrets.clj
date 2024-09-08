@@ -28,8 +28,9 @@
       (log/warn :read-secret/no-secret {}))))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(defstate secret
-  "A secret value used to encrypt session state"
+(defstate
+  ^{:doc "A secret value used to encrypt session state"}
+  secret
   :start
   (do
     (log/info :secret/starting {})

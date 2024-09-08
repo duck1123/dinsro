@@ -25,7 +25,8 @@
       (stop))))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(defstate http-server
-  "The main web server for the application"
+(defstate
+  ^{:doc "The main web server for the application"}
+  http-server
   :start (start-http-server!)
   :stop (stop-http-server!))

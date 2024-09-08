@@ -9,8 +9,10 @@
    [xtdb.api :as xt]))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(defstate ^{:on-reload :noop} queries
-  "A collection of started xtdb nodes"
+(defstate
+  ^{:doc "A collection of started xtdb nodes"
+    :on-reload :noop}
+  queries
   :start (do
            (log/info :queries/starting {})
            (q/initialize-queries!))

@@ -72,8 +72,11 @@
   (let [nodes @xtdb-nodes]
     (for [node nodes] (.close node))))
 
-(defstate ^{:on-reload :noop} xtdb-nodes
-  "A collection of started xtdb nodes"
+(defstate
+  ^{:doc       "A collection of started xtdb nodes"
+    :on-reload :noop}
+  xtdb-nodes
+
   :start (start-database!)
   :stop (stop-database!))
 
