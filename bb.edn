@@ -262,7 +262,7 @@
 
   package-jar
   {:doc  "Build production jar"
-   :task (clojure "-T:build uber")}
+   :task (clojure "-T:build:notebooks uber")}
 
   prepare-test-dirs
   {:doc  "Build test data directory"
@@ -307,7 +307,7 @@
 
   run-production
   {:doc  "Run server from jar"
-   :task (shell "clojure -T:build run")}
+   :task (shell "clojure -T:build:notebooks run")}
 
   seed
   {:doc  "Seed the database over nrepl"
