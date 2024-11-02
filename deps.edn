@@ -40,7 +40,7 @@
   ^{:doc "https://github.com/erp12/fijit"}
   io.github.erp12/fijit                     {:mvn/version "1.0.8"}
   ^{:doc "https://github.com/nextjournal/markdown"}
-  io.github.nextjournal/markdown            {:mvn/version "0.5.144"}
+  io.github.nextjournal/markdown            {:mvn/version "0.6.157"}
   io.pedestal/pedestal.log                  {:mvn/version "0.5.9"}
   ^{:doc "https://github.com/dainiusjocas/clj-jq"}
   lt.jocas/clj-jq                           {:mvn/version "1.2.1"}
