@@ -11,9 +11,9 @@
   (let [transport (nrepl/connect :host host :port port :transport-fn #'transport/bencode)
         client    (nrepl/client transport Long/MAX_VALUE)]
     (future
-     (->> (client)
-          (take-while #(nil? (:id %)))
-          (run! #(when-let [msg (:out %)] (print msg)))))
+      (->> (client)
+           (take-while #(nil? (:id %)))
+           (run! #(when-let [msg (:out %)] (print msg)))))
     (let [session (nrepl/client-session client)]
       (doseq [cmd cmds]
         (doseq [{:keys [out value]

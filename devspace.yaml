@@ -33,8 +33,16 @@ vars:
 pipelines:
   build-cert-downloader: |-
     set -ex
-    earthly +cert-downloader --tag dev
-    docker image tag duck1123/cert-downloader:dev k3d-myregistry.localtest.me:12345/duck1123/cert-downloader:dev
+    REGISTRY=k3d-myregistry.localtest.me:12345
+    REPO=duck1123
+    PROJECT=cert-downloader
+    TAG=dev
+    IMAGE=${REPO?}/${PROJECT?}
+    earthly +cert-downloader --tag ${TAG}
+    docker image tag ${IMAGE?}:${TAG?} ${REGISTRY}/${IMAGE?}:${TAG?}
+    docker push ${REGISTRY}/${IMAGE}:${TAG}
+    docker image rm ${IMAGE}:${TAG}
+    docker image rm ${REGISTRY}/${IMAGE}:${TAG}
 
   build-devimage: |-
     build_images devimage
@@ -149,6 +157,7 @@ pipelines:
     echo ""
     run_pipelines create-namespace
     run_pipelines create-chart-directories
+    run_pipelines build-cert-downloader
     YAML_PATH=target/charts/${NAME}_rtl.yaml
     RTL_VERSION=dev bb generate-rtl-values ${NAME}
     bb helm-rtl ${NAME} > ${YAML_PATH}
@@ -479,13 +488,13 @@ deployments:
             cert-manager.io/cluster-issuer: letsencrypt-prod
           debug: true
           hosts:
-          - host: nostream.${BASE_PUBLIC_DOMAIN}
-            paths:
-            - path: /
+            - host: nostream.${BASE_PUBLIC_DOMAIN}
+              paths:
+                - path: /
           tls:
-          - hosts:
-            - nostream.${BASE_PUBLIC_DOMAIN}
-            secretName: nostream-tls
+            - hosts:
+                - nostream.${BASE_PUBLIC_DOMAIN}
+              secretName: nostream-tls
   postgresql:
     helm:
       chart:
@@ -513,38 +522,36 @@ deployments:
         version: 0.1.0
       values:
         environment:
-        - name: SQLPAD_CONNECTIONS__nostream__name
-          value: nostream
-        - name: SQLPAD_CONNECTIONS__nostream__driver
-          value: postgres
-        - name: SQLPAD_CONNECTIONS__nostream__host
-          value: postgresql
-        - name: SQLPAD_CONNECTIONS__nostream__port
-          value: "5432"
-        - name: SQLPAD_CONNECTIONS__nostream__username
-          value: postgres
-        - name: SQLPAD_CONNECTIONS__nostream__password
-          value: ${POSTGRESQL_ROOT_PASSWORD}
-        - name: SQLPAD_CONNECTIONS__nostream__database
-          value: nostream
-
-        - name: SQLPAD_CONNECTIONS__dinsro__name
-          value: "dinsro"
-        - name: SQLPAD_CONNECTIONS__dinsro__driver
-          value: "postgres"
-        - name: SQLPAD_CONNECTIONS__dinsro__host
-          value: "db.dinsro"
-        - name: SQLPAD_CONNECTIONS__dinsro__port
-          value: "5432"
-        - name: SQLPAD_CONNECTIONS__dinsro__username
-          value: "postgresql"
-        - name: SQLPAD_CONNECTIONS__dinsro__password
-          value: "mysecretpassword"
-        - name: SQLPAD_CONNECTIONS__dinsro__database
-          value: "dinsro"
-
-        - name: SQLPAD_DEFAULT_CONNECTION_ID
-          value: nostream
+          - name: SQLPAD_CONNECTIONS__nostream__name
+            value: nostream
+          - name: SQLPAD_CONNECTIONS__nostream__driver
+            value: postgres
+          - name: SQLPAD_CONNECTIONS__nostream__host
+            value: postgresql
+          - name: SQLPAD_CONNECTIONS__nostream__port
+            value: "5432"
+          - name: SQLPAD_CONNECTIONS__nostream__username
+            value: postgres
+          - name: SQLPAD_CONNECTIONS__nostream__password
+            value: ${POSTGRESQL_ROOT_PASSWORD}
+          - name: SQLPAD_CONNECTIONS__nostream__database
+            value: nostream
+          - name: SQLPAD_CONNECTIONS__dinsro__name
+            value: "dinsro"
+          - name: SQLPAD_CONNECTIONS__dinsro__driver
+            value: "postgres"
+          - name: SQLPAD_CONNECTIONS__dinsro__host
+            value: "db.dinsro"
+          - name: SQLPAD_CONNECTIONS__dinsro__port
+            value: "5432"
+          - name: SQLPAD_CONNECTIONS__dinsro__username
+            value: "postgresql"
+          - name: SQLPAD_CONNECTIONS__dinsro__password
+            value: "mysecretpassword"
+          - name: SQLPAD_CONNECTIONS__dinsro__database
+            value: "dinsro"
+          - name: SQLPAD_DEFAULT_CONNECTION_ID
+            value: nostream
 
 # This is a list of `dev` containers that are based on the containers created by your deployments
 dev:
@@ -557,37 +564,38 @@ dev:
     #   app.kubernetes.io/name: dinsro
     #   app.kubernetes.io/instance: dinsro
     sync:
-    - path: ./
-      excludePaths:
-      - node_modules/
+      - path: ./
+        excludePaths:
+          - node_modules/
     terminal:
       command: ./devspace_start.sh
     ssh:
       enabled: true
     proxyCommands:
-    - command: devspace
-    - command: kubectl
-    - command: helm
-    # - command: git
+      - command: devspace
+      - command: earthly
+      - command: kubectl
+      - command: helm
+      # - command: git
     ports:
-    # Dinsro Main interface
-    - port: "3000"
-    - port: "3691"
-    - port: "3692"
-    # Workspaces
-    - port: "3693"
-    - port: "7000"
-    - port: "7777"
-    # CLJ nRepl
-    - port: "7778"
-    - port: "8000"
-    # Shadow Dashboard
-    - port: "9630"
-    # Tilt
-    - port: "10350"
-    - port: "1818"
+      # Dinsro Main interface
+      - port: "3000"
+      - port: "3691"
+      - port: "3692"
+      # Workspaces
+      - port: "3693"
+      - port: "7000"
+      - port: "7777"
+      # CLJ nRepl
+      - port: "7778"
+      - port: "8000"
+      # Shadow Dashboard
+      - port: "9630"
+      # Tilt
+      - port: "10350"
+      - port: "1818"
     open:
-    - url: http://localhost:10350
+      - url: http://localhost:10350
 
 # Use the `commands` section to define repeatable dev workflows for this project
 commands:
