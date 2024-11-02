@@ -5,96 +5,70 @@
 
  :deps
  {buddy/buddy                               {:mvn/version "2.0.0"}
-
-  ;; https://github.com/clojure-emacs/cider-nrepl
+  ^{:doc "https://github.com/clojure-emacs/cider-nrepl"}
   cider/cider-nrepl                         {:mvn/version "0.29.0"}
   clj-commons/clj-yaml                      {:mvn/version "0.7.108"}
-
-  ;; https://github.com/fulcrologic/fulcro
+  ^{:doc "https://github.com/fulcrologic/fulcro"}
   com.fulcrologic/fulcro                    {:mvn/version "3.6.1"}
-
-  ;; https://github.com/fulcrologic/fulcro-garden-css
+  ^{:doc "https://github.com/fulcrologic/fulcro-garden-css"}
   com.fulcrologic/fulcro-garden-css         {:mvn/version "3.0.9"}
-
-  ;; https://github.com/fulcrologic/fulcro-i18n
+  ^{:doc "https://github.com/fulcrologic/fulcro-i18n"}
   com.fulcrologic/fulcro-i18n               {:mvn/version "1.0.0"}
-
-  ;; https://github.com/fulcrologic/fulcro-rad
+  ^{:doc "https://github.com/fulcrologic/fulcro-rad"}
   com.fulcrologic/fulcro-rad                {:mvn/version "1.4.7"}
-
-  ;; https://github.com/fulcrologic/fulcro-rad-semantic-ui
+  ^{:doc "https://github.com/fulcrologic/fulcro-rad-semantic-ui"}
   com.fulcrologic/fulcro-rad-semantic-ui    {:mvn/version "1.3.4"}
-
-  ;; https://github.com/fulcrologic/fulcro-websockets
+  ^{:doc "https://github.com/fulcrologic/fulcro-websockets"}
   com.fulcrologic/fulcro-websockets         {:mvn/version "3.3.0"}
   com.fzakaria/slf4j-timbre                 {:mvn/version "0.3.21"}
   com.lambdaisland/glogi                    {:mvn/version "1.1.144"}
   com.taoensso/timbre                       {:mvn/version "5.1.2"}
-
-  ;; https://github.com/wilkerlucio/pathom
+  ^{:doc "https://github.com/wilkerlucio/pathom"}
   com.wsscode/pathom                        {:mvn/version "2.4.0"}
-
-  ;; https://docs.xtdb.com/guides/quickstart/
+  ^{:doc "https://docs.xtdb.com/guides/quickstart/"}
   com.xtdb/xtdb-core                        {:mvn/version "1.23.0"}
   com.xtdb/xtdb-jdbc                        {:mvn/version "1.23.0"}
   com.xtdb/xtdb-rocksdb                     {:mvn/version "1.23.0"}
-
-  ;; https://github.com/weavejester/compojure
+  ^{:doc "https://github.com/weavejester/compojure"}
   compojure/compojure                       {:mvn/version "1.7.0"}
-
-  ;; https://github.com/edn-query-language/eql
+  ^{:doc "https://github.com/edn-query-language/eql"}
   edn-query-language/eql                    {:mvn/version "2021.07.18"}
-
-  ;; https://github.com/gnarroway/hato
+  ^{:doc "https://github.com/gnarroway/hato"}
   hato/hato                                 {:mvn/version "0.9.0"}
   http-kit/http-kit                         {:mvn/version "2.6.0"}
   http.async.client/http.async.client       {:mvn/version "1.3.1"}
-
-  ;; https://github.com/erp12/fijit
+  ^{:doc "https://github.com/erp12/fijit"}
   io.github.erp12/fijit                     {:mvn/version "1.0.8"}
-
-  ;; https://github.com/nextjournal/markdown
+  ^{:doc "https://github.com/nextjournal/markdown"}
   io.github.nextjournal/markdown            {:mvn/version "0.5.144"}
   io.pedestal/pedestal.log                  {:mvn/version "0.5.9"}
-
-  ;; https://github.com/dainiusjocas/clj-jq
+  ^{:doc "https://github.com/dainiusjocas/clj-jq"}
   lt.jocas/clj-jq                           {:mvn/version "1.2.1"}
-
-  ;; https://github.com/clj-commons/manifold
+  ^{:doc "https://github.com/clj-commons/manifold"}
   manifold/manifold                         {:mvn/version "0.3.0"}
-
-  ;; https://github.com/metosin/reitit
+  ^{:doc "https://github.com/metosin/reitit"}
   metosin/reitit                            {:mvn/version "0.6.0"}
-
-  ;; https://github.com/metosin/ring-http-response
+  ^{:doc "https://github.com/metosin/ring-http-response"}
   metosin/ring-http-response                {:mvn/version "0.9.3"}
-
-  ;; https://github.com/tolitius/mount
+  ^{:doc "https://github.com/tolitius/mount"}
   mount/mount                               {:mvn/version "0.1.17"}
-
-  ;; https://github.com/roterski/fulcro-rad-xtdb
+  ^{:doc "https://github.com/roterski/fulcro-rad-xtdb"}
   net.clojars.roterski/fulcro-rad-xtdb      {:mvn/version "0.0.1-alpha-7"}
-
-  ;; https://github.com/nrepl/nrepl
+  ^{:doc "https://github.com/nrepl/nrepl"}
   nrepl/nrepl                               {:mvn/version "1.1.0-alpha1"}
-
-  ;; https://github.com/bitcoin-s/bitcoin-s
+  ^{:doc "https://github.com/bitcoin-s/bitcoin-s"}
   org.bitcoin-s/bitcoin-s-bitcoind-rpc_2.13 {:mvn/version "1.9.7"}
   org.bitcoin-s/bitcoin-s-core_2.13         {:mvn/version "1.9.7"}
   org.bitcoin-s/bitcoin-s-lnd-rpc_2.13      {:mvn/version "1.9.7"}
-
-  ;; https://github.com/clj-commons/byte-streams
+  ^{:doc "https://github.com/clj-commons/byte-streams"}
   org.clj-commons/byte-streams              {:mvn/version "0.3.2"}
   org.clojure/clojure                       {:mvn/version "1.11.1"}
   org.clojure/clojurescript                 {:mvn/version "1.10.879"}
-
-  ;; https://github.com/clojure/core.async
+  ^{:doc "https://github.com/clojure/core.async"}
   org.clojure/core.async                    {:mvn/version "1.5.648"}
-
-  ;; https://github.com/clojure/data.csv
+  ^{:doc "https://github.com/clojure/data.csv"}
   org.clojure/data.csv                      {:mvn/version "1.0.1"}
-
-  ;; https://github.com/clojure/spec.alpha
+  ^{:doc "https://github.com/clojure/spec.alpha"}
   org.clojure/spec.alpha                    {:mvn/version "0.3.214"}
   org.clojure/test.check                    {:mvn/version "1.1.1"}
   org.clojure/tools.cli                     {:mvn/version "1.0.206"}
@@ -104,10 +78,8 @@
   ring/ring-defaults                        {:mvn/version "0.3.3"}
   ring/ring-devel                           {:mvn/version "1.9.5"}
   ring/ring-mock                            {:mvn/version "0.4.0"}
-
   sablono/sablono                           {:mvn/version "0.8.6"}
-
-  ;; https://github.com/thheller/shadow-cljs
+  ^{:doc "https://github.com/thheller/shadow-cljs"}
   thheller/shadow-cljs                      {:mvn/version "2.15.12"}
   tick/tick                                 {:mvn/version "0.4.32"
                                              :exclusions  [cljsjs/js-joda-timezone
@@ -115,24 +87,26 @@
 
  :aliases
  {:build
-  {:deps       {io.github.seancorfield/build-clj {:git/tag "v0.8.3" :git/sha "7ac1f8d"}}
+  {:deps       {^{:doc "https://github.com/nextjournal/clerk"}
+                io.github.nextjournal/clerk      {:mvn/version "0.17.1102"}
+                io.github.seancorfield/build-clj {:git/tag "v0.8.3" :git/sha "7ac1f8d"}}
    :ns-default build}
 
   :cljfmt
   {:extra-deps
-   ;; https://github.com/weavejester/cljfmt
-   {cljfmt/cljfmt {:mvn/version "0.9.2"}}
+   {^{:doc "https://github.com/weavejester/cljfmt"}
+    cljfmt/cljfmt {:mvn/version "0.9.2"}}
    :main-opts ["-m" "cljfmt.main"]}
 
   :codox
-  ;; https://github.com/weavejester/codox
-  {:extra-deps {codox/codox {:mvn/version "0.10.8"}}
+  {:extra-deps {^{:doc "https://github.com/weavejester/codox"}
+                codox/codox {:mvn/version "0.10.8"}}
    :exec-fn    codox.main/generate-docs
    :exec-args  {:source-paths ["src/main"]}}
 
   :codox-cljs
-  ;; https://github.com/weavejester/codox
-  {:extra-deps {codox/codox {:mvn/version "0.10.8"}}
+  {:extra-deps {^{:doc "https://github.com/weavejester/codox"}
+                codox/codox {:mvn/version "0.10.8"}}
    :exec-fn    codox.main/generate-docs
    :exec-args  {:source-paths ["src/main"]
                 :language     :clojurescript
@@ -141,16 +115,16 @@
   :dev
   {:extra-paths ["src/dev" "src/test" "src/shared-test"]
    :extra-deps
-   {;; https://github.com/binaryage/cljs-devtools
-    binaryage/devtools      {:mvn/version "1.0.2"}
+   {^{:doc "https://github.com/binaryage/cljs-devtools"}
+    binaryage/devtools {:mvn/version "1.0.2"}
 
-    ;; https://github.com/awkay/workspaces
+    ^{:doc "https://github.com/awkay/workspaces"}
     com.github.awkay/workspaces {:mvn/version "1.0.3"}
 
-    ;; https://github.com/fulcrologic/fulcro-spec
+    ^{:doc "https://github.com/fulcrologic/fulcro-spec"}
     fulcrologic/fulcro-spec {:mvn/version "3.1.12"}
 
-    thheller/shadow-cljs    {:mvn/version "2.15.12"}}}
+    thheller/shadow-cljs {:mvn/version "2.15.12"}}}
 
   :dev-main
   {:main-opts ["-m" "dinsro.core"]}
@@ -193,9 +167,8 @@
   :notebooks
   {:extra-paths ["src/notebooks" "src/notebook-utils"]
    :extra-deps
-   ;; https://github.com/nextjournal/clerk
-   {io.github.nextjournal/clerk {:git/sha "b79c449a1510037e5497ca3d3eafa25912a94849"
-                                 #_#_:mvn/version "0.16.1016"}}}
+   {^{:doc "https://github.com/nextjournal/clerk"}
+    io.github.nextjournal/clerk {:mvn/version "0.17.1102"}}}
 
   :outdated
   {:replace-deps {olical/depot {:mvn/version "2.3.0"}}
@@ -216,11 +189,10 @@
   :test
   {:extra-deps
    {etaoin/etaoin                 {:mvn/version "1.1.41"}
-
-    ;; https://github.com/lambdaisland/chui
-    lambdaisland/chui         {:mvn/version "1.1.192"}
-    lambdaisland/kaocha       {:mvn/version "1.80.1274"}
-    lambdaisland/kaocha-cljs2 {:mvn/version "0.1.58"}
+    ^{:doc "https://github.com/lambdaisland/chui"}
+    lambdaisland/chui             {:mvn/version "1.1.192"}
+    lambdaisland/kaocha           {:mvn/version "1.80.1274"}
+    lambdaisland/kaocha-cljs2     {:mvn/version "0.1.58"}
     lambdaisland/kaocha-cloverage {:mvn/version "1.0.75"}
     lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}}
    :main-opts ["-m" "kaocha.runner"]}}}
