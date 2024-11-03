@@ -1,5 +1,5 @@
 # Earthfile
-VERSION 0.7
+VERSION 0.8
 FROM alpine:3.20
 ARG --global base_image=cimg/clojure:1.10
 ARG --global clojure_version=1.10.1.727
@@ -25,7 +25,7 @@ ARG --global gid=3434
 WORKDIR /usr/src/app
 
 EXPOSE_DOCKER_PORTS:
-  COMMAND
+  FUNCTION
   # Main web interface
   EXPOSE 3000/tcp
   # nRepl interface (cljs)
@@ -42,7 +42,7 @@ EXPOSE_DOCKER_PORTS:
   EXPOSE 9630/tcp
 
 IMPORT_JAR_DEPS:
-  COMMAND
+  FUNCTION
   COPY --dir --chown=circleci --chmod=755 \
        +jar-deps/.clojure \
        +jar-deps/.deps.clj \
@@ -58,7 +58,7 @@ IMPORT_JAR_DEPS:
   COPY --dir --chown=circleci +jar-deps/.cpcache .
 
 INSTALL_BABASHKA:
-  COMMAND
+  FUNCTION
   # FIXME: This always downloads the latest version, enable pinning
   RUN curl -sLO https://raw.githubusercontent.com/babashka/babashka/master/install \
       && chmod +x install \
@@ -66,19 +66,19 @@ INSTALL_BABASHKA:
       && rm -f install
 
 INSTALL_BYOBU:
-  COMMAND
+  FUNCTION
   RUN apt update && apt install -y \
       byobu \
     && rm -rf /var/lib/apt/lists/*
 
 INSTALL_FIREFOX:
-  COMMAND
+  FUNCTION
   RUN apt update && apt install -y \
       firefox-geckodriver \
     && rm -rf /var/lib/apt/lists/*
 
 INSTALL_KONDO:
-  COMMAND
+  FUNCTION
   RUN curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo \
       && chmod +x install-clj-kondo \
       && echo Version: $kondo_version \
@@ -87,7 +87,7 @@ INSTALL_KONDO:
 
 # Assumes running as root
 INSTALL_NODE:
-  COMMAND
+  FUNCTION
   RUN mkdir -p /etc/apt/keyrings
   RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
   RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_${NODE_MAJOR}.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
@@ -98,21 +98,21 @@ INSTALL_NODE:
   RUN npm install -g yarn
 
 INSTALL_NOSCL:
-  COMMAND
+  FUNCTION
   RUN curl -LJO "https://github.com/fiatjaf/noscl/releases/download/v0.6.0/noscl"
   RUN mv noscl /usr/local/bin/noscl
   RUN chmod +x /usr/local/bin/noscl
   RUN mkdir -p /root/.config/noscl
 
 INSTALL_TILT:
-  COMMAND
+  FUNCTION
   RUN echo ${tilt_version}
   RUN curl -fsSL "https://github.com/tilt-dev/tilt/releases/download/v${tilt_version}/tilt.${tilt_version}.linux.x86_64.tar.gz" \
         | tar -xzv tilt \
       && sudo mv tilt /usr/local/bin/tilt
 
 INSTALL_TILT_LATEST:
-  COMMAND
+  FUNCTION
   RUN curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
 
 all-images:
@@ -284,8 +284,8 @@ dev-image-sources:
   ARG project=dinsro
   ARG tag=latest
   FROM +dev-image-sources-base \
-       --build-arg watch_sources=$watch_sources \
-       --build-arg use_notebooks=$use_notebooks
+       --watch_sources=$watch_sources \
+       --use_notebooks=$use_notebooks
   ARG EXPECTED_REF=${repo}/${project}:dev-sources-${version}
   COPY --dir resources/main ${src_home}/resources
   SAVE IMAGE ${EXPECTED_REF}
